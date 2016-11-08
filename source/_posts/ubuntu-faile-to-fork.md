@@ -17,7 +17,11 @@ FATAL -> Failed to fork.
 google 搜索到
 http://serverfault.com/questions/401862/debian-fatal-failed-to-fork
 
-发现第二个人回答的可以解决，意思是swap空间不够了（好像支持的人很少），只要运行 `curl -sSL https://manageacloud.com/api/cm/configuration/activate_swap/ubuntu/manageacloud-production-script.sh | bash`就可以继续越快的apt-get了。
+发现第二个人回答的可以解决，意思是swap空间不够了（好像支持的人很少），只要运行 
+```
+curl -sSL https://manageacloud.com/api/cm/configuration/activate_swap/ubuntu/manageacloud-production-script.sh | bash
+```
+就可以继续越快的apt-get了。
 
 
 

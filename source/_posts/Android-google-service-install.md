@@ -14,9 +14,8 @@ flyme商店 魅族专用版
 http://app.flyme.cn/apps/public/detail?package_name=com.howie.gserverinstall
 ##  rec卡刷
 下载系统对应的卡刷包,进入rec模式,刷入就可以了,下图是不同版本的gapps包含的app,
-![此处输入图片的描述][2]
-[2]:http://i1.tietuku.com/4a745cb2ed670513.png
-[集合一](https://basketbuild.com/gapps)
+![此处输入图片的描述](/img/google-servive.png)
+集合一https://basketbuild.com/gapps
 ##  手动安装
 适合动手能力强的人,其实只需要把上图的pico的安装包下载下来,在安装就可以了,包括,谷歌书签同步,谷歌日历同步,谷歌play服务,谷歌商店.
 

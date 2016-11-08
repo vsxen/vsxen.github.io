@@ -1,8 +1,8 @@
 ---
 title: launchy,listary和wox功能对比
 date: 2016-10-11 10:46:23
-categories:  软件推荐
-tags:
+categories:  
+tags: 软件推荐
 ---
 launchy,listary和wox这三个都是Windows下，主打键盘流的软件，好好用的话可以提高工作效率。
 ## listary

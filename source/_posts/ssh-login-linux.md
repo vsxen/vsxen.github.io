@@ -32,4 +32,5 @@ chmod 700 -R .ssh
 `ssh root@ip` 
 如果不出错的话就登录成功了。
 `文件和目录的权限千万别设置成chmod 777.这个权限太大了，不安全，数字签名也不支持。`
-[参考](http://blog.csdn.net/leexide/article/details/17252369)
+参考
+http://blog.csdn.net/leexide/article/details/17252369

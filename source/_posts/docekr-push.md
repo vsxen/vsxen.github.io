@@ -6,11 +6,11 @@ tags:  docker
 ---
 docker作为一个新兴的技术已经越来越流行了，下面我们就来从零开始自己制作docker镜像，并且发布到dcoker hub。（类似于github）
 ## 注册账号
-首先需要在https://hub.docker.com注册一个账号，过程就不多说了。
-本文说的是手动push，这种方法不适用网速比较差的，因为push的速度太差，我都是选择自动构建的。
+首先需要在https://hub.docker.com   注册一个账号，过程就不多说了。尽量选择gmail
+本文说的是手动push，这种方法不适用国内的环境，push的网速比较差，我都是选择自动构建，如果你有国外的服务器，也可以选择手动push。
 
 ##  pull镜像
-比如centos
+拉去镜像，在源镜像的基础上进行修改。比如centos
 ```
 docker pull centos(默认是latest)`
 docker images
@@ -37,7 +37,8 @@ CONTAINER ID   IMAGE    COMMAND     CREATED      STATUS
 
 ```
 ##  建立仓库
-在hub上面建立仓库，如果选择第一个就是自己本地构建并push上去，第二就是细看Dockerfile自动构建，这里我们先选择第一个。
+![创建仓库](/img/create-repo.png)
+在hub上面建立仓库，如果选择第一个就是自己本机构建并push上去，第二就是自己写Dockerfile自动构建，这里我们先选择第一个。
 ## 测试镜像
 ```
 docker ps -a，
@@ -49,5 +50,7 @@ docker run -p 10022:22 -d sshd-centos /usr/sbin/sshd -D#端口不指定也可以
 docker tag 33dc80ac3fd3 test/test
 docker push test/test#开始push
 ```
-参考http://chinawu.blog.51cto.com/10692884/1826004
+
+参考
+http://chinawu.blog.51cto.com/10692884/1826004
 http://www.myfreax.com/build-image-with-dockerfile-hub/

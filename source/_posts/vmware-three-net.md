@@ -8,7 +8,7 @@ tags: 小知识
   桥接模式：虚拟机可以连接Internet，并且可以与其他物理机相互访问。此模式下，虚拟机完全独立于物理机。但是需要单独的IP地址，一般是与物理机处于同一网段。
 仅主机模式：虚拟机不能连接到Internet，仅可以与物理机相互访问。
 
-<img src="http://odiu0bweg.bkt.clouddn.com/vm1.png" style="display:block;margin:auto" alt="桥接模式" />
+![](img/vm1.png)
 在这种模式下，使用VMnet0虚拟交换机，虚拟操作系统就像是局域网中的一台独立的主机，与宿主计算机一样，它可以访问网内任何一台机器。在桥接模式下，可以手工配置它的TCP/IP配置信息（IP、子网掩码等，而且还要和宿主机器处于同一网段），以实现通过局域网的网关或路由器访问互联网；还可以将IP地址和DNS设置成“自动获取”。
 
 　　如果你想利用VMWare在局域网内新建一个服务器，为局域网用户提供Web或网络服务，就应该选择桥接模式。
@@ -22,7 +22,7 @@ A1、A2的IP为“外网”IP，可以手动设置，也可以自动获取
 ##  NAT模式
 NAT模式：虚拟机可以连接到Internet，但其他物理机不能通过Internet访问虚拟机。如果要访问虚拟机，需进行端口映射。
 
-<img src="http://odiu0bweg.bkt.clouddn.com/vm2.png" style="display:block;margin:auto" alt="NAT模式" />
+![](img/vm2.png)
 
 使用NAT模式，就是让虚拟机借助NAT（网络地址转换）功能，通过宿主机器所在的网络来访问公网。也就是说，使用NAT模式可以实现在虚拟系统里访问互联网。NAT模式下的虚拟机的TCP/IP配置信息是由VMnet8虚拟网络的DHCP服务器提供的，因此IP和DNS一般设置为“自动获取”，因此虚拟系统也就无法和本局域网中的其他真实主机进行通讯。
 
@@ -38,7 +38,7 @@ A1、A2的IP为局域网IP，可以手动配置，也可以自动获取
 
 ##  仅主机模式
 仅主机模式:虚拟机只能和物理机进行互相访问
-<img src="http://odiu0bweg.bkt.clouddn.com/vm3.png" style="display:block;margin:auto" alt="仅主机模式" />
+![](img/vm3.png)
 
 在host-only模式中，虚拟机只能与虚拟机、主机互访，但虚拟机和外部的网络是被隔离开的，也就是不能上Internet。在host-only模式下，虚拟系统的TCP/IP配置信息（如IP地址、网关地址、DNS服务器等），都是由VMnet1虚拟网络的DHCP服务器来动态分配的。使用host-only方式：
 
