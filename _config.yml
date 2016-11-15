@@ -81,7 +81,7 @@ deploy:
 backup:
     type: git
     theme: jacman#备份主题，可选
-    message: test#提交信息 可选
+    message:  update
     repository:
        github: git@github.com:vsxen/vsxen.github.io.git,back
 plugin:
