@@ -1,7 +1,7 @@
 ---
-title: 从零开始学习mysql
+title: mysql从零开始学习
 date: 2016-05-14 17:43:57
-categories:
+categories: mysql
 tags:
 ---
 ## 安装
@@ -17,7 +17,8 @@ sudo apt-get install mysql
 ### 显示所有表
 show databases;
 ### 选择表
-`use  表名`；出现database changed
+use  表名
+database changed
 ### 创建表 
 ```
 CREATE TABLE 表的名字
@@ -28,6 +29,7 @@ CREATE TABLE 表的名字
 );
 ```
 ### 插入数据
+注意看区别
 ```
 INSERT INTO employee(id,name,phone) VALUES(01,'Tom',110110110);
 
@@ -37,6 +39,8 @@ INSERT INTO employee(id,name) VALUES(03,'Rose');
 ```
 ### 查询数据
 `SELECT name,age FROM employee;`
+
+
 
 SET character_set_database=gbk;
 SET character_set_server=gbk;

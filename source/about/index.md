@@ -19,6 +19,7 @@ lsof -i:80
 ps  -ef | grep nginx 
 #安装docker
 curl -s https://get.docker.com/ | sudo sh
+ls -lR|grep "^-"|wc -l 
 ```
 
 

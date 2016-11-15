@@ -74,8 +74,9 @@ theme: jacman
 ## Docs: http://hexo.io/docs/deployment.html
 deploy:
   type: git
-  repository: git@github.com:vsxen/vsxen.github.io.git
-  branch: master
+  repository: git@github.com:vsxen/vsxen.github.io.git 
+  branch: master 
+  
   
 backup:
     type: git

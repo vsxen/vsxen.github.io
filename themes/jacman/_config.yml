@@ -47,7 +47,7 @@ index:
   expand: false           ## default is unexpanding,so you can only see the short description of each post.
   excerpt_link: Read More  
 
-close_aside: false  #close sidebar in post page if true
+close_aside:  true  #close sidebar in post page if true
 mathjax: false      #enable mathjax if true
 
 ### Creative Commons License Support, see http://creativecommons.org/ 
@@ -56,7 +56,7 @@ creative_commons: none
 
 #### Author information
 author:
-  intro_line1:  "vsxen"    ## your introduction on the bottom of the page
+  intro_line1:  ""    ## your introduction on the bottom of the page
   intro_line2:  ""  ## the 2nd line
   #weibo: 2176287895     ## e.g. wuchong1014 or 2176287895 for http://weibo.com/2176287895
   #weibo_verifier: b3593ceb    ## e.g. b3593ceb Your weibo-show widget verifier ,if you use weibo-show it is needed.
@@ -111,15 +111,15 @@ cnzz_tongji:
   siteid:    ## e.g. 1253575964 your cnzz tongji site id
 
 #### Miscellaneous
-ShowCustomFont: true  ## you can change custom font in `variable.styl` and `font.styl` which in the theme folder `/jacman/source/css`.
-fancybox: true        ## if you use gallery post or want use fancybox please set the value to true.
+ShowCustomFont: false  ## you can change custom font in `variable.styl` and `font.styl` which in the theme folder `/jacman/source/css`.
+fancybox: false        ## if you use gallery post or want use fancybox please set the value to true.
 totop: true           ## if you want to scroll to top in every post set the value to true
 
 
 #### Custom Search
 google_cse: 
-  enable: false
-  cx:   ## e.g. 018294693190868310296:abnhpuysycw your Custom Search ID.
+  enable: true
+  cx:   012015071447341714129:3xomqywmn1i## e.g. 018294693190868310296:abnhpuysycw your Custom Search ID.
 ## https://www.google.com/cse/ 
 ## To enable the custom search You must create a "search" folder in '/source' and a "index.md" file
 ## set the 'front-matter' as
