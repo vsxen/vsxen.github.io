@@ -1,0 +1,410 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>忆流年</title>
+  <subtitle>人生如梦</subtitle>
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="https://vsxen.github.io/"/>
+  <updated>2016-12-19T13:31:02.046Z</updated>
+  <id>https://vsxen.github.io/</id>
+  
+  <author>
+    <name>vsxen</name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>banan-pi把系统烧录到emmc</title>
+    <link href="https://vsxen.github.io/2016/12/18/boot-from-emmc/"/>
+    <id>https://vsxen.github.io/2016/12/18/boot-from-emmc/</id>
+    <published>2016-12-18T09:23:18.000Z</published>
+    <updated>2016-12-19T13:31:02.046Z</updated>
+    
+    <content type="html"><![CDATA[<p>香蕉派从emmc启动的方法，理论适合所有的香蕉派</p><h2 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h2><p>首先用sd卡正常启动系统<br>说一下香蕉派的启动顺序，<br>如果有SD卡，从SD卡启动<br>SD卡于emmc都有系统，优先从emmc启动</p><h2 id="SD卡放入系统"><a href="#SD卡放入系统" class="headerlink" title="SD卡放入系统"></a>SD卡放入系统</h2><h2 id="烧录"><a href="#烧录" class="headerlink" title="烧录"></a>烧录</h2><p>运行<code>fdisk -l</code>一般来说 emmc是/dev/mmcblk1<br>可能就想下图<br><img src="/img/burn-linux1.jpg" alt=""><br>然后</p><p><code>sudo dd if=ubuntu.img of=/dev/mmcblk1 bs=10MB</code></p><p><img src="/img/burn-linux2.jpg" alt=""></p><p>等到烧录成功之后<br>拔出SD卡就可以从emmc启动了</p><p>参考<br><a href="https://bananapi.gitbooks.io/bpi-m3/content/zh/howtoburnlinuximagetoemmc.html" target="_blank" rel="external">https://bananapi.gitbooks.io/bpi-m3/content/zh/howtoburnlinuximagetoemmc.html</a></p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;香蕉派从emmc启动的方法，理论适合所有的香蕉派&lt;/p&gt;&lt;h2 id=&quot;启动&quot;&gt;&lt;a href=&quot;#启动&quot; class=&quot;headerlink&quot; title=&quot;启动&quot;&gt;&lt;/a&gt;启动&lt;/h2&gt;&lt;p&gt;首先用sd卡正常启动系统&lt;br&gt;说一下香蕉派的启动顺序，&lt;br&gt;如果有SD卡，
+    
+    </summary>
+    
+    
+      <category term="bananapi" scheme="https://vsxen.github.io/tags/bananapi/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>mplayer-command</title>
+    <link href="https://vsxen.github.io/2016/12/18/mplayer-command/"/>
+    <id>https://vsxen.github.io/2016/12/18/mplayer-command/</id>
+    <published>2016-12-18T09:20:41.000Z</published>
+    <updated>2016-12-18T09:22:04.005Z</updated>
+    
+    <content type="html"><![CDATA[<p>mplayer -vo caca video.avi<br>-vf framestep=10<br>mplayer -vo aa movie.avi</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;mplayer -vo caca video.avi&lt;br&gt;-vf framestep=10&lt;br&gt;mplayer -vo aa movie.avi&lt;/p&gt;
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>懒得写标题，自己遇到的一些问题以及解决方法</title>
+    <link href="https://vsxen.github.io/2016/12/18/some-error/"/>
+    <id>https://vsxen.github.io/2016/12/18/some-error/</id>
+    <published>2016-12-18T09:17:22.000Z</published>
+    <updated>2016-12-19T14:06:28.842Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="bzip2-Cannot-exec-No-such-file-or-directory"><a href="#bzip2-Cannot-exec-No-such-file-or-directory" class="headerlink" title="bzip2: Cannot exec: No such file or directory"></a>bzip2: Cannot exec: No such file or directory</h2><p>aptitude install bzip2</p><h2 id="configure-error-C-compiler-cannot-create-executables"><a href="#configure-error-C-compiler-cannot-create-executables" class="headerlink" title="configure: error: C compiler cannot create executables"></a>configure: error: C compiler cannot create executables</h2><p>sudo apt install libc6-dev</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;bzip2-Cannot-exec-No-such-file-or-directory&quot;&gt;&lt;a href=&quot;#bzip2-Cannot-exec-No-such-file-or-directory&quot; class=&quot;headerlink&quot; title=&quot;bzip2:
+    
+    </summary>
+    
+    
+      <category term="未分类" scheme="https://vsxen.github.io/tags/%E6%9C%AA%E5%88%86%E7%B1%BB/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>运行Alsamixer或amixer提示no such file</title>
+    <link href="https://vsxen.github.io/2016/12/18/Alsamixer-amixer-no-such-file/"/>
+    <id>https://vsxen.github.io/2016/12/18/Alsamixer-amixer-no-such-file/</id>
+    <published>2016-12-18T09:15:24.000Z</published>
+    <updated>2016-12-19T14:10:06.830Z</updated>
+    
+    <content type="html"><![CDATA[<p>香蕉派在使用音频接口播放音乐的时候提示no such file<br>解决方法<br>使用编辑器打开etc/asound.conf</p><p>修改配置，和下面一样就可以了<br></p><figure class="highlight haskell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="title">pcm</span>.!<span class="keyword">default</span> &#123;</div><div class="line"><span class="class"><span class="keyword">type</span> hw</span></div><div class="line"><span class="title">card</span> <span class="number">0</span> </div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="title">ctl</span>.!<span class="keyword">default</span> &#123;</div><div class="line"><span class="class"><span class="keyword">type</span> hw</span></div><div class="line"><span class="title">card</span> <span class="number">0</span> </div><div class="line">&#125;</div></pre></td></tr></table></figure><p></p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;香蕉派在使用音频接口播放音乐的时候提示no such file&lt;br&gt;解决方法&lt;br&gt;使用编辑器打开etc/asound.conf&lt;/p&gt;&lt;p&gt;修改配置，和下面一样就可以了&lt;br&gt;&lt;/p&gt;&lt;figure class=&quot;highlight haskell&quot;&gt;&lt;table&gt;&lt;t
+    
+    </summary>
+    
+    
+      <category term="bananapi" scheme="https://vsxen.github.io/tags/bananapi/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>cloudxns-ddns</title>
+    <link href="https://vsxen.github.io/2016/12/18/cloudxns-ddns/"/>
+    <id>https://vsxen.github.io/2016/12/18/cloudxns-ddns/</id>
+    <published>2016-12-18T09:02:46.000Z</published>
+    <updated>2016-12-19T14:13:12.234Z</updated>
+    
+    <content type="html"><![CDATA[<p><a href="https://lzh.im/cloudxns-ddns/" target="_blank" rel="external">https://lzh.im/cloudxns-ddns/</a><br><a href="https://www.xiaoz.me/archives/7821" target="_blank" rel="external">https://www.xiaoz.me/archives/7821</a></p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;&lt;a href=&quot;https://lzh.im/cloudxns-ddns/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://lzh.im/cloudxns-ddns/&lt;/a&gt;&lt;br&gt;&lt;a href=&quot;https://www.xiaoz.me
+    
+    </summary>
+    
+    
+      <category term="ddns bananapi" scheme="https://vsxen.github.io/tags/ddns-bananapi/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>cloudflare动态DDNS</title>
+    <link href="https://vsxen.github.io/2016/12/18/cloudflare-ddns/"/>
+    <id>https://vsxen.github.io/2016/12/18/cloudflare-ddns/</id>
+    <published>2016-12-18T08:54:05.000Z</published>
+    <updated>2016-12-18T08:56:48.269Z</updated>
+    
+    <content type="html"><![CDATA[<p>1、Linux系统支持shell脚本。<br>2、注册一个cloudflare账户并在账户设置页面取得Global API Key。<br>3、添加一个域名并设置好解析。<br>3、设置以下脚本。</p><p>1、获得记录ID</p><p>curl <a href="https://www.cloudflare.com/api_json.html" target="_blank" rel="external">https://www.cloudflare.com/api_json.html</a> -d ‘a=rec_load_all’ \<br>-d ‘tkn=CloudFlare_API_Key’ \<br>-d ‘email=CloudFlare_Email_Address’ \<br>-d ‘z=holin.net’<br>把返回的数据使用json解析后方便查看<br>或者使用在线解析工具<a href="http://json.parser.online.fr/" target="_blank" rel="external">http://json.parser.online.fr/</a> 解析查看</p><p>解析后大概是这样</p><p>{<br>“rec_id”:”499268485”,<br>“rec_hash”:”ac4735d1f3443e8b85efef54ad8bd8b6”,<br>“zone_name”:”holin.net”,<br>“name”:”test.holin.net”,<br>“display_name”:”test”,<br>“type”:”A”,<br>“prio”:null,<br>“content”:”1.1.1.1”,<br>“display_content”:”1.1.1.1”,<br>“ttl”:”1”,<br>“ttl_ceil”:86400,<br>“ssl_id”:”2133576”,<br>“ssl_status”:”V”,<br>“ssl_expires_on”:null,<br>“auto_ttl”:1,<br>“service_mode”:”0”,<br>“props”:{<br>“proxiable”:1,<br>“cloud_on”:0,<br>“cf_open”:1,<br>“vanity_lock”:0,<br>“ssl”:1,<br>“expired_ssl”:0,<br>“expiring_ssl”:0,<br>“pending_ssl”:0<br>}<br>}<br>添加动态ip脚本</p><p>mkdir -p<br>vi /scripts/dyndns.sh<br>写以入下内容</p><p>#!/bin/sh<br>mkdir -p /var/tmp/<br>NEW_IP=<code>wget -O - -q http://api.holin.net/getip/</code><br>CURRENT_IP=<code>cat /var/tmp/current_ip.txt</code></p><p>if [ “$NEW_IP” = “$CURRENT_IP” ]<br>then<br>echo “No Change in IP Adddress”<br>else<br>curl <a href="https://www.cloudflare.com/api_json.html" target="_blank" rel="external">https://www.cloudflare.com/api_json.html</a> \<br>-d ‘a=rec_edit’ \<br>-d ‘tkn=CloudFlare_API_Key’ \<br>-d ‘email=CloudFlare_Email_Address’ \<br>-d ‘z=techjourney.net’ \<br>-d ‘id=CloudFlare_Record_ID’ \<br>-d ‘type=CloudFlare_Record_Type’ \<br>-d ‘name=CloudFlare_Record_Name’ \<br>-d ‘ttl=1’ \<br>-d “content=$NEW_IP”<br>echo $NEW_IP &gt; /var/tmp/current_ip.txt<br>fi<br>上面需要修改相信的参数</p><p>1、tkn为cloudflare账户并在账户设置页面取得Global API Key。<br>2、email为你cloudflare账户的邮箱。<br>3、z为你的域名<br>4、id为上步获取到的”rec_id”:”你的ID”。<br>5、type一般为A。<br>6、name为您的主机名如果是主域名一般为@或者www，我这测试为test即test.holin.net<br>保存好后设置一下权限</p><p>chmod 755 /scripts/dyndns.sh<br>现在设置定时检测IP变化后更新</p><p>进入cron任务设置</p><p>crontab -e<br>添加一行任务30秒检测一次，如果ip发生变化就更新解析记录。</p><ul><li><ul><li><ul><li><ul><li><ul><li>sleep 30; /bin/date &gt;&gt;/scripts/dyndns.sh<br>你要以运行以下命令来监控脚本运行情况</li></ul></li></ul></li></ul></li></ul></li></ul><p>tail -f /var/log/cron</p><p>参考<br><a href="https://zh.holin.net/topic/02163858520/" target="_blank" rel="external">https://zh.holin.net/topic/02163858520/</a><br><a href="http://lesca.me/archives/ddns-with-cloudflare-on-windows.html" target="_blank" rel="external">http://lesca.me/archives/ddns-with-cloudflare-on-windows.html</a></p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;1、Linux系统支持shell脚本。&lt;br&gt;2、注册一个cloudflare账户并在账户设置页面取得Global API Key。&lt;br&gt;3、添加一个域名并设置好解析。&lt;br&gt;3、设置以下脚本。&lt;/p&gt;&lt;p&gt;1、获得记录ID&lt;/p&gt;&lt;p&gt;curl &lt;a href=&quot;htt
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>lastpass-vs-keeppass</title>
+    <link href="https://vsxen.github.io/2016/12/11/lastpass-vs-keeppass/"/>
+    <id>https://vsxen.github.io/2016/12/11/lastpass-vs-keeppass/</id>
+    <published>2016-12-11T07:33:39.000Z</published>
+    <updated>2016-12-11T07:33:39.000Z</updated>
+    
+    <summary type="html">
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>linux服务器安全防范</title>
+    <link href="https://vsxen.github.io/2016/12/11/security-for-linux-servers/"/>
+    <id>https://vsxen.github.io/2016/12/11/security-for-linux-servers/</id>
+    <published>2016-12-11T06:44:52.000Z</published>
+    <updated>2016-12-11T07:55:57.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>本文适合debian系服务器。</p><h2 id="安装系统更新"><a href="#安装系统更新" class="headerlink" title="安装系统更新"></a>安装系统更新</h2><p>apt-get update<br>apt-get upgrade</p><h2 id="禁止密码登陆"><a href="#禁止密码登陆" class="headerlink" title="禁止密码登陆"></a>禁止密码登陆</h2><p>sed -i ‘s/^#PasswordAuthentication yes/PasswordAuthentication no/g’ \<br>/etc/ssh/sshd_config<br>sed -i ‘s/PasswordAuthentication yes/PasswordAuthentication no/g’ \<br>/etc/ssh/sshd_config<br>grep PasswordAuthentication /etc/ssh/sshd_config</p><h2 id="新建用户加入root组"><a href="#新建用户加入root组" class="headerlink" title="新建用户加入root组"></a>新建用户加入root组</h2><p>useradd deploy<br>mkdir /home/deploy<br>mkdir /home/deploy/.ssh<br>chmod 700 /home/deploy/.ssh</p><p>vim /home/deploy/.ssh/authorized_keys</p><p>chmod 400 /home/deploy/.ssh/authorized_keys<br>chown deploy:deploy /home/deploy -R</p><h2 id="生产密钥"><a href="#生产密钥" class="headerlink" title="生产密钥"></a>生产密钥</h2><p>ssh-keygen</p><h2 id="更改shh端口"><a href="#更改shh端口" class="headerlink" title="更改shh端口"></a>更改shh端口</h2><p>sshd_port=”2702”<br>sed -i “s/^Port 22/Port $sshd_port/g” /etc/ssh/sshd_config<br>grep “^Port “ /etc/ssh/sshd_config</p><h2 id="更改防火墙"><a href="#更改防火墙" class="headerlink" title="更改防火墙"></a>更改防火墙</h2><p>iptables -F; iptables -X<br>echo ‘y’ | ufw reset<br>echo ‘y’ | ufw enable<br>ufw default deny incoming<br>ufw default deny forward</p><p>ufw allow 22,80,443/tcp<br>(iptable根据系统管理员编写的一系列规则筛选网络数据包。对于初学者来说，iptable 可能比较复杂，所以UFW 将其进行了简化。)</p><p>ufw allow 2702/tcp<br>service ssh restart</p><p>##　监视登陆事件<br>apt-get install fail2ban<br>Fail2ban是一个守护进程，监视对服务器的登录尝试，并阻止可疑活动发生。 它很好配置开箱即用</p><h2 id="安全检查工具"><a href="#安全检查工具" class="headerlink" title="安全检查工具"></a>安全检查工具</h2><p>apt-get install -y lynis<br>lynis -c</p><h2 id="查看用户在何时运行了什么命令"><a href="#查看用户在何时运行了什么命令" class="headerlink" title="查看用户在何时运行了什么命令"></a>查看用户在何时运行了什么命令</h2><p>echo export HISTTIMEFORMAT=\”%h %d %H:%M:%S \” &gt;&gt; /root/.bashrc</p><h2 id="修改主机名"><a href="#修改主机名" class="headerlink" title="修改主机名"></a>修改主机名</h2><p>echo “my-hostname” &gt; /etc/hostname<br>hostname -F /etc/hostname</p><h2 id="经常看日志文件"><a href="#经常看日志文件" class="headerlink" title="经常看日志文件"></a>经常看日志文件</h2><p>/var/log/kern.log<br>/var/log/syslog<br>/var/log/ufw.log<br>/var/log/auth.log<br>/var/log/dpkg.log<br>/var/log/aptitude<br>/var/log/boot.log<br>/var/log/cron.log<br>/var/log/mailog</p><p>如果你配置好了邮件，还可以<br>vim /etc/cron.daily/00logwatch<br>/usr/sbin/logwatch –output mail –mailto test@gmail.com –detail high<br>参考<br><a href="http://www.dennyzhang.com/linux_security/" target="_blank" rel="external">http://www.dennyzhang.com/linux_security/</a></p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;本文适合debian系服务器。&lt;/p&gt;&lt;h2 id=&quot;安装系统更新&quot;&gt;&lt;a href=&quot;#安装系统更新&quot; class=&quot;headerlink&quot; title=&quot;安装系统更新&quot;&gt;&lt;/a&gt;安装系统更新&lt;/h2&gt;&lt;p&gt;apt-get update&lt;br&gt;apt-get upgrad
+    
+    </summary>
+    
+      <category term="Linux" scheme="https://vsxen.github.io/categories/Linux/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>google-opinion-rewards</title>
+    <link href="https://vsxen.github.io/2016/12/04/google-opinion-rewards/"/>
+    <id>https://vsxen.github.io/2016/12/04/google-opinion-rewards/</id>
+    <published>2016-12-04T02:38:47.000Z</published>
+    <updated>2016-12-11T08:06:01.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>没事做个问卷 ，买个应用挺好<br>内容来自酷市场，以及网上<br>材料<br><a href="http://www.coolapk.com/apk/com.sollyu.xposed.hook.model" target="_blank" rel="external">http://www.coolapk.com/apk/com.sollyu.xposed.hook.model</a><br>只需要用“应用变量”模块全局伪装V网（310004）就行了，再把谷歌名字换成英文，位置不需要伪装。<br>同时位置服务也会自动打开。问卷两到三天一推。</p><p>来自<br><a href="http://www.coolapk.com/feed/1959406" target="_blank" rel="external">http://www.coolapk.com/feed/1959406</a><br>强行主动获取问卷的方法：<br>用伪装位置<a href="http://coolapk.com/apk/com.rong.xposed.fakelocation同时伪造opinion" target="_blank" rel="external">http://coolapk.com/apk/com.rong.xposed.fakelocation同时伪造opinion</a> rewards<br>和谷歌服务的GPS+CellID信息<br><a href="http://opencellid.org/" target="_blank" rel="external">http://opencellid.org/</a><br>每次都伪造成大酒店的地址和附近的CellID。2天之内就会发来酒店点评的问卷。100%成功。</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;没事做个问卷 ，买个应用挺好&lt;br&gt;内容来自酷市场，以及网上&lt;br&gt;材料&lt;br&gt;&lt;a href=&quot;http://www.coolapk.com/apk/com.sollyu.xposed.hook.model&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;
+    
+    </summary>
+    
+      <category term="Android" scheme="https://vsxen.github.io/categories/Android/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>无root开启google now以及锁美区</title>
+    <link href="https://vsxen.github.io/2016/12/03/open-google-now/"/>
+    <id>https://vsxen.github.io/2016/12/03/open-google-now/</id>
+    <published>2016-12-03T12:35:43.000Z</published>
+    <updated>2016-12-03T13:03:11.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>虽说这种教程都是烂大街的了，随便一搜就有很多自己也写一遍总结一下。<br>2016-12-03 星期六，此方法在4.4.4 和5.1.1上亲测可以用<br>4.4.4支持位置报告 （timeline），5.1.1不知为什么不支持。</p><h2 id="取卡"><a href="#取卡" class="headerlink" title="取卡"></a>取卡</h2><p>有人说开飞行模式也行</p><p>##　设置语言<br>设置为英文</p><h2 id="清除数据"><a href="#清除数据" class="headerlink" title="清除数据"></a>清除数据</h2><p>清除所有和Google有关的APP的数据</p><h2 id="重启"><a href="#重启" class="headerlink" title="重启"></a>重启</h2><h2 id="科学上网"><a href="#科学上网" class="headerlink" title="科学上网"></a>科学上网</h2><p>建议用ss 全局</p><p>##　登录帐号<br>ok google</p><h2 id="锁区"><a href="#锁区" class="headerlink" title="锁区"></a>锁区</h2><p>使用美国的梯子，先找一本书，收费，随便输入一个格兑换码，<br>然后再买一本书，免费的，一天之后，应该就可以锁区了，<br>不行的话自己买一个应用，或者也可以。</p><p>注意<br>切换回中文，Google now还是可以用的，但是不能添加提醒</p><p>题外话 ，与本文无关<br>另外<br>如果遇到RH-01 错误，清除数据 重启 在登录一次就好了</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;虽说这种教程都是烂大街的了，随便一搜就有很多自己也写一遍总结一下。&lt;br&gt;2016-12-03 星期六，此方法在4.4.4 和5.1.1上亲测可以用&lt;br&gt;4.4.4支持位置报告 （timeline），5.1.1不知为什么不支持。&lt;/p&gt;&lt;h2 id=&quot;取卡&quot;&gt;&lt;a hre
+    
+    </summary>
+    
+      <category term="Android" scheme="https://vsxen.github.io/categories/Android/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>htc s720e升级hboot到1.33</title>
+    <link href="https://vsxen.github.io/2016/12/03/htc-s720e-hboot-update/"/>
+    <id>https://vsxen.github.io/2016/12/03/htc-s720e-hboot-update/</id>
+    <published>2016-12-03T11:55:57.000Z</published>
+    <updated>2016-12-11T03:00:51.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>本文适宜于CID是htc_621的型号<br>HTC 提供的firmware 里面，用于Android 4.0 (ICS) 和Android 4.2 or 4.3 (JellyBean) 的HBOOT 是不相容的，因此若你想要使用ICS 的版本，你就必须使用旧一点的HBOOT，反之，若你要使用JellyBean，你就需要比较新的HBOOT，两者只能取其一。</p><p>下图是hboot模式<br><img src="/img/htc2.png" alt=""><br>插上数据线，连接电脑，装驱动就不需要说了。</p><p>以下命令需要在cmd窗口中输入</p><h2 id="重启到fastboot"><a href="#重启到fastboot" class="headerlink" title="重启到fastboot"></a>重启到fastboot</h2><p><code>#按住音量下键和电源键，等10s左右就可以进入fastboot</code><br><img src="/img/htc1.jpg" alt="fastboot"></p><p>##　查看CID<br><code>fastboot getvar cid</code><br>如果不是htc_621的话，需要自己找对应的固件，就是firmware.zip</p><h2 id="给设备上锁"><a href="#给设备上锁" class="headerlink" title="给设备上锁"></a>给设备上锁</h2><p><code>fastboot oem lock</code></p><h2 id="重启到RUU"><a href="#重启到RUU" class="headerlink" title="重启到RUU"></a>重启到RUU</h2><p><code>fastboot oem rebootRUU</code></p><h2 id="刷入固件"><a href="#刷入固件" class="headerlink" title="刷入固件"></a>刷入固件</h2><p><code>fastboot flash zip firmware.zip</code></p><h2 id="回到fastboot"><a href="#回到fastboot" class="headerlink" title="回到fastboot"></a>回到fastboot</h2><p><code>fastboot reboot-bootloader</code></p><h2 id="官方解锁"><a href="#官方解锁" class="headerlink" title="官方解锁"></a>官方解锁</h2><p>这一步可以用一键解锁工具代替<br><a href="http://www.shuame.com/bootloader-unlock.html" target="_blank" rel="external">http://www.shuame.com/bootloader-unlock.html</a><br><code>fastboot flash unlocktoken Unlock_code.bin</code><br>这时候 看hboot已经是1.33了</p><h2 id="安装CWM-Recovery"><a href="#安装CWM-Recovery" class="headerlink" title="安装CWM Recovery"></a>安装CWM Recovery</h2><p><code>fastboot flash recovery recovery-clockwork-touch-5.8.4.0-endeavoru.img</code><br>以上我自己亲测成功<br>参考<br><a href="http://coldnew.github.io/blog/2013/12-29_76c4a/" target="_blank" rel="external">http://coldnew.github.io/blog/2013/12-29_76c4a/</a></p><p>一些工具<br>hboot 1.33 adb等<br><a href="https://pan.baidu.com/share/link?shareid=112114&amp;uk=3707991204" target="_blank" rel="external">https://pan.baidu.com/share/link?shareid=112114&amp;uk=3707991204</a></p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;本文适宜于CID是htc_621的型号&lt;br&gt;HTC 提供的firmware 里面，用于Android 4.0 (ICS) 和Android 4.2 or 4.3 (JellyBean) 的HBOOT 是不相容的，因此若你想要使用ICS 的版本，你就必须使用旧一点的HBOO
+    
+    </summary>
+    
+      <category term="Android" scheme="https://vsxen.github.io/categories/Android/"/>
+    
+    
+      <category term="一些问题" scheme="https://vsxen.github.io/tags/%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>一些简短而又强大的命令</title>
+    <link href="https://vsxen.github.io/2016/12/02/short-useful-command/"/>
+    <id>https://vsxen.github.io/2016/12/02/short-useful-command/</id>
+    <published>2016-12-02T13:25:03.000Z</published>
+    <updated>2016-12-11T07:10:46.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>听说大多数的人都是键盘流，所以掌握一些命令是有必要的</p><h2 id="windows查看WiFi密码"><a href="#windows查看WiFi密码" class="headerlink" title="windows查看WiFi密码"></a>windows查看WiFi密码</h2><p>cmd 运行<br>for /f “skip=9 tokens=1,2 delims=:” %i in (‘netsh wlan show profiles’) do @echo %j | findstr -i -v echo | netsh wlan show profiles %j key=clear</p><h2 id="查看Linux版本"><a href="#查看Linux版本" class="headerlink" title="查看Linux版本"></a>查看Linux版本</h2><p>cat /etc/redhat-release#或者<br>cat /etc/issue</p><h2 id="linux查看端口占用"><a href="#linux查看端口占用" class="headerlink" title="linux查看端口占用"></a>linux查看端口占用</h2><p>netstat -anl | grep “80” ；#1080 8080也是会被筛选出来<br>lsof -i:80</p><h2 id="linux查看程序占用的端口"><a href="#linux查看程序占用的端口" class="headerlink" title="linux查看程序占用的端口"></a>linux查看程序占用的端口</h2><p>ps -ef | grep nginx</p><h2 id="linux安装docker"><a href="#linux安装docker" class="headerlink" title="linux安装docker"></a>linux安装docker</h2><p>curl -s <a href="https://get.docker.com/" target="_blank" rel="external">https://get.docker.com/</a> | sudo sh</p><h2 id="linux查看目录中有多少文件"><a href="#linux查看目录中有多少文件" class="headerlink" title="linux查看目录中有多少文件"></a>linux查看目录中有多少文件</h2><p>ls -lR|grep “^-“|wc -l</p><h2 id="Python启动http服务器（传文件）"><a href="#Python启动http服务器（传文件）" class="headerlink" title="Python启动http服务器（传文件）"></a>Python启动http服务器（传文件）</h2><p>python -m SimpleHTTPServer</p><h2 id="linux显示命令执行的具体时间精确到秒"><a href="#linux显示命令执行的具体时间精确到秒" class="headerlink" title="linux显示命令执行的具体时间精确到秒"></a>linux显示命令执行的具体时间精确到秒</h2><p>export HISTTIMEFORMAT=’%F %T ‘<br>history | more</p><h2 id="linux-DD-显示进度"><a href="#linux-DD-显示进度" class="headerlink" title="linux  DD 显示进度"></a>linux DD 显示进度</h2><p>先放入后台，然后每5秒显示一下进度<br>sudo dd if= xxx.img of=/dev/mmcblk1 bs=10MB &amp;<br>while (ps auxww |grep “ dd “ |grep -v grep |awk ‘{print $2}’ |while read pid; do kill -USR1 $pid; done) ; do sleep 5; done</p><h2 id="命令行测速-（python-speedtest）"><a href="#命令行测速-（python-speedtest）" class="headerlink" title="命令行测速 （python+speedtest）"></a>命令行测速 （python+speedtest）</h2><p>sudo apt-get install python-pip<br>sudo pip install speedtest-cli<br>另一种<br>wget <a href="https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py" target="_blank" rel="external">https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py</a></p><p>##　mplayer 后台播放<br>mplayer * &lt; /dev/null &gt; /dev/null 2&gt;1&amp;</p><h2 id="block一些恶意ip"><a href="#block一些恶意ip" class="headerlink" title="block一些恶意ip"></a>block一些恶意ip</h2><p>wget <a href="https://teddysun.com/wp-content/uploads/2013/05/block.sh" target="_blank" rel="external">https://teddysun.com/wp-content/uploads/2013/05/block.sh</a><br>chmod +x block.sh<br>./block.sh</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;听说大多数的人都是键盘流，所以掌握一些命令是有必要的&lt;/p&gt;&lt;h2 id=&quot;windows查看WiFi密码&quot;&gt;&lt;a href=&quot;#windows查看WiFi密码&quot; class=&quot;headerlink&quot; title=&quot;windows查看WiFi密码&quot;&gt;&lt;/a&gt;windows查
+    
+    </summary>
+    
+    
+      <category term="小技巧" scheme="https://vsxen.github.io/tags/%E5%B0%8F%E6%8A%80%E5%B7%A7/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>全站https之多说使用https头像</title>
+    <link href="https://vsxen.github.io/2016/12/02/duoshuo-https/"/>
+    <id>https://vsxen.github.io/2016/12/02/duoshuo-https/</id>
+    <published>2016-12-02T13:03:11.000Z</published>
+    <updated>2016-12-02T13:42:59.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>多说官方的头像已经支持https了，但是新浪之类还是http,如果你有自己自己的服务器，而且使用的是nginx,可以轻松的通过nginx的代理模块，达到全站https的要求<br>如果你用的是github pages可以使用本文的方法<br>感谢<br><a href="https://github.com/rainwsy/duoshuo-https" target="_blank" rel="external">https://github.com/rainwsy/duoshuo-https</a><br>提供缓存</p><p>以下摘自eadme</p><p>原理 :将https图片转由七牛CDN处理</p><p>使用方法</p><h2 id="方法一"><a href="#方法一" class="headerlink" title="方法一:"></a>方法一:</h2><p>如果你没有对embed.js 做定制可以直接</p><p>-<script src="https://dn-hb0716.qbox.me/embed.js"></script></p><h2 id="方法二"><a href="#方法二" class="headerlink" title="方法二:"></a>方法二:</h2><p>本地化embed.js<br>下载embed.js引用到你的网站文件<br>对应CDN:</p><p><a href="http://static.duoshuo.com/" target="_blank" rel="external">http://static.duoshuo.com/</a> =&gt; nznlz6ohs.qnssl.com</p><p><a href="http://himg.bdimg.com/" target="_blank" rel="external">http://himg.bdimg.com/</a> =&gt; nzriuc44h.qnssl.com</p><p><a href="http://ds.cdncache.org/" target="_blank" rel="external">http://ds.cdncache.org/</a> =&gt; nzrisok3d.qnssl.com</p><p><a href="http://img.kaixin001.com.cn/" target="_blank" rel="external">http://img.kaixin001.com.cn/</a> =&gt; nzrktdox3.qnssl.com</p><p><a href="http://app.qlogo.cn/" target="_blank" rel="external">http://app.qlogo.cn/</a> =&gt; nzvcelvwu.qnssl.com</p><p><a href="http://wx.qlogo.cn/" target="_blank" rel="external">http://wx.qlogo.cn/</a> =&gt; nzwsf9aei.qnssl.com</p><p><a href="http://hdn.xnimg.cn/" target="_blank" rel="external">http://hdn.xnimg.cn/</a> =&gt; nzrj4etbg.qnssl.com</p><p><a href="http://img.t.sinajs.cn/" target="_blank" rel="external">http://img.t.sinajs.cn/</a> =&gt; nznlz6ohs.qnssl.com</p><p><a href="http://tp4.sinaimg.cn/" target="_blank" rel="external">http://tp4.sinaimg.cn/</a> =&gt; odfhb4m72.qnssl.com</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;多说官方的头像已经支持https了，但是新浪之类还是http,如果你有自己自己的服务器，而且使用的是nginx,可以轻松的通过nginx的代理模块，达到全站https的要求&lt;br&gt;如果你用的是github pages可以使用本文的方法&lt;br&gt;感谢&lt;br&gt;&lt;a href=&quot;h
+    
+    </summary>
+    
+    
+      <category term="hexo" scheme="https://vsxen.github.io/tags/hexo/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>sql server的一些错误以及解决方法</title>
+    <link href="https://vsxen.github.io/2016/11/16/sql-server-wrong/"/>
+    <id>https://vsxen.github.io/2016/11/16/sql-server-wrong/</id>
+    <published>2016-11-16T14:02:04.000Z</published>
+    <updated>2016-12-02T13:46:03.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>安装一路继续就行，默认的是只能通过windows登陆认证的，可以安装之后修改</p><h3 id="错误1"><a href="#错误1" class="headerlink" title="错误1"></a>错误1</h3><p>在与 SQL Server 建立连接时出现与网络相关的或特定于实例的错误。未找到或无法访问服务器。请验证实例名称是否正确并且 SQL Server 已配置为允许远程连接。 (provider: 命名管道提供程序, error: 40 - 无法打开到 SQL Server 的连接)<br>可以按照下面的步骤来做，就好了<br>打开Sql server 管理配置器或者在命令行输入：SQLServerManager10.msc</p><p><img src="/img/sql-1.jpg" alt=""><br><img src="/img/sql-2.jpg" alt=""><br><img src="/img/sql-3.jpg" alt=""></p><p>然后重启一个sql server的服务，重新打开SQL Server Management Studio，在服务器名称输入：(local)或者127.0.0.1，即可登录数据库了。</p><h3 id="错误2"><a href="#错误2" class="headerlink" title="错误2"></a>错误2</h3><p>错误信息：已更新或删除的行值要么不能使该行成为唯一行，要么改变了多个行（２行）</p><p>请更正错误，并重试删除该行</p><p>出现这个是因为没有设置主键，导出表中的数据，新建表，并设置主键就可以了</p><h3 id="错误3"><a href="#错误3" class="headerlink" title="错误3"></a>错误3</h3><p>修改数据库表结构时提示【不允许保存更改。您所做的更改要求删除并重新创建以下表。您对无法重新创建的标进行了更改或者启用了“阻止保存要求重新创建表的更改”选项。】<br>错误源：Microsoft VisualStudio.DataTools.</p><p>就是不允许更改表</p><p>工具-〉选项-〉左侧有个 设计器-〉表设计器和数据库设计器 -&gt; 阻止保存要求重新创建表的更改(右侧) 把钩去掉即可。</p><p>参考<br><a href="http://www.bkjia.com/MsSql/937081.html" target="_blank" rel="external">http://www.bkjia.com/MsSql/937081.html</a></p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;安装一路继续就行，默认的是只能通过windows登陆认证的，可以安装之后修改&lt;/p&gt;&lt;h3 id=&quot;错误1&quot;&gt;&lt;a href=&quot;#错误1&quot; class=&quot;headerlink&quot; title=&quot;错误1&quot;&gt;&lt;/a&gt;错误1&lt;/h3&gt;&lt;p&gt;在与 SQL Server 建立连接时出现
+    
+    </summary>
+    
+      <category term="数据库" scheme="https://vsxen.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>windows的包管理工具choco--安装使用指南</title>
+    <link href="https://vsxen.github.io/2016/11/15/choco-install-package-on-windows/"/>
+    <id>https://vsxen.github.io/2016/11/15/choco-install-package-on-windows/</id>
+    <published>2016-11-15T13:53:33.000Z</published>
+    <updated>2016-12-02T13:55:11.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>在Linux世界中，安装一个软件不需要在浏览器中寻找软件的官网，然后将其下载下来，然后双击进行安装。只需要一条简单的命令，就可以完成搜索、安装、更新、卸载等所有操作。<br>其实Windows下,也有这么一个包管理器，功能虽然不及Linux中那些包管理器强大，但是也让Windows下的软件安装方便了不少。这就是Chocolatey。</p><h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>打开一个具有管理员权限的命令行窗口，执行如下命令：<br><code>PowerShell @powershell -NoProfile -ExecutionPolicy Bypass -Command &quot;iex ((new-object net.webclient).DownloadString(&#39;https://chocolatey.org/install.ps1&#39;))&quot; &amp;&amp; SET PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin</code></p><p>PowerShell<br>打开一个具有管理员权限的PowerShell窗口，执行如下命令： <code>PowerShell iex ((new-object net.webclient).DownloadString(&#39;https://chocolatey.org/install.ps1&#39;))</code><br>或者<code>iwr https://cin.st | iex</code></p><h2 id="安装-1"><a href="#安装-1" class="headerlink" title="安装"></a>安装</h2><p>以下是安装winrar的事例，需要使用代理<br></p><figure class="highlight vbnet"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line">C:\&gt;choco install winrar</div><div class="line">Chocolatey v0<span class="number">.10</span><span class="number">.2</span></div><div class="line">Installing the following packages:</div><div class="line">winrar</div><div class="line"><span class="keyword">By</span> installing you accept licenses <span class="keyword">for</span> the packages.</div><div class="line"></div><div class="line">winrar v5<span class="number">.40</span> [Approved] - Likely broken <span class="keyword">for</span> FOSS users (due <span class="keyword">to</span> download location</div><div class="line"> changes)</div><div class="line">winrar package files install <span class="keyword">is</span> complete. Performing other installation steps.</div><div class="line">The package winrar wants <span class="keyword">to</span> run <span class="comment">'chocolateyInstall.ps1'.</span></div><div class="line">Note: <span class="keyword">If</span> you don<span class="comment">'t run this script, the installation will fail.</span></div><div class="line">Note: <span class="keyword">To</span> confirm automatically <span class="keyword">next</span> time, use <span class="comment">'-y' or consider setting</span></div><div class="line"> <span class="comment">'allowGlobalConfirmation'. Run 'choco feature -h' for more details.</span></div><div class="line"><span class="keyword">Do</span> you want <span class="keyword">to</span> run the script?([Y]es/[N]o/[P]rint): y</div><div class="line"></div><div class="line"><span class="keyword">Using</span> system proxy server <span class="comment">'127.0.0.1:1080'.</span></div><div class="line"><span class="keyword">Using</span> system proxy server <span class="comment">'127.0.0.1:1080'.</span></div><div class="line">Downloading winrar <span class="number">64</span> bit</div><div class="line">  <span class="keyword">from</span> <span class="comment">'http://www.rarlab.com/rar/winrar-x64-540.exe'</span></div><div class="line"><span class="keyword">Using</span> system proxy server <span class="comment">'127.0.0.1:1080'.</span></div><div class="line">Progress: <span class="number">100</span>% - Completed download <span class="keyword">of</span> C:\Users\Administrator\AppData\Local\Temp</div><div class="line">\chocolatey\winrar\<span class="number">5.40</span>\winrar-x64<span class="number">-540.</span>exe (<span class="number">2.08</span> MB).</div><div class="line">Download <span class="keyword">of</span> winrar-x64<span class="number">-540.</span>exe (<span class="number">2.08</span> MB) completed.</div><div class="line">WARNING: Missing package checksums are <span class="keyword">not</span> allowed (<span class="keyword">by</span> <span class="keyword">default</span> <span class="keyword">for</span> HTTP/FTP,</div><div class="line"> HTTPS <span class="keyword">when</span> feature <span class="comment">'allowEmptyChecksumsSecure' is disabled) for</span></div><div class="line"> safety <span class="keyword">and</span> security reasons. Although we strongly advise against it,</div><div class="line"> <span class="keyword">if</span> you need this functionality, please <span class="keyword">set</span> the feature</div><div class="line"> <span class="comment">'allowEmptyChecksums' ('choco feature enable -n</span></div><div class="line"> allowEmptyChecksums<span class="comment">')</span></div><div class="line"> <span class="keyword">or</span> pass <span class="keyword">in</span> the <span class="keyword">option</span> <span class="comment">'--allow-empty-checksums'. You can also pass</span></div><div class="line"> checksums at runtime (recommended). See choco install -? <span class="keyword">for</span> details.</div><div class="line">The integrity <span class="keyword">of</span> the file <span class="comment">'winrar-x64-540.exe' from 'http://www.rarlab.com/rar/w</span></div><div class="line">inrar-x64<span class="number">-540.</span>exe<span class="comment">' has not been verified by a checksum in the package scripts.</span></div><div class="line"><span class="keyword">Do</span> you wish <span class="keyword">to</span> allow the install <span class="keyword">to</span> <span class="keyword">continue</span> (<span class="keyword">not</span> recommended)?</div><div class="line">[Y] Yes [N] No (<span class="keyword">default</span> <span class="keyword">is</span> <span class="string">"N"</span>)</div><div class="line">y</div><div class="line">Installing winrar...</div><div class="line">winrar has been installed.</div><div class="line"> The install <span class="keyword">of</span> winrar was successful.</div><div class="line">  Software installed <span class="keyword">as</span> <span class="comment">'exe', install location is likely default.</span></div><div class="line"></div><div class="line">Chocolatey installed <span class="number">1</span>/<span class="number">1</span> packages. <span class="number">0</span> packages failed.</div><div class="line"> See the log <span class="keyword">for</span> details (C:\ProgramData\chocolatey\logs\chocolatey.log).</div></pre></td></tr></table></figure><p></p><p>除了在命令行中搜索软件包，还可以直接在Chocolatey网站上搜索软件包，网址是<a href="https://chocolatey.org/packages/" target="_blank" rel="external">https://chocolatey.org/packages/</a> 。细心的同学会发现在网站上有一些同名的软件包，不同之处在于一个后面有Install，另一个则没有。这两者的区别是：有Install的软件包在安装之后，会在控制面板的添加和删除程序中找到。</p><h2 id="错误"><a href="#错误" class="headerlink" title="错误"></a>错误</h2><p>无法加载文件 <strong>**</strong>.ps1，因为在此系统中禁止执行脚本。有关详细信息，请参阅 “get-help about_signing”。<br>默认情况下是严格模式，允许执行命令但是禁止执行脚本。输入以下命令将执行策略设置为允许签名的远程脚本就行了。<br>管理员cmd运行<br><code>Set-ExecutionPolicy -ExecutionPolicy RemoteSigned</code></p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;在Linux世界中，安装一个软件不需要在浏览器中寻找软件的官网，然后将其下载下来，然后双击进行安装。只需要一条简单的命令，就可以完成搜索、安装、更新、卸载等所有操作。&lt;br&gt;其实Windows下,也有这么一个包管理器，功能虽然不及Linux中那些包管理器强大，但是也让Win
+    
+    </summary>
+    
+    
+      <category term="软件推荐" scheme="https://vsxen.github.io/tags/%E8%BD%AF%E4%BB%B6%E6%8E%A8%E8%8D%90/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>忘记mysql密码，修改mysql密码</title>
+    <link href="https://vsxen.github.io/2016/11/15/forget-mysql-password/"/>
+    <id>https://vsxen.github.io/2016/11/15/forget-mysql-password/</id>
+    <published>2016-11-15T13:26:30.000Z</published>
+    <updated>2016-12-02T13:50:05.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="修改mysql密码"><a href="#修改mysql密码" class="headerlink" title="修改mysql密码"></a>修改mysql密码</h2><p><code>flush privileges</code>这条命令是刷新权限，</p><h3 id="my-cnf"><a href="#my-cnf" class="headerlink" title="my.cnf"></a>my.cnf</h3><p>工具 编辑器</p><ol><li>修改MySQL的登录设置：<br><code>vi /etc/my.cnf</code><br>在[mysqld]的段中加上一句：skip-grant-tables 保存并且退出vi。</li><li>重新启动mysqld<br>/etc/init.d/mysqld restart ( service mysqld restart )</li><li>登录并修改MySQL的root密码<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">mysql&gt; USE mysql ; </div><div class="line">mysql&gt; UPDATE <span class="keyword">user</span> <span class="title">SET</span> Password = password ( 'newpassword' ) WHERE <span class="keyword">User</span> <span class="title">= 'root</span>' ; </div><div class="line">mysql&gt; flush privileges ; </div><div class="line">mysql&gt; quit</div></pre></td></tr></table></figure></li></ol><p>4．将MySQL的登录设置修改回来<br>将刚才在[mysqld]的段中加上的skip-grant-tables删除<br>保存并且退出vi。<br>5．重新启动mysqld<br><code>/etc/init.d/mysqld restart ( service mysqld restart )</code></p><h3 id="safe-mysqld"><a href="#safe-mysqld" class="headerlink" title="safe_mysqld"></a>safe_mysqld</h3><ol><li>KILL掉系统里的MySQL进程；<br>killall -TERM mysqld</li><li>用以下命令启动MySQL，以不检查权限的方式启动；<br>safe_mysqld –skip-grant-tables &amp;</li><li>然后用空密码方式使用root用户登录 MySQL；<br>mysql -u root</li><li>修改root用户的密码；<figure class="highlight gams"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">mysql&gt; update mysql.user <span class="keyword">set</span> password=PASSWORD(<span class="string">'新密码'</span>) where <span class="comment">User=</span><span class="comment">'root'</span>; </div><div class="line">mysql&gt; flush privileges; </div><div class="line">mysql&gt; quit</div></pre></td></tr></table></figure></li></ol><p>重新启动MySQL，就可以使用新密码登录了</p><p>有可能你的系统没有 safe_mysqld 程序(比如我现在用的 ubuntu操作系统, apt-get安装的mysql)<br>就可以用下面方法可以恢复</p><ol><li>停止mysqld；<br>/etc/init.d/mysql stop<br>(您可能有其它的方法,总之停止mysqld的运行就可以了)</li><li>用以下命令启动MySQL，以不检查权限的方式启动；<br>mysqld –skip-grant-tables &amp;</li><li>然后用空密码方式使用root用户登录 MySQL；<br>mysql -u root</li><li>修改root用户的密码；<br>mysql&gt; update mysql.user set password=PASSWORD(‘newpassword’) where User=’root’;<br>mysql&gt; flush privileges;<br>mysql&gt; quit<br>重新启动MySQL<br>/etc/init.d/mysql restart<br>就可以使用新密码 newpassword 登录了</li></ol><p>转载于<br><a href="http://lxsym.blog.51cto.com/1364623/477027" target="_blank" rel="external">http://lxsym.blog.51cto.com/1364623/477027</a></p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;修改mysql密码&quot;&gt;&lt;a href=&quot;#修改mysql密码&quot; class=&quot;headerlink&quot; title=&quot;修改mysql密码&quot;&gt;&lt;/a&gt;修改mysql密码&lt;/h2&gt;&lt;p&gt;&lt;code&gt;flush privileges&lt;/code&gt;这条命令是刷新权限，&lt;/p
+    
+    </summary>
+    
+      <category term="数据库" scheme="https://vsxen.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>c9使用mysql，mongodb数据库、修改默认密码</title>
+    <link href="https://vsxen.github.io/2016/11/15/c9-use-mysql-mongodb/"/>
+    <id>https://vsxen.github.io/2016/11/15/c9-use-mysql-mongodb/</id>
+    <published>2016-11-15T13:01:46.000Z</published>
+    <updated>2016-12-02T13:55:22.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>c9.io在之前都说过了，是一个支持多种语言的在线IDE,有时候可能会用到mysql，这么介绍一下如何使用。</p><h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>打开之后，输入<code>mysql-ctl cli</code>就可以安装mysql了<br>可以看到</p><ul><li>Installing MySQL<ul><li>Stopping MySQL database server mysqld<br>…done.</li><li>Starting MySQL database server mysqld<br>…done.</li><li>Checking for tables which need an upgrade, are corrupt or were<br>not closed cleanly.<br>MySQL 5.5 database added. Please make note of these credentials:</li></ul></li></ul><p>默认是没有密码的，这样对于一些应用可能就不能用了，所以需要修改密码。</p><h2 id="修改mysql密码"><a href="#修改mysql密码" class="headerlink" title="修改mysql密码"></a>修改mysql密码</h2><ol><li>停止mysqld；<br>/etc/init.d/mysql stop<br>(您可能有其它的方法,总之停止mysqld的运行就可以了)</li><li>用以下命令启动MySQL，以不检查权限的方式启动；<br>mysqld –skip-grant-tables &amp;</li><li>然后用空密码方式使用root用户登录 MySQL；<br>mysql -u root</li><li>修改root用户的密码；<br>mysql&gt; update mysql.user set password=PASSWORD(‘newpassword’) where User=’root’;<br>mysql&gt; flush privileges;<br>mysql&gt; quit<br>重新启动MySQL<br>/etc/init.d/mysql restart<br>就可以使用新密码 newpassword 登录了<h2 id="mongdb"><a href="#mongdb" class="headerlink" title="mongdb"></a>mongdb</h2>跟着命令打就可以了<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">$ sudo apt-<span class="built_in">get</span> install -y mongodb-org</div><div class="line"><span class="comment">#开始安装  等等就好了</span></div><div class="line"></div><div class="line">$ mongod <span class="comment">--bind_ip=$IP --nojournal</span></div><div class="line">The output will <span class="built_in">include</span>:</div><div class="line"></div><div class="line">...</div><div class="line">waiting <span class="keyword">for</span> connections <span class="keyword">on</span> <span class="title">port</span> <span class="title">27017</span></div><div class="line"><span class="comment"># 成功运行了</span></div></pre></td></tr></table></figure></li></ol><p>这时候新开一个终端，输入<code>mongo</code>就可以连上了</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;c9.io在之前都说过了，是一个支持多种语言的在线IDE,有时候可能会用到mysql，这么介绍一下如何使用。&lt;/p&gt;&lt;h2 id=&quot;安装&quot;&gt;&lt;a href=&quot;#安装&quot; class=&quot;headerlink&quot; title=&quot;安装&quot;&gt;&lt;/a&gt;安装&lt;/h2&gt;&lt;p&gt;打开之后，输入&lt;c
+    
+    </summary>
+    
+      <category term="数据库" scheme="https://vsxen.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>无法启动此程序,因为计算机中丢失MSVCR110.dll的解决方法</title>
+    <link href="https://vsxen.github.io/2016/11/08/solve-dll-file-lose/"/>
+    <id>https://vsxen.github.io/2016/11/08/solve-dll-file-lose/</id>
+    <published>2016-11-08T13:33:47.000Z</published>
+    <updated>2016-12-02T14:01:06.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>千万不要相信百度上面让注册dll文件的方法<br>千万不要相信百度上面让注册dll文件的方法<br>千万不要相信百度上面让注册dll文件的方法<br>今天在给win10装wamp时出现了几个错误。错误提示都是提示丢失MSVCR110.dll。共出现两次。一是httpd.exe提示，二是php-win.exe提示。我去找dll网站找该dll未能找到，之后自习百度后获得了一下解决方法，安装一个vcredist_x（系统位数）.exe，此方法可行。</p><p>原文如下：</p><p>​“对于32位系统，安装Wampserver 后启动的时候提示系统错误：MSVCR110.dll丢失。</p><p>于是卸载原来的WAMPSERVER 。安装vcredist_x86.exe，重新安装WAMPSERVER 2之后，问题解决了</p><p>对于64位系统，则需要下载wampserver 64位版，并且安装vcredist_x64.exe</p><p>64位下载地址：</p><p>vcredist_x64.exe 和vcredist_x86.exe下载地址：<a href="http://www.microsoft.com/zh-cn/download/details.aspx?id=30679" target="_blank" rel="external">http://www.microsoft.com/zh-cn/download/details.aspx?id=30679</a> ”</p><p>提示一下：</p><p>如果是64位系统安装了32位的wamp，需将该文件的64.32位都安装上，才不会报错。</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;千万不要相信百度上面让注册dll文件的方法&lt;br&gt;千万不要相信百度上面让注册dll文件的方法&lt;br&gt;千万不要相信百度上面让注册dll文件的方法&lt;br&gt;今天在给win10装wamp时出现了几个错误。错误提示都是提示丢失MSVCR110.dll。共出现两次。一是httpd.ex
+    
+    </summary>
+    
+    
+      <category term="一些问题" scheme="https://vsxen.github.io/tags/%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>利用aria2打造离线下载（顺便破某网盘）</title>
+    <link href="https://vsxen.github.io/2016/11/08/download-with-aria2/"/>
+    <id>https://vsxen.github.io/2016/11/08/download-with-aria2/</id>
+    <published>2016-11-08T13:22:22.000Z</published>
+    <updated>2016-12-03T06:48:02.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>需要用到的工具软件插件都在云盘的这个文件夹中，建议全部下载，传送门：<a href="http://pan.baidu.com/s/1nu4UHfV" target="_blank" rel="external">http://pan.baidu.com/s/1nu4UHfV</a></p><h2 id="懒人版"><a href="#懒人版" class="headerlink" title="懒人版 "></a>懒人版</h2><h3 id="Mac"><a href="#Mac" class="headerlink" title="Mac"></a>Mac</h3><ol><li>安装Aria2GUI.dmg，位于网盘的Aria2 for Mac文件夹中</li><li>下载自己的文件，复制下载地址到Aria2 GUI就可以了,如果你想百度云的，先登录，找到下载链接，<br>类似于<code>https://qdcache00.baidupcs.com/file</code>这样的，然后添加链接，max-connection-per-server建议设置为10左右，我的下载速度在1m/s左右<br>默认下载位置在Downloads</li></ol><h3 id="Windows"><a href="#Windows" class="headerlink" title="Windows"></a>Windows</h3><ol><li>首先下载懒人包，详见网盘Aria2 for Windows<br>其中aria2.rar这个文件一定要解压在D:\aria2这个文件夹里，即D:\aria2\里面不能再有文件夹了<br>然后在D盘根目录建立一个Downloads的文件夹，这个文件夹就是你下载的文件存放的地方，不要把文件的名字搞错了</li><li>进入D:\aria2\里面，双击HideRun.vbs这个文件，电脑不会有任何反应，因为运行窗口被屏蔽掉了，这是你进入任务管理器可以看到aria2c.exe这个进程正在运行。如果想开机自行启动，请看折腾版<br>然后找到 aria2控制界面.rar，将这个文件在任意位置解压缩，然后双击index.html这个文件，你的默认浏览器就会打开，这个网页就是控制aria2这个软件的界面，这是中文界面。然后把他加入浏览器的收藏夹即可,其他的就和Mac 一样了。</li></ol><h2 id="折腾版"><a href="#折腾版" class="headerlink" title="折腾版"></a>折腾版</h2><p>下载安装最新版的Aria2（目前是1.21.0）,不同的系统自己选择下载<br>项目地址<br><a href="https://github.com/tatsuhiro-t/aria2" target="_blank" rel="external">https://github.com/tatsuhiro-t/aria2</a><br><a href="https://github.com/tatsuhiro-t/aria2/releases/tag/release-1.21.0" target="_blank" rel="external">https://github.com/tatsuhiro-t/aria2/releases/tag/release-1.21.0</a><br>安装目录是/usr/local/aria2（安装完就会出现在这里，隐藏的）<br>windows自己解压到任意目录就行<br>2）下载Aria2所需文件<br>找到网盘文件夹中的配置文件aria2.conf，运行Aria2所有的选项都可以在配置文件中设置<br>想具体了解配置文件可以参考以下网站：<a href="http://aria2c.com/usage.html" target="_blank" rel="external">http://aria2c.com/usage.html</a><br>或 <a href="https://aria2.github.io/manual/en/html/aria2c.html" target="_blank" rel="external">https://aria2.github.io/manual/en/html/aria2c.html</a><br>附上我的配置文件<br></p><figure class="highlight ini"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#rpc加密密钥</span></div><div class="line"><span class="attr">rpc-secret</span>=token</div><div class="line"><span class="comment">#允许rpc</span></div><div class="line"><span class="attr">enable-rpc</span>=<span class="literal">true</span></div><div class="line"><span class="comment">#允许所有来源,web界面跨域权限需要</span></div><div class="line"><span class="attr">rpc-allow-origin-all</span>=<span class="literal">true</span></div><div class="line"><span class="comment">#允许外部访问，false的话只监听本地端口</span></div><div class="line"><span class="attr">rpc-listen-all</span>=<span class="literal">true</span></div><div class="line"><span class="comment">#RPC端口,仅当默认端口被占用时修改</span></div><div class="line"><span class="comment">#rpc-listen-port=6800</span></div><div class="line"><span class="comment">#最大同时下载数(任务数),路由建议值:3</span></div><div class="line"><span class="attr">max-concurrent-downloads</span>=<span class="number">5</span></div><div class="line"><span class="comment">#断点续传</span></div><div class="line"><span class="attr">continue</span>=<span class="literal">true</span></div><div class="line"><span class="comment">#断开速度过慢的连接</span></div><div class="line"><span class="attr">lowest-speed-limit</span>=<span class="number">0</span></div><div class="line"><span class="comment">#同服务器连接数</span></div><div class="line"><span class="attr">max-connection-per-server</span>=<span class="number">5</span></div><div class="line"><span class="comment">#最小文件分片大小,下载线程数上限取决于能分出多少片,对于小文件重要</span></div><div class="line"><span class="attr">min-split-size</span>=<span class="number">10</span>M</div><div class="line"><span class="comment">#单文件最大线程数,路由建议值:5</span></div><div class="line"><span class="attr">split</span>=<span class="number">10</span></div><div class="line"><span class="comment">#下载速度限制</span></div><div class="line"><span class="attr">max-overall-download-limit</span>=<span class="number">0</span></div><div class="line"><span class="comment">#单文件下载速度限制</span></div><div class="line"><span class="attr">max-download-limit</span>=<span class="number">0</span></div><div class="line"><span class="comment">#上传速度限制</span></div><div class="line"><span class="attr">max-overall-upload-limit</span>=<span class="number">0</span></div><div class="line"><span class="comment">#单文件上传速度限制</span></div><div class="line"><span class="attr">max-upload-limit</span>=<span class="number">0</span></div><div class="line"></div><div class="line"><span class="comment">#下载文件的保存路径,默认为当前启动位置</span></div><div class="line"><span class="attr">dir</span>=/Users/qq/Downloads</div><div class="line"><span class="comment">#文件预分配,能有效降低文件碎片,提高磁盘性能.缺点是预分配时间较长</span></div><div class="line"><span class="comment">#所需时间none&lt;falloc?trunc«prealloc,falloc和trunc需要文件系统和内核支持</span></div><div class="line"><span class="attr">file-allocation</span>=prealloc</div></pre></td></tr></table></figure><p></p><h3 id="Mac-1"><a href="#Mac-1" class="headerlink" title="Mac"></a>Mac</h3><p>打开终端Terminal，输入：<br>mkdir ~/.aria2<br>用户根目录（/Users/XXX， XXX是你的用户名）下会生成一个.aria2的文件夹(隐藏文件夹)，将配置文件aria2.conf 拖入这个文件夹中（这一步是为了方便每次启动aria2c的时候不用每次手动输入配置文件的位置）<br>接着找到压缩文件夹aria2c.zip，解压后将aria2c文件夹整个拖入 /Applications 目录下<br>运行Aria2<br>继续在Terminal输入：<br>mkdir ~/.aria2<br>如果第二步中的文件放置的位置没问题那么aria2c应该已经启动了<br>看aria2c 是否启动的办法是Terminal中输入：<br>ps aux|grep aria2c</p><p>出现图片中第三行的结果说明aria2c已经正常启动</p><h3 id="Windows-1"><a href="#Windows-1" class="headerlink" title="Windows"></a>Windows</h3><p>新建几个文件：<br>Aria2.log （日志，空文件就行）<br>aria2.session （下载历史，空文件就行）<br>aria2.conf （配置文件）<br>HideRun.vbs （隐藏cmd窗口运行用到的）<br>以上也可以借用懒人版的<br>配置文件<br></p><figure class="highlight maxima"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div></pre></td><td class="code"><pre><div class="line">dir=D:\Downloads\</div><div class="line"><span class="built_in">log</span>=D:\Program Files\aria2\Aria2.<span class="built_in">log</span></div><div class="line">input-file=D:\Program Files\aria2\aria2.session</div><div class="line"><span class="built_in">save</span>-session=D:\Program Files\aria2\aria2.session</div><div class="line"><span class="built_in">save</span>-session-interval=<span class="number">60</span></div><div class="line">force-<span class="built_in">save</span>=<span class="literal">true</span></div><div class="line"><span class="built_in">log</span>-level=<span class="built_in">error</span></div><div class="line"># see — <span class="built_in">split</span> option</div><div class="line"><span class="built_in">max</span>-concurrent-downloads=<span class="number">5</span></div><div class="line">continue=<span class="literal">true</span></div><div class="line"><span class="built_in">max</span>-overall-download-<span class="built_in">limit</span>=<span class="number">0</span></div><div class="line"><span class="built_in">max</span>-overall-upload-<span class="built_in">limit</span>=50K</div><div class="line"><span class="built_in">max</span>-upload-<span class="built_in">limit</span>=<span class="number">20</span></div><div class="line"># Http/FTP options</div><div class="line">connect-timeout=<span class="number">120</span></div><div class="line">lowest-speed-<span class="built_in">limit</span>=10K</div><div class="line"><span class="built_in">max</span>-connection-per-server=<span class="number">10</span></div><div class="line"><span class="built_in">max</span>-file-<span class="keyword">not</span>-found=<span class="number">2</span></div><div class="line"><span class="built_in">min</span>-<span class="built_in">split</span>-size=1M</div><div class="line"><span class="built_in">split</span>=<span class="number">5</span></div><div class="line">check-certificate=<span class="literal">false</span></div><div class="line">http-no-cache=<span class="literal">true</span></div><div class="line"># FTP Specific Options</div><div class="line"># BT/PT Setting</div><div class="line">bt-enable-lpd=<span class="literal">true</span></div><div class="line">#bt-<span class="built_in">max</span>-peers=<span class="number">55</span></div><div class="line">follow-torrent=<span class="literal">true</span></div><div class="line">enable-dht6=<span class="literal">false</span></div><div class="line">bt-seed-unverified</div><div class="line">rpc-<span class="built_in">save</span>-upload-metadata=<span class="literal">true</span></div><div class="line">bt-hash-check-seed</div><div class="line">bt-<span class="built_in">remove</span>-unselected-file</div><div class="line">bt-request-peer-speed-<span class="built_in">limit</span>=100K</div><div class="line">seed-ratio=<span class="number">0.0</span></div><div class="line"># Metalink Specific Options</div><div class="line"># RPC Options</div><div class="line">enable-rpc=<span class="literal">true</span></div><div class="line">pause=<span class="literal">false</span></div><div class="line">rpc-allow-<span class="built_in">origin</span>-all=<span class="literal">true</span></div><div class="line">rpc-listen-all=<span class="literal">true</span></div><div class="line">rpc-<span class="built_in">save</span>-upload-metadata=<span class="literal">true</span></div><div class="line">rpc-secure=<span class="literal">false</span></div><div class="line"># Advanced Options</div><div class="line">daemon=<span class="literal">true</span></div><div class="line">disable-ipv6=<span class="literal">true</span></div><div class="line">enable-mmap=<span class="literal">true</span></div><div class="line">file-<span class="built_in">allocation</span>=falloc</div><div class="line"><span class="built_in">max</span>-download-result=<span class="number">120</span></div><div class="line">#no-file-<span class="built_in">allocation</span>-<span class="built_in">limit</span>=32M</div><div class="line">force-sequential=<span class="literal">true</span></div><div class="line">parameterized-uri=<span class="literal">true</span></div></pre></td></tr></table></figure><p></p><p>启动<br>用文本编辑工具打开刚才建立的HideRun.vbs<br>复制以下内容，注意修改D:\Progra~1\aria2\ 为你的aria2安装路径<br>CreateObject(“WScript.Shell”).Run “D:\Progra~1\aria2\aria2c.exe — conf-path=aria2.conf”,0<br>要启动aria2，一定要点击这个文件，不要点击aria2c.exe<br>如果要开机启动，创建一个HideRun.vbs的快捷方式，把快捷方式丢到 C:\Users\用户名\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup中<br>这个目录的所有东西 都会开机启动</p><h3 id="GUI-控制"><a href="#GUI-控制" class="headerlink" title="GUI 控制"></a>GUI 控制</h3><p>aria2是基于命令行的下载工具，不过还好大神们早已开发了各种易用的UI方便我们小白们使用<br>最常用的webui-aria2: <a href="http://ziahamza.github.io/webui-aria2/" target="_blank" rel="external">http://ziahamza.github.io/webui-aria2/</a><br>也可以用binux大神的YAAW：<a href="http://binux.github.io/yaaw/demo/" target="_blank" rel="external">http://binux.github.io/yaaw/demo/</a><br>其他就不需要多说了吧</p><p>速度参考<br><img src="img/arai2.PNG" alt=""><br>参考<br><a href="https://medium.com/@Justin___Smith/aria2%E9%85%8D%E7%BD%AE%E6%95%99%E7%A8%8B-mac%E5%92%8Cwindows-b31d0f64bd4e#.p7u9xoyrp" target="_blank" rel="external">https://medium.com/@Justin___Smith/aria2%E9%85%8D%E7%BD%AE%E6%95%99%E7%A8%8B-mac%E5%92%8Cwindows-b31d0f64bd4e#.p7u9xoyrp</a></p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;需要用到的工具软件插件都在云盘的这个文件夹中，建议全部下载，传送门：&lt;a href=&quot;http://pan.baidu.com/s/1nu4UHfV&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;http://pan.baidu.com/s/1nu4UHf
+    
+    </summary>
+    
+    
+      <category term="小技巧" scheme="https://vsxen.github.io/tags/%E5%B0%8F%E6%8A%80%E5%B7%A7/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>ArchLinux硬盘安装全记录</title>
+    <link href="https://vsxen.github.io/2016/11/08/install-arch-with-win7/"/>
+    <id>https://vsxen.github.io/2016/11/08/install-arch-with-win7/</id>
+    <published>2016-11-08T13:17:39.000Z</published>
+    <updated>2016-11-15T14:23:38.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>ArchLinux是Linux的另一个发行版，它的安装过程可能会排除掉一大部分Linux新手，不过这正是熟练使用Linux的开始，<br>如果没有安装ArchLinux的话，你比较难知道Linux系统的运行情况。<br>ArchLinux的官方wiki 特别详细，有的也是中文，遇到问题可以及时查阅。</p><p>本文适宜于BIOS启动，UEFI未测试！！！<br>安装过程必须联网，手动检查<code>ping t.cn</code></p><h2 id="下载镜像"><a href="#下载镜像" class="headerlink" title="下载镜像"></a>下载镜像</h2><p>官方网站都有，像163,ustc都有，应该在800m左右</p><h2 id="刻盘"><a href="#刻盘" class="headerlink" title="刻盘"></a>刻盘</h2><p>windows用官方的推荐工具<a href="https://rufus.akeo.ie/" target="_blank" rel="external">https://rufus.akeo.ie/</a><br>Linux用dd命令就行</p><h2 id="优盘启动"><a href="#优盘启动" class="headerlink" title="优盘启动"></a>优盘启动</h2><p>从优盘启动系统，选择第一个X64启动项，之后就会显示root@arch了</p><h2 id="分区"><a href="#分区" class="headerlink" title="分区"></a>分区</h2><p>如果是双系统，在Windows分区最简便，直接格式化为EXT4和swap就行<br>或者你可以使用伪图形化界面cfdisk以及fdisk,我是用的cfdisk<br>如果你用的是cfdisk,请记住82和83这两个数字<br>整个硬盘就是sda，wWindows用的就是sda1，D盘就是sda2，我的sda3就是Archlinux的根目录<br>下面是我的分区表<br>/dev/sda3 60G / 物理分区 8300<br>/dev/sda4 8G swap 物理分区 8200</p><h2 id="文件系统"><a href="#文件系统" class="headerlink" title="文件系统"></a>文件系统</h2><p>分区系统转化为ext4和swap，最后一条命令是开启交换分区。<br></p><figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">mkfs.ext4 <span class="regexp">/dev/</span>sda3</div><div class="line">mkswap <span class="regexp">/dev/</span>sda4</div><div class="line">swapon <span class="regexp">/dev/</span>sda4</div></pre></td></tr></table></figure><p></p><h2 id="挂载"><a href="#挂载" class="headerlink" title="挂载"></a>挂载</h2><p><code>mount /dev/sda3 /mnt</code></p><h2 id="选择源"><a href="#选择源" class="headerlink" title="选择源"></a>选择源</h2><p>选择国内的比较快<br></p><figure class="highlight dts"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">nano <span class="meta-keyword">/etc/</span>pacman.d/mirrorlist</div><div class="line">pacman -Syy</div></pre></td></tr></table></figure><p></p><h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p><code>pacstrap -i /mnt base base-devel net-tools</code><br>net-tools基本的网络命令像ifconfig</p><h2 id="生成fstab"><a href="#生成fstab" class="headerlink" title="生成fstab"></a>生成fstab</h2><p>fstab中记录了挂载的相关信息，Archlinux中提供了工具来一键生成<br><code>genfstab -U -p /mnt &gt;&gt; /mnt/etc/fstab</code><br>这里使用的是UUID，如果不加-U，那么在fstab中记录的就是/dev/sdX之类的地址了，UUID的方式更加好，为什么呢？请自行wiki。</p><p>—————分割线———-</p><h2 id="系统设置"><a href="#系统设置" class="headerlink" title="系统设置"></a>系统设置</h2><figure class="highlight mel"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">arch-chroot /mnt /bin/bash</div><div class="line"><span class="keyword">alias</span> <span class="keyword">ls</span>=<span class="string">'ls --color'</span>#后一条命令是为了让<span class="keyword">ls</span>显示颜色，方便查看。</div></pre></td></tr></table></figure><h2 id="设置Locale"><a href="#设置Locale" class="headerlink" title="设置Locale"></a>设置Locale</h2><p><code>nano /etc/locale.gen</code><br>这里你至少开启en_US.UTF-8和zh_CN.UTF-8。<br></p><figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">locale-gen</div><div class="line">echo LANG=zh_CN.UTF-<span class="number">8</span> <span class="meta">&gt;&gt; </span>locale.conf</div></pre></td></tr></table></figure><p></p><p>这里由于console字体的原因，中文会变成方框，如果你不安装桌面环境，请使用en_US.UTF-8。</p><h2 id="设置console"><a href="#设置console" class="headerlink" title="设置console"></a>设置console</h2><p>``<br>nano /etc/vconsole.conf</p><p>#输入如下内容<br>KEYMAP=us<br>FONT=<br></p><figure class="highlight dts"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="meta">## 时区</span></div><div class="line">`ln -s <span class="meta-keyword">/usr/</span>share<span class="meta-keyword">/zoneinfo/</span>Asia/Shanghai <span class="meta-keyword">/etc/</span>localtime`</div><div class="line">这里大家可能会发现BIOS的时间和系统不一样了，我提供一个解决方案。</div><div class="line">nano <span class="meta-keyword">/etc/</span>adjtime</div><div class="line">输入如下内容：</div><div class="line"><span class="number">0.000000</span> <span class="number">0</span> <span class="number">0.000000</span></div><div class="line"><span class="number">0</span></div><div class="line">LOCAL</div><div class="line">参见https:<span class="comment">//wiki.archlinux.org/index.php/Time</span></div><div class="line"></div><div class="line"><span class="meta">## 主机名</span></div><div class="line">虽说这里的主机名可以有大写，不过我建议大家使用常规的英文小写。</div><div class="line">`echo 主机名 &gt; <span class="meta-keyword">/etc/</span>hostname`</div><div class="line">你还得修改<span class="meta-keyword">/etc/</span>hosts文件的内容。</div><div class="line">nano <span class="meta-keyword">/etc/</span>hosts</div><div class="line">你会看到如下内容：</div><div class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>   localhost.localdomain localhost   主机名   </div><div class="line">::<span class="number">1</span>     localhost.localdomain localhost   主机名</div><div class="line">这里面的主机名也需要修改</div><div class="line"><span class="meta">## 创建初始 ramdisk 环境</span></div><div class="line"></div><div class="line">在您用 pacstrap 安装 linux 时就会自动运行 mkinitcpio，大部分用户都可以使用 mkinitcpio.conf 默认设置，如果有定制需求，请阅读re-generate the initramfs image。然后运行：</div><div class="line"></div><div class="line">`mkinitcpio -p linux`</div><div class="line"><span class="meta">## 安装启动器</span></div></pre></td></tr></table></figure><p></p><p>pacman -S grub os-prober<br>grub-install –target=i386-pc –recheck /dev/sda<br>grub-mkconfig -o /boot/grub/grub.cfg<br></p><figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">##卸载分区并重启系统</span></div><div class="line">现在新系统已经准备好第一次引导了，先退出 chroot 环境：</div><div class="line"><span class="keyword">exit</span></div><div class="line">然后，卸载分区并重启系统：</div></pre></td></tr></table></figure><p></p><p>umount -R /mnt<br>reboot<br>```</p><h2 id="安装桌面环境"><a href="#安装桌面环境" class="headerlink" title="安装桌面环境"></a>安装桌面环境</h2><p>这里以 GNOME 为例：<br>$ pacman -S gnome<br>要启用图形界面登录和锁屏等功能，可启用 gdm：<br>$ systemctl enable gdm.service<br>安装 GNOME 的一些常用工具（更多工具和扩展请参见这里）：<br>$ pacman -S gnome-tweak-tool gnome-packagekit gnome-settings-daemon-updates<br>安装中文输入法，GNOME 集成了 iBus，所以只需安装合适的输入法引擎，然后在 GNOME 系统设置中启用即可，参见这里：<br>$ pacman -S ibus-libpinyin<br>参考<br><a href="https://hyjk2000.github.io/2014/01/23/arch-linux-install-guide/" target="_blank" rel="external">https://hyjk2000.github.io/2014/01/23/arch-linux-install-guide/</a><br><a href="https://coolrc.top/2015/12/04/04231804/" target="_blank" rel="external">https://coolrc.top/2015/12/04/04231804/</a><br><a href="http://blog.lucode.net/linux/archlinux-install-tutorial.html" target="_blank" rel="external">http://blog.lucode.net/linux/archlinux-install-tutorial.html</a></p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;ArchLinux是Linux的另一个发行版，它的安装过程可能会排除掉一大部分Linux新手，不过这正是熟练使用Linux的开始，&lt;br&gt;如果没有安装ArchLinux的话，你比较难知道Linux系统的运行情况。&lt;br&gt;ArchLinux的官方wiki 特别详细，有的也是中
+    
+    </summary>
+    
+      <category term="Linux" scheme="https://vsxen.github.io/categories/Linux/"/>
+    
+    
+  </entry>
+  
+</feed>

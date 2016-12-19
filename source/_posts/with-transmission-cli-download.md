@@ -1,7 +1,8 @@
 ---
 title: 使用transmission-cli下载文件
 date: 2016-10-18 14:11:09
-tags:
+categories: 
+tags: 软件推荐 
 ---
 官网https://transmissionbt.com/download/
 ## 安装

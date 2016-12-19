@@ -1,11 +1,19 @@
 ---
-title: launchy,listary和wox功能对比
+title: launchy,listary和wox功能对比(多图)
 date: 2016-10-11 10:46:23
 categories:  
 tags: 软件推荐
 ---
 launchy,listary和wox这三个都是Windows下，主打键盘流的软件，好好用的话可以提高工作效率。
 ## listary
+截图欣赏
+![](/img/lis1.PNG)
+![](/img/lis2.PNG)
+![](/img/lis3.PNG)
+![](/img/lis4.PNG)
+![](/img/lis5.PNG)
+![](/img/lis6.PNG)
+![](/img/lis7.PNG)
 ###  优点
 软件小巧，安装即用，可以配合Everything,支持插件，支持自定义动作，比如ff打开或火狐，类似于sublime，偶尔让你买pro版（打开之后必弹），默认呼出是双击ctrl,有可能误触，支持修改皮肤，自用。
 
@@ -21,4 +29,6 @@ https://github.com/Wox-launcher/Wox
 有时候失去焦点，不会消失，需要安装python2.7，不知道算不算缺点
 
 ##  launchy
+![](/img/lau1.png)
+![](/img/lau2.png)
 支持多平台，Linux（deb包和源码），个人感觉比较丑用了一下就卸载了，感觉不是怎么好用，Ctrl+空格呼出，有时候会不灵敏，可能我没有弄好吧。

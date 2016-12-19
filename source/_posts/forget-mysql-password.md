@@ -1,7 +1,7 @@
 ---
 title: 忘记mysql密码，修改mysql密码
 date: 2016-11-15 13:26:30
-categories: mysql
+categories:  数据库
 tags:
 ---
 

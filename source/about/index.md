@@ -2,28 +2,32 @@
 title: 关于
 date: 2015-06-20 19:52:57
 ---
-喜欢Linux，热爱open sourse 。
-
-
-
+本站使用的技术
+node + hexo
 ```
-#cmd运行，输入WiFi密码
-for /f "skip=9 tokens=1,2 delims=:" %i in ('netsh wlan show profiles') do  @echo %j | findstr -i -v echo | netsh wlan show profiles %j key=clear
-#查看Linux版本
-cat /etc/redhat-release#或者
-cat /etc/issue
-#查看端口占用
-netstat -anl | grep "80" ；#1080  8080也是会被筛选出来
-lsof -i:80
-#查看程序占用的端口
-ps  -ef | grep nginx 
-#安装docker
-curl -s https://get.docker.com/ | sudo sh
-ls -lR|grep "^-"|wc -l 
+    "hexo": "^3.2.0",
+    "hexo-deployer-git": "0.0.4",
+    "hexo-generator-archive": "^0.1.2",
+    "hexo-generator-baidu-sitemap": "^0.1.2",
+    "hexo-generator-category": "^0.1.2",
+    "hexo-generator-feed": "^1.2.0",
+    "hexo-generator-index": "^0.1.2",
+    "hexo-generator-sitemap": "^1.1.2",
+    "hexo-generator-tag": "^0.1.1",
+    "hexo-git-backup": "^0.1.2",
+    "hexo-neat": "^1.0.4",#压缩html
+    "hexo-renderer-ejs": "^0.1.0",
+    "hexo-renderer-marked": "^0.2.4",
+    "hexo-renderer-stylus": "^0.2.0",
+    "hexo-server": "^0.1.2"
 ```
+githu pages 托管服务（自带https）
 
 
-
+------------------------------------
+分割线
+------------------------------------
+自己感觉不错的网站
 图片素材库 https://www.pexels.com/
 同上 https://pixabay.com/  
 测试网站性能 https://gtmetrix.com/  

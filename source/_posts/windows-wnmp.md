@@ -2,7 +2,7 @@
 cdtitle: windows的配置lnmp
 date: 2016-03-27 20:55:18
 categories: 
-tags:  
+tags:  小技巧 
 ---
 
 ## php配置

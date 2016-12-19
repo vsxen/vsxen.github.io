@@ -1,8 +1,8 @@
 ---
 title: Ubuntu apt get faile to fork解决方法 
 date: 2016-11-04 10:42:42
-categories: Linux
-tags: 
+categories: 
+tags: 一些问题 
 ---
 
 

@@ -1,7 +1,7 @@
 ---
 title: Linux命令之二--sed
 date: 2016-10-12 17:52:15
-categories:
+categories:  Linux 
 tags:
 ---
 sed -i -e  's/PermitRootLogin no/PermitRootLogin yes/g' ssh_config 

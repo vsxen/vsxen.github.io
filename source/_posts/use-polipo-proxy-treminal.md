@@ -53,4 +53,5 @@ $ hp curl ip.gs
 ```
 这样只是对这个终端有效，如果想打开终端就启用polipo可以将export http_proxy=http://localhost:8123加入.bashrc或者.bash_profile文件
 
-参考http://droidyue.com/blog/2016/04/04/set-shadowsocks-proxy-for-terminal/
+参考
+http://droidyue.com/blog/2016/04/04/set-shadowsocks-proxy-for-terminal/

@@ -1,7 +1,7 @@
 ---
 title: mysql从零开始学习
 date: 2016-05-14 17:43:57
-categories: mysql
+categories:  数据库
 tags:
 ---
 ## 安装

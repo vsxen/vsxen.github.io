@@ -1,7 +1,7 @@
 ---
 title: c9使用mysql，mongodb数据库、修改默认密码
 date: 2016-11-15 13:01:46
-categories: 
+categories:   数据库
 tags: 
 ---
 

@@ -158,6 +158,7 @@ aria2是基于命令行的下载工具，不过还好大神们早已开发了各
 也可以用binux大神的YAAW：http://binux.github.io/yaaw/demo/
 其他就不需要多说了吧
 
-
+速度参考
+![](img/arai2.PNG)
 参考
 https://medium.com/@Justin___Smith/aria2%E9%85%8D%E7%BD%AE%E6%95%99%E7%A8%8B-mac%E5%92%8Cwindows-b31d0f64bd4e#.p7u9xoyrp

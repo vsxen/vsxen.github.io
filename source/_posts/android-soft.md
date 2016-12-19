@@ -1,5 +1,5 @@
 ---
-title: 安卓软件推荐
+title: Android软件推荐
 date: 2016-07-20 19:55:57
 categories: 
 tags: 软件推荐
@@ -9,15 +9,15 @@ tags: 软件推荐
 最好找以前4.x版本，新版不好用
 ##  网易云音乐
 听歌必备
-## QQ浏览器
-凑合着可以，比某C好一点
 ## chrome
 FQ的话还是推荐chrome
 ## 酷市场
 国内比较好的软件市场
 ## wps
 手机写文档必备软件
-## tasker（插件收费）
+## termux
+支持包管理的终端
+## tasker
 会玩的话绝对神器
 ## 无线渗透
 Lanmitm  https://github.com/ssun125/Lanmitm
