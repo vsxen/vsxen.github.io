@@ -1,0 +1,768 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge,chrome=1"><meta name=viewport content="width=device-width,initial-scale=1"><meta name=author content=vsxen><meta name=description content="简介：Kubernetes Operations (kops) - Production Grade K8s Installation, Upgrades, and Management kops宣称已经达到生产级别，准备试一下kops，观察其运行控制平面的方式。官方的文档如下： https://github.com/kubernetes/kops/blob/master/docs/aws.md 安装 当然kops也是用golang写的，所以你只要下载预编译"><meta name=keywords content=blog,k8s,devops><link rel=canonical href=https://vsxen.github.io/2018/08/01/use-kops-in-aws/><title>在aws上使用kops部署k8s集群 &middot; Code Life</title><link rel="shortcut icon" href=https://vsxen.github.io/images/favicon.ico><link rel=stylesheet href=https://vsxen.github.io/css/animate.min.css><link rel=stylesheet href=https://vsxen.github.io/css/remixicon.css><link rel=stylesheet href=https://vsxen.github.io/css/zozo.css><link rel=stylesheet href=https://vsxen.github.io/css/highlight.css><script>(function(d){var config={kitId:'kfn1kkp',scriptTimeout:3000,async:true},h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;h.className+=" wf-loading";tk.src='https://use.typekit.net/'+config.kitId+'.js';tk.async=true;tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!="complete"&&a!="loaded")return;f=true;clearTimeout(t);try{Typekit.load(config)}catch(e){}};s.parentNode.insertBefore(tk,s)})(document);</script></head><body><div class="main animated"><div class="nav_container animated fadeInDown"><div class=site_nav id=site_nav><ul><li><a href=/>首页</a></li><li><a href=/posts/>归档</a></li><li><a href=/tags/>标签</a></li><li><a href=/about/>关于</a></li></ul></div><div class=menu_icon><a id=menu_icon><i class=remixicon-links-line></i></a></div></div><div class="header animated fadeInDown"><div class=site_title_container><div class=site_title><h1><a href=https://vsxen.github.io><span>Code Life</span>
+<img src=https://vsxen.github.io/images/logo.svg></a></h1></div><div class=description><p class=sub_title>Life is too bug</p><div class=my_socials><a href=%20 title=facebook target=_blank><i class=remixicon-facebook-fill></i></a><a href=%20 title=github target=_blank><i class=remixicon-github-fill></i></a><a href=%20 title=instagram target=_blank><i class=remixicon-instagram-fill></i></a><a href=%20 title=twitter target=_blank><i class=remixicon-twitter-fill></i></a><a href=%20 title=weibo target=_blank><i class=remixicon-weibo-fill></i></a><a href=https://vsxen.github.io/index.xml type=application/rss+xml title=rss target=_blank><i class=remixicon-rss-fill></i></a></div></div></div></div><div class=content><div class=post_page><div class="post animated fadeInDown"><div class="post_title post_detail_title"><h2><a href=/2018/08/01/use-kops-in-aws/>在aws上使用kops部署k8s集群</a></h2><span class=date>2018.08.01</span></div><div class="post_content markdown"><p>简介：Kubernetes Operations (kops) - Production Grade K8s Installation, Upgrades, and Management
+kops宣称已经达到生产级别，准备试一下kops，观察其运行控制平面的方式。官方的文档如下：
+<a href=https://github.com/kubernetes/kops/blob/master/docs/aws.md>https://github.com/kubernetes/kops/blob/master/docs/aws.md</a></p><h2 id=安装>安装</h2><p>当然kops也是用golang写的，所以你只要下载预编译的二进制文件即可。</p><pre><code class=language-bash># 指定版本
+https://github.com/kubernetes/kops/releases/download/1.10.0/kops-linux-amd64
+
+#最新版本
+wget -O kops https://github.com/kubernetes/kops/releases/download/$(curl -s https://api.github.com/repos/kubernetes/kops/releases/latest | grep tag_name | cut -d '&quot;' -f 4)/kops-linux-amd64
+chmod +x ./kops
+sudo mv ./kops /usr/local/bin/
+
+curl -LO https://storage.googleapis.com/kubernetes-release/release/1.10.0/bin/linux/amd64/kubectl
+
+wget -O kubectl https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+chmod +x ./kubectl
+sudo mv ./kubectl /usr/local/bin/kubectl
+
+#awscli是用Python写的，安装Python和pip后直接运行下面命令就可以了。
+pip install awscli
+</code></pre><h2 id=创建iam>创建IAM</h2><p>kops 需要有以下四个权限，首先创建了kops的用户组，然后创建了kops用户</p><ul><li>AmazonEC2FullAccess</li><li>AmazonRoute53FullAccess</li><li>AmazonS3FullAccess</li><li>IAMFullAccess</li><li>AmazonVPCFullAccess</li></ul><pre><code class=language-bash>aws iam create-group --group-name kops
+
+aws iam attach-group-policy --policy-arn arn:aws:iam::aws:policy/AmazonEC2FullAccess --group-name kops
+aws iam attach-group-policy --policy-arn arn:aws:iam::aws:policy/AmazonRoute53FullAccess --group-name kops
+aws iam attach-group-policy --policy-arn arn:aws:iam::aws:policy/AmazonS3FullAccess --group-name kops
+aws iam attach-group-policy --policy-arn arn:aws:iam::aws:policy/IAMFullAccess --group-name kops
+aws iam attach-group-policy --policy-arn arn:aws:iam::aws:policy/AmazonVPCFullAccess --group-name kops
+
+aws iam create-user --user-name kops
+
+aws iam add-user-to-group --user-name kops --group-name kops
+
+aws iam create-access-key --user-name kops
+
+# configure the aws client to use your new IAM user
+aws configure           # Use your new access and secret key here
+aws iam list-users      # you should see a list of all your IAM users here
+
+# Because &quot;aws configure&quot; doesn't export these vars for kops to use, we export them now
+export AWS_ACCESS_KEY_ID=$(aws configure get aws_access_key_id)
+export AWS_SECRET_ACCESS_KEY=$(aws configure get aws_secret_access_key)
+</code></pre><h2 id=创建s3>创建S3</h2><p>首先我创建了一个s3的存储，用于存放kops的配置文件，然后为这个存储桶加入了版本控制</p><pre><code class=language-bash>aws s3api create-bucket \
+    --bucket k8s-lc-demo \
+    --region ap-southeast-1
+    
+aws s3api put-bucket-versioning --bucket k8s-lc-demo --versioning-configuration Status=Enabled
+</code></pre><h2 id=创建集群>创建集群</h2><p>首先需要配置一下kops在S3上的存储路径，然后我指定了集群在三个可用区，一个VPC,三个子网
+网络方案采用calico（默认是kubenet），一个Node，一个master。</p><pre><code class=language-bash>export KOPS_STATE_STORE=s3://k8s-lc-demo
+
+export NAME=vsxen.k8s.local
+
+kops create cluster --name=${NAME} \
+--zones=ap-southeast-1a,ap-southeast-1b,ap-southeast-1c \
+--vpc=vpc-0d594dbc069d8feef \
+--subnets=subnet-0eae91c9b2ff47237,subnet-0698d31499240ac10,subnet-0f104beb16bd44abf \
+--node-count=1 --networking=calico --master-count=1
+
+kops update cluster ${NAME} --yes
+
+kops delete cluster ${NAME} --yes
+
+看看别的参数
+
+Flags:
+      --admin-access strings             Restrict API access to this CIDR.  If not set, access will not be restricted by IP. (default [0.0.0.0/0])
+      --api-loadbalancer-type string     Sets the API loadbalancer type to either 'public' or 'internal'
+      --api-ssl-certificate string       Currently only supported in AWS. Sets the ARN of the SSL Certificate to use for the API server loadbalancer.
+      --associate-public-ip              Specify --associate-public-ip=[true|false] to enable/disable association of public IP for master ASG and nodes. Default is 'true'.
+      --authorization string             Authorization mode to use: AlwaysAllow or RBAC (default &quot;RBAC&quot;)
+      --bastion                          Pass the --bastion flag to enable a bastion instance group. Only applies to private topology.
+      --channel string                   Channel for default versions and configuration to use (default &quot;stable&quot;)
+      --cloud string                     Cloud provider to use - gce, aws, vsphere
+      --cloud-labels string              A list of KV pairs used to tag all instance groups in AWS (eg &quot;Owner=John Doe,Team=Some Team&quot;).
+      --dns string                       DNS hosted zone to use: public|private. Default is 'public'. (default &quot;Public&quot;)
+      --dns-zone string                  DNS hosted zone to use (defaults to longest matching zone)
+      --dry-run                          If true, only print the object that would be sent, without sending it. This flag can be used to create a cluster YAML or JSON manifest.
+      --encrypt-etcd-storage             Generate key in aws kms and use it for encrypt etcd volumes
+  -h, --help                             help for cluster
+      --image string                     Image to use for all instances.
+      --kubernetes-version string        Version of kubernetes to run (defaults to version in channel)
+      --master-count int32               Set the number of masters.  Defaults to one master per master-zone
+      --master-public-name string        Sets the public master public name
+      --master-security-groups strings   Add precreated additional security groups to masters.
+      --master-size string               Set instance size for masters
+      --master-tenancy string            The tenancy of the master group on AWS. Can either be default or dedicated.
+      --master-volume-size int32         Set instance volume size (in GB) for masters
+      --master-zones strings             Zones in which to run masters (must be an odd number)
+      --model string                     Models to apply (separate multiple models with commas) (default &quot;proto,cloudup&quot;)
+      --network-cidr string              Set to override the default network CIDR
+      --networking string                Networking mode to use.  kubenet (default), classic, external, kopeio-vxlan (or kopeio), weave, flannel-vxlan (or flannel), flannel-udp, calico, canal, kube-router, romana, amazon-vpc-routed-eni, cilium. (default &quot;kubenet&quot;)
+      --node-count int32                 Set the number of nodes
+      --node-security-groups strings     Add precreated additional security groups to nodes.
+      --node-size string                 Set instance size for nodes
+      --node-tenancy string              The tenancy of the node group on AWS. Can be either default or dedicated.
+      --node-volume-size int32           Set instance volume size (in GB) for nodes
+      --out string                       Path to write any local output
+  -o, --output string                    Output format. One of json|yaml. Used with the --dry-run flag.
+      --project string                   Project to use (must be set on GCE)
+      --ssh-access strings               Restrict SSH access to this CIDR.  If not set, access will not be restricted by IP. (default [0.0.0.0/0])
+      --ssh-public-key string            SSH public key to use (defaults to ~/.ssh/id_rsa.pub on AWS)
+      --subnets strings                  Set to use shared subnets
+      --target string                    Valid targets: direct, terraform, cloudformation. Set this flag to terraform if you want kops to generate terraform (default &quot;direct&quot;)
+  -t, --topology string                  Controls network topology for the cluster. public|private. Default is 'public'. (default &quot;public&quot;)
+      --utility-subnets strings          Set to use shared utility subnets
+      --vpc string                       Set to use a shared VPC
+  -y, --yes                              Specify --yes to immediately create the cluster
+      --zones strings                    Zones in which to run the cluster
+
+</code></pre><h2 id=集群信息查看>集群信息查看</h2><pre><code class=language-bash>kubectl -n kube-system get all
+NAME                                                                           READY     STATUS    RESTARTS   AGE
+pod/dns-controller-6d6b7f78b-d59r9                                             1/1       Running   0          6m
+pod/etcd-server-events-ip-192-168-0-154.ap-southeast-1.compute.internal        1/1       Running   0          6m
+pod/etcd-server-events-ip-192-168-1-157.ap-southeast-1.compute.internal        1/1       Running   0          5m
+pod/etcd-server-events-ip-192-168-2-21.ap-southeast-1.compute.internal         1/1       Running   0          6m
+pod/etcd-server-ip-192-168-0-154.ap-southeast-1.compute.internal               1/1       Running   0          6m
+pod/etcd-server-ip-192-168-1-157.ap-southeast-1.compute.internal               1/1       Running   0          5m
+pod/etcd-server-ip-192-168-2-21.ap-southeast-1.compute.internal                1/1       Running   0          6m
+pod/kube-apiserver-ip-192-168-0-154.ap-southeast-1.compute.internal            1/1       Running   0          6m
+pod/kube-apiserver-ip-192-168-1-157.ap-southeast-1.compute.internal            1/1       Running   0          5m
+pod/kube-apiserver-ip-192-168-2-21.ap-southeast-1.compute.internal             1/1       Running   0          6m
+pod/kube-controller-manager-ip-192-168-0-154.ap-southeast-1.compute.internal   1/1       Running   0          5m
+pod/kube-controller-manager-ip-192-168-1-157.ap-southeast-1.compute.internal   1/1       Running   0          5m
+pod/kube-controller-manager-ip-192-168-2-21.ap-southeast-1.compute.internal    1/1       Running   0          6m
+pod/kube-dns-5fbcb4d67b-784mb                                                  3/3       Running   0          4m
+pod/kube-dns-5fbcb4d67b-zwvs6                                                  3/3       Running   0          6m
+pod/kube-dns-autoscaler-6874c546dd-gmdqj                                       1/1       Running   0          6m
+pod/kube-proxy-ip-192-168-0-154.ap-southeast-1.compute.internal                1/1       Running   0          5m
+pod/kube-proxy-ip-192-168-1-157.ap-southeast-1.compute.internal                1/1       Running   0          6m
+pod/kube-proxy-ip-192-168-1-77.ap-southeast-1.compute.internal                 1/1       Running   0          4m
+pod/kube-proxy-ip-192-168-2-21.ap-southeast-1.compute.internal                 1/1       Running   0          6m
+pod/kube-proxy-ip-192-168-2-84.ap-southeast-1.compute.internal                 1/1       Running   0          5m
+pod/kube-scheduler-ip-192-168-0-154.ap-southeast-1.compute.internal            1/1       Running   0          6m
+pod/kube-scheduler-ip-192-168-1-157.ap-southeast-1.compute.internal            1/1       Running   0          5m
+pod/kube-scheduler-ip-192-168-2-21.ap-southeast-1.compute.internal             1/1       Running   0          6m
+
+NAME               TYPE        CLUSTER-IP    EXTERNAL-IP   PORT(S)         AGE
+service/kube-dns   ClusterIP   100.64.0.10   &lt;none&gt;        53/UDP,53/TCP   6m
+
+NAME                                  DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/dns-controller        1         1         1            1           7m
+deployment.apps/kube-dns              2         2         2            2           6m
+deployment.apps/kube-dns-autoscaler   1         1         1            1           6m
+
+NAME                                             DESIRED   CURRENT   READY     AGE
+replicaset.apps/dns-controller-6d6b7f78b         1         1         1         7m
+replicaset.apps/kube-dns-5fbcb4d67b              2         2         2         6m
+replicaset.apps/kube-dns-autoscaler-6874c546dd   1         1         1         6m
+</code></pre><h3 id=master>Master</h3><p>所有的Docker镜像,看得出和kubeadm启动方式一样</p><pre><code class=language-bash>protokube                            1.10.0              757f84ea7739        2 days ago          278 MB
+kope/dns-controller                  1.10.0              082d4c9dd8fe        3 days ago          119 MB
+k8s.gcr.io/kube-proxy                v1.10.3             4261d315109d        2 months ago        97.1 MB
+k8s.gcr.io/kube-apiserver            v1.10.3             e03746fe22c3        2 months ago        225 MB
+k8s.gcr.io/kube-controller-manager   v1.10.3             40c8d10b2d11        2 months ago        148 MB
+k8s.gcr.io/kube-scheduler            v1.10.3             353b8f1d102e        2 months ago        50.4 MB
+quay.io/calico/node                  v2.6.7              7c694b9cac81        6 months ago        282 MB
+quay.io/calico/kube-controllers      v1.0.3              34aebe64326d        7 months ago        52.2 MB
+quay.io/calico/cni                   v1.11.2             6f0a76fc7dd2        8 months ago        70.8 MB
+k8s.gcr.io/pause-amd64               3.0                 99e59f495ffa        2 years ago         747 kB
+k8s.gcr.io/etcd                      2.2.1               ef5842ca5c42        2 years ago         28.2 MB
+</code></pre><h4 id=证书文件>证书文件</h4><pre><code class=language-bash>/srv/kubernetes/
+apiserver-aggregator-ca.cert  apiserver-aggregator.key  basic_auth.csv  ca.key            proxy-client.cert  server.cert
+apiserver-aggregator.cert     assets                    ca.crt          known_tokens.csv  proxy-client.key   server.key
+</code></pre><h4 id=kubelet启动参数>kubelet启动参数</h4><p>这里并没有像kubeadm那样配置另外的参数</p><pre><code class=language-bash>cat /etc/sysconfig/kubelet
+DAEMON_ARGS=&quot;--allow-privileged=true  \ 
+--cgroup-root=/  \ 
+--cloud-provider=aws  \ 
+--cluster-dns=100.64.0.10  \ 
+--cluster-domain=cluster.local  \ 
+--enable-debugging-handlers=true  \ 
+--eviction-hard=memory.available&lt;100Mi,nodefs.available&lt;10%,nodefs.inodesFree&lt;5%,imagefs.available&lt;10%,imagefs.inodesFree&lt;5%  \ 
+--feature-gates=ExperimentalCriticalPodAnnotation=true  \ 
+--hostname-override=ip-192-168-0-114.ap-southeast-1.compute.internal  \ 
+--kubeconfig=/var/lib/kubelet/kubeconfig  \ 
+--network-plugin=cni  \ 
+--node-labels=kops.k8s.io/instancegroup=master-ap-southeast-1a,kubernetes.io/role=master,node-role.kubernetes.io/master=  \ 
+--non-masquerade-cidr=100.64.0.0/10  \ 
+--pod-infra-container-image=k8s.gcr.io/pause-amd64:3.0  \ 
+--pod-manifest-path=/etc/kubernetes/manifests  \ 
+--register-schedulable=true  \ 
+--register-with-taints=node-role.kubernetes.io/master=:NoSchedule  \ 
+--v=2  \ 
+--cni-bin-dir=/opt/cni/bin/  \ 
+--cni-conf-dir=/etc/cni/net.d/&quot;
+
+HOME=&quot;/root&quot;
+</code></pre><h4 id=组件的mainfest配置>组件的mainfest配置</h4><pre><code class=language-yaml>新加的cloudconfig 
+cat /etc/kubernetes/cloud.config 
+[global]
+
+
+cat /etc/kubernetes/manifests/*
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    scheduler.alpha.kubernetes.io/critical-pod: &quot;&quot;
+  creationTimestamp: null
+  labels:
+    k8s-app: etcd-server-events
+  name: etcd-server-events
+  namespace: kube-system
+spec:
+  containers:
+  - command:
+    - /bin/sh
+    - -c
+    - mkfifo /tmp/pipe; (tee -a /var/log/etcd.log &lt; /tmp/pipe &amp; ) ; exec /usr/local/bin/etcd  &gt;
+      /tmp/pipe 2&gt;&amp;1
+    env:
+    - name: ETCD_NAME
+      value: etcd-events-a
+    - name: ETCD_DATA_DIR
+      value: /var/etcd/data-events
+    - name: ETCD_LISTEN_PEER_URLS
+      value: http://0.0.0.0:2381
+    - name: ETCD_LISTEN_CLIENT_URLS
+      value: http://0.0.0.0:4002
+    - name: ETCD_ADVERTISE_CLIENT_URLS
+      value: http://etcd-events-a.internal.vsxen.k8s.local:4002
+    - name: ETCD_INITIAL_ADVERTISE_PEER_URLS
+      value: http://etcd-events-a.internal.vsxen.k8s.local:2381
+    - name: ETCD_INITIAL_CLUSTER_STATE
+      value: new
+    - name: ETCD_INITIAL_CLUSTER_TOKEN
+      value: etcd-cluster-token-etcd-events
+    - name: ETCD_INITIAL_CLUSTER
+      value: etcd-events-a=http://etcd-events-a.internal.vsxen.k8s.local:2381
+    image: k8s.gcr.io/etcd:2.2.1
+    livenessProbe:
+      httpGet:
+        host: 127.0.0.1
+        path: /health
+        port: 4002
+        scheme: HTTP
+      initialDelaySeconds: 15
+      timeoutSeconds: 15
+    name: etcd-container
+    ports:
+    - containerPort: 2381
+      hostPort: 2381
+      name: serverport
+    - containerPort: 4002
+      hostPort: 4002
+      name: clientport
+    resources:
+      requests:
+        cpu: 100m
+    volumeMounts:
+    - mountPath: /var/etcd/data-events
+      name: varetcdata
+    - mountPath: /var/log/etcd.log
+      name: varlogetcd
+    - mountPath: /etc/hosts
+      name: hosts
+      readOnly: true
+  hostNetwork: true
+  tolerations:
+  - key: CriticalAddonsOnly
+    operator: Exists
+  volumes:
+  - hostPath:
+      path: /mnt/master-vol-0e93463fa81c17e96/var/etcd/data-events
+    name: varetcdata
+  - hostPath:
+      path: /var/log/etcd-events.log
+    name: varlogetcd
+  - hostPath:
+      path: /etc/hosts
+    name: hosts
+status: {}
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    scheduler.alpha.kubernetes.io/critical-pod: &quot;&quot;
+  creationTimestamp: null
+  labels:
+    k8s-app: etcd-server
+  name: etcd-server
+  namespace: kube-system
+spec:
+  containers:
+  - command:
+    - /bin/sh
+    - -c
+    - mkfifo /tmp/pipe; (tee -a /var/log/etcd.log &lt; /tmp/pipe &amp; ) ; exec /usr/local/bin/etcd  &gt;
+      /tmp/pipe 2&gt;&amp;1
+    env:
+    - name: ETCD_NAME
+      value: etcd-a
+    - name: ETCD_DATA_DIR
+      value: /var/etcd/data
+    - name: ETCD_LISTEN_PEER_URLS
+      value: http://0.0.0.0:2380
+    - name: ETCD_LISTEN_CLIENT_URLS
+      value: http://0.0.0.0:4001
+    - name: ETCD_ADVERTISE_CLIENT_URLS
+      value: http://etcd-a.internal.vsxen.k8s.local:4001
+    - name: ETCD_INITIAL_ADVERTISE_PEER_URLS
+      value: http://etcd-a.internal.vsxen.k8s.local:2380
+    - name: ETCD_INITIAL_CLUSTER_STATE
+      value: new
+    - name: ETCD_INITIAL_CLUSTER_TOKEN
+      value: etcd-cluster-token-etcd
+    - name: ETCD_INITIAL_CLUSTER
+      value: etcd-a=http://etcd-a.internal.vsxen.k8s.local:2380
+    image: k8s.gcr.io/etcd:2.2.1
+    livenessProbe:
+      httpGet:
+        host: 127.0.0.1
+        path: /health
+        port: 4001
+        scheme: HTTP
+      initialDelaySeconds: 15
+      timeoutSeconds: 15
+    name: etcd-container
+    ports:
+    - containerPort: 2380
+      hostPort: 2380
+      name: serverport
+    - containerPort: 4001
+      hostPort: 4001
+      name: clientport
+    resources:
+      requests:
+        cpu: 200m
+    volumeMounts:
+    - mountPath: /var/etcd/data
+      name: varetcdata
+    - mountPath: /var/log/etcd.log
+      name: varlogetcd
+    - mountPath: /etc/hosts
+      name: hosts
+      readOnly: true
+  hostNetwork: true
+  tolerations:
+  - key: CriticalAddonsOnly
+    operator: Exists
+  volumes:
+  - hostPath:
+      path: /mnt/master-vol-0e53097f0d8a2f30d/var/etcd/data
+    name: varetcdata
+  - hostPath:
+      path: /var/log/etcd.log
+    name: varlogetcd
+  - hostPath:
+      path: /etc/hosts
+    name: hosts
+status: {}
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    dns.alpha.kubernetes.io/internal: api.internal.vsxen.k8s.local
+    scheduler.alpha.kubernetes.io/critical-pod: &quot;&quot;
+  creationTimestamp: null
+  labels:
+    k8s-app: kube-apiserver
+  name: kube-apiserver
+  namespace: kube-system
+spec:
+  containers:
+  - command:
+    - /bin/sh
+    - -c
+    - mkfifo /tmp/pipe; (tee -a /var/log/kube-apiserver.log &lt; /tmp/pipe &amp; ) ; exec
+      /usr/local/bin/kube-apiserver --allow-privileged=true --anonymous-auth=false
+      --apiserver-count=1 --authorization-mode=RBAC --basic-auth-file=/srv/kubernetes/basic_auth.csv
+      --bind-address=0.0.0.0 --client-ca-file=/srv/kubernetes/ca.crt --cloud-provider=aws
+      --enable-admission-plugins=Initializers,NamespaceLifecycle,LimitRanger,ServiceAccount,PersistentVolumeLabel,DefaultStorageClass,DefaultTolerationSeconds,MutatingAdmissionWebhook,ValidatingAdmissionWebhook,NodeRestriction,ResourceQuota
+      --etcd-quorum-read=false --etcd-servers-overrides=/events#http://127.0.0.1:4002
+      --etcd-servers=http://127.0.0.1:4001 --insecure-bind-address=127.0.0.1 --insecure-port=8080
+      --kubelet-preferred-address-types=InternalIP,Hostname,ExternalIP --proxy-client-cert-file=/srv/kubernetes/apiserver-aggregator.cert
+      --proxy-client-key-file=/srv/kubernetes/apiserver-aggregator.key --requestheader-allowed-names=aggregator
+      --requestheader-client-ca-file=/srv/kubernetes/apiserver-aggregator-ca.cert
+      --requestheader-extra-headers-prefix=X-Remote-Extra- --requestheader-group-headers=X-Remote-Group
+      --requestheader-username-headers=X-Remote-User --secure-port=443 --service-cluster-ip-range=100.64.0.0/13
+      --storage-backend=etcd2 --tls-cert-file=/srv/kubernetes/server.cert --tls-private-key-file=/srv/kubernetes/server.key
+      --token-auth-file=/srv/kubernetes/known_tokens.csv --v=2 &gt; /tmp/pipe 2&gt;&amp;1
+    image: k8s.gcr.io/kube-apiserver:v1.10.3
+    livenessProbe:
+      httpGet:
+        host: 127.0.0.1
+        path: /healthz
+        port: 8080
+      initialDelaySeconds: 15
+      timeoutSeconds: 15
+    name: kube-apiserver
+    ports:
+    - containerPort: 443
+      hostPort: 443
+      name: https
+    - containerPort: 8080
+      hostPort: 8080
+      name: local
+    resources:
+      requests:
+        cpu: 150m
+    volumeMounts:
+    - mountPath: /etc/ssl
+      name: etcssl
+      readOnly: true
+    - mountPath: /etc/pki/tls
+      name: etcpkitls
+      readOnly: true
+    - mountPath: /etc/pki/ca-trust
+      name: etcpkica-trust
+      readOnly: true
+    - mountPath: /usr/share/ssl
+      name: usrsharessl
+      readOnly: true
+    - mountPath: /usr/ssl
+      name: usrssl
+      readOnly: true
+    - mountPath: /usr/lib/ssl
+      name: usrlibssl
+      readOnly: true
+    - mountPath: /usr/local/openssl
+      name: usrlocalopenssl
+      readOnly: true
+    - mountPath: /var/ssl
+      name: varssl
+      readOnly: true
+    - mountPath: /etc/openssl
+      name: etcopenssl
+      readOnly: true
+    - mountPath: /var/log/kube-apiserver.log
+      name: logfile
+    - mountPath: /srv/kubernetes
+      name: srvkube
+      readOnly: true
+    - mountPath: /srv/sshproxy
+      name: srvsshproxy
+      readOnly: true
+  hostNetwork: true
+  tolerations:
+  - key: CriticalAddonsOnly
+    operator: Exists
+  volumes:
+  - hostPath:
+      path: /etc/ssl
+    name: etcssl
+  - hostPath:
+      path: /etc/pki/tls
+    name: etcpkitls
+  - hostPath:
+      path: /etc/pki/ca-trust
+    name: etcpkica-trust
+  - hostPath:
+      path: /usr/share/ssl
+    name: usrsharessl
+  - hostPath:
+      path: /usr/ssl
+    name: usrssl
+  - hostPath:
+      path: /usr/lib/ssl
+    name: usrlibssl
+  - hostPath:
+      path: /usr/local/openssl
+    name: usrlocalopenssl
+  - hostPath:
+      path: /var/ssl
+    name: varssl
+  - hostPath:
+      path: /etc/openssl
+    name: etcopenssl
+  - hostPath:
+      path: /var/log/kube-apiserver.log
+    name: logfile
+  - hostPath:
+      path: /srv/kubernetes
+    name: srvkube
+  - hostPath:
+      path: /srv/sshproxy
+    name: srvsshproxy
+status: {}
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    scheduler.alpha.kubernetes.io/critical-pod: &quot;&quot;
+  creationTimestamp: null
+  labels:
+    k8s-app: kube-controller-manager
+  name: kube-controller-manager
+  namespace: kube-system
+spec:
+  containers:
+  - command:
+    - /bin/sh
+    - -c
+    - mkfifo /tmp/pipe; (tee -a /var/log/kube-controller-manager.log &lt; /tmp/pipe &amp;
+      ) ; exec /usr/local/bin/kube-controller-manager --allocate-node-cidrs=true --attach-detach-reconcile-sync-period=1m0s
+      --cloud-provider=aws --cluster-cidr=100.96.0.0/11 --cluster-name=vsxen.k8s.local
+      --cluster-signing-cert-file=/srv/kubernetes/ca.crt --cluster-signing-key-file=/srv/kubernetes/ca.key
+      --configure-cloud-routes=false --kubeconfig=/var/lib/kube-controller-manager/kubeconfig
+      --leader-elect=true --root-ca-file=/srv/kubernetes/ca.crt --service-account-private-key-file=/srv/kubernetes/server.key
+      --use-service-account-credentials=true --v=2 &gt; /tmp/pipe 2&gt;&amp;1
+    image: k8s.gcr.io/kube-controller-manager:v1.10.3
+    livenessProbe:
+      httpGet:
+        host: 127.0.0.1
+        path: /healthz
+        port: 10252
+      initialDelaySeconds: 15
+      timeoutSeconds: 15
+    name: kube-controller-manager
+    resources:
+      requests:
+        cpu: 100m
+    volumeMounts:
+    - mountPath: /etc/ssl
+      name: etcssl
+      readOnly: true
+    - mountPath: /etc/pki/tls
+      name: etcpkitls
+      readOnly: true
+    - mountPath: /etc/pki/ca-trust
+      name: etcpkica-trust
+      readOnly: true
+    - mountPath: /usr/share/ssl
+      name: usrsharessl
+      readOnly: true
+    - mountPath: /usr/ssl
+      name: usrssl
+      readOnly: true
+    - mountPath: /usr/lib/ssl
+      name: usrlibssl
+      readOnly: true
+    - mountPath: /usr/local/openssl
+      name: usrlocalopenssl
+      readOnly: true
+    - mountPath: /var/ssl
+      name: varssl
+      readOnly: true
+    - mountPath: /etc/openssl
+      name: etcopenssl
+      readOnly: true
+    - mountPath: /srv/kubernetes
+      name: srvkube
+      readOnly: true
+    - mountPath: /var/log/kube-controller-manager.log
+      name: logfile
+    - mountPath: /var/lib/kube-controller-manager
+      name: varlibkcm
+      readOnly: true
+  hostNetwork: true
+  tolerations:
+  - key: CriticalAddonsOnly
+    operator: Exists
+  volumes:
+  - hostPath:
+      path: /etc/ssl
+    name: etcssl
+  - hostPath:
+      path: /etc/pki/tls
+    name: etcpkitls
+  - hostPath:
+      path: /etc/pki/ca-trust
+    name: etcpkica-trust
+  - hostPath:
+      path: /usr/share/ssl
+    name: usrsharessl
+  - hostPath:
+      path: /usr/ssl
+    name: usrssl
+  - hostPath:
+      path: /usr/lib/ssl
+    name: usrlibssl
+  - hostPath:
+      path: /usr/local/openssl
+    name: usrlocalopenssl
+  - hostPath:
+      path: /var/ssl
+    name: varssl
+  - hostPath:
+      path: /etc/openssl
+    name: etcopenssl
+  - hostPath:
+      path: /srv/kubernetes
+    name: srvkube
+  - hostPath:
+      path: /var/log/kube-controller-manager.log
+    name: logfile
+  - hostPath:
+      path: /var/lib/kube-controller-manager
+    name: varlibkcm
+status: {}
+
+
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    scheduler.alpha.kubernetes.io/critical-pod: &quot;&quot;
+  creationTimestamp: null
+  labels:
+    k8s-app: kube-proxy
+    tier: node
+  name: kube-proxy
+  namespace: kube-system
+spec:
+  containers:
+  - command:
+    - /bin/sh
+    - -c
+    - mkfifo /tmp/pipe; (tee -a /var/log/kube-proxy.log &lt; /tmp/pipe &amp; ) ; exec /usr/local/bin/kube-proxy
+      --cluster-cidr=100.96.0.0/11 --conntrack-max-per-core=131072 --hostname-override=ip-192-168-0-114.ap-southeast-1.compute.internal
+      --kubeconfig=/var/lib/kube-proxy/kubeconfig --master=https://127.0.0.1 --oom-score-adj=-998
+      --resource-container=&quot;&quot; --v=2 &gt; /tmp/pipe 2&gt;&amp;1
+    image: k8s.gcr.io/kube-proxy:v1.10.3
+    name: kube-proxy
+    resources:
+      requests:
+        cpu: 100m
+    securityContext:
+      privileged: true
+    volumeMounts:
+    - mountPath: /var/lib/kube-proxy/kubeconfig
+      name: kubeconfig
+      readOnly: true
+    - mountPath: /var/log/kube-proxy.log
+      name: logfile
+    - mountPath: /lib/modules
+      name: modules
+      readOnly: true
+    - mountPath: /etc/ssl/certs
+      name: ssl-certs-hosts
+      readOnly: true
+    - mountPath: /etc/hosts
+      name: etchosts
+      readOnly: true
+    - mountPath: /run/xtables.lock
+      name: iptableslock
+  hostNetwork: true
+  tolerations:
+  - key: CriticalAddonsOnly
+    operator: Exists
+  volumes:
+  - hostPath:
+      path: /var/lib/kube-proxy/kubeconfig
+    name: kubeconfig
+  - hostPath:
+      path: /var/log/kube-proxy.log
+    name: logfile
+  - hostPath:
+      path: /lib/modules
+    name: modules
+  - hostPath:
+      path: /usr/share/ca-certificates
+    name: ssl-certs-hosts
+  - hostPath:
+      path: /etc/hosts
+    name: etchosts
+  - hostPath:
+      path: /run/xtables.lock
+      type: FileOrCreate
+    name: iptableslock
+status: {}
+
+
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    scheduler.alpha.kubernetes.io/critical-pod: &quot;&quot;
+  creationTimestamp: null
+  labels:
+    k8s-app: kube-scheduler
+  name: kube-scheduler
+  namespace: kube-system
+spec:
+  containers:
+  - command:
+    - /bin/sh
+    - -c
+    - mkfifo /tmp/pipe; (tee -a /var/log/kube-scheduler.log &lt; /tmp/pipe &amp; ) ; exec
+      /usr/local/bin/kube-scheduler --kubeconfig=/var/lib/kube-scheduler/kubeconfig
+      --leader-elect=true --v=2 &gt; /tmp/pipe 2&gt;&amp;1
+    image: k8s.gcr.io/kube-scheduler:v1.10.3
+    livenessProbe:
+      httpGet:
+        host: 127.0.0.1
+        path: /healthz
+        port: 10251
+      initialDelaySeconds: 15
+      timeoutSeconds: 15
+    name: kube-scheduler
+    resources:
+      requests:
+        cpu: 100m
+    volumeMounts:
+    - mountPath: /var/lib/kube-scheduler
+      name: varlibkubescheduler
+      readOnly: true
+    - mountPath: /var/log/kube-scheduler.log
+      name: logfile
+  hostNetwork: true
+  tolerations:
+  - key: CriticalAddonsOnly
+    operator: Exists
+  volumes:
+  - hostPath:
+      path: /var/lib/kube-scheduler
+    name: varlibkubescheduler
+  - hostPath:
+      path: /var/log/kube-scheduler.log
+    name: logfile
+status: {}
+
+</code></pre><h3 id=node>Node</h3><pre><code class=language-bash>protokube                                          1.10.0              757f84ea7739        3 days ago          278 MB
+k8s.gcr.io/kube-proxy                              v1.10.3             4261d315109d        2 months ago        97.1 MB
+k8s.gcr.io/k8s-dns-dnsmasq-nanny-amd64             1.14.10             6816817d9dce        4 months ago        40.4 MB
+k8s.gcr.io/k8s-dns-kube-dns-amd64                  1.14.10             55ffe31ac578        4 months ago        49.5 MB
+k8s.gcr.io/k8s-dns-sidecar-amd64                   1.14.10             8a7739f672b4        4 months ago        41.6 MB
+quay.io/calico/node                                v2.6.7              7c694b9cac81        6 months ago        282 MB
+quay.io/calico/cni                                 v1.11.2             6f0a76fc7dd2        8 months ago        70.8 MB
+k8s.gcr.io/cluster-proportional-autoscaler-amd64   1.1.2-r2            7d892ca550df        14 months ago       49.6 MB
+k8s.gcr.io/pause-amd64                             3.0                 99e59f495ffa        2 years ago         747 kB
+
+ls /srv/kubernetes/
+assets  ca.crt
+ls /var/lib/kube*
+/var/lib/kube-proxy:
+kubeconfig
+/var/lib/kubelet:
+cpu_manager_state  device-plugins  kubeconfig  pki  plugin-containers  plugins  pods
+
+
+Containers: 16
+ Running: 16
+ Paused: 0
+ Stopped: 0
+Images: 9
+Server Version: 17.03.2-ce
+Storage Driver: overlay
+ Backing Filesystem: extfs
+ Supports d_type: true
+Logging Driver: json-file
+Cgroup Driver: cgroupfs
+Plugins: 
+ Volume: local
+ Network: bridge host macvlan null overlay
+Swarm: inactive
+Runtimes: runc
+Default Runtime: runc
+Init Binary: docker-init
+containerd version: 4ab9917febca54791c5f071a9d1f404867857fcc
+runc version: 54296cf40ad8143b62dbcaa1d90e520a2136ddfe
+init version: 949e6fa
+Kernel Version: 4.4.121-k8s
+Operating System: Debian GNU/Linux 8 (jessie)
+OSType: linux
+Architecture: x86_64
+CPUs: 2
+Total Memory: 3.862 GiB
+Name: ip-192-168-2-159
+ID: TGD4:ALZB:24L5:XXMG:NHF7:2PD3:QJPI:HOM2:ERS3:GOGJ:W3XX:SRMW
+Docker Root Dir: /var/lib/docker
+Debug Mode (client): false
+Debug Mode (server): false
+Registry: https://index.docker.io/v1/
+Experimental: false
+Insecure Registries:
+ 127.0.0.0/8
+Live Restore Enabled: false
+
+</code></pre><p>遇到的问题</p><blockquote><p>Failed to get system container stats for &quot;/system.slice/docker.service&quot;: failed to get cgroup stats for &quot;/system.slice/docker.service&quot;:</p><p>failed to get container info for &quot;/system.slice/docker.service&quot;: unknown container &quot;/system.slice/docker.service&quot;</p></blockquote><h2 id=ref>Ref</h2><p>在AWS中国区使用kops安装k8s完全指南</p><p><a href=http://blog.geekidentity.com/k8s/kops/install-k8s-with-kops-in-china/>http://blog.geekidentity.com/k8s/kops/install-k8s-with-kops-in-china/</a></p></div><div class=post_footer><div class=meta><div class=info><span class="field tags"><i class=remixicon-stack-line></i><a href=https://vsxen.github.io/tags/k8s/>k8s</a></span></div></div></div></div></div></div><a id=back_to_top href=# class=back_to_top><span>△</span></a></div><div class=disqus><div id=disqus_thread></div><script type=application/javascript>var disqus_config=function(){};(function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('disqus_thread').innerHTML='Disqus comments not available by default when the website is previewed locally.';return;}
+var d=document,s=d.createElement('script');s.async=true;s.src='//'+"vsxen"+'.disqus.com/embed.js';s.setAttribute('data-timestamp',+new Date());(d.head||d.body).appendChild(s);})();</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div><footer class=footer><div class=powered_by><a href=https://zeuk.me>Designed by Zeuk,</a>
+<a href=http://www.gohugo.io/>Proudly published with Hugo</a></div><div class=footer_slogan><span>Software Define Everything</span></div></footer><script src=https://vsxen.github.io/js/jquery-3.3.1.min.js></script><script src=https://vsxen.github.io/js/zozo.js></script><script src=https://vsxen.github.io/js/highlight.pack.js></script><link href=https://vsxen.github.io/css/fancybox.min.css rel=stylesheet><script src=https://vsxen.github.io/js/fancybox.min.js></script><script>hljs.initHighlightingOnLoad()</script><script type=application/javascript>var doNotTrack=false;if(!doNotTrack){window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;ga('create','UA-81855844-3','auto');ga('send','pageview');}</script><script async src=https://www.google-analytics.com/analytics.js></script></body></html>

@@ -1,0 +1,252 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge,chrome=1"><meta name=viewport content="width=device-width,initial-scale=1"><meta name=author content=vsxen><meta name=description content=对于一个系统来说，认证和授权不可或缺的部分，最常见的方式要数账号密码，管理员和普通用户这种认证方式，也就是常说的ABAC。但是每次修改权限都需要重启，或者修改记录，会有些不方便，于是基于角色的访问控制><meta name=keywords content=blog,k8s,devops><link rel=canonical href=https://vsxen.github.io/2018/06/15/kubernetes-auth-rbac/><title>Kubernetes 认证与授权 &middot; Code Life</title><link rel="shortcut icon" href=https://vsxen.github.io/images/favicon.ico><link rel=stylesheet href=https://vsxen.github.io/css/animate.min.css><link rel=stylesheet href=https://vsxen.github.io/css/remixicon.css><link rel=stylesheet href=https://vsxen.github.io/css/zozo.css><link rel=stylesheet href=https://vsxen.github.io/css/highlight.css><script>(function(d){var config={kitId:'kfn1kkp',scriptTimeout:3000,async:true},h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;h.className+=" wf-loading";tk.src='https://use.typekit.net/'+config.kitId+'.js';tk.async=true;tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!="complete"&&a!="loaded")return;f=true;clearTimeout(t);try{Typekit.load(config)}catch(e){}};s.parentNode.insertBefore(tk,s)})(document);</script></head><body><div class="main animated"><div class="nav_container animated fadeInDown"><div class=site_nav id=site_nav><ul><li><a href=/>首页</a></li><li><a href=/posts/>归档</a></li><li><a href=/tags/>标签</a></li><li><a href=/about/>关于</a></li></ul></div><div class=menu_icon><a id=menu_icon><i class=remixicon-links-line></i></a></div></div><div class="header animated fadeInDown"><div class=site_title_container><div class=site_title><h1><a href=https://vsxen.github.io><span>Code Life</span>
+<img src=https://vsxen.github.io/images/logo.svg></a></h1></div><div class=description><p class=sub_title>Life is too bug</p><div class=my_socials><a href=%20 title=facebook target=_blank><i class=remixicon-facebook-fill></i></a><a href=%20 title=github target=_blank><i class=remixicon-github-fill></i></a><a href=%20 title=instagram target=_blank><i class=remixicon-instagram-fill></i></a><a href=%20 title=twitter target=_blank><i class=remixicon-twitter-fill></i></a><a href=%20 title=weibo target=_blank><i class=remixicon-weibo-fill></i></a><a href=https://vsxen.github.io/index.xml type=application/rss+xml title=rss target=_blank><i class=remixicon-rss-fill></i></a></div></div></div></div><div class=content><div class=post_page><div class="post animated fadeInDown"><div class="post_title post_detail_title"><h2><a href=/2018/06/15/kubernetes-auth-rbac/>Kubernetes 认证与授权</a></h2><span class=date>2018.06.15</span></div><div class="post_content markdown"><p>对于一个系统来说，认证和授权不可或缺的部分，最常见的方式要数账号密码，管理员和普通用户这种认证方式，也就是常说的ABAC。但是每次修改权限都需要重启，或者修改记录，会有些不方便，于是基于角色的访问控制--RBAC就出现了，同时k8s分离了认证，授权和准入的过程，方便第三方开发相关插件。</p><p>下图大致描述了k8s认证的流程图，描述了一个请求在经过APIServer的时候都经历了哪些鉴权的过程。如下图所示：需要访问API的有人类，也就是Ops，通过kubectl以及Kubeconfig配置文件和API-Server交互。还有就是Pod，也就是应用，对API资源进行CURD。然后依次经过了身份认证(authentication)、授权(authorization)和准入控制（admission control）。下面就来详细介绍下认证和授权</p><p><img src=/Users/thanos/all/note/k8s/assets/rbac.jpg alt></p><h2 id=认证>认证</h2><ul><li>Authentication：即身份验证，这个环节它面对的输入是整个http request，它负责对来自client的请求进行身份校验，支持的方法包括：<ul><li>client证书验证（https双向验证）</li><li>basic auth</li><li>普通token</li><li>jwt token(用于serviceaccount)</li></ul></li></ul><p>APIServer启动时，可以指定一种Authentication方法，也可以指定多种方法。如果指定了多种方法，那么APIServer将会逐个使用这些方法对客户端请求进行验证，只要请求数据通过其中一种方法的验证，APIServer就会认为Authentication成功；在较新版本kubeadm引导启动的k8s集群的apiserver初始配置中，默认支持client证书验证和serviceaccount两种身份验证方式。在这个环节，apiserver会通过client证书或http header中的字段(比如serviceaccount的jwt token)来识别出请求的“用户身份”，包括”user”、”group”等，这些信息将在后面的authorization环节用到。</p><h3 id=client-证书>Client 证书</h3><p>首先我们看一下kubectl的默认配置文件~/.kube/config</p><pre><code class=language-yaml>apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority-data: REDACTED
+    server: https://172.16.66.101:6443
+  name: kubernetes
+contexts:
+- context:
+    cluster: kubernetes
+    user: kubernetes-admin
+  name: kubernetes-admin@kubernetes
+current-context: kubernetes-admin@kubernetes
+kind: Config
+preferences: {}
+users:
+- name: kubernetes-admin
+  user:
+    client-certificate-data: REDACTED
+    client-key-data: REDACTED
+</code></pre><p>这有两个重要的信息 client-certificate-data, client-key-data,首先把data提取出来</p><pre><code class=language-bash># 生成client-certificate-data
+grep 'client-certificate-data' ~/.kube/config | head -n 1 | awk '{print $2}' | base64 -d &gt;&gt; kubecfg.crt
+
+# 生成client-key-data
+grep 'client-key-data' ~/.kube/config | head -n 1 | awk '{print $2}' | base64 -d &gt;&gt; kubecfg.key
+
+openssl x509 -noout -text -in kubecfg.crt
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number: 6675913985209031083 (0x5ca59c66277259ab)
+    Signature Algorithm: sha256WithRSAEncryption
+        Issuer: CN=kubernetes
+        Validity
+            Not Before: Apr 13 10:22:37 2019 GMT
+            Not After : Apr 12 10:22:38 2020 GMT
+        Subject: O=system:masters, CN=kubernetes-admin #此证书是签发给system:masters的，
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+                Public-Key: (2048 bit)
+                Modulus:
+                    .....
+                Exponent: 65537 (0x10001)
+        X509v3 extensions:
+            X509v3 Key Usage: critical
+                Digital Signature, Key Encipherment
+            X509v3 Extended Key Usage: 
+                TLS Web Client Authentication # 此证书可以作为TLS的客户端证书
+    Signature Algorithm: sha256WithRSAEncryption
+</code></pre><p>为什么是这个用户呢？在集群中可以看到这样一条记录，k8s默认把system:masters用户绑定上了clsuter-admin的角色，也就是整个集群的管理员，所以当我们有了这个客户端证书之后，就可以管理集群的任何资源。</p><pre><code class=language-bash>kubectl -n kube-system describe clusterrolebindings cluster-admin
+
+Name:         cluster-admin
+Labels:       kubernetes.io/bootstrapping=rbac-defaults
+Annotations:  rbac.authorization.kubernetes.io/autoupdate=true
+Role:
+  Kind:  ClusterRole
+  Name:  cluster-admin
+Subjects:
+  Kind   Name            Namespace
+</code></pre><p>下面我们来手动访问下API Server：</p><pre><code class=language-bash>MASTER=192.168.1.1
+# 因为是自签名证书 用-k 忽略证书校验 
+# 默认的request是system:anonymous用户 没有权限访问
+curl -k  https://$MASTER:6443/api
+{
+  &quot;kind&quot;: &quot;Status&quot;,
+  &quot;apiVersion&quot;: &quot;v1&quot;,
+  &quot;metadata&quot;: {
+
+  },
+  &quot;status&quot;: &quot;Failure&quot;,
+  &quot;message&quot;: &quot;forbidden: User \&quot;system:anonymous\&quot; cannot get path \&quot;/api\&quot;&quot;,
+  &quot;reason&quot;: &quot;Forbidden&quot;,
+  &quot;details&quot;: {
+
+  },
+  &quot;code&quot;: 403
+}
+# 使用客户端证书进行认证
+curl -v --cacert /etc/kubernetes/pki/ca.crt  --key ./kubecfg.key --cert ./kubecfg.crt https://$MASTER:6443/api
+# 同理访问kubelet的metrics接口
+curl -k  --cacert /etc/kubernetes/pki/ca.crt --cert /etc/kubernetes/pki/apiserver-kubelet-client.crt --key /etc/kubernetes/pki/apiserver-kubelet-client.key https://127.0.0.1:10250/metrics
+
+# 也可以生成另一类p12证书
+openssl pkcs12 -export -clcerts -inkey kubecfg.key -in kubecfg.crt -out kubecfg.p12 -name &quot;kubernetes-client&quot;
+</code></pre><h3 id=basic-auth>Basic Auth</h3><p>API有一个启动参数--basic-auth-file，可以指定一个csv格式的文件作为Basic Auth</p><pre><code class=language-yaml>cat &lt;&lt;EOF &gt; basicauth.csv
+admin,admin,1,&quot;demo&quot;
+EOF
+
+cat &lt;&lt;EOF &gt; kubectl apply -f -
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: ui-admin
+rules:
+- apiGroups:
+  - &quot;&quot;
+  resources:
+  - services
+  - services/proxy
+  verbs:
+  - '*'
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: ui-admin-binding
+  namespace: kube-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: ui-admin
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: User
+  name: admin
+EOF  
+</code></pre><h3 id=service-account>Service Account</h3><p>当创建一个Service Account会生成一个token，通过<code>kubectl -n kube-system describe secrets ${Service account}</code>可以看到一个以<code>eyJhbGciOiJSUzI1NiIsImtpZCI6IiJ9</code>开头的Token。可以在jwt.io上面解码一下，得到的结果如下所示：APIServer也就是通过这些字段进行鉴权的。</p><pre><code class=language-bash>{
+  &quot;iss&quot;: &quot;kubernetes/serviceaccount&quot;,
+  &quot;kubernetes.io/serviceaccount/namespace&quot;: &quot;default&quot;,
+  &quot;kubernetes.io/serviceaccount/secret.name&quot;: &quot;default-token-ph2f5&quot;,
+  &quot;kubernetes.io/serviceaccount/service-account.name&quot;: &quot;default&quot;,
+  &quot;kubernetes.io/serviceaccount/service-account.uid&quot;: &quot;7ce56043-7dcc-11e9-9925-00163e132347&quot;,
+  &quot;sub&quot;: &quot;system:serviceaccount:default:default&quot;
+}
+</code></pre><pre><code class=language-bash># 手动使用Token认证一下
+TOKEN=$(kubectl describe secret $(kubectl get secrets | grep default | cut -f1 -d ' ') | grep -E '^token' | cut -f2 -d':' | tr -d '\t')
+MASTER=10.96.0.1
+TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
+curl -k -H &quot;Authorization: Bearer $TOKEN&quot; https://$MASTER:6443/api
+</code></pre><h2 id=授权>授权</h2><p>Authorization：授权。这个环节面对的输入是http request context中的各种属性，包括：user、group、request path（比如：/api/v1、/healthz、/version等）、request verb(比如：get、list、create等)。APIServer会将这些属性值与事先配置好的访问策略(access policy）相比较。APIServer支持多种authorization mode，包括Node、RBAC、Webhook等。</p><pre><code class=language-bash>Authorization flags:
+
+      --authorization-mode strings
+                Ordered list of plug-ins to do authorization on secure port. Comma-delimited list of: AlwaysAllow,AlwaysDeny,ABAC,Webhook,RBAC,Node. (default [AlwaysAllow])
+      --authorization-policy-file string
+                File with authorization policy in csv format, used with --authorization-mode=ABAC, on the secure port.
+      --authorization-webhook-cache-authorized-ttl duration
+                The duration to cache 'authorized' responses from the webhook authorizer. (default 5m0s)
+      --authorization-webhook-cache-unauthorized-ttl duration
+                The duration to cache 'unauthorized' responses from the webhook authorizer. (default 30s)
+      --authorization-webhook-config-file string
+                File with webhook configuration in kubeconfig format, used with --authorization-mode=Webhook. The API server will query the remote service to determine access on the API server's secure port.
+</code></pre><p>APIServer启动时，可以指定一种authorization mode，也可以指定多种authorization mode，如果是后者，只要Request通过了其中一种mode的授权，那么该环节的最终结果就是授权成功。在较新版本kubeadm引导启动的k8s集群的apiserver初始配置中，authorization-mode的默认配置是”Node,RBAC”。Node授权器主要用于各个node上的kubelet访问apiserver时使用的，其他一般均由RBAC授权器来授权。</p><h3 id=准入>准入</h3><pre><code class=language-bash>Admission flags:
+
+      --admission-control strings
+                Admission is divided into two phases. In the first phase, only mutating admission plugins run. In the second phase, only validating admission plugins run. The names in the below list may
+                represent a validating plugin, a mutating plugin, or both. The order of plugins in which they are passed to this flag does not matter. Comma-delimited list of: AlwaysAdmit, AlwaysDeny,
+                AlwaysPullImages, DefaultStorageClass, DefaultTolerationSeconds, DenyEscalatingExec, DenyExecOnPrivileged, EventRateLimit, ExtendedResourceToleration, ImagePolicyWebhook, Initializers,
+                LimitPodHardAntiAffinityTopology, LimitRanger, MutatingAdmissionWebhook, NamespaceAutoProvision, NamespaceExists, NamespaceLifecycle, NodeRestriction,
+                OwnerReferencesPermissionEnforcement, PersistentVolumeClaimResize, PersistentVolumeLabel, PodNodeSelector, PodPreset, PodSecurityPolicy, PodTolerationRestriction, Priority,
+                ResourceQuota, SecurityContextDeny, ServiceAccount, StorageObjectInUseProtection, TaintNodesByCondition, ValidatingAdmissionWebhook. (DEPRECATED: Use --enable-admission-plugins or
+                --disable-admission-plugins instead. Will be removed in a future version.)
+      --admission-control-config-file string
+                File with admission control configuration.
+      --disable-admission-plugins strings
+                admission plugins that should be disabled although they are in the default enabled plugins list (NamespaceLifecycle, LimitRanger, ServiceAccount, TaintNodesByCondition, Priority,
+                DefaultTolerationSeconds, DefaultStorageClass, PersistentVolumeClaimResize, MutatingAdmissionWebhook, ValidatingAdmissionWebhook, ResourceQuota). Comma-delimited list of admission
+                plugins: AlwaysAdmit, AlwaysDeny, AlwaysPullImages, DefaultStorageClass, DefaultTolerationSeconds, DenyEscalatingExec, DenyExecOnPrivileged, EventRateLimit, ExtendedResourceToleration,
+                ImagePolicyWebhook, Initializers, LimitPodHardAntiAffinityTopology, LimitRanger, MutatingAdmissionWebhook, NamespaceAutoProvision, NamespaceExists, NamespaceLifecycle, NodeRestriction,
+                OwnerReferencesPermissionEnforcement, PersistentVolumeClaimResize, PersistentVolumeLabel, PodNodeSelector, PodPreset, PodSecurityPolicy, PodTolerationRestriction, Priority,
+                ResourceQuota, SecurityContextDeny, ServiceAccount, StorageObjectInUseProtection, TaintNodesByCondition, ValidatingAdmissionWebhook. The order of plugins in this flag does not matter.
+      --enable-admission-plugins strings
+                admission plugins that should be enabled in addition to default enabled ones (NamespaceLifecycle, LimitRanger, ServiceAccount, TaintNodesByCondition, Priority, DefaultTolerationSeconds,
+                DefaultStorageClass, PersistentVolumeClaimResize, MutatingAdmissionWebhook, ValidatingAdmissionWebhook, ResourceQuota). Comma-delimited list of admission plugins: AlwaysAdmit,
+                AlwaysDeny, AlwaysPullImages, DefaultStorageClass, DefaultTolerationSeconds, DenyEscalatingExec, DenyExecOnPrivileged, EventRateLimit, ExtendedResourceToleration, ImagePolicyWebhook,
+                Initializers, LimitPodHardAntiAffinityTopology, LimitRanger, MutatingAdmissionWebhook, NamespaceAutoProvision, NamespaceExists, NamespaceLifecycle, NodeRestriction,
+                OwnerReferencesPermissionEnforcement, PersistentVolumeClaimResize, PersistentVolumeLabel, PodNodeSelector, PodPreset, PodSecurityPolicy, PodTolerationRestriction, Priority,
+                ResourceQuota, SecurityContextDeny, ServiceAccount, StorageObjectInUseProtection, TaintNodesByCondition, ValidatingAdmissionWebhook. The order of plugins in this flag does not matter.
+</code></pre><p>经过了前面两个环境之后，就到了admission环节。API Server 可以通过-enable-admission-plugins参数指定加载的授权插件，目前有以下插件</p><ul><li>AlwaysAdmit：允许所有请求通过</li><li>AlwaysPullImages：在启动容器之前总是去下载镜像，相当于每当容器启动前做一次用于是否有权使用该容器镜像的检查</li><li>AlwaysDeny：禁止所有请求通过，用于测试</li><li>DenyEscalatingExec：拒绝exec和attach命令到有升级特权的Pod的终端用户访问。如果集中包含升级特权的容器，而要限制终端用户在这些容器中执行命令的能力，推荐使用此插件</li><li>ImagePolicyWebhook</li><li>ServiceAccount：这个插件实现了serviceAccounts等等自动化，如果使用ServiceAccount对象，强烈推荐使用这个插件</li><li>SecurityContextDeny：将Pod定义中定义了的SecurityContext选项全部失效。SecurityContext包含在容器中定义了操作系统级别的安全选型如fsGroup，selinux等选项</li><li>ResourceQuota：用于namespace上的配额管理，它会观察进入的请求，确保在namespace上的配额不超标。推荐将这个插件放到准入控制器列表的最后一个。ResourceQuota准入控制器既可以限制某个namespace中创建资源的数量，又可以限制某个namespace中被Pod请求的资源总量。ResourceQuota准入控制器和ResourceQuota资源对象一起可以实现资源配额管理。</li><li>LimitRanger：用于Pod和容器上的配额管理，它会观察进入的请求，确保Pod和容器上的配额不会超标。准入控制器LimitRanger和资源对象LimitRange一起实现资源限制管理</li><li>NamespaceLifecycle：当一个请求是在一个不存在的namespace下创建资源对象时，该请求会被拒绝。当删除一个namespace时，将会删除该namespace下的所有资源对象</li></ul><h2 id=rbac实战>RBAC实战</h2><p>k8s 大约有以下几种角色</p><ul><li>role 和 clusterrole 规定了权限的内容，也就是某个人或者角色能干什么</li><li>Service account 也就是具体的角色或者账户</li><li>rolebinding 和 clusterrolebinding 就是将两者结合在一起，规定什么人有什么样的权限</li></ul><p>下面我们来看一下例子</p><pre><code class=language-yaml>---
+# ------------------- ClusterRole ------------------- #
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: traefik-ingress-controller
+rules:
+  - apiGroups:
+      - &quot;&quot;
+    resources:
+      - services
+      - endpoints
+      - secrets
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - extensions
+    resources:
+      - ingresses
+    verbs:
+      - get
+      - list
+      - watch
+---
+# ------------------- ClusterRoleBinding ------------------- #
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: traefik-ingress-controller
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: traefik-ingress-controller
+subjects:
+- kind: ServiceAccount
+  name: traefik-ingress-controller
+  namespace: kube-system
+---
+# ------------------- ServiceAccount ------------------- #
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: traefik-ingress-controller
+  namespace: kube-system
+</code></pre><h2 id=审计>审计</h2><pre><code class=language-json>{
+  &quot;kind&quot;: &quot;Event&quot;,
+  &quot;apiVersion&quot;: &quot;audit.k8s.io/v1&quot;,
+  &quot;level&quot;: &quot;Request&quot;,
+  &quot;auditID&quot;: &quot;43af9fa0-d080-4f7b-bcf4-31fe4504348e&quot;,
+  &quot;stage&quot;: &quot;ResponseComplete&quot;,
+  &quot;requestURI&quot;: &quot;/apis/policy/v1beta1/podsecuritypolicies?resourceVersion=1&amp;timeout=9m58s&amp;timeoutSeconds=598&amp;watch=true&quot;,
+  &quot;verb&quot;: &quot;watch&quot;,
+  &quot;user&quot;: {
+    &quot;username&quot;: &quot;system:kube-controller-manager&quot;,
+    &quot;groups&quot;: [
+      &quot;system:authenticated&quot;
+    ]
+  },
+  &quot;sourceIPs&quot;: [
+    &quot;192.168.1.11&quot;
+  ],
+  &quot;userAgent&quot;: &quot;kube-controller-manager/v1.13.1 (linux/amd64) kubernetes/eec55b9/shared-informers&quot;,
+  &quot;objectRef&quot;: {
+    &quot;resource&quot;: &quot;podsecuritypolicies&quot;,
+    &quot;apiGroup&quot;: &quot;policy&quot;,
+    &quot;apiVersion&quot;: &quot;v1beta1&quot;
+  },
+  &quot;responseStatus&quot;: {
+    &quot;metadata&quot;: {},
+    &quot;code&quot;: 200
+  },
+  &quot;requestReceivedTimestamp&quot;: &quot;2019-03-28T09:52:43.369727Z&quot;,
+  &quot;stageTimestamp&quot;: &quot;2019-03-28T09:59:16.037365Z&quot;,
+  &quot;annotations&quot;: {
+    &quot;authorization.k8s.io/decision&quot;: &quot;allow&quot;,
+    &quot;authorization.k8s.io/reason&quot;: &quot;RBAC: allowed by ClusterRoleBinding \&quot;system:kube-controller-manager\&quot; of ClusterRole \&quot;system:kube-controller-manager\&quot; to User \&quot;system:kube-controller-manager\&quot;&quot;
+  }
+}
+</code></pre><h2 id=ref>Ref</h2><p>Kubernetes集群的安全配置</p><p><a href=https://tonybai.com/2016/11/25/the-security-settings-for-kubernetes-cluster/>https://tonybai.com/2016/11/25/the-security-settings-for-kubernetes-cluster/</a></p><p>Kubernetes RBAC 详解
+<a href=https://blog.qikqiak.com/post/use-rbac-in-k8s/>https://blog.qikqiak.com/post/use-rbac-in-k8s/</a></p><p>使用 RBAC 控制 kubectl 权限</p><p><a href=https://mritd.me/2018/03/20/use-rbac-to-control-kubectl-permissions/>https://mritd.me/2018/03/20/use-rbac-to-control-kubectl-permissions/</a></p></div><div class=post_footer><div class=meta><div class=info><span class="field tags"><i class=remixicon-stack-line></i><a href=https://vsxen.github.io/tags/k8s/>k8s</a></span></div></div></div></div></div></div><a id=back_to_top href=# class=back_to_top><span>△</span></a></div><div class=disqus><div id=disqus_thread></div><script type=application/javascript>var disqus_config=function(){};(function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('disqus_thread').innerHTML='Disqus comments not available by default when the website is previewed locally.';return;}
+var d=document,s=d.createElement('script');s.async=true;s.src='//'+"vsxen"+'.disqus.com/embed.js';s.setAttribute('data-timestamp',+new Date());(d.head||d.body).appendChild(s);})();</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div><footer class=footer><div class=powered_by><a href=https://zeuk.me>Designed by Zeuk,</a>
+<a href=http://www.gohugo.io/>Proudly published with Hugo</a></div><div class=footer_slogan><span>Software Define Everything</span></div></footer><script src=https://vsxen.github.io/js/jquery-3.3.1.min.js></script><script src=https://vsxen.github.io/js/zozo.js></script><script src=https://vsxen.github.io/js/highlight.pack.js></script><link href=https://vsxen.github.io/css/fancybox.min.css rel=stylesheet><script src=https://vsxen.github.io/js/fancybox.min.js></script><script>hljs.initHighlightingOnLoad()</script><script type=application/javascript>var doNotTrack=false;if(!doNotTrack){window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;ga('create','UA-81855844-3','auto');ga('send','pageview');}</script><script async src=https://www.google-analytics.com/analytics.js></script></body></html>

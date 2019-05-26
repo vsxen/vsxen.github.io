@@ -1,0 +1,204 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge,chrome=1"><meta name=viewport content="width=device-width,initial-scale=1"><meta name=author content=vsxen><meta name=description content=Pod作为k8s工作负载的基本单位,不论是Deployment还是job等等需要计算资源的控制器，都需要定义将被创建的pod模板，所以熟悉pod的所有字段还是很有必要的。今天就用Deployment作><meta name=keywords content=blog,k8s,devops><link rel=canonical href=https://vsxen.github.io/2019/05/25/k8s-pod-full-yaml/><title>一个完整的Pod 描述应该是什么样的？ &middot; Code Life</title><link rel="shortcut icon" href=https://vsxen.github.io/images/favicon.ico><link rel=stylesheet href=https://vsxen.github.io/css/animate.min.css><link rel=stylesheet href=https://vsxen.github.io/css/remixicon.css><link rel=stylesheet href=https://vsxen.github.io/css/zozo.css><link rel=stylesheet href=https://vsxen.github.io/css/highlight.css><script>(function(d){var config={kitId:'kfn1kkp',scriptTimeout:3000,async:true},h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;h.className+=" wf-loading";tk.src='https://use.typekit.net/'+config.kitId+'.js';tk.async=true;tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!="complete"&&a!="loaded")return;f=true;clearTimeout(t);try{Typekit.load(config)}catch(e){}};s.parentNode.insertBefore(tk,s)})(document);</script></head><body><div class="main animated"><div class="nav_container animated fadeInDown"><div class=site_nav id=site_nav><ul><li><a href=/>首页</a></li><li><a href=/posts/>归档</a></li><li><a href=/tags/>标签</a></li><li><a href=/about/>关于</a></li></ul></div><div class=menu_icon><a id=menu_icon><i class=remixicon-links-line></i></a></div></div><div class="header animated fadeInDown"><div class=site_title_container><div class=site_title><h1><a href=https://vsxen.github.io><span>Code Life</span>
+<img src=https://vsxen.github.io/images/logo.svg></a></h1></div><div class=description><p class=sub_title>Life is too bug</p><div class=my_socials><a href=%20 title=facebook target=_blank><i class=remixicon-facebook-fill></i></a><a href=%20 title=github target=_blank><i class=remixicon-github-fill></i></a><a href=%20 title=instagram target=_blank><i class=remixicon-instagram-fill></i></a><a href=%20 title=twitter target=_blank><i class=remixicon-twitter-fill></i></a><a href=%20 title=weibo target=_blank><i class=remixicon-weibo-fill></i></a><a href=https://vsxen.github.io/index.xml type=application/rss+xml title=rss target=_blank><i class=remixicon-rss-fill></i></a></div></div></div></div><div class=content><div class=post_page><div class="post animated fadeInDown"><div class="post_title post_detail_title"><h2><a href=/2019/05/25/k8s-pod-full-yaml/>一个完整的Pod 描述应该是什么样的？</a></h2><span class=date>2019.05.25</span></div><div class="post_content markdown"><p>Pod作为k8s工作负载的基本单位,不论是Deployment还是job等等需要计算资源的控制器，都需要定义将被创建的pod模板，所以熟悉pod的所有字段还是很有必要的。今天就用Deployment作为例子，看一下一个完整pod模板应该是什么样子的。</p><p>Deployment大致可以分为五个字段，可以用<code>kubectl explain deploy</code>命令查看。前两个字段分别为apiverion和kind，就不用多说了，后三个字段是metadata，spec和k8s生成的status，容我慢慢讲来。</p><h2 id=三大描述>三大描述</h2><h3 id=metadata>metadata</h3><p>此部分主要定义了pod的属性信息，注解和标签，名字，归属信息，是被哪个控制器创建的，pod-template-hash是必定存在的标签，仔细看会发现和rs的名字后面是相同的。
+示例：</p><pre><code>metadata:
+  creationTimestamp: &quot;2019-05-18T05:13:16Z&quot;
+  generateName: nginx-6c885545f8-
+  labels:
+    pod-template-hash: 6c885545f8
+    run: nginx
+  name: nginx-6c885545f8-gl8gc
+  namespace: default
+  ownerReferences:
+  - apiVersion: apps/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: ReplicaSet
+    name: nginx-6c885545f8
+    uid: a4dfdd64-792b-11e9-8da2-00163e132347
+  resourceVersion: &quot;1178868&quot;
+  selfLink: /api/v1/namespaces/default/pods/nginx-6c885545f8-gl8gc
+  uid: a4e0e290-792b-11e9-8da2-00163e132347
+</code></pre><h3 id=spec>spec</h3><p>终于到了pod的描述部分，最主要的containers部分就是在这里定义的，也是一个object，我们知道pod内的containers存储和网络等资源是共享的，CPU和memory也是可以隔离的，默认挂载了一个volume，也就是serviceaccount用来在内部访问APIServer所用的token，CA信息。
+按种类大致分为以下几种</p><ul><li><p>调度相关</p><ul><li>affinity 亲和性 分为nodeAffinity podAffinity podAntiAffinity三种</li><li>nodeName 节点名字 默认由调度器分配</li><li>nodeSelector 节点选择器</li><li>schedulerName 调度器名字</li><li>tolerations 容忍</li></ul></li><li><p>生命周期</p><ul><li>initContainers 初始化容器</li><li>containers 的 lifecycle 包括preStart和preStop脚本</li><li>restartPolicy 重启策略 Always, OnFailure,Never. Default to Always</li><li>terminationGracePeriodSeconds 优雅终止超时时间 默认30s</li><li>containers 的 terminationMessagePolicy可以记录下pod重启的原因，方便debug，其他应该就不需要多说了。</li></ul></li><li><p>网络相关</p><ul><li>dnsPolicy DNS策略 Defaults to &quot;ClusterFirst&quot;. Valid values are 'ClusterFirstWithHostNet', 'ClusterFirst', 'Default' or 'None'</li><li>hostNetwork 使用主机网络<br></li></ul></li></ul><pre><code class=language-yaml>spec:
+  containers:
+  - image: nginx:alpine
+    imagePullPolicy: IfNotPresent
+    name: nginx
+    resources: {}
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: FallbackToLogsOnError
+    volumeMounts:
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: default-token-pl5xj
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  enableServiceLinks: true
+  nodeName: haha
+  priority: 0
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  securityContext: {}
+  serviceAccount: default
+  serviceAccountName: default
+  terminationGracePeriodSeconds: 30
+  tolerations:
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+    tolerationSeconds: 300
+  volumes:
+  - name: default-token-pl5xj
+    secret:
+      defaultMode: 420
+      secretName: default-token-pl5xj
+</code></pre><h3 id=staus>staus</h3><p>顾名思义，这个字段主要就是pod的状态信息，包括健康检查状态，pod IP QOS等级等等信息。
+示例：</p><pre><code class=language-yaml>status:
+  conditions:
+  - lastProbeTime: null
+    lastTransitionTime: &quot;2019-05-18T08:10:12Z&quot;
+    status: &quot;True&quot;
+    type: Initialized
+  - lastProbeTime: null
+    lastTransitionTime: &quot;2019-05-18T08:10:13Z&quot;
+    status: &quot;True&quot;
+    type: Ready
+  - lastProbeTime: null
+    lastTransitionTime: &quot;2019-05-18T08:10:13Z&quot;
+    status: &quot;True&quot;
+    type: ContainersReady
+  - lastProbeTime: null
+    lastTransitionTime: &quot;2019-05-18T08:10:10Z&quot;
+    status: &quot;True&quot;
+    type: PodScheduled
+  containerStatuses:
+  - containerID: docker://93f6bd6fce495da06ab74b98594084dc6eaad1855536e6dbf4d9bf082e92712a
+    image: nginx:alpine
+    imageID: docker-pullable://nginx@sha256:d5e177fed5e4f264e55b19b84bdc494078a06775612a4f60963f296756ea83aa
+    lastState: {}
+    name: demo
+    ready: true
+    restartCount: 0
+    state:
+      running:
+        startedAt: &quot;2019-05-18T08:10:12Z&quot;
+  hostIP: 10.29.148.6
+  initContainerStatuses:
+  - containerID: docker://634d2abcc9addca6414f27e76f6f41801740eb83201bcf497c0b3f4c90087f2e
+    image: nginx:alpine
+    imageID: docker-pullable://nginx@sha256:d5e177fed5e4f264e55b19b84bdc494078a06775612a4f60963f296756ea83aa
+    lastState: {}
+    name: init-myservice
+    ready: true
+    restartCount: 0
+    state:
+      terminated:
+        containerID: docker://634d2abcc9addca6414f27e76f6f41801740eb83201bcf497c0b3f4c90087f2e
+        exitCode: 0
+        finishedAt: &quot;2019-05-18T08:10:11Z&quot;
+        reason: Completed
+        startedAt: &quot;2019-05-18T08:10:11Z&quot;
+  phase: Running
+  podIP: 10.244.0.158
+  qosClass: Burstable
+  startTime: &quot;2019-05-18T08:10:10Z&quot;
+</code></pre><p>附上比较完整的deployment</p><pre><code class=language-yaml>apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo
+spec:
+  selector:
+    matchLabels: {app: demo}
+  template:
+    metadata:
+      labels: {app: demo}
+    spec:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            preference:
+              matchExpressions:
+              - key: beta.kubernetes.io/arch
+                operator: In
+                values:
+                - amd64
+      containers:
+      - name: demo
+        image: nginx:alpine       
+        env:
+          - name: &quot;bool&quot;
+            value: &quot;true&quot;
+        lifecycle:
+          postStart:
+            exec:
+              command: [&quot;/bin/sh&quot;, &quot;-c&quot;, &quot;echo Hello from the postStart handler &gt; /usr/share/message&quot;]
+          preStop:
+            exec:
+              command: [&quot;/bin/sh&quot;,&quot;-c&quot;,&quot;nginx -s quit; while killall -0 nginx; do sleep 1; done&quot;]
+        readinessProbe:        
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+            httpHeaders:
+            - name: Custom-Header
+              value: Awesome
+          initialDelaySeconds: 3
+          periodSeconds: 3
+        resources:
+          limits: {memory: &quot;128Mi&quot;, cpu: &quot;500m&quot;}
+          requests: {memory: &quot;128Mi&quot;, cpu: &quot;10m&quot;}
+        ports:
+        - containerPort: 80
+        securityContext:
+          capabilities:
+            add: [&quot;NET_ADMIN&quot;, &quot;SYS_TIME&quot;]
+          allowPrivilegeEscalation: false
+          # seLinuxOptions:
+          #   level: &quot;s0:c123,c456&quot;
+        volumeMounts:
+          - name: metadata
+            mountPath: /etc/podinfo
+            readOnly: true
+      dnsPolicy: ClusterFirstWithHostNet
+      dnsConfig:
+        nameservers:
+          - 8.8.8.8
+      hostAliases:
+        - hostnames:
+          - foo.bar
+          ip: 127.0.0.1 
+      hostIPC: false
+      hostNetwork: false
+      hostname: demo
+      initContainers:
+      - name: init-myservice
+        image: nginx:alpine
+        command: [&quot;/bin/sh&quot;,&quot;-c&quot;,&quot;echo Hello from the initContainers handler &gt; /usr/share/init&quot;]
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      serviceAccountName: default
+      shareProcessNamespace: false
+      subdomain: ng
+      terminationGracePeriodSeconds: 30
+      tolerations:
+      - effect: NoExecute
+        key: node.kubernetes.io/not-ready
+        operator: Exists
+        tolerationSeconds: 300
+      volumes:
+        - name: metadata
+          downwardAPI:
+            items:
+              - path: &quot;labels&quot;
+                fieldRef:
+                  fieldPath: metadata.labels
+              - path: &quot;cpu_limit&quot;
+                resourceFieldRef:
+                  containerName: demo
+                  resource: limits.cpu
+                  divisor: 1m
+</code></pre><h2 id=ref>Ref</h2><p>Kubernetes: A Pod’s Life</p><p><a href=https://blog.openshift.com/kubernetes-pods-life/>https://blog.openshift.com/kubernetes-pods-life/</a></p></div><div class=post_footer><div class=meta><div class=info><span class="field tags"><i class=remixicon-stack-line></i><a href=https://vsxen.github.io/tags/k8s/>k8s</a></span></div></div></div></div></div></div><a id=back_to_top href=# class=back_to_top><span>△</span></a></div><div class=disqus><div id=disqus_thread></div><script type=application/javascript>var disqus_config=function(){};(function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('disqus_thread').innerHTML='Disqus comments not available by default when the website is previewed locally.';return;}
+var d=document,s=d.createElement('script');s.async=true;s.src='//'+"vsxen"+'.disqus.com/embed.js';s.setAttribute('data-timestamp',+new Date());(d.head||d.body).appendChild(s);})();</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div><footer class=footer><div class=powered_by><a href=https://zeuk.me>Designed by Zeuk,</a>
+<a href=http://www.gohugo.io/>Proudly published with Hugo</a></div><div class=footer_slogan><span>Software Define Everything</span></div></footer><script src=https://vsxen.github.io/js/jquery-3.3.1.min.js></script><script src=https://vsxen.github.io/js/zozo.js></script><script src=https://vsxen.github.io/js/highlight.pack.js></script><link href=https://vsxen.github.io/css/fancybox.min.css rel=stylesheet><script src=https://vsxen.github.io/js/fancybox.min.js></script><script>hljs.initHighlightingOnLoad()</script><script type=application/javascript>var doNotTrack=false;if(!doNotTrack){window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;ga('create','UA-81855844-3','auto');ga('send','pageview');}</script><script async src=https://www.google-analytics.com/analytics.js></script></body></html>
