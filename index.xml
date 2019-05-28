@@ -21,42 +21,6 @@
     </item>
     
     <item>
-      <title>k8s 监控体系 --  Prometheus Operator</title>
-      <link>https://vsxen.github.io/2019/05/25/promthus-operator/</link>
-      <pubDate>Sat, 25 May 2019 22:31:20 +0800</pubDate>
-      
-      <guid>https://vsxen.github.io/2019/05/25/promthus-operator/</guid>
-      <description>对于任何系统来说，监控都是不可或缺的东西，系统现在是什么样，与一周前相比是否需要调整资源等都需要一个监控系统来参考。对于k8s来说常用的开源监控方案也就是下面几种： heaspter+InfluxDB (已被弃用) Prometheus Open falcon Telegraf+InfluxDB 而且k8s所需</description>
-    </item>
-    
-    <item>
-      <title>一个完整的Pod 描述应该是什么样的？</title>
-      <link>https://vsxen.github.io/2019/05/25/k8s-pod-full-yaml/</link>
-      <pubDate>Sat, 25 May 2019 22:31:20 +0800</pubDate>
-      
-      <guid>https://vsxen.github.io/2019/05/25/k8s-pod-full-yaml/</guid>
-      <description>Pod作为k8s工作负载的基本单位,不论是Deployment还是job等等需要计算资源的控制器，都需要定义将被创建的pod模板，所以熟悉pod的所有字段还是很有必要的。今天就用Deployment作</description>
-    </item>
-    
-    <item>
-      <title>CoreDNS-基于Caddy的DNS Server</title>
-      <link>https://vsxen.github.io/2019/04/25/coredns/</link>
-      <pubDate>Thu, 25 Apr 2019 22:31:20 +0800</pubDate>
-      
-      <guid>https://vsxen.github.io/2019/04/25/coredns/</guid>
-      <description>​ CoreDNS利用作为Web服务器Caddy的一部分而开发的服务器框架。该框架具有非常灵活，可扩展的模型，用于通过各种中间件组件传递请求。这些中间件组件根据请求提供不同的操作，例如记录，重定向，修改</description>
-    </item>
-    
-    <item>
-      <title>k8s 七层访问入口 Ingress</title>
-      <link>https://vsxen.github.io/2019/04/25/k8s-ingress-useage/</link>
-      <pubDate>Thu, 25 Apr 2019 22:31:20 +0800</pubDate>
-      
-      <guid>https://vsxen.github.io/2019/04/25/k8s-ingress-useage/</guid>
-      <description>k8s初期的时候，只有Service作为四层负载均衡，后来才推出了专门用作七层的负载均衡--Ingress。第一批实现Ingress Controller的就是traefik以及Nginx Ingress</description>
-    </item>
-    
-    <item>
       <title>k8s 的实时日志 Events</title>
       <link>https://vsxen.github.io/2019/04/16/k8s-event-explorer/</link>
       <pubDate>Tue, 16 Apr 2019 09:43:24 +0000</pubDate>
@@ -66,12 +30,48 @@
     </item>
     
     <item>
+      <title>k8s 七层访问入口 Ingress</title>
+      <link>https://vsxen.github.io/2019/03/12/k8s-ingress-useage/</link>
+      <pubDate>Tue, 12 Mar 2019 22:31:20 +0800</pubDate>
+      
+      <guid>https://vsxen.github.io/2019/03/12/k8s-ingress-useage/</guid>
+      <description>k8s初期的时候，只有Service作为四层负载均衡，后来才推出了专门用作七层的负载均衡--Ingress。第一批实现Ingress Controller的就是traefik以及Nginx Ingress</description>
+    </item>
+    
+    <item>
+      <title>k8s 监控体系 --  Prometheus Operator</title>
+      <link>https://vsxen.github.io/2019/01/22/promthus-operator/</link>
+      <pubDate>Tue, 22 Jan 2019 22:31:20 +0800</pubDate>
+      
+      <guid>https://vsxen.github.io/2019/01/22/promthus-operator/</guid>
+      <description>对于任何系统来说，监控都是不可或缺的东西，系统现在是什么样，与一周前相比是否需要调整资源等都需要一个监控系统来参考。对于k8s来说常用的开源监控方案也就是下面几种： heaspter+InfluxDB (已被弃用) Prometheus Open falcon Telegraf+InfluxDB 而且k8s所需</description>
+    </item>
+    
+    <item>
       <title>关于</title>
       <link>https://vsxen.github.io/about/</link>
       <pubDate>Sat, 29 Dec 2018 20:24:28 +0800</pubDate>
       
       <guid>https://vsxen.github.io/about/</guid>
       <description>之前在用hexo，现在转了hugo，之前的文章很水很水，努力提高自己，希望是一个有深度的博客</description>
+    </item>
+    
+    <item>
+      <title>一个完整的Pod 描述应该是什么样的？</title>
+      <link>https://vsxen.github.io/2018/12/25/k8s-pod-full-yaml/</link>
+      <pubDate>Tue, 25 Dec 2018 22:31:20 +0800</pubDate>
+      
+      <guid>https://vsxen.github.io/2018/12/25/k8s-pod-full-yaml/</guid>
+      <description>Pod作为k8s工作负载的基本单位,不论是Deployment还是job等等需要计算资源的控制器，都需要定义将被创建的pod模板，所以熟悉pod的所有字段还是很有必要的。今天就用Deployment作</description>
+    </item>
+    
+    <item>
+      <title>CoreDNS-基于Caddy的DNS Server</title>
+      <link>https://vsxen.github.io/2018/11/17/coredns/</link>
+      <pubDate>Sat, 17 Nov 2018 22:31:20 +0800</pubDate>
+      
+      <guid>https://vsxen.github.io/2018/11/17/coredns/</guid>
+      <description>​ CoreDNS利用作为Web服务器Caddy的一部分而开发的服务器框架。该框架具有非常灵活，可扩展的模型，用于通过各种中间件组件传递请求。这些中间件组件根据请求提供不同的操作，例如记录，重定向，修改</description>
     </item>
     
     <item>
