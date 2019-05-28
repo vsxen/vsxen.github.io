@@ -1,7 +1,138 @@
-<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge,chrome=1"><meta name=viewport content="width=device-width,initial-scale=1"><meta name=author content=vsxen><meta name=description content="简介：Kubernetes Operations (kops) - Production Grade K8s Installation, Upgrades, and Management kops宣称已经达到生产级别，准备试一下kops，观察其运行控制平面的方式。官方的文档如下： https://github.com/kubernetes/kops/blob/master/docs/aws.md 安装 当然kops也是用golang写的，所以你只要下载预编译"><meta name=keywords content=blog,k8s,devops><link rel=canonical href=https://vsxen.github.io/2018/08/01/use-kops-in-aws/><title>在aws上使用kops部署k8s集群 &middot; Code Life</title><link rel="shortcut icon" href=https://vsxen.github.io/images/favicon.ico><link rel=stylesheet href=https://vsxen.github.io/css/animate.min.css><link rel=stylesheet href=https://vsxen.github.io/css/remixicon.css><link rel=stylesheet href=https://vsxen.github.io/css/zozo.css><link rel=stylesheet href=https://vsxen.github.io/css/highlight.css><script>(function(d){var config={kitId:'kfn1kkp',scriptTimeout:3000,async:true},h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;h.className+=" wf-loading";tk.src='https://use.typekit.net/'+config.kitId+'.js';tk.async=true;tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!="complete"&&a!="loaded")return;f=true;clearTimeout(t);try{Typekit.load(config)}catch(e){}};s.parentNode.insertBefore(tk,s)})(document);</script></head><body><div class="main animated"><div class="nav_container animated fadeInDown"><div class=site_nav id=site_nav><ul><li><a href=/>首页</a></li><li><a href=/posts/>归档</a></li><li><a href=/tags/>标签</a></li><li><a href=/about/>关于</a></li></ul></div><div class=menu_icon><a id=menu_icon><i class=remixicon-links-line></i></a></div></div><div class="header animated fadeInDown"><div class=site_title_container><div class=site_title><h1><a href=https://vsxen.github.io><span>Code Life</span>
-<img src=https://vsxen.github.io/images/logo.svg></a></h1></div><div class=description><p class=sub_title>Life is too bug</p><div class=my_socials><a href=%20 title=facebook target=_blank><i class=remixicon-facebook-fill></i></a><a href=%20 title=github target=_blank><i class=remixicon-github-fill></i></a><a href=%20 title=instagram target=_blank><i class=remixicon-instagram-fill></i></a><a href=%20 title=twitter target=_blank><i class=remixicon-twitter-fill></i></a><a href=%20 title=weibo target=_blank><i class=remixicon-weibo-fill></i></a><a href=https://vsxen.github.io/index.xml type=application/rss+xml title=rss target=_blank><i class=remixicon-rss-fill></i></a></div></div></div></div><div class=content><div class=post_page><div class="post animated fadeInDown"><div class="post_title post_detail_title"><h2><a href=/2018/08/01/use-kops-in-aws/>在aws上使用kops部署k8s集群</a></h2><span class=date>2018.08.01</span></div><div class="post_content markdown"><p>简介：Kubernetes Operations (kops) - Production Grade K8s Installation, Upgrades, and Management
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="vsxen"/>
+
+  
+  <meta name="description" content="简介：Kubernetes Operations (kops) - Production Grade K8s Installation, Upgrades, and Management kops宣称已经达到生产级别，准备试一下kops，观察其运行控制平面的方式。官方的文档如下： https://github.com/kubernetes/kops/blob/master/docs/aws.md 安装 当然kops也是用golang写的，所以你只要下载预编译"/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, k8s, devops"/>
+  
+
+  
+  <link rel="canonical" href="https://vsxen.github.io/2018/08/01/use-kops-in-aws/"/>
+
+  
+
+  <title>在aws上使用kops部署k8s集群 &middot; Code Life</title>
+
+  <link rel="shortcut icon" href="https://vsxen.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://vsxen.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://vsxen.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://vsxen.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://vsxen.github.io/css/highlight.css"/>
+
+  
+  
+
+  <script>
+    (function(d) {
+      var config = {
+        kitId: 'kfn1kkp',
+        scriptTimeout: 3000,
+        async: true
+      },
+      h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;h.className+=" wf-loading";tk.src='https://use.typekit.net/'+config.kitId+'.js';tk.async=true;tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!="complete"&&a!="loaded")return;f=true;clearTimeout(t);try{Typekit.load(config)}catch(e){}};s.parentNode.insertBefore(tk,s)
+    })(document);
+  </script>
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/posts/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://vsxen.github.io">
+          <span>Code Life</span>
+          <img src="https://vsxen.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">Life is too bug</p>
+      <div class="my_socials">
+        
+        
+        <a href="%20" title="facebook" target="_blank"><i class="remixicon-facebook-fill"></i></a>
+        
+        
+        
+        <a href="%20" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="%20" title="instagram" target="_blank"><i class="remixicon-instagram-fill"></i></a>
+        
+        
+        
+        <a href="%20" title="twitter" target="_blank"><i class="remixicon-twitter-fill"></i></a>
+        
+        
+        
+        <a href="%20" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://vsxen.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/2018/08/01/use-kops-in-aws/'>在aws上使用kops部署k8s集群</a></h2>
+          <span class="date">2018.08.01</span>
+        </div>
+        <div class="post_content markdown">
+
+<p>简介：Kubernetes Operations (kops) - Production Grade K8s Installation, Upgrades, and Management
 kops宣称已经达到生产级别，准备试一下kops，观察其运行控制平面的方式。官方的文档如下：
-<a href=https://github.com/kubernetes/kops/blob/master/docs/aws.md>https://github.com/kubernetes/kops/blob/master/docs/aws.md</a></p><h2 id=安装>安装</h2><p>当然kops也是用golang写的，所以你只要下载预编译的二进制文件即可。</p><pre><code class=language-bash># 指定版本
+<a href="https://github.com/kubernetes/kops/blob/master/docs/aws.md">https://github.com/kubernetes/kops/blob/master/docs/aws.md</a></p>
+
+<h2 id="安装">安装</h2>
+
+<p>当然kops也是用golang写的，所以你只要下载预编译的二进制文件即可。</p>
+
+<pre><code class="language-bash"># 指定版本
 https://github.com/kubernetes/kops/releases/download/1.10.0/kops-linux-amd64
 
 #最新版本
@@ -17,7 +148,21 @@ sudo mv ./kubectl /usr/local/bin/kubectl
 
 #awscli是用Python写的，安装Python和pip后直接运行下面命令就可以了。
 pip install awscli
-</code></pre><h2 id=创建iam>创建IAM</h2><p>kops 需要有以下四个权限，首先创建了kops的用户组，然后创建了kops用户</p><ul><li>AmazonEC2FullAccess</li><li>AmazonRoute53FullAccess</li><li>AmazonS3FullAccess</li><li>IAMFullAccess</li><li>AmazonVPCFullAccess</li></ul><pre><code class=language-bash>aws iam create-group --group-name kops
+</code></pre>
+
+<h2 id="创建iam">创建IAM</h2>
+
+<p>kops 需要有以下四个权限，首先创建了kops的用户组，然后创建了kops用户</p>
+
+<ul>
+<li>AmazonEC2FullAccess</li>
+<li>AmazonRoute53FullAccess</li>
+<li>AmazonS3FullAccess</li>
+<li>IAMFullAccess</li>
+<li>AmazonVPCFullAccess</li>
+</ul>
+
+<pre><code class="language-bash">aws iam create-group --group-name kops
 
 aws iam attach-group-policy --policy-arn arn:aws:iam::aws:policy/AmazonEC2FullAccess --group-name kops
 aws iam attach-group-policy --policy-arn arn:aws:iam::aws:policy/AmazonRoute53FullAccess --group-name kops
@@ -38,13 +183,25 @@ aws iam list-users      # you should see a list of all your IAM users here
 # Because &quot;aws configure&quot; doesn't export these vars for kops to use, we export them now
 export AWS_ACCESS_KEY_ID=$(aws configure get aws_access_key_id)
 export AWS_SECRET_ACCESS_KEY=$(aws configure get aws_secret_access_key)
-</code></pre><h2 id=创建s3>创建S3</h2><p>首先我创建了一个s3的存储，用于存放kops的配置文件，然后为这个存储桶加入了版本控制</p><pre><code class=language-bash>aws s3api create-bucket \
+</code></pre>
+
+<h2 id="创建s3">创建S3</h2>
+
+<p>首先我创建了一个s3的存储，用于存放kops的配置文件，然后为这个存储桶加入了版本控制</p>
+
+<pre><code class="language-bash">aws s3api create-bucket \
     --bucket k8s-lc-demo \
     --region ap-southeast-1
     
 aws s3api put-bucket-versioning --bucket k8s-lc-demo --versioning-configuration Status=Enabled
-</code></pre><h2 id=创建集群>创建集群</h2><p>首先需要配置一下kops在S3上的存储路径，然后我指定了集群在三个可用区，一个VPC,三个子网
-网络方案采用calico（默认是kubenet），一个Node，一个master。</p><pre><code class=language-bash>export KOPS_STATE_STORE=s3://k8s-lc-demo
+</code></pre>
+
+<h2 id="创建集群">创建集群</h2>
+
+<p>首先需要配置一下kops在S3上的存储路径，然后我指定了集群在三个可用区，一个VPC,三个子网
+网络方案采用calico（默认是kubenet），一个Node，一个master。</p>
+
+<pre><code class="language-bash">export KOPS_STATE_STORE=s3://k8s-lc-demo
 
 export NAME=vsxen.k8s.local
 
@@ -105,7 +262,11 @@ Flags:
   -y, --yes                              Specify --yes to immediately create the cluster
       --zones strings                    Zones in which to run the cluster
 
-</code></pre><h2 id=集群信息查看>集群信息查看</h2><pre><code class=language-bash>kubectl -n kube-system get all
+</code></pre>
+
+<h2 id="集群信息查看">集群信息查看</h2>
+
+<pre><code class="language-bash">kubectl -n kube-system get all
 NAME                                                                           READY     STATUS    RESTARTS   AGE
 pod/dns-controller-6d6b7f78b-d59r9                                             1/1       Running   0          6m
 pod/etcd-server-events-ip-192-168-0-154.ap-southeast-1.compute.internal        1/1       Running   0          6m
@@ -144,7 +305,13 @@ NAME                                             DESIRED   CURRENT   READY     A
 replicaset.apps/dns-controller-6d6b7f78b         1         1         1         7m
 replicaset.apps/kube-dns-5fbcb4d67b              2         2         2         6m
 replicaset.apps/kube-dns-autoscaler-6874c546dd   1         1         1         6m
-</code></pre><h3 id=master>Master</h3><p>所有的Docker镜像,看得出和kubeadm启动方式一样</p><pre><code class=language-bash>protokube                            1.10.0              757f84ea7739        2 days ago          278 MB
+</code></pre>
+
+<h3 id="master">Master</h3>
+
+<p>所有的Docker镜像,看得出和kubeadm启动方式一样</p>
+
+<pre><code class="language-bash">protokube                            1.10.0              757f84ea7739        2 days ago          278 MB
 kope/dns-controller                  1.10.0              082d4c9dd8fe        3 days ago          119 MB
 k8s.gcr.io/kube-proxy                v1.10.3             4261d315109d        2 months ago        97.1 MB
 k8s.gcr.io/kube-apiserver            v1.10.3             e03746fe22c3        2 months ago        225 MB
@@ -155,10 +322,20 @@ quay.io/calico/kube-controllers      v1.0.3              34aebe64326d        7 m
 quay.io/calico/cni                   v1.11.2             6f0a76fc7dd2        8 months ago        70.8 MB
 k8s.gcr.io/pause-amd64               3.0                 99e59f495ffa        2 years ago         747 kB
 k8s.gcr.io/etcd                      2.2.1               ef5842ca5c42        2 years ago         28.2 MB
-</code></pre><h4 id=证书文件>证书文件</h4><pre><code class=language-bash>/srv/kubernetes/
+</code></pre>
+
+<h4 id="证书文件">证书文件</h4>
+
+<pre><code class="language-bash">/srv/kubernetes/
 apiserver-aggregator-ca.cert  apiserver-aggregator.key  basic_auth.csv  ca.key            proxy-client.cert  server.cert
 apiserver-aggregator.cert     assets                    ca.crt          known_tokens.csv  proxy-client.key   server.key
-</code></pre><h4 id=kubelet启动参数>kubelet启动参数</h4><p>这里并没有像kubeadm那样配置另外的参数</p><pre><code class=language-bash>cat /etc/sysconfig/kubelet
+</code></pre>
+
+<h4 id="kubelet启动参数">kubelet启动参数</h4>
+
+<p>这里并没有像kubeadm那样配置另外的参数</p>
+
+<pre><code class="language-bash">cat /etc/sysconfig/kubelet
 DAEMON_ARGS=&quot;--allow-privileged=true  \ 
 --cgroup-root=/  \ 
 --cloud-provider=aws  \ 
@@ -181,7 +358,11 @@ DAEMON_ARGS=&quot;--allow-privileged=true  \
 --cni-conf-dir=/etc/cni/net.d/&quot;
 
 HOME=&quot;/root&quot;
-</code></pre><h4 id=组件的mainfest配置>组件的mainfest配置</h4><pre><code class=language-yaml>新加的cloudconfig 
+</code></pre>
+
+<h4 id="组件的mainfest配置">组件的mainfest配置</h4>
+
+<pre><code class="language-yaml">新加的cloudconfig 
 cat /etc/kubernetes/cloud.config 
 [global]
 
@@ -706,7 +887,11 @@ spec:
     name: logfile
 status: {}
 
-</code></pre><h3 id=node>Node</h3><pre><code class=language-bash>protokube                                          1.10.0              757f84ea7739        3 days ago          278 MB
+</code></pre>
+
+<h3 id="node">Node</h3>
+
+<pre><code class="language-bash">protokube                                          1.10.0              757f84ea7739        3 days ago          278 MB
 k8s.gcr.io/kube-proxy                              v1.10.3             4261d315109d        2 months ago        97.1 MB
 k8s.gcr.io/k8s-dns-dnsmasq-nanny-amd64             1.14.10             6816817d9dce        4 months ago        40.4 MB
 k8s.gcr.io/k8s-dns-kube-dns-amd64                  1.14.10             55ffe31ac578        4 months ago        49.5 MB
@@ -763,6 +948,102 @@ Insecure Registries:
  127.0.0.0/8
 Live Restore Enabled: false
 
-</code></pre><p>遇到的问题</p><blockquote><p>Failed to get system container stats for &quot;/system.slice/docker.service&quot;: failed to get cgroup stats for &quot;/system.slice/docker.service&quot;:</p><p>failed to get container info for &quot;/system.slice/docker.service&quot;: unknown container &quot;/system.slice/docker.service&quot;</p></blockquote><h2 id=ref>Ref</h2><p>在AWS中国区使用kops安装k8s完全指南</p><p><a href=http://blog.geekidentity.com/k8s/kops/install-k8s-with-kops-in-china/>http://blog.geekidentity.com/k8s/kops/install-k8s-with-kops-in-china/</a></p></div><div class=post_footer><div class=meta><div class=info><span class="field tags"><i class=remixicon-stack-line></i><a href=https://vsxen.github.io/tags/k8s/>k8s</a></span></div></div></div></div></div></div><a id=back_to_top href=# class=back_to_top><span>△</span></a></div><div class=disqus><div id=disqus_thread></div><script type=application/javascript>var disqus_config=function(){};(function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('disqus_thread').innerHTML='Disqus comments not available by default when the website is previewed locally.';return;}
-var d=document,s=d.createElement('script');s.async=true;s.src='//'+"vsxen"+'.disqus.com/embed.js';s.setAttribute('data-timestamp',+new Date());(d.head||d.body).appendChild(s);})();</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div><footer class=footer><div class=powered_by><a href=https://zeuk.me>Designed by Zeuk,</a>
-<a href=http://www.gohugo.io/>Proudly published with Hugo</a></div><div class=footer_slogan><span>Software Define Everything</span></div></footer><script src=https://vsxen.github.io/js/jquery-3.3.1.min.js></script><script src=https://vsxen.github.io/js/zozo.js></script><script src=https://vsxen.github.io/js/highlight.pack.js></script><link href=https://vsxen.github.io/css/fancybox.min.css rel=stylesheet><script src=https://vsxen.github.io/js/fancybox.min.js></script><script>hljs.initHighlightingOnLoad()</script><script type=application/javascript>var doNotTrack=false;if(!doNotTrack){window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;ga('create','UA-81855844-3','auto');ga('send','pageview');}</script><script async src=https://www.google-analytics.com/analytics.js></script></body></html>
+</code></pre>
+
+<p>遇到的问题</p>
+
+<blockquote>
+<p>Failed to get system container stats for &quot;/system.slice/docker.service&quot;: failed to get cgroup stats for &quot;/system.slice/docker.service&quot;:</p>
+
+<p>failed to get container info for &quot;/system.slice/docker.service&quot;: unknown container &quot;/system.slice/docker.service&quot;</p>
+</blockquote>
+
+<h2 id="ref">Ref</h2>
+
+<p>在AWS中国区使用kops安装k8s完全指南</p>
+
+<p><a href="http://blog.geekidentity.com/k8s/kops/install-k8s-with-kops-in-china/">http://blog.geekidentity.com/k8s/kops/install-k8s-with-kops-in-china/</a></p>
+</div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://vsxen.github.io/tags/k8s/">k8s</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<div class="disqus">
+  <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "vsxen" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://zeuk.me">Designed by Zeuk,</a>
+    <a href="http://www.gohugo.io/">Proudly published with Hugo</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>Software Define Everything</span>
+  </div>
+</footer>
+
+
+
+<script src="https://vsxen.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://vsxen.github.io/js/zozo.js"></script>
+<script src="https://vsxen.github.io/js/highlight.pack.js"></script>
+<link  href="https://vsxen.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://vsxen.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-81855844-3', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+
+</body>
+</html>

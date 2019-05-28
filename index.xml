@@ -1,1 +1,87 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Code Life</title><link>https://vsxen.github.io/</link><description>Recent content on Code Life</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Sat, 25 May 2019 22:31:20 +0800</lastBuildDate><atom:link href="https://vsxen.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title>k8s APIServer WebHook相关准入控制器</title><link>https://vsxen.github.io/2019/05/25/k8s-apiserver-webhook/</link><pubDate>Sat, 25 May 2019 22:31:20 +0800</pubDate><guid>https://vsxen.github.io/2019/05/25/k8s-apiserver-webhook/</guid><description>当你在k8s集群中一个不存在的namespace中创建一个pod，会返回一个namespace not found类似的错误，你有想过这个是哪个组件完成的吗？对就是admission plugin。 从控制器说起</description></item><item><title>一个完整的Pod 描述应该是什么样的？</title><link>https://vsxen.github.io/2019/05/25/k8s-pod-full-yaml/</link><pubDate>Sat, 25 May 2019 22:31:20 +0800</pubDate><guid>https://vsxen.github.io/2019/05/25/k8s-pod-full-yaml/</guid><description>Pod作为k8s工作负载的基本单位,不论是Deployment还是job等等需要计算资源的控制器，都需要定义将被创建的pod模板，所以熟悉pod的所有字段还是很有必要的。今天就用Deployment作</description></item><item><title>k8s 七层访问入口 Ingress</title><link>https://vsxen.github.io/2019/04/25/k8s-ingress-useage/</link><pubDate>Thu, 25 Apr 2019 22:31:20 +0800</pubDate><guid>https://vsxen.github.io/2019/04/25/k8s-ingress-useage/</guid><description>k8s初期的时候，只有Service作为四层负载均衡，后来才推出了专门用作七层的负载均衡--Ingress。第一批实现Ingress Controller的就是traefik以及Nginx Ingress</description></item><item><title>k8s 的实时日志 Events</title><link>https://vsxen.github.io/2019/04/16/k8s-event-explorer/</link><pubDate>Tue, 16 Apr 2019 09:43:24 +0000</pubDate><guid>https://vsxen.github.io/2019/04/16/k8s-event-explorer/</guid><description>什么是k8s的Events？比如你启动了一个Deployment，k8s的各大组件就开始依次忙碌起来，最终完成Pod的创建，从声明一个Deployment开始，到Pod启动完成，会生成一些列Event</description></item><item><title>关于</title><link>https://vsxen.github.io/about/</link><pubDate>Sat, 29 Dec 2018 20:24:28 +0800</pubDate><guid>https://vsxen.github.io/about/</guid><description>之前在用hexo，现在转了hugo，之前的文章很水很水，努力提高自己，希望是一个有深度的博客</description></item><item><title>在aws上使用kops部署k8s集群</title><link>https://vsxen.github.io/2018/08/01/use-kops-in-aws/</link><pubDate>Wed, 01 Aug 2018 14:08:15 +0000</pubDate><guid>https://vsxen.github.io/2018/08/01/use-kops-in-aws/</guid><description>简介：Kubernetes Operations (kops) - Production Grade K8s Installation, Upgrades, and Management kops宣称已经达到生产级别，准备试一下kops，观察其运行控制平面的方式。官方的文档如下： https://github.com/kubernetes/kops/blob/master/docs/aws.md 安装 当然kops也是用golang写的，所以你只要下载预编译</description></item><item><title>Kubernetes 认证与授权</title><link>https://vsxen.github.io/2018/06/15/kubernetes-auth-rbac/</link><pubDate>Fri, 15 Jun 2018 22:31:20 +0800</pubDate><guid>https://vsxen.github.io/2018/06/15/kubernetes-auth-rbac/</guid><description>对于一个系统来说，认证和授权不可或缺的部分，最常见的方式要数账号密码，管理员和普通用户这种认证方式，也就是常说的ABAC。但是每次修改权限都需要重启，或者修改记录，会有些不方便，于是基于角色的访问控制</description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Code Life</title>
+    <link>https://vsxen.github.io/</link>
+    <description>Recent content on Code Life</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Sat, 25 May 2019 22:31:20 +0800</lastBuildDate>
+    
+	<atom:link href="https://vsxen.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>k8s APIServer WebHook相关准入控制器</title>
+      <link>https://vsxen.github.io/2019/05/25/k8s-apiserver-webhook/</link>
+      <pubDate>Sat, 25 May 2019 22:31:20 +0800</pubDate>
+      
+      <guid>https://vsxen.github.io/2019/05/25/k8s-apiserver-webhook/</guid>
+      <description>当你在k8s集群中一个不存在的namespace中创建一个pod，会返回一个namespace not found类似的错误，你有想过这个是哪个组件完成的吗？对就是admission plugin。 从控制器说起</description>
+    </item>
+    
+    <item>
+      <title>一个完整的Pod 描述应该是什么样的？</title>
+      <link>https://vsxen.github.io/2019/05/25/k8s-pod-full-yaml/</link>
+      <pubDate>Sat, 25 May 2019 22:31:20 +0800</pubDate>
+      
+      <guid>https://vsxen.github.io/2019/05/25/k8s-pod-full-yaml/</guid>
+      <description>Pod作为k8s工作负载的基本单位,不论是Deployment还是job等等需要计算资源的控制器，都需要定义将被创建的pod模板，所以熟悉pod的所有字段还是很有必要的。今天就用Deployment作</description>
+    </item>
+    
+    <item>
+      <title>CoreDNS-基于Caddy的DNS Server</title>
+      <link>https://vsxen.github.io/2019/04/25/coredns/</link>
+      <pubDate>Thu, 25 Apr 2019 22:31:20 +0800</pubDate>
+      
+      <guid>https://vsxen.github.io/2019/04/25/coredns/</guid>
+      <description>​ CoreDNS利用作为Web服务器Caddy的一部分而开发的服务器框架。该框架具有非常灵活，可扩展的模型，用于通过各种中间件组件传递请求。这些中间件组件根据请求提供不同的操作，例如记录，重定向，修改</description>
+    </item>
+    
+    <item>
+      <title>k8s 七层访问入口 Ingress</title>
+      <link>https://vsxen.github.io/2019/04/25/k8s-ingress-useage/</link>
+      <pubDate>Thu, 25 Apr 2019 22:31:20 +0800</pubDate>
+      
+      <guid>https://vsxen.github.io/2019/04/25/k8s-ingress-useage/</guid>
+      <description>k8s初期的时候，只有Service作为四层负载均衡，后来才推出了专门用作七层的负载均衡--Ingress。第一批实现Ingress Controller的就是traefik以及Nginx Ingress</description>
+    </item>
+    
+    <item>
+      <title>k8s 的实时日志 Events</title>
+      <link>https://vsxen.github.io/2019/04/16/k8s-event-explorer/</link>
+      <pubDate>Tue, 16 Apr 2019 09:43:24 +0000</pubDate>
+      
+      <guid>https://vsxen.github.io/2019/04/16/k8s-event-explorer/</guid>
+      <description>什么是k8s的Events？比如你启动了一个Deployment，k8s的各大组件就开始依次忙碌起来，最终完成Pod的创建，从声明一个Deployment开始，到Pod启动完成，会生成一些列Event</description>
+    </item>
+    
+    <item>
+      <title>关于</title>
+      <link>https://vsxen.github.io/about/</link>
+      <pubDate>Sat, 29 Dec 2018 20:24:28 +0800</pubDate>
+      
+      <guid>https://vsxen.github.io/about/</guid>
+      <description>之前在用hexo，现在转了hugo，之前的文章很水很水，努力提高自己，希望是一个有深度的博客</description>
+    </item>
+    
+    <item>
+      <title>在aws上使用kops部署k8s集群</title>
+      <link>https://vsxen.github.io/2018/08/01/use-kops-in-aws/</link>
+      <pubDate>Wed, 01 Aug 2018 14:08:15 +0000</pubDate>
+      
+      <guid>https://vsxen.github.io/2018/08/01/use-kops-in-aws/</guid>
+      <description>简介：Kubernetes Operations (kops) - Production Grade K8s Installation, Upgrades, and Management kops宣称已经达到生产级别，准备试一下kops，观察其运行控制平面的方式。官方的文档如下： https://github.com/kubernetes/kops/blob/master/docs/aws.md 安装 当然kops也是用golang写的，所以你只要下载预编译</description>
+    </item>
+    
+    <item>
+      <title>Kubernetes 认证与授权</title>
+      <link>https://vsxen.github.io/2018/06/15/kubernetes-auth-rbac/</link>
+      <pubDate>Fri, 15 Jun 2018 22:31:20 +0800</pubDate>
+      
+      <guid>https://vsxen.github.io/2018/06/15/kubernetes-auth-rbac/</guid>
+      <description>对于一个系统来说，认证和授权不可或缺的部分，最常见的方式要数账号密码，管理员和普通用户这种认证方式，也就是常说的ABAC。但是每次修改权限都需要重启，或者修改记录，会有些不方便，于是基于角色的访问控制</description>
+    </item>
+    
+  </channel>
+</rss>

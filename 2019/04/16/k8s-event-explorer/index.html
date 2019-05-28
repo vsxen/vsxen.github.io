@@ -1,5 +1,132 @@
-<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge,chrome=1"><meta name=viewport content="width=device-width,initial-scale=1"><meta name=author content=vsxen><meta name=description content=什么是k8s的Events？比如你启动了一个Deployment，k8s的各大组件就开始依次忙碌起来，最终完成Pod的创建，从声明一个Deployment开始，到Pod启动完成，会生成一些列Event><meta name=keywords content=blog,k8s,devops><link rel=canonical href=https://vsxen.github.io/2019/04/16/k8s-event-explorer/><title>k8s 的实时日志 Events &middot; Code Life</title><link rel="shortcut icon" href=https://vsxen.github.io/images/favicon.ico><link rel=stylesheet href=https://vsxen.github.io/css/animate.min.css><link rel=stylesheet href=https://vsxen.github.io/css/remixicon.css><link rel=stylesheet href=https://vsxen.github.io/css/zozo.css><link rel=stylesheet href=https://vsxen.github.io/css/highlight.css><script>(function(d){var config={kitId:'kfn1kkp',scriptTimeout:3000,async:true},h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;h.className+=" wf-loading";tk.src='https://use.typekit.net/'+config.kitId+'.js';tk.async=true;tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!="complete"&&a!="loaded")return;f=true;clearTimeout(t);try{Typekit.load(config)}catch(e){}};s.parentNode.insertBefore(tk,s)})(document);</script></head><body><div class="main animated"><div class="nav_container animated fadeInDown"><div class=site_nav id=site_nav><ul><li><a href=/>首页</a></li><li><a href=/posts/>归档</a></li><li><a href=/tags/>标签</a></li><li><a href=/about/>关于</a></li></ul></div><div class=menu_icon><a id=menu_icon><i class=remixicon-links-line></i></a></div></div><div class="header animated fadeInDown"><div class=site_title_container><div class=site_title><h1><a href=https://vsxen.github.io><span>Code Life</span>
-<img src=https://vsxen.github.io/images/logo.svg></a></h1></div><div class=description><p class=sub_title>Life is too bug</p><div class=my_socials><a href=%20 title=facebook target=_blank><i class=remixicon-facebook-fill></i></a><a href=%20 title=github target=_blank><i class=remixicon-github-fill></i></a><a href=%20 title=instagram target=_blank><i class=remixicon-instagram-fill></i></a><a href=%20 title=twitter target=_blank><i class=remixicon-twitter-fill></i></a><a href=%20 title=weibo target=_blank><i class=remixicon-weibo-fill></i></a><a href=https://vsxen.github.io/index.xml type=application/rss+xml title=rss target=_blank><i class=remixicon-rss-fill></i></a></div></div></div></div><div class=content><div class=post_page><div class="post animated fadeInDown"><div class="post_title post_detail_title"><h2><a href=/2019/04/16/k8s-event-explorer/>k8s 的实时日志 Events</a></h2><span class=date>2019.04.16</span></div><div class="post_content markdown"><p>什么是k8s的Events？比如你启动了一个Deployment，k8s的各大组件就开始依次忙碌起来，最终完成Pod的创建，从声明一个Deployment开始，到Pod启动完成，会生成一些列Events，用来告知用户现在的状态。event就是用来回答一些问题，比如为什么pod没有启动，因为没有配置私有仓库的认证，为什么pod会被Kill，因为是超过limit的限制。具体如下所示：</p><pre><code class=language-bash>kubectl get ev
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="vsxen"/>
+
+  
+  <meta name="description" content="什么是k8s的Events？比如你启动了一个Deployment，k8s的各大组件就开始依次忙碌起来，最终完成Pod的创建，从声明一个Deployment开始，到Pod启动完成，会生成一些列Event"/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, k8s, devops"/>
+  
+
+  
+  <link rel="canonical" href="https://vsxen.github.io/2019/04/16/k8s-event-explorer/"/>
+
+  
+
+  <title>k8s 的实时日志 Events &middot; Code Life</title>
+
+  <link rel="shortcut icon" href="https://vsxen.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://vsxen.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://vsxen.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://vsxen.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://vsxen.github.io/css/highlight.css"/>
+
+  
+  
+
+  <script>
+    (function(d) {
+      var config = {
+        kitId: 'kfn1kkp',
+        scriptTimeout: 3000,
+        async: true
+      },
+      h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;h.className+=" wf-loading";tk.src='https://use.typekit.net/'+config.kitId+'.js';tk.async=true;tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!="complete"&&a!="loaded")return;f=true;clearTimeout(t);try{Typekit.load(config)}catch(e){}};s.parentNode.insertBefore(tk,s)
+    })(document);
+  </script>
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/posts/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://vsxen.github.io">
+          <span>Code Life</span>
+          <img src="https://vsxen.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">Life is too bug</p>
+      <div class="my_socials">
+        
+        
+        <a href="%20" title="facebook" target="_blank"><i class="remixicon-facebook-fill"></i></a>
+        
+        
+        
+        <a href="%20" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="%20" title="instagram" target="_blank"><i class="remixicon-instagram-fill"></i></a>
+        
+        
+        
+        <a href="%20" title="twitter" target="_blank"><i class="remixicon-twitter-fill"></i></a>
+        
+        
+        
+        <a href="%20" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://vsxen.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/2019/04/16/k8s-event-explorer/'>k8s 的实时日志 Events</a></h2>
+          <span class="date">2019.04.16</span>
+        </div>
+        <div class="post_content markdown">
+
+<p>什么是k8s的Events？比如你启动了一个Deployment，k8s的各大组件就开始依次忙碌起来，最终完成Pod的创建，从声明一个Deployment开始，到Pod启动完成，会生成一些列Events，用来告知用户现在的状态。event就是用来回答一些问题，比如为什么pod没有启动，因为没有配置私有仓库的认证，为什么pod会被Kill，因为是超过limit的限制。具体如下所示：</p>
+
+<pre><code class="language-bash">kubectl get ev
 LAST SEEN   TYPE     REASON              OBJECT                        MESSAGE
 3s          Normal   Scheduled           pod/nginx-698898f666-smg7t    Successfully assigned default/nginx-698898f666-smg7t to east1-monitor1
 3s          Normal   Pulled              pod/nginx-698898f666-smg7t    Container image &quot;nginx:alpine&quot; already present on machine
@@ -7,13 +134,21 @@ LAST SEEN   TYPE     REASON              OBJECT                        MESSAGE
 3s          Normal   Started             pod/nginx-698898f666-smg7t    Started container nginx
 3s          Normal   SuccessfulCreate    replicaset/nginx-698898f666   Created pod: nginx-698898f666-smg7t
 3s          Normal   ScalingReplicaSet   deployment/nginx              Scaled up replica set nginx-698898f666 to 1
-</code></pre><p>这些信息会被存储在Etcd中，默认的保存时间为1小时。</p><pre><code class=language-bash>/registry/events/default/nginx-698898f666-smg7t.1593fd25ca0c7e00
+</code></pre>
+
+<p>这些信息会被存储在Etcd中，默认的保存时间为1小时。</p>
+
+<pre><code class="language-bash">/registry/events/default/nginx-698898f666-smg7t.1593fd25ca0c7e00
 /registry/events/default/nginx-698898f666-smg7t.1593fd25f1ff3cca
 /registry/events/default/nginx-698898f666-smg7t.1593fd25f4066f9f
 /registry/events/default/nginx-698898f666-smg7t.1593fd25fd741cf6
 /registry/events/default/nginx-698898f666.1593fd25c9abf7dc
 /registry/events/default/nginx.1593fd25c9217fce
-</code></pre><p>找到一条Event，可以看到完整的信息如下，值得关注的地方有involvedObject的name和source的host等等。</p><pre><code class=language-yaml>apiVersion: v1
+</code></pre>
+
+<p>找到一条Event，可以看到完整的信息如下，值得关注的地方有involvedObject的name和source的host等等。</p>
+
+<pre><code class="language-yaml">apiVersion: v1
 count: 1
 eventTime: null
 firstTimestamp: &quot;2019-04-10T03:01:30Z&quot;
@@ -42,7 +177,11 @@ source:
   component: kubelet
   host: k8s
 type: Normal
-</code></pre><p>与Events相关的参数主要在API Server中设置，如下所示，除此之外还可以看到审计相关的参数，也是属于event的，但是属于另外的apiVersion，以后会再介绍。</p><pre><code class=language-bash>docker run -it --rm k8s.gcr.io/kube-apiserver:v1.14.0  kube-apiserver -h |grep event
+</code></pre>
+
+<p>与Events相关的参数主要在API Server中设置，如下所示，除此之外还可以看到审计相关的参数，也是属于event的，但是属于另外的apiVersion，以后会再介绍。</p>
+
+<pre><code class="language-bash">docker run -it --rm k8s.gcr.io/kube-apiserver:v1.14.0  kube-apiserver -h |grep event
       --audit-log-batch-buffer-size int             The size of the buffer to store events before batching and writing. Only used in batch mode. (default 10000)
       --audit-log-format string                     Format of saved audits. &quot;legacy&quot; indicates 1-line text format for each event. &quot;json&quot; indicates structured json format. Known formats are legacy,json. (default &quot;json&quot;)
       --audit-log-mode string                       Strategy for sending audit events. Blocking indicates sending events should block server responses. Batch causes the backend to buffer and write events asynchronously. Known modes are batch,blocking,blocking-strict. (default &quot;blocking&quot;)
@@ -59,7 +198,23 @@ type: Normal
       
 #这个参数在大量集群集群的时候 建议使用，减少对主etcd的压力
       --etcd-servers-overrides strings           Per-resource etcd servers overrides, comma separated. The individual override format: group/resource#servers, where servers are URLs, semicolon separated.      
-</code></pre><p>查看源码可以发现，event相关的代码似乎在 <a href=https://github.com/kubernetes/kubernetes/blob/release-1.14/pkg/kubelet/events/event.go>https://github.com/kubernetes/kubernetes/blob/release-1.14/pkg/kubelet/events/event.go</a> 这里。</p><h3 id=收集处理>收集处理</h3><p>对于这些集群的变更信息，如果不收集起来，对于日后的调试和问题追溯会很不方便，目前的开源的收集方案一共有以下几种：</p><ol><li><a href=https://github.com/heptiolabs/eventrouter>https://github.com/heptiolabs/eventrouter</a> 支持kafka，S3等</li><li><a href=https://www.elastic.co/products/beats/metricbeat>https://www.elastic.co/products/beats/metricbeat</a> 支持ES</li><li><a href=https://github.com/kubernetes-retired/heapster>https://github.com/kubernetes-retired/heapster</a> 支持Kafka，ES，InfluxDB（被舍弃）</li></ol><p>同时还有一个Kube-watch的项目，发送给Slack等。下面以metricsbeat为例子，输出到ES。基于官方的一个配置进行修改，主要增加了自定义索引名字，需要ES&gt; 6.4版本</p><pre><code class=language-yaml>---
+</code></pre>
+
+<p>查看源码可以发现，event相关的代码似乎在 <a href="https://github.com/kubernetes/kubernetes/blob/release-1.14/pkg/kubelet/events/event.go">https://github.com/kubernetes/kubernetes/blob/release-1.14/pkg/kubelet/events/event.go</a> 这里。</p>
+
+<h3 id="收集处理">收集处理</h3>
+
+<p>对于这些集群的变更信息，如果不收集起来，对于日后的调试和问题追溯会很不方便，目前的开源的收集方案一共有以下几种：</p>
+
+<ol>
+<li><a href="https://github.com/heptiolabs/eventrouter">https://github.com/heptiolabs/eventrouter</a>  支持kafka，S3等</li>
+<li><a href="https://www.elastic.co/products/beats/metricbeat">https://www.elastic.co/products/beats/metricbeat</a> 支持ES</li>
+<li><a href="https://github.com/kubernetes-retired/heapster">https://github.com/kubernetes-retired/heapster</a> 支持Kafka，ES，InfluxDB（被舍弃）</li>
+</ol>
+
+<p>同时还有一个Kube-watch的项目，发送给Slack等。下面以metricsbeat为例子，输出到ES。基于官方的一个配置进行修改，主要增加了自定义索引名字，需要ES&gt; 6.4版本</p>
+
+<pre><code class="language-yaml">---
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -90,7 +245,11 @@ data:
       name: 'k8s-prod'
       pattern: 'k8s-prod-*'
       enabled: false
-</code></pre><p>对于某一条event，在ES中的记录如下所示：</p><pre><code class=language-json>{
+</code></pre>
+
+<p>对于某一条event，在ES中的记录如下所示：</p>
+
+<pre><code class="language-json">{
   &quot;_index&quot;: &quot;k8s-prod-6.7.0-2019.04.09&quot;,
   &quot;_type&quot;: &quot;doc&quot;,
   &quot;_id&quot;: &quot;9NUDAWoBg63YcA8TN-td&quot;,
@@ -159,7 +318,13 @@ data:
     ]
   }
 }
-</code></pre><h2 id=审计>审计</h2><p>使用审计功能有两种配置方法，一个是配置policy文件，另一个是配置webhook地址。如下所示是一个policy文件</p><pre><code class=language-yaml>apiVersion: audit.k8s.io/v1beta1 # This is required.
+</code></pre>
+
+<h2 id="审计">审计</h2>
+
+<p>使用审计功能有两种配置方法，一个是配置policy文件，另一个是配置webhook地址。如下所示是一个policy文件</p>
+
+<pre><code class="language-yaml">apiVersion: audit.k8s.io/v1beta1 # This is required.
 kind: Policy
 # Don't generate audit events for all requests in RequestReceived stage.
 omitStages:
@@ -264,7 +429,19 @@ rules:
       - group: &quot;storage.k8s.io&quot;
   # Default level for all other requests.
   - level: Metadata
-</code></pre><ul><li>在收到请求后不立即记录日志，当返回体header发送后才开始记录。</li><li>对于大量冗余的kube-proxy watch请求，kubelet和system:nodes对于node的get请求，kube组件在kube-system下对于endpoint的操作，以及apiserver对于namespaces的get请求等不作审计。</li><li>对于/healthz<em>，/version</em>, /swagger*等只读url不作审计。</li><li>对于可能包含敏感信息或二进制文件的secrets，configmaps，tokenreviews接口的日志等级设为metadata，该level只记录请求事件的用户、时间戳、请求资源和动作，而不包含请求体和返回体。</li><li>对于一些如authenticatioin、rbac、certificates、autoscaling、storage等敏感接口，根据读写记录相应的请求体和返回体。</li></ul><p>如下是一个示例audit，表示APIServer 调用了 scheduler去调度pod。</p><pre><code class=language-json>{
+</code></pre>
+
+<ul>
+<li>在收到请求后不立即记录日志，当返回体header发送后才开始记录。</li>
+<li>对于大量冗余的kube-proxy watch请求，kubelet和system:nodes对于node的get请求，kube组件在kube-system下对于endpoint的操作，以及apiserver对于namespaces的get请求等不作审计。</li>
+<li>对于/healthz<em>，/version</em>, /swagger*等只读url不作审计。</li>
+<li>对于可能包含敏感信息或二进制文件的secrets，configmaps，tokenreviews接口的日志等级设为metadata，该level只记录请求事件的用户、时间戳、请求资源和动作，而不包含请求体和返回体。</li>
+<li>对于一些如authenticatioin、rbac、certificates、autoscaling、storage等敏感接口，根据读写记录相应的请求体和返回体。</li>
+</ul>
+
+<p>如下是一个示例audit，表示APIServer 调用了 scheduler去调度pod。</p>
+
+<pre><code class="language-json">{
   &quot;kind&quot;: &quot;Event&quot;,
   &quot;apiVersion&quot;: &quot;audit.k8s.io/v1&quot;,
   &quot;level&quot;: &quot;Metadata&quot;,
@@ -294,6 +471,110 @@ rules:
     &quot;authorization.k8s.io/reason&quot;: &quot;&quot;
   }
 }
-</code></pre><h3 id=结语>结语</h3><p>总得来说，对于集群中的任何事件都应该关注，不论是做实时报警还是日后分析，都是非常有用的。</p><h2 id=ref>Ref</h2><p>Kubernetes(K8s)Events介绍（上）</p><p><a href=https://www.kubernetes.org.cn/1031.html>https://www.kubernetes.org.cn/1031.html</a></p><p>Scaling Kubernetes to 2,500 Nodes</p><p><a href=https://openai.com/blog/scaling-kubernetes-to-2500-nodes/>https://openai.com/blog/scaling-kubernetes-to-2500-nodes/</a></p><p>Kube-apiserver审计日志</p><p><a href=https://help.aliyun.com/document_detail/91406.html>https://help.aliyun.com/document_detail/91406.html</a></p><p>Audit</p><p><a href=https://kubernetes.io/docs/tasks/debug-application-cluster/audit/>https://kubernetes.io/docs/tasks/debug-application-cluster/audit/</a></p></div><div class=post_footer><div class=meta><div class=info><span class="field tags"><i class=remixicon-stack-line></i><a href=https://vsxen.github.io/tags/k8s/>k8s</a></span></div></div></div></div></div></div><a id=back_to_top href=# class=back_to_top><span>△</span></a></div><div class=disqus><div id=disqus_thread></div><script type=application/javascript>var disqus_config=function(){};(function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('disqus_thread').innerHTML='Disqus comments not available by default when the website is previewed locally.';return;}
-var d=document,s=d.createElement('script');s.async=true;s.src='//'+"vsxen"+'.disqus.com/embed.js';s.setAttribute('data-timestamp',+new Date());(d.head||d.body).appendChild(s);})();</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div><footer class=footer><div class=powered_by><a href=https://zeuk.me>Designed by Zeuk,</a>
-<a href=http://www.gohugo.io/>Proudly published with Hugo</a></div><div class=footer_slogan><span>Software Define Everything</span></div></footer><script src=https://vsxen.github.io/js/jquery-3.3.1.min.js></script><script src=https://vsxen.github.io/js/zozo.js></script><script src=https://vsxen.github.io/js/highlight.pack.js></script><link href=https://vsxen.github.io/css/fancybox.min.css rel=stylesheet><script src=https://vsxen.github.io/js/fancybox.min.js></script><script>hljs.initHighlightingOnLoad()</script><script type=application/javascript>var doNotTrack=false;if(!doNotTrack){window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;ga('create','UA-81855844-3','auto');ga('send','pageview');}</script><script async src=https://www.google-analytics.com/analytics.js></script></body></html>
+</code></pre>
+
+<h3 id="结语">结语</h3>
+
+<p>总得来说，对于集群中的任何事件都应该关注，不论是做实时报警还是日后分析，都是非常有用的。</p>
+
+<h2 id="ref">Ref</h2>
+
+<p>Kubernetes(K8s)Events介绍（上）</p>
+
+<p><a href="https://www.kubernetes.org.cn/1031.html">https://www.kubernetes.org.cn/1031.html</a></p>
+
+<p>Scaling Kubernetes to 2,500 Nodes</p>
+
+<p><a href="https://openai.com/blog/scaling-kubernetes-to-2500-nodes/">https://openai.com/blog/scaling-kubernetes-to-2500-nodes/</a></p>
+
+<p>Kube-apiserver审计日志</p>
+
+<p><a href="https://help.aliyun.com/document_detail/91406.html">https://help.aliyun.com/document_detail/91406.html</a></p>
+
+<p>Audit</p>
+
+<p><a href="https://kubernetes.io/docs/tasks/debug-application-cluster/audit/">https://kubernetes.io/docs/tasks/debug-application-cluster/audit/</a></p>
+</div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://vsxen.github.io/tags/k8s/">k8s</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<div class="disqus">
+  <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "vsxen" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://zeuk.me">Designed by Zeuk,</a>
+    <a href="http://www.gohugo.io/">Proudly published with Hugo</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>Software Define Everything</span>
+  </div>
+</footer>
+
+
+
+<script src="https://vsxen.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://vsxen.github.io/js/zozo.js"></script>
+<script src="https://vsxen.github.io/js/highlight.pack.js"></script>
+<link  href="https://vsxen.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://vsxen.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-81855844-3', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>dns on Code Life</title>
+    <link>https://vsxen.github.io/tags/dns/</link>
+    <description>Recent content in dns on Code Life</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Thu, 25 Apr 2019 22:31:20 +0800</lastBuildDate>
+    
+	<atom:link href="https://vsxen.github.io/tags/dns/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>CoreDNS-基于Caddy的DNS Server</title>
+      <link>https://vsxen.github.io/2019/04/25/coredns/</link>
+      <pubDate>Thu, 25 Apr 2019 22:31:20 +0800</pubDate>
+      
+      <guid>https://vsxen.github.io/2019/04/25/coredns/</guid>
+      <description>​ CoreDNS利用作为Web服务器Caddy的一部分而开发的服务器框架。该框架具有非常灵活，可扩展的模型，用于通过各种中间件组件传递请求。这些中间件组件根据请求提供不同的操作，例如记录，重定向，修改</description>
+    </item>
+    
+  </channel>
+</rss>

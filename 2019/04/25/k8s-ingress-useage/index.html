@@ -1,9 +1,154 @@
-<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge,chrome=1"><meta name=viewport content="width=device-width,initial-scale=1"><meta name=author content=vsxen><meta name=description content="k8s初期的时候，只有Service作为四层负载均衡，后来才推出了专门用作七层的负载均衡--Ingress。第一批实现Ingress Controller的就是traefik以及Nginx Ingress"><meta name=keywords content=blog,k8s,devops><link rel=canonical href=https://vsxen.github.io/2019/04/25/k8s-ingress-useage/><title>k8s 七层访问入口 Ingress &middot; Code Life</title><link rel="shortcut icon" href=https://vsxen.github.io/images/favicon.ico><link rel=stylesheet href=https://vsxen.github.io/css/animate.min.css><link rel=stylesheet href=https://vsxen.github.io/css/remixicon.css><link rel=stylesheet href=https://vsxen.github.io/css/zozo.css><link rel=stylesheet href=https://vsxen.github.io/css/highlight.css><script>(function(d){var config={kitId:'kfn1kkp',scriptTimeout:3000,async:true},h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;h.className+=" wf-loading";tk.src='https://use.typekit.net/'+config.kitId+'.js';tk.async=true;tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!="complete"&&a!="loaded")return;f=true;clearTimeout(t);try{Typekit.load(config)}catch(e){}};s.parentNode.insertBefore(tk,s)})(document);</script></head><body><div class="main animated"><div class="nav_container animated fadeInDown"><div class=site_nav id=site_nav><ul><li><a href=/>首页</a></li><li><a href=/posts/>归档</a></li><li><a href=/tags/>标签</a></li><li><a href=/about/>关于</a></li></ul></div><div class=menu_icon><a id=menu_icon><i class=remixicon-links-line></i></a></div></div><div class="header animated fadeInDown"><div class=site_title_container><div class=site_title><h1><a href=https://vsxen.github.io><span>Code Life</span>
-<img src=https://vsxen.github.io/images/logo.svg></a></h1></div><div class=description><p class=sub_title>Life is too bug</p><div class=my_socials><a href=%20 title=facebook target=_blank><i class=remixicon-facebook-fill></i></a><a href=%20 title=github target=_blank><i class=remixicon-github-fill></i></a><a href=%20 title=instagram target=_blank><i class=remixicon-instagram-fill></i></a><a href=%20 title=twitter target=_blank><i class=remixicon-twitter-fill></i></a><a href=%20 title=weibo target=_blank><i class=remixicon-weibo-fill></i></a><a href=https://vsxen.github.io/index.xml type=application/rss+xml title=rss target=_blank><i class=remixicon-rss-fill></i></a></div></div></div></div><div class=content><div class=post_page><div class="post animated fadeInDown"><div class="post_title post_detail_title"><h2><a href=/2019/04/25/k8s-ingress-useage/>k8s 七层访问入口 Ingress</a></h2><span class=date>2019.04.25</span></div><div class="post_content markdown"><p>k8s初期的时候，只有Service作为四层负载均衡，后来才推出了专门用作七层的负载均衡--Ingress。第一批实现Ingress Controller的就是traefik以及Nginx Ingress，后来随着Envory的出现，也逐渐涌现出了越来越多的Ingress Controller实现，比如：</p><ol><li><a href=https://github.com/heptio/contour>https://github.com/heptio/contour</a></li><li><a href=https://github.com/datawire/ambassador>https://github.com/datawire/ambassador</a></li><li><a href=https://github.com/istio/istio/>https://github.com/istio/istio/</a></li></ol><p>但是这些实现的原理说到底就是watch后端的Service，然后创建对于的访问规则。</p><h2 id=install>Install</h2><p>以Nginx Ingress为例，由Go，Lua和C三种语言组成，Go负责与k8s API交互，下面简单介绍一些安装过程。</p><pre><code class=language-bash>#首先安装控制器，
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="vsxen"/>
+
+  
+  <meta name="description" content="k8s初期的时候，只有Service作为四层负载均衡，后来才推出了专门用作七层的负载均衡--Ingress。第一批实现Ingress Controller的就是traefik以及Nginx Ingress"/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, k8s, devops"/>
+  
+
+  
+  <link rel="canonical" href="https://vsxen.github.io/2019/04/25/k8s-ingress-useage/"/>
+
+  
+
+  <title>k8s 七层访问入口 Ingress &middot; Code Life</title>
+
+  <link rel="shortcut icon" href="https://vsxen.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://vsxen.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://vsxen.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://vsxen.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://vsxen.github.io/css/highlight.css"/>
+
+  
+  
+
+  <script>
+    (function(d) {
+      var config = {
+        kitId: 'kfn1kkp',
+        scriptTimeout: 3000,
+        async: true
+      },
+      h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;h.className+=" wf-loading";tk.src='https://use.typekit.net/'+config.kitId+'.js';tk.async=true;tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!="complete"&&a!="loaded")return;f=true;clearTimeout(t);try{Typekit.load(config)}catch(e){}};s.parentNode.insertBefore(tk,s)
+    })(document);
+  </script>
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/posts/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://vsxen.github.io">
+          <span>Code Life</span>
+          <img src="https://vsxen.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">Life is too bug</p>
+      <div class="my_socials">
+        
+        
+        <a href="%20" title="facebook" target="_blank"><i class="remixicon-facebook-fill"></i></a>
+        
+        
+        
+        <a href="%20" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="%20" title="instagram" target="_blank"><i class="remixicon-instagram-fill"></i></a>
+        
+        
+        
+        <a href="%20" title="twitter" target="_blank"><i class="remixicon-twitter-fill"></i></a>
+        
+        
+        
+        <a href="%20" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://vsxen.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/2019/04/25/k8s-ingress-useage/'>k8s 七层访问入口 Ingress</a></h2>
+          <span class="date">2019.04.25</span>
+        </div>
+        <div class="post_content markdown">
+
+<p>k8s初期的时候，只有Service作为四层负载均衡，后来才推出了专门用作七层的负载均衡--Ingress。第一批实现Ingress Controller的就是traefik以及Nginx Ingress，后来随着Envory的出现，也逐渐涌现出了越来越多的Ingress Controller实现，比如：</p>
+
+<ol>
+<li><a href="https://github.com/heptio/contour">https://github.com/heptio/contour</a></li>
+<li><a href="https://github.com/datawire/ambassador">https://github.com/datawire/ambassador</a></li>
+<li><a href="https://github.com/istio/istio/">https://github.com/istio/istio/</a></li>
+</ol>
+
+<p>但是这些实现的原理说到底就是watch后端的Service，然后创建对于的访问规则。</p>
+
+<h2 id="install">Install</h2>
+
+<p>以Nginx Ingress为例，由Go，Lua和C三种语言组成，Go负责与k8s API交互，下面简单介绍一些安装过程。</p>
+
+<pre><code class="language-bash">#首先安装控制器，
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/mandatory.yaml
 #然后创建Service
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/provider/baremetal/service-nodeport.yaml
-</code></pre><p>以上是属于Bate-metal的配置，如果你是在Public CLoud可以替换为LoadBalancer。仔细观察一下第一个yaml文件，可以发现有些特殊的地方，如下所示，有一个特殊的annotations，看来和APIServer类似，支持多副本高可用。</p><p><code>I0411 09:11:06.783582 7 leaderelection.go:227] successfully acquired lease ingress-nginx/ingress-controller-leader-nginx</code></p><pre><code class=language-yaml>kubectl -n ingress-nginx get cm ingress-controller-leader-nginx -oyaml
+</code></pre>
+
+<p>以上是属于Bate-metal的配置，如果你是在Public CLoud可以替换为LoadBalancer。仔细观察一下第一个yaml文件，可以发现有些特殊的地方，如下所示，有一个特殊的annotations，看来和APIServer类似，支持多副本高可用。</p>
+
+<p><code>I0411 09:11:06.783582       7 leaderelection.go:227] successfully acquired lease ingress-nginx/ingress-controller-leader-nginx</code></p>
+
+<pre><code class="language-yaml">kubectl -n ingress-nginx get cm ingress-controller-leader-nginx -oyaml
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -15,7 +160,19 @@ metadata:
   resourceVersion: &quot;28998&quot;
   selfLink: /api/v1/namespaces/ingress-nginx/configmaps/ingress-controller-leader-nginx
   uid: bd25d320-5c39-11e9-af65-00163e132347
-</code></pre><p>因为Nginx原生支持四层负载均衡，所有Nginx Ingress也是支持四层的。</p><p>除此之外k8s也支持多Ingress比如同时安装traefik和Nginx，Nginx Ingress 也支持多Ingress，比如一个内网一个外网。(<a href=https://yq.aliyun.com/articles/645856>https://yq.aliyun.com/articles/645856</a>)</p><h2 id=配置>配置</h2><p>对于k8s来说，当你需要一个访问入口的时候，就需要声明一个Ingress资源，如下所示</p><h3 id=最简单的>最简单的</h3><pre><code class=language-yaml>apiVersion: extensions/v1beta1
+</code></pre>
+
+<p>因为Nginx原生支持四层负载均衡，所有Nginx Ingress也是支持四层的。</p>
+
+<p>除此之外k8s也支持多Ingress比如同时安装traefik和Nginx，Nginx Ingress 也支持多Ingress，比如一个内网一个外网。(<a href="https://yq.aliyun.com/articles/645856">https://yq.aliyun.com/articles/645856</a>)</p>
+
+<h2 id="配置">配置</h2>
+
+<p>对于k8s来说，当你需要一个访问入口的时候，就需要声明一个Ingress资源，如下所示</p>
+
+<h3 id="最简单的">最简单的</h3>
+
+<pre><code class="language-yaml">apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: nginx
@@ -31,7 +188,11 @@ spec:
         backend:
           serviceName: nginx
           servicePort: 80
-</code></pre><h3 id=多host>多host</h3><pre><code class=language-yaml>cat &lt;&lt;EOF | kubectl create -f - 
+</code></pre>
+
+<h3 id="多host">多host</h3>
+
+<pre><code class="language-yaml">cat &lt;&lt;EOF | kubectl create -f - 
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -53,7 +214,11 @@ spec:
           serviceName: nginx
           servicePort: 80    
 EOF
-</code></pre><h3 id=https>https</h3><pre><code class=language-bash>openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout tls.key -out tls.crt -subj &quot;/CN=foo.bar.com/O=foo.bar.com&quot;
+</code></pre>
+
+<h3 id="https">https</h3>
+
+<pre><code class="language-bash">openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout tls.key -out tls.crt -subj &quot;/CN=foo.bar.com/O=foo.bar.com&quot;
 
 kubectl  create secret tls tlskey --key=tls.key --cert=tls.crt
 
@@ -76,7 +241,11 @@ spec:
           serviceName: nginx
           servicePort: 80
 EOF
-</code></pre><h3 id=前后端分离>前后端分离</h3><pre><code class=language-yaml>apiVersion: extensions/v1beta1
+</code></pre>
+
+<h3 id="前后端分离">前后端分离</h3>
+
+<pre><code class="language-yaml">apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   labels:
@@ -95,7 +264,13 @@ spec:
           serviceName: front
           servicePort: 80
         path: /
-</code></pre><h2 id=进阶>进阶</h2><p>作为整个集群的入口，Ng支持很多注解以及插件。比如用于灰度发布的注解<code>nginx.ingress.kubernetes.io/canary</code>，支持Jaeger的Opentracing插件（在configmap配置），同时Ng也支持自定义nginx.conf，但是需要用go template来写，默认使用的配置在这<a href=https://github.com/kubernetes/ingress-nginx/blob/master/rootfs/etc/nginx/template/nginx.tmpl>https://github.com/kubernetes/ingress-nginx/blob/master/rootfs/etc/nginx/template/nginx.tmpl</a></p><pre><code class=language-yaml>        volumeMounts:
+</code></pre>
+
+<h2 id="进阶">进阶</h2>
+
+<p>作为整个集群的入口，Ng支持很多注解以及插件。比如用于灰度发布的注解<code>nginx.ingress.kubernetes.io/canary</code>，支持Jaeger的Opentracing插件（在configmap配置），同时Ng也支持自定义nginx.conf，但是需要用go template来写，默认使用的配置在这<a href="https://github.com/kubernetes/ingress-nginx/blob/master/rootfs/etc/nginx/template/nginx.tmpl">https://github.com/kubernetes/ingress-nginx/blob/master/rootfs/etc/nginx/template/nginx.tmpl</a></p>
+
+<pre><code class="language-yaml">        volumeMounts:
           - mountPath: /etc/nginx/template
             name: nginx-template-volume
             readOnly: true
@@ -106,7 +281,15 @@ spec:
             items:
             - key: nginx.tmpl
               path: nginx.tmpl
-</code></pre><p>所有的注解在这 <a href=https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/>https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/</a></p><p>所有的插件在这 <a href=https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/>https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/</a></p><p>默认的日志输出如下</p><pre><code class=language-bash>log_format upstreaminfo
+</code></pre>
+
+<p>所有的注解在这 <a href="https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/">https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/</a></p>
+
+<p>所有的插件在这 <a href="https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/">https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/</a></p>
+
+<p>默认的日志输出如下</p>
+
+<pre><code class="language-bash">log_format upstreaminfo
     '{{ if $cfg.useProxyProtocol }}$proxy_protocol_addr{{ else }}$remote_addr{{ end }} - '
     '[$the_real_ip] - $remote_user [$time_local] &quot;$request&quot; '
     '$status $body_bytes_sent &quot;$http_referer&quot; &quot;$http_user_agent&quot; '
@@ -114,11 +297,19 @@ spec:
     '$upstream_response_length $upstream_response_time $upstream_status $req_id';
    
 203.110.179.243 - [203.110.179.243] - - [11/Jan/2019:14:44:55 +0800] &quot;GET /favicon.ico HTTP/1.1&quot; 404 196 &quot;http://nginx.cf86fc3209f4e483493e504197bfdd22f.cn-hangzhou.alicontainer.com/&quot; &quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36&quot; 458 0.001 [default-nginx-80] 172.16.1.173:80 555 0.000 404 7b02134be96609d93aa4318a826a40b3    
-</code></pre><p>获取客户端Real IP，对于Service Spec来说有一个externalTrafficPolicy字段，效果如下所示</p><pre><code>  externalTrafficPolicy: Cluster
+</code></pre>
+
+<p>获取客户端Real IP，对于Service Spec来说有一个externalTrafficPolicy字段，效果如下所示</p>
+
+<pre><code>  externalTrafficPolicy: Cluster
 10.244.0.1 - [10.244.0.1] - - [11/Apr/2019:13:54:51 +0000] &quot;GET / HTTP/2.0&quot; 200 392 &quot;-&quot; &quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36&quot; 431 0.001 [default-nginx-80] 10.244.0.144:80 612 0.000 200 42ce047ab4b6909266aeca53af3e6b08
   externalTrafficPolicy: Local
 23.10.19.23 - [23.10.19.23] - - [11/Jan/2019:14:44:55 +0800] &quot;GET /favicon.ico HTTP/1.1&quot; 404 196 &quot;http://nginx.cf86fc3209f4e483493e504197bfdd22f.cn-hangzhou.alicontainer.com/&quot; &quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36&quot; 458 0.001 [default-nginx-80] 172.16.1.173:80 555 0.000 404 7b02134be96609d93aa4318a826a40b3    
-</code></pre><p>对于不同的Ingress对象，Ng会生成不同的sever配置。下面是生成的对应的Nginx Server段，熟悉Nginx的人应该能不陌生。</p><pre><code class=language-yaml>        ## start server xxx.com
+</code></pre>
+
+<p>对于不同的Ingress对象，Ng会生成不同的sever配置。下面是生成的对应的Nginx Server段，熟悉Nginx的人应该能不陌生。</p>
+
+<pre><code class="language-yaml">        ## start server xxx.com
         server {
                 server_name ssl.vsxen.me ;
                 listen 80;
@@ -181,6 +372,94 @@ spec:
                 }
         }
         ## end server xxx.com
-</code></pre><h2 id=ref>Ref</h2><p>kubedex 出品的对比表格</p><p><a href="https://docs.google.com/spreadsheets/d/16bxRgpO1H_Bn-5xVZ1WrR_I-0A-GOI6egmhvqqLMOmg/edit#gid=1612037324">https://docs.google.com/spreadsheets/d/16bxRgpO1H_Bn-5xVZ1WrR_I-0A-GOI6egmhvqqLMOmg/edit#gid=1612037324</a></p></div><div class=post_footer><div class=meta><div class=info><span class="field tags"><i class=remixicon-stack-line></i><a href=https://vsxen.github.io/tags/k8s/>k8s</a></span></div></div></div></div></div></div><a id=back_to_top href=# class=back_to_top><span>△</span></a></div><div class=disqus><div id=disqus_thread></div><script type=application/javascript>var disqus_config=function(){};(function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('disqus_thread').innerHTML='Disqus comments not available by default when the website is previewed locally.';return;}
-var d=document,s=d.createElement('script');s.async=true;s.src='//'+"vsxen"+'.disqus.com/embed.js';s.setAttribute('data-timestamp',+new Date());(d.head||d.body).appendChild(s);})();</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div><footer class=footer><div class=powered_by><a href=https://zeuk.me>Designed by Zeuk,</a>
-<a href=http://www.gohugo.io/>Proudly published with Hugo</a></div><div class=footer_slogan><span>Software Define Everything</span></div></footer><script src=https://vsxen.github.io/js/jquery-3.3.1.min.js></script><script src=https://vsxen.github.io/js/zozo.js></script><script src=https://vsxen.github.io/js/highlight.pack.js></script><link href=https://vsxen.github.io/css/fancybox.min.css rel=stylesheet><script src=https://vsxen.github.io/js/fancybox.min.js></script><script>hljs.initHighlightingOnLoad()</script><script type=application/javascript>var doNotTrack=false;if(!doNotTrack){window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;ga('create','UA-81855844-3','auto');ga('send','pageview');}</script><script async src=https://www.google-analytics.com/analytics.js></script></body></html>
+</code></pre>
+
+<h2 id="ref">Ref</h2>
+
+<p>kubedex 出品的对比表格</p>
+
+<p><a href="https://docs.google.com/spreadsheets/d/16bxRgpO1H_Bn-5xVZ1WrR_I-0A-GOI6egmhvqqLMOmg/edit#gid=1612037324">https://docs.google.com/spreadsheets/d/16bxRgpO1H_Bn-5xVZ1WrR_I-0A-GOI6egmhvqqLMOmg/edit#gid=1612037324</a></p>
+</div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://vsxen.github.io/tags/k8s/">k8s</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<div class="disqus">
+  <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "vsxen" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://zeuk.me">Designed by Zeuk,</a>
+    <a href="http://www.gohugo.io/">Proudly published with Hugo</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>Software Define Everything</span>
+  </div>
+</footer>
+
+
+
+<script src="https://vsxen.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://vsxen.github.io/js/zozo.js"></script>
+<script src="https://vsxen.github.io/js/highlight.pack.js"></script>
+<link  href="https://vsxen.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://vsxen.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-81855844-3', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+
+</body>
+</html>
