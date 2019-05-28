@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>prometheus on Code Life</title>
+    <link>https://vsxen.github.io/tags/prometheus/</link>
+    <description>Recent content in prometheus on Code Life</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Sat, 25 May 2019 22:31:20 +0800</lastBuildDate>
+    
+	<atom:link href="https://vsxen.github.io/tags/prometheus/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>k8s 监控体系 --  Prometheus Operator</title>
+      <link>https://vsxen.github.io/2019/05/25/promthus-operator/</link>
+      <pubDate>Sat, 25 May 2019 22:31:20 +0800</pubDate>
+      
+      <guid>https://vsxen.github.io/2019/05/25/promthus-operator/</guid>
+      <description>对于任何系统来说，监控都是不可或缺的东西，系统现在是什么样，与一周前相比是否需要调整资源等都需要一个监控系统来参考。对于k8s来说常用的开源监控方案也就是下面几种： heaspter+InfluxDB (已被弃用) Prometheus Open falcon Telegraf+InfluxDB 而且k8s所需</description>
+    </item>
+    
+  </channel>
+</rss>
