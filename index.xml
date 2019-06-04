@@ -21,6 +21,15 @@
     </item>
     
     <item>
+      <title>CoreDNS-基于Caddy的DNS Server</title>
+      <link>https://vsxen.github.io/2019/04/25/coredns/</link>
+      <pubDate>Thu, 25 Apr 2019 22:31:20 +0800</pubDate>
+      
+      <guid>https://vsxen.github.io/2019/04/25/coredns/</guid>
+      <description>​ CoreDNS利用作为Web服务器Caddy的一部分而开发的服务器框架。该框架具有非常灵活，可扩展的模型，用于通过各种中间件组件传递请求。这些中间件组件根据请求提供不同的操作，例如记录，重定向，修改</description>
+    </item>
+    
+    <item>
       <title>k8s 的实时日志 Events</title>
       <link>https://vsxen.github.io/2019/04/16/k8s-event-explorer/</link>
       <pubDate>Tue, 16 Apr 2019 09:43:24 +0000</pubDate>
@@ -63,15 +72,6 @@
       
       <guid>https://vsxen.github.io/2018/12/25/k8s-pod-full-yaml/</guid>
       <description>Pod作为k8s工作负载的基本单位,不论是Deployment还是job等等需要计算资源的控制器，都需要定义将被创建的pod模板，所以熟悉pod的所有字段还是很有必要的。今天就用Deployment作</description>
-    </item>
-    
-    <item>
-      <title>CoreDNS-基于Caddy的DNS Server</title>
-      <link>https://vsxen.github.io/2018/11/17/coredns/</link>
-      <pubDate>Sat, 17 Nov 2018 22:31:20 +0800</pubDate>
-      
-      <guid>https://vsxen.github.io/2018/11/17/coredns/</guid>
-      <description>​ CoreDNS利用作为Web服务器Caddy的一部分而开发的服务器框架。该框架具有非常灵活，可扩展的模型，用于通过各种中间件组件传递请求。这些中间件组件根据请求提供不同的操作，例如记录，重定向，修改</description>
     </item>
     
     <item>
