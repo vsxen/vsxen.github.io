@@ -23,7 +23,7 @@
 
   
 
-  <title>k8s APIServer WebHook相关准入控制器 &middot; Code Life</title>
+  <title>k8s APIServer 动态准入控制器 &middot; Code Life</title>
 
   <link rel="shortcut icon" href="https://vsxen.github.io/images/favicon.ico"/>
   <link rel="stylesheet" href="https://vsxen.github.io/css/animate.min.css"/>
@@ -119,7 +119,7 @@
     <div class="post_page">
       <div class="post animated fadeInDown">
         <div class="post_title post_detail_title">
-          <h2><a href='/2019/05/25/k8s-apiserver-webhook/'>k8s APIServer WebHook相关准入控制器</a></h2>
+          <h2><a href='/2019/05/25/k8s-apiserver-webhook/'>k8s APIServer 动态准入控制器</a></h2>
           <span class="date">2019.05.25</span>
         </div>
         <div class="post_content markdown">
@@ -133,20 +133,20 @@
 <ul>
 <li>AlwaysAdmit, # 一直允许</li>
 <li>AlwaysDeny, # 一直禁止</li>
-<li>AlwaysPullImages, #一直拉取镜像</li>
+<li>AlwaysPullImages, #在启动容器之前总是去下载镜像，相当于每当容器启动前做一次用于是否有权使用该容器镜像的检查</li>
 <li>DefaultStorageClass, # 默认的sc</li>
 <li>DefaultTolerationSeconds,</li>
-<li>DenyEscalatingExec,</li>
+<li>DenyEscalatingExec, # 拒绝exec和attach命令到有升级特权的Pod的终端用户访问。如果集中包含升级特权的容器，而要限制终端用户在这些容器中执行命令的能力，推荐使用此插件</li>
 <li>DenyExecOnPrivileged,</li>
 <li>EventRateLimit,</li>
 <li>ExtendedResourceToleration,</li>
 <li>ImagePolicyWebhook,</li>
 <li>LimitPodHardAntiAffinityTopology,</li>
-<li>LimitRanger, # 默认资源限额</li>
+<li>LimitRanger, # 默认资源限额，用于Pod和容器上的配额管理，它会观察进入的请求，确保Pod和容器上的配额不会超标。准入控制器LimitRanger和资源对象LimitRange一起实现资源限制管理</li>
 <li>MutatingAdmissionWebhook, # 授权后的webhook</li>
 <li>NamespaceAutoProvision,</li>
 <li>NamespaceExists,# 命名空间是否存在</li>
-<li>NamespaceLifecycle, # 命名空间生命周期</li>
+<li>NamespaceLifecycle, # 当一个请求是在一个不存在的namespace下创建资源对象时，该请求会被拒绝。当删除一个namespace时，将会删除该namespace下的所有资源对象</li>
 <li>NodeRestriction,</li>
 <li>OwnerReferencesPermissionEnforcement,</li>
 <li>PersistentVolumeClaimResize, # PVC 扩容</li>
@@ -156,9 +156,9 @@
 <li>PodSecurityPolicy, # pod安全策略</li>
 <li>PodTolerationRestriction,</li>
 <li>Priority, # 调度策略？</li>
-<li>ResourceQuota, # 资源限额</li>
-<li>SecurityContextDeny, # 禁止的安全测试</li>
-<li>ServiceAccount, #用户账户</li>
+<li>ResourceQuota, # 用于namespace上的配额管理，它会观察进入的请求，确保在namespace上的配额不超标。推荐将这个插件放到准入控制器列表的最后一个。ResourceQuota准入控制器既可以限制某个namespace中创建资源的数量，又可以限制某个namespace中被Pod请求的资源总量。ResourceQuota准入控制器和ResourceQuota资源对象一起可以实现资源配额管理</li>
+<li>SecurityContextDeny, # 将Pod定义中定义了的SecurityContext选项全部失效。SecurityContext包含在容器中定义了操作系统级别的安全选型如fsGroup，selinux等选项</li>
+<li>ServiceAccount, #这个插件实现了serviceAccounts等等自动化，如果使用ServiceAccount对象，强烈推荐使用这个插件</li>
 <li>StorageObjectInUseProtection,</li>
 <li>TaintNodesByCondition,</li>
 <li>ValidatingAdmissionWebhook.</li>
@@ -193,11 +193,17 @@
 
 <h2 id="ref">Ref</h2>
 
-<p>A Guide to Kubernetes Admission Controllers
-<a href="https://kubernetes.io/blog/2019/03/21/a-guide-to-kubernetes-admission-controllers/">https://kubernetes.io/blog/2019/03/21/a-guide-to-kubernetes-admission-controllers/</a></p>
+<p>A Guide to Kubernetes Admission Controllers</p>
 
-<p>Kubernetes 中如何保证优雅地停止 Pod
-<a href="https://pingcap.com/blog-cn/tidb-opeartor-webhook/">https://pingcap.com/blog-cn/tidb-opeartor-webhook/</a></p>
+<p><a href="https://kubernetes.io/blog/2019/03/21/a-guide-to-kubernetes-admission-controllers/">https://kubernetes.io/blog/2019/03/21/a-guide-to-kubernetes-admission-controllers/</a></p>
+
+<p>Kubernetes 中如何保证优雅地停止 Pod</p>
+
+<p><a href="https://pingcap.com/blog-cn/tidb-opeartor-webhook/">https://pingcap.com/blog-cn/tidb-opeartor-webhook/</a></p>
+
+<p>深度剖析Kubernetes动态准入控制之Initializers</p>
+
+<p><a href="https://my.oschina.net/jxcdwangtao/blog/1591099">https://my.oschina.net/jxcdwangtao/blog/1591099</a></p>
 </div>
         <div class="post_footer">
           

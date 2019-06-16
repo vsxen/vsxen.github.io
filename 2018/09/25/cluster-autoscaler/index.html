@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="vsxen"/>
+
+  
+  <meta name="description" content="弹性伸缩是一个比较吸引人的话题，类似与云计算中所提倡的按需付费，合理使用可以减少所需计算资源，降低相关的服务器成本。对于k8s来说目前一共有两种弹性伸缩： Cluster 即自动增加删除节点 Pod 分为水平和垂直两种，水平"/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, k8s, devops"/>
+  
+
+  
+  <link rel="canonical" href="https://vsxen.github.io/2018/09/25/cluster-autoscaler/"/>
+
+  
+
+  <title>Kubernetes 中的弹性伸缩 Autoscaler &middot; Code Life</title>
+
+  <link rel="shortcut icon" href="https://vsxen.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://vsxen.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://vsxen.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://vsxen.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://vsxen.github.io/css/highlight.css"/>
+
+  
+  
+
+  <script>
+    (function(d) {
+      var config = {
+        kitId: 'kfn1kkp',
+        scriptTimeout: 3000,
+        async: true
+      },
+      h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;h.className+=" wf-loading";tk.src='https://use.typekit.net/'+config.kitId+'.js';tk.async=true;tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!="complete"&&a!="loaded")return;f=true;clearTimeout(t);try{Typekit.load(config)}catch(e){}};s.parentNode.insertBefore(tk,s)
+    })(document);
+  </script>
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/posts/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://vsxen.github.io">
+          <span>Code Life</span>
+          <img src="https://vsxen.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">Life is too bug</p>
+      <div class="my_socials">
+        
+        
+        <a href="%20" title="facebook" target="_blank"><i class="remixicon-facebook-fill"></i></a>
+        
+        
+        
+        <a href="%20" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="%20" title="instagram" target="_blank"><i class="remixicon-instagram-fill"></i></a>
+        
+        
+        
+        <a href="%20" title="twitter" target="_blank"><i class="remixicon-twitter-fill"></i></a>
+        
+        
+        
+        <a href="%20" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://vsxen.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/2018/09/25/cluster-autoscaler/'>Kubernetes 中的弹性伸缩 Autoscaler</a></h2>
+          <span class="date">2018.09.25</span>
+        </div>
+        <div class="post_content markdown">
+
+<p>弹性伸缩是一个比较吸引人的话题，类似与云计算中所提倡的按需付费，合理使用可以减少所需计算资源，降低相关的服务器成本。对于k8s来说目前一共有两种弹性伸缩：</p>
+
+<ol>
+<li>Cluster 即自动增加删除节点</li>
+<li>Pod  分为水平和垂直两种，水平伸缩在k8s里已经支持，垂直伸缩需要安装</li>
+</ol>
+
+<p>相关repo <a href="https://github.com/kubernetes/autoscaler">https://github.com/kubernetes/autoscaler</a> ，下面分别介绍下相关信息。</p>
+
+<h2 id="node">Node</h2>
+
+<h3 id="cluster-autoscaler">Cluster-autoscaler</h3>
+
+<p>ClusterScaler安装相对来说比较简单，和其他插件类似，定义好ServiceAccount，Deployment以及伸缩组等即可，但是比较强依靠公有云。目前支持的AliCloud，Azure，AWS，BaiduCloud等，注意需要配置Access Key以及根证书（访问API时需要）等信息。关键配置如下：</p>
+
+<pre><code class="language-bash">            - ./cluster-autoscaler
+            - --v=4
+            - --stderrthreshold=info
+            - --cloud-provider=aws
+            - --skip-nodes-with-local-storage=false
+            - --scale-down-delay-after-add=3m
+            - --nodes=1:5:nodes.demo.k8s.local
+</code></pre>
+
+<p>按照正常步骤，向集群添加节点一共需要三步：</p>
+
+<ol>
+<li>新开一台机器，</li>
+<li>配置bootstap token等信息，</li>
+<li>最后加入集群。</li>
+</ol>
+
+<p>ClusterScaler相当于替我们做了这些工作，仔细阅读相关文档，可以看到阿里云依赖的是ESS，而kops下的aws依赖的是ASG（auto scaling group），通过自动伸缩组可以几乎无干预的完成扩容。</p>
+
+<p>这里穿插一个小知识，对于大多数公有云来说，都支持一个叫做cloud-init的东西，也叫做user data，也就是在机器初始化的时候执行的一段shell脚本，这也就是上面的第二步。</p>
+
+<p>那么它是如何判断集群需要扩容、缩容呢？我们先启动一个request为4C8G的nginx做测试，或者是5个1C2G的nginx，目的就是超过现有集群剩余的计算资源，正常情况下一定会有pod处于pending状态，这时候通过观察日志可以发现，ClusterScaler就会触发扩容节点。</p>
+
+<pre><code>I0408 04:46:52.022024       1 scale_up.go:249] Pod default/demo-589b486fbb-r5fn4 is unschedulable
+I0408 04:46:52.022039       1 scale_up.go:249] Pod default/demo-589b486fbb-rzlpn is unschedulable
+</code></pre>
+
+<p>源码在<a href="https://github.com/kubernetes/autoscaler/blob/cluster-autoscaler-1.2.2/cluster-autoscaler/core/scale_up.go#L59">https://github.com/kubernetes/autoscaler/blob/cluster-autoscaler-1.2.2/cluster-autoscaler/core/scale_up.go#L59</a></p>
+
+<h2 id="pod">Pod</h2>
+
+<h3 id="hpa-水平伸缩">HPA 水平伸缩</h3>
+
+<p>现在官方支持的就是HorizontalPodAutoscaler，可以根据CPU和memory使用情况来判断伸缩，需要注意的是，伸缩的条件是CPU利用率超过多少就触发扩容，所以至少需要两个参数，pod现在的CPU，以及它request的CPU， 所以我们首先需要部署metric-server，用来获取pod的实时CPU使用情况。
+<a href="https://github.com/kubernetes-incubator/metrics-server">https://github.com/kubernetes-incubator/metrics-server</a></p>
+
+<pre><code class="language-bash">kubectl apply -f https://raw.githubusercontent.com/kubernetes-incubator/metrics-server/master/deploy/1.8%2B/aggregated-metrics-reader.yaml
+
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-incubator/metrics-server/master/deploy/1.8%2B/auth-delegator.yaml
+
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-incubator/metrics-server/master/deploy/1.8%2B/auth-reader.yaml
+
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-incubator/metrics-server/master/deploy/1.8%2B/metrics-apiservice.yaml
+# 可以修改下镜像
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-incubator/metrics-server/master/deploy/1.8%2B/metrics-server-deployment.yaml
+ 
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-incubator/metrics-server/master/deploy/1.8%2B/metrics-server-service.yaml
+
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-incubator/metrics-server/master/deploy/1.8%2B/resource-reader.yaml
+</code></pre>
+
+<p>报错一</p>
+
+<pre><code>&gt; unable to fully collect metrics: unable to fully scrape metrics from source kubelet_summary:east1-monitor1: unable to fetch metrics from Kubelet xxx: Get https://xxx1:10250/stats/summary/: dial tcp: lookup xxx on 10.96.0.10:53: no such host
+</code></pre>
+
+<p>修改Deployment，加上</p>
+
+<pre><code class="language-yaml">      - args:
+        - --kubelet-preferred-address-types=InternalIP
+        - --kubelet-insecure-tls
+</code></pre>
+
+<p>完成之后执行<code>kubectl top po</code> 或者<code>kubectl get --raw &quot;/apis/metrics.k8s.io/v1beta1/nodes&quot;</code>命令应该会返回一串json，那就是安装完成了。接下来我们就试着用hpa来实现Pod水平扩容。</p>
+
+<p>首先运行一个nginx的pod</p>
+
+<pre><code class="language-bash">kubectl run nginx --image=nginx:alpine --port=80 --requests='cpu=20m,memory=20m'
+</code></pre>
+
+<p>接着规定CPU超过80%就扩容，最多为3个</p>
+
+<pre><code class="language-yaml"># kubectl autoscale deployment nginx --max=3 --cpu-percent=20
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  creationTimestamp: &quot;2019-05-26T11:09:52Z&quot;
+  name: nginx
+spec:
+  maxReplicas: 3
+  minReplicas: 1
+  scaleTargetRef:
+    apiVersion: extensions/v1beta1
+    kind: Deployment
+    name: nginx
+  targetCPUUtilizationPercentage: 80
+status:
+  currentReplicas: 0
+  desiredReplicas: 0
+---
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: podinfo
+spec:
+  scaleTargetRef:
+    apiVersion: extensions/v1beta1
+    kind: Deployment
+    name: podinfo
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      targetAverageUtilization: 80
+  - type: Resource
+    resource:
+      name: memory
+      targetAverageValue: 200Mi
+</code></pre>
+
+<p>然后我们使用工具去压测一下Nginx，这里用的是vegeta</p>
+
+<pre><code class="language-bash">echo &quot;GET http://10.244.0.16&quot; | vegeta attack -rate=1000 -duration=50s | tee results.bin | vegeta report`
+
+# 查看hpa情况。已经严重超过目标值了
+kubectl get hpa
+NAME    REFERENCE          TARGETS     MINPODS   MAXPODS   REPLICAS   AGE
+nginx   Deployment/nginx   1075%/20%   1         3         3          4m52s
+
+# 已经扩容了
+kubectl get po
+NAME                    READY   STATUS    RESTARTS   AGE
+nginx-584fd85d4-bdvbj   1/1     Running   0          22s
+nginx-584fd85d4-hg6hl   1/1     Running   0          22m
+nginx-584fd85d4-sntkc   1/1     Running   0          22s
+</code></pre>
+
+<h3 id="vpa-垂直扩容">VPA 垂直扩容</h3>
+
+<p>TODO</p>
+
+<p>###Custom Metrics自定义指标</p>
+
+<p>metrics在微服务的监控体系运用的可谓是相当广泛，仅依靠Pod的CPU就做扩容可能有些不是很完善，更符合的是依靠服务质量来扩容，比如90%的请求都是5s才返回，于是custom metrics就诞生了，它扩展了新的API Server Group<code>custom.metrics.k8s.io</code>，相关repo： <a href="https://github.com/stefanprodan/k8s-prom-hpa，需要注意的是生成证书的环节。">https://github.com/stefanprodan/k8s-prom-hpa，需要注意的是生成证书的环节。</a></p>
+
+<pre><code class="language-bash">├── cm-adapter-serving-certs.yaml
+├── custom-metrics-apiserver-auth-delegator-cluster-role-binding.yaml
+├── custom-metrics-apiserver-auth-reader-role-binding.yaml
+├── custom-metrics-apiserver-deployment.yaml
+├── custom-metrics-apiserver-resource-reader-cluster-role-binding.yaml
+├── custom-metrics-apiserver-service-account.yaml
+├── custom-metrics-apiserver-service.yaml
+├── custom-metrics-apiservice.yaml
+├── custom-metrics-cluster-role.yaml
+├── custom-metrics-config-map.yaml
+├── custom-metrics-resource-reader-cluster-role.yaml
+└── hpa-custom-metrics-cluster-role-binding.yaml
+</code></pre>
+
+<p>如下是一个http_requests 超过10 就扩容的scaler定义，可以使用上面的命令再次压测一下。</p>
+
+<pre><code class="language-yaml">apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: podinfo
+spec:
+  scaleTargetRef:
+    apiVersion: extensions/v1beta1
+    kind: Deployment
+    name: podinfo
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+  - type: Pods
+    pods:
+      metricName: http_requests
+      targetAverageValue: 10
+</code></pre>
+
+<h2 id="ref">Ref</h2>
+</div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://vsxen.github.io/tags/k8s/">k8s</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<div class="disqus">
+  <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "vsxen" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://zeuk.me">Designed by Zeuk,</a>
+    <a href="http://www.gohugo.io/">Proudly published with Hugo</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>Software Define Everything</span>
+  </div>
+</footer>
+
+
+
+<script src="https://vsxen.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://vsxen.github.io/js/zozo.js"></script>
+<script src="https://vsxen.github.io/js/highlight.pack.js"></script>
+<link  href="https://vsxen.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://vsxen.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-81855844-3', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+
+</body>
+</html>

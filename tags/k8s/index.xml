@@ -12,12 +12,21 @@
     
     
     <item>
-      <title>k8s APIServer WebHook相关准入控制器</title>
+      <title>k8s APIServer 动态准入控制器</title>
       <link>https://vsxen.github.io/2019/05/25/k8s-apiserver-webhook/</link>
       <pubDate>Sat, 25 May 2019 22:31:20 +0800</pubDate>
       
       <guid>https://vsxen.github.io/2019/05/25/k8s-apiserver-webhook/</guid>
       <description>当你在k8s集群中一个不存在的namespace中创建一个pod，会返回一个namespace not found类似的错误，你有想过这个是哪个组件完成的吗？对就是admission plugin。 从控制器说起</description>
+    </item>
+    
+    <item>
+      <title>使用kubeadm初始化集群</title>
+      <link>https://vsxen.github.io/2019/05/17/create-cluster-use-kubeadm/</link>
+      <pubDate>Fri, 17 May 2019 22:31:20 +0800</pubDate>
+      
+      <guid>https://vsxen.github.io/2019/05/17/create-cluster-use-kubeadm/</guid>
+      <description>很久之前就写过这篇笔记，一直没发出来，虽说这样的文章差不多已经烂大街了，还是可以看一下的。 ⎈⎈ apt install -y bash-completion yum install -y bash-completion echo &amp;quot;source &amp;lt;(kubectl completion bash)&amp;quot; &amp;gt;&amp;gt; ~/.bashrc echo &amp;quot;source &amp;lt;(kubeadm completion bash)&amp;quot; &amp;gt;&amp;gt; ~/.bashrc source ~/.bashrc modprobe ip_vs &amp;amp;&amp;amp; modprobe ip_vs_rr &amp;amp;&amp;amp; modprobe ip_vs_wrr &amp;amp;&amp;amp; modprobe ip_vs_sh rm -rf /var/lib/cni/ rm -rf /var/lib/kubelet/* rm -rf /etc/cni/ ip link del cni0 &amp;amp;&amp;amp; ip link del flannel.1</description>
     </item>
     
     <item>
@@ -48,6 +57,15 @@
     </item>
     
     <item>
+      <title>Kubernetes 中的网络结构</title>
+      <link>https://vsxen.github.io/2019/02/12/kubernetes-network-flannel/</link>
+      <pubDate>Tue, 12 Feb 2019 22:31:20 +0800</pubDate>
+      
+      <guid>https://vsxen.github.io/2019/02/12/kubernetes-network-flannel/</guid>
+      <description>Kubernetes 采用的是基于扁平地址空间的网络模型，集群中的每个 Pod 都有自己的 IP 地址，Pod 之间不需要配置 NAT 就能直接通信。另外，同一个 Pod 中的容器共享 Pod 的 IP，能够通过 localhost 通信。 IP-per-Pod，每个 Pod 都拥有一个独立</description>
+    </item>
+    
+    <item>
       <title>k8s 监控体系 --  Prometheus Operator</title>
       <link>https://vsxen.github.io/2019/01/22/promthus-operator/</link>
       <pubDate>Tue, 22 Jan 2019 22:31:20 +0800</pubDate>
@@ -63,6 +81,24 @@
       
       <guid>https://vsxen.github.io/2018/12/25/k8s-pod-full-yaml/</guid>
       <description>Pod作为k8s工作负载的基本单位,不论是Deployment还是job等等需要计算资源的控制器，都需要定义将被创建的pod模板，所以熟悉pod的所有字段还是很有必要的。今天就用Deployment作</description>
+    </item>
+    
+    <item>
+      <title>Kubernetes 中的资源管理和优先级</title>
+      <link>https://vsxen.github.io/2018/10/09/k8s-resource-qos/</link>
+      <pubDate>Tue, 09 Oct 2018 22:31:20 +0800</pubDate>
+      
+      <guid>https://vsxen.github.io/2018/10/09/k8s-resource-qos/</guid>
+      <description>Kubernetes 是怎么定义资源的呢？ ​ 在 kubernetes 中，任何可以被申请、分配，最终被使用的对象，都是 kubernetes 中的资源，比如 CPU、内存。而且针对每一种被 kubernetes 所管理的资源，都会被赋予一个【资源类型名】，这些名字都是符合 RFC 1123 规则的，比如</description>
+    </item>
+    
+    <item>
+      <title>Kubernetes 中的弹性伸缩 Autoscaler</title>
+      <link>https://vsxen.github.io/2018/09/25/cluster-autoscaler/</link>
+      <pubDate>Tue, 25 Sep 2018 12:31:20 +0800</pubDate>
+      
+      <guid>https://vsxen.github.io/2018/09/25/cluster-autoscaler/</guid>
+      <description>弹性伸缩是一个比较吸引人的话题，类似与云计算中所提倡的按需付费，合理使用可以减少所需计算资源，降低相关的服务器成本。对于k8s来说目前一共有两种弹性伸缩： Cluster 即自动增加删除节点 Pod 分为水平和垂直两种，水平</description>
     </item>
     
     <item>
