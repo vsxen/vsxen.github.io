@@ -4,25 +4,36 @@
   
   <url>
     <loc>https://vsxen.github.io/</loc>
-    <lastmod>2019-05-25T22:31:20+08:00</lastmod>
+    <lastmod>2019-06-15T12:31:20+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
+    <loc>https://vsxen.github.io/2019/06/15/get-start-etcd/</loc>
+    <lastmod>2019-06-15T12:31:20+08:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://vsxen.github.io/posts/</loc>
-    <lastmod>2019-05-25T22:31:20+08:00</lastmod>
+    <lastmod>2019-06-15T12:31:20+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://vsxen.github.io/tags/</loc>
-    <lastmod>2019-05-25T22:31:20+08:00</lastmod>
+    <lastmod>2019-06-15T12:31:20+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://vsxen.github.io/tags/etcd/</loc>
+    <lastmod>2019-06-15T12:31:20+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://vsxen.github.io/tags/k8s/</loc>
-    <lastmod>2019-05-25T22:31:20+08:00</lastmod>
+    <lastmod>2019-06-15T12:31:20+08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -34,6 +45,17 @@
   <url>
     <loc>https://vsxen.github.io/2019/05/17/create-cluster-use-kubeadm/</loc>
     <lastmod>2019-05-17T22:31:20+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://vsxen.github.io/2019/05/12/storage-in-kubernets/</loc>
+    <lastmod>2019-05-12T22:31:20+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://vsxen.github.io/tags/storage/</loc>
+    <lastmod>2019-05-12T22:31:20+08:00</lastmod>
+    <priority>0</priority>
   </url>
   
   <url>

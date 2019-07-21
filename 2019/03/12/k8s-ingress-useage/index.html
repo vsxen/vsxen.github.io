@@ -287,27 +287,7 @@ spec:
 
 <p>所有的插件在这 <a href="https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/">https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/</a></p>
 
-<p>默认的日志输出如下</p>
-
-<pre><code class="language-bash">log_format upstreaminfo
-    '{{ if $cfg.useProxyProtocol }}$proxy_protocol_addr{{ else }}$remote_addr{{ end }} - '
-    '[$the_real_ip] - $remote_user [$time_local] &quot;$request&quot; '
-    '$status $body_bytes_sent &quot;$http_referer&quot; &quot;$http_user_agent&quot; '
-    '$request_length $request_time [$proxy_upstream_name] $upstream_addr '
-    '$upstream_response_length $upstream_response_time $upstream_status $req_id';
-   
-203.110.179.243 - [203.110.179.243] - - [11/Jan/2019:14:44:55 +0800] &quot;GET /favicon.ico HTTP/1.1&quot; 404 196 &quot;http://nginx.cf86fc3209f4e483493e504197bfdd22f.cn-hangzhou.alicontainer.com/&quot; &quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36&quot; 458 0.001 [default-nginx-80] 172.16.1.173:80 555 0.000 404 7b02134be96609d93aa4318a826a40b3    
-</code></pre>
-
-<p>获取客户端Real IP，对于Service Spec来说有一个externalTrafficPolicy字段，效果如下所示</p>
-
-<pre><code>  externalTrafficPolicy: Cluster
-10.244.0.1 - [10.244.0.1] - - [11/Apr/2019:13:54:51 +0000] &quot;GET / HTTP/2.0&quot; 200 392 &quot;-&quot; &quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36&quot; 431 0.001 [default-nginx-80] 10.244.0.144:80 612 0.000 200 42ce047ab4b6909266aeca53af3e6b08
-  externalTrafficPolicy: Local
-23.10.19.23 - [23.10.19.23] - - [11/Jan/2019:14:44:55 +0800] &quot;GET /favicon.ico HTTP/1.1&quot; 404 196 &quot;http://nginx.cf86fc3209f4e483493e504197bfdd22f.cn-hangzhou.alicontainer.com/&quot; &quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36&quot; 458 0.001 [default-nginx-80] 172.16.1.173:80 555 0.000 404 7b02134be96609d93aa4318a826a40b3    
-</code></pre>
-
-<p>对于不同的Ingress对象，Ng会生成不同的sever配置。下面是生成的对应的Nginx Server段，熟悉Nginx的人应该能不陌生。</p>
+<p>对于不同的Ingress对象，Ng会生成不同的sever配置。下面是生成的对应的Nginx Server段，熟悉Nginx的人应该不陌生。</p>
 
 <pre><code class="language-yaml">        ## start server xxx.com
         server {
@@ -372,6 +352,129 @@ spec:
                 }
         }
         ## end server xxx.com
+</code></pre>
+
+<h2 id="access-log">Access Log</h2>
+
+<p>默认的日志输出如下</p>
+
+<pre><code class="language-bash">log_format upstreaminfo
+    '{{ if $cfg.useProxyProtocol }}$proxy_protocol_addr{{ else }}$remote_addr{{ end }} - '
+    '[$the_real_ip] - $remote_user [$time_local] &quot;$request&quot; '
+    '$status $body_bytes_sent &quot;$http_referer&quot; &quot;$http_user_agent&quot; '
+    '$request_length $request_time [$proxy_upstream_name] $upstream_addr '
+    '$upstream_response_length $upstream_response_time $upstream_status $req_id';
+
+  log-format-upstream: '{&quot;proxy_protocol_addr&quot;: &quot;$proxy_protocol_addr&quot;,&quot;remote_addr&quot;:
+    &quot;$remote_addr&quot;, &quot;proxy_add_x_forwarded_for&quot;: &quot;$proxy_add_x_forwarded_for&quot;, &quot;remote_user&quot;:
+    &quot;$remote_user&quot;, &quot;time_local&quot;: &quot;$time_local&quot;, &quot;request&quot; : &quot;$request&quot;, &quot;status&quot;:
+    &quot;$status&quot;, &quot;body_bytes_sent&quot;: &quot;$body_bytes_sent&quot;, &quot;http_referer&quot;:  &quot;$http_referer&quot;,
+    &quot;http_user_agent&quot;: &quot;$http_user_agent&quot;, &quot;request_length&quot; : &quot;$request_length&quot;, &quot;request_time&quot;
+    : &quot;$request_time&quot;, &quot;proxy_upstream_name&quot;: &quot;$proxy_upstream_name&quot;, &quot;upstream_addr&quot;:
+    &quot;$upstream_addr&quot;,  &quot;upstream_response_length&quot;: &quot;$upstream_response_length&quot;, &quot;upstream_response_time&quot;:
+    &quot;$upstream_response_time&quot;, &quot;upstream_status&quot;: &quot;$upstream_status&quot;, &quot;req_id&quot;:&quot;$req_id&quot;}'
+
+203.110.179.243 - [203.110.179.243] - - [11/Jan/2019:14:44:55 +0800] &quot;GET /favicon.ico HTTP/1.1&quot; 404 196 &quot;http://nginx.cf86fc3209f4e483493e504197bfdd22f.cn-hangzhou.alicontainer.com/&quot; &quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36&quot; 458 0.001 [default-nginx-80] 172.16.1.173:80 555 0.000 404 7b02134be96609d93aa4318a826a40b3    
+</code></pre>
+
+<p>获取客户端Real IP，对于Service Spec来说有一个externalTrafficPolicy字段，效果如下所示</p>
+
+<pre><code>  externalTrafficPolicy: Cluster
+10.244.0.1 - [10.244.0.1] - - [11/Apr/2019:13:54:51 +0000] &quot;GET / HTTP/2.0&quot; 200 392 &quot;-&quot; &quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36&quot; 431 0.001 [default-nginx-80] 10.244.0.144:80 612 0.000 200 42ce047ab4b6909266aeca53af3e6b08
+  externalTrafficPolicy: Local
+23.10.19.23 - [23.10.19.23] - - [11/Jan/2019:14:44:55 +0800] &quot;GET /favicon.ico HTTP/1.1&quot; 404 196 &quot;http://nginx.cf86fc3209f4e483493e504197bfdd22f.cn-hangzhou.alicontainer.com/&quot; &quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36&quot; 458 0.001 [default-nginx-80] 172.16.1.173:80 555 0.000 404 7b02134be96609d93aa4318a826a40b3    
+</code></pre>
+
+<pre><code>    &lt;source&gt;
+      @id fluentd-containers.log
+      @type tail
+      path /var/log/containers/*.log
+      pos_file /var/log/es-containers.log.pos
+      tag raw.kubernetes.*
+      read_from_head true
+      &lt;parse&gt;
+        @type multi_format
+        &lt;pattern&gt;
+          format json
+          time_key time
+          time_format %Y-%m-%dT%H:%M:%S.%NZ
+        &lt;/pattern&gt;
+        &lt;pattern&gt;
+          format /^(?&lt;time&gt;.+) (?&lt;stream&gt;stdout|stderr) [^ ]* (?&lt;log&gt;.*)$/
+          time_format %Y-%m-%dT%H:%M:%S.%N%:z
+        &lt;/pattern&gt;
+      &lt;/parse&gt;
+    &lt;/source&gt;
+
+    # Detect exceptions in the log output and forward them as one log entry.
+    &lt;match raw.kubernetes.**&gt;
+      @id raw.kubernetes
+      @type detect_exceptions
+      remove_tag_prefix raw
+      message log
+      stream stream
+      multiline_flush_interval 5
+      max_bytes 500000
+      max_lines 1000
+    &lt;/match&gt;
+
+    # Concatenate multi-line logs
+    &lt;filter **&gt;
+      @id filter_concat
+      @type concat
+      key message
+      multiline_end_regexp /\n$/
+      separator &quot;&quot;
+    &lt;/filter&gt;
+
+    # Enriches records with Kubernetes metadata
+    &lt;filter kubernetes.**&gt;
+      @id filter_kubernetes_metadata
+      @type kubernetes_metadata
+    &lt;/filter&gt;
+
+    # Fixes json fields in Elasticsearch
+    &lt;filter kubernetes.**&gt;
+      @id filter_parser
+      @type parser
+      key_name log
+      reserve_data true
+      remove_key_name_field true
+      &lt;parse&gt;
+        @type multi_format
+        &lt;pattern&gt;
+          format json
+        &lt;/pattern&gt;
+        &lt;pattern&gt;
+          format none
+        &lt;/pattern&gt;
+      &lt;/parse&gt;
+    &lt;/filter&gt;
+
+    &lt;match **&gt;
+      @id elasticsearch
+      @type elasticsearch
+      @log_level info
+      type_name _doc
+      include_tag_key true
+      host 1.1.1.1
+      port 9200
+      logstash_format true
+      logstash_prefix audit
+      &lt;buffer&gt;
+        @type file
+        path /var/log/fluentd-buffers/kubernetes.system.buffer
+        flush_mode interval
+        retry_type exponential_backoff
+        flush_thread_count 2
+        flush_interval 5s
+        retry_forever
+        retry_max_interval 30
+        chunk_limit_size 2M
+        queue_limit_length 8
+        overflow_action block
+      &lt;/buffer&gt;
+    &lt;/match&gt;
 </code></pre>
 
 <h2 id="ref">Ref</h2>

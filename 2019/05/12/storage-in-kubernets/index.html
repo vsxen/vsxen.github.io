@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="vsxen"/>
+
+  
+  <meta name="description" content="概念 PersistentVolume PersistentVolume（持久卷，简称PV）是集群内，由管理员提供的网络存储的一部分。就像集群中的节点一样，PV也是集群中的一种资源。它也像Volume一样，是一种volume插件，但是"/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, k8s, devops"/>
+  
+
+  
+  <link rel="canonical" href="https://vsxen.github.io/2019/05/12/storage-in-kubernets/"/>
+
+  
+
+  <title>Kubernetes中的存储 &middot; Code Life</title>
+
+  <link rel="shortcut icon" href="https://vsxen.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://vsxen.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://vsxen.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://vsxen.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://vsxen.github.io/css/highlight.css"/>
+
+  
+  
+
+  <script>
+    (function(d) {
+      var config = {
+        kitId: 'kfn1kkp',
+        scriptTimeout: 3000,
+        async: true
+      },
+      h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;h.className+=" wf-loading";tk.src='https://use.typekit.net/'+config.kitId+'.js';tk.async=true;tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!="complete"&&a!="loaded")return;f=true;clearTimeout(t);try{Typekit.load(config)}catch(e){}};s.parentNode.insertBefore(tk,s)
+    })(document);
+  </script>
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/posts/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://vsxen.github.io">
+          <span>Code Life</span>
+          <img src="https://vsxen.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">Life is too bug</p>
+      <div class="my_socials">
+        
+        
+        <a href="%20" title="facebook" target="_blank"><i class="remixicon-facebook-fill"></i></a>
+        
+        
+        
+        <a href="%20" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="%20" title="instagram" target="_blank"><i class="remixicon-instagram-fill"></i></a>
+        
+        
+        
+        <a href="%20" title="twitter" target="_blank"><i class="remixicon-twitter-fill"></i></a>
+        
+        
+        
+        <a href="%20" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://vsxen.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/2019/05/12/storage-in-kubernets/'>Kubernetes中的存储</a></h2>
+          <span class="date">2019.05.12</span>
+        </div>
+        <div class="post_content markdown">
+
+<h2 id="概念">概念</h2>
+
+<h3 id="persistentvolume">PersistentVolume</h3>
+
+<p><code>PersistentVolume</code>（持久卷，简称PV）是集群内，由管理员提供的网络存储的一部分。就像集群中的节点一样，PV也是集群中的一种资源。它也像Volume一样，是一种volume插件，但是它的生命周期却是和使用它的Pod相互独立的。PV这个API对象，捕获了诸如NFS、ISCSI、或其他云存储系统的实现细节。
+<a href="https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistent-volumes">https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistent-volumes</a></p>
+
+<pre><code class="language-yaml"># kubectl explain pv.spec
+# KIND:     PersistentVolume
+# VERSION:  v1
+# spec
+#    accessModes  &lt;[]string&gt;
+#    capacity     &lt;map[string]string&gt;
+#    mountOptions &lt;[]string&gt; 部分支持，比如NFS
+#    persistentVolumeReclaimPolicy        &lt;string&gt;
+#    storageClassName     &lt;string&gt;
+#    volumeMode   &lt;string&gt;
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: block-pv
+spec:
+  accessModes:
+    - ReadWriteOnce
+  capacity:
+    storage: 10Gi
+  persistentVolumeReclaimPolicy: Retain  
+  storageClassName： aliclood-nas
+  volumeMode: Block
+</code></pre>
+
+<h3 id="persistentvolumeclaim">PersistentVolumeClaim</h3>
+
+<p><code>PersistentVolumeClaim</code>（持久卷声明，简称PVC）是用户的一种存储请求。它和Pod类似，Pod消耗Node资源，而PVC消耗PV资源。Pod能够请求特定的资源（如CPU和内存）。PVC能够请求指定的大小和访问的模式（可以被映射为一次读写或者多次只读）。
+PVC允许用户消耗抽象的存储资源，用户也经常需要各种属性（如性能）的PV。集群管理员需要提供各种各样、不同大小、不同访问模式的PV，而不用向用户暴露这些volume如何实现的细节。因为这种需求，就催生出一种<code>StorageClass</code>资源。</p>
+
+<pre><code class="language-yaml">  #  accessModes          &lt;[]string&gt;
+  #  storageClassName     &lt;string&gt;
+  #  volumeMode           &lt;string&gt;
+  #  volumeName           &lt;string&gt;
+  #  resources            &lt;Object&gt;
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: myclaim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: slow
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 8Gi
+</code></pre>
+
+<h3 id="storageclass">StorageClass</h3>
+
+<p><code>StorageClass</code>提供了一种方式，使得管理员能够描述他提供的存储的等级。集群管理员可以将不同的等级映射到不同的服务等级、不同的后端策略。
+<a href="https://kubernetes.io/docs/concepts/storage/storage-classes/">https://kubernetes.io/docs/concepts/storage/storage-classes/</a></p>
+
+<pre><code class="language-yaml">  #  mountOptions &lt;[]string&gt;
+  #  parameters   &lt;map[string]string&gt;
+  #  provisioner  &lt;string&gt; -required-
+  #  reclaimPolicy        &lt;string&gt;
+  #  volumeBindingMode    &lt;string&gt;
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: alicloud-nas
+mountOptions:
+- vers=4.0
+provisioner: alicloud/nas
+reclaimPolicy: Retain
+</code></pre>
+
+<h2 id="实例">实例</h2>
+
+<h4 id="local-storage">Local  Storage</h4>
+
+<p>首先要创建StorageClass。</p>
+
+<pre><code class="language-yaml">cat &lt;&lt;EOF | kubectl apply -f -
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: local-storage
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer
+EOF
+
+kubectl get sc
+NAME            PROVISIONER                    AGE
+local-storage   kubernetes.io/no-provisioner   3s
+</code></pre>
+
+<h5 id="创建pv">创建PV</h5>
+
+<pre><code class="language-yaml">cat &lt;&lt;EOF | kubectl apply -f -
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: example-local-pv
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  local:
+    path: /mnt/
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - master1
+EOF
+
+kubectl get pv
+NAME               CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS     CLAIM                         STORAGECLASS    REASON    AGE
+example-local-pv   1Gi        RWO            Retain           Available             local-storage             3s
+</code></pre>
+
+<p>如果hostname没有指定，则会报错。<code>The PersistentVolume &quot;example-local-pv&quot; is invalid: metadata.annotations: Required value: Local volume requires node affinity</code></p>
+
+<h5 id="创建pvc">创建PVC</h5>
+
+<pre><code class="language-yaml">cat &lt;&lt;EOF | kubectl apply -f -
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: example-local-claim
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: local-storage
+EOF
+</code></pre>
+
+<h5 id="使用pvc">使用PVC</h5>
+
+<pre><code class="language-yaml">cat &lt;&lt;EOF | kubectl apply -f -
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: nginx
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: nginx
+    spec:
+      containers:
+      - name:  nginx
+        image: nginx:alpine
+        volumeMounts:
+        - mountPath: &quot;/var/www/html&quot;
+          name: mypd
+      volumes:
+      - name: mypd
+        persistentVolumeClaim:
+          claimName: example-local-claim
+EOF
+</code></pre>
+
+<h4 id="nas">NAS</h4>
+
+<pre><code class="language-yaml">apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: alicloud-nas
+mountOptions:
+- vers=4.0
+provisioner: alicloud/nas
+reclaimPolicy: Retain
+---
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  name: alicloud-nas-controller
+  namespace: kube-system
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: alicloud-nas-controller
+    spec:
+      tolerations:
+      - effect: NoSchedule
+        operator: Exists
+        key: node-role.kubernetes.io/master
+      - effect: NoSchedule
+        operator: Exists
+        key: node.cloudprovider.kubernetes.io/uninitialized
+      nodeSelector:
+        node-role.kubernetes.io/master: &quot;&quot;
+      serviceAccount: admin
+      containers:
+        - name: alicloud-nas-controller
+          image: registry.cn-hangzhou.aliyuncs.com/acs/alicloud-nas-controller:v3.1.0-k8s1.11
+          volumeMounts:
+          - mountPath: /persistentvolumes
+            name: nfs-client-root
+          env:
+            - name: PROVISIONER_NAME
+              value: alicloud/nas
+            - name: NFS_SERVER
+              value: xxx.cn-hangzhou.nas.aliyuncs.com
+            - name: NFS_PATH
+              value: /
+      volumes:
+      - name: nfs-client-root
+        flexVolume:
+          driver: alicloud/nas
+          options:
+            path: /
+            server: 0cd8b4a576-mmi32.cn-hangzhou.nas.aliyuncs.com
+            vers: &quot;4.0&quot;
+</code></pre>
+
+<h5 id="使用volumetemplate">使用VolumeTemplate</h5>
+
+<pre><code class="language-yaml">apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: web
+spec:
+  serviceName: &quot;nginx&quot;
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:alpine
+        volumeMounts:
+        - mountPath: &quot;/usr/share/nginx/html/&quot;
+          name: html
+  volumeClaimTemplates:
+  - metadata:
+      name: html
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      storageClassName: alicloud-nas
+      resources:
+        requests:
+          storage: 2Gi
+ 
+# web-html-0   Bound     pvc-487   2Gi        RWO            alicloud-nas   1h
+# web-html-1   Bound     pvc-60a   2Gi        RWO            alicloud-nas   1h
+</code></pre>
+
+<h2 id="ref">Ref</h2>
+
+<p>Kubernetes存储之Persistent Volumes简介</p>
+
+<p><a href="https://blog.csdn.net/styshoo/article/details/72235208">https://blog.csdn.net/styshoo/article/details/72235208</a></p>
+
+<p>Local Persistent Volumes for Kubernetes Goes Beta</p>
+
+<p><a href="https://kubernetes.io/blog/2018/04/13/local-persistent-volumes-beta/">https://kubernetes.io/blog/2018/04/13/local-persistent-volumes-beta/</a></p>
+
+<p>使用阿里云 NAS</p>
+
+<p><a href="https://www.alibabacloud.com/help/zh/doc-detail/88940.htm">https://www.alibabacloud.com/help/zh/doc-detail/88940.htm</a></p>
+</div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://vsxen.github.io/tags/k8s/">k8s</a>
+                
+                <a href="https://vsxen.github.io/tags/storage/">storage</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<div class="disqus">
+  <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "vsxen" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://zeuk.me">Designed by Zeuk,</a>
+    <a href="http://www.gohugo.io/">Proudly published with Hugo</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>Software Define Everything</span>
+  </div>
+</footer>
+
+
+
+<script src="https://vsxen.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://vsxen.github.io/js/zozo.js"></script>
+<script src="https://vsxen.github.io/js/highlight.pack.js"></script>
+<link  href="https://vsxen.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://vsxen.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-81855844-3', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+
+</body>
+</html>

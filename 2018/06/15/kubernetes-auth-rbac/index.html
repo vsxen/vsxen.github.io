@@ -128,7 +128,7 @@
 
 <p>下图大致描述了k8s认证的流程图，描述了一个请求在经过APIServer的时候都经历了哪些鉴权的过程。如下图所示：需要访问API的有人类，也就是Ops，通过kubectl以及Kubeconfig配置文件和API-Server交互。还有就是Pod，也就是应用，对API资源进行CURD。然后依次经过了身份认证(authentication)、授权(authorization)和准入控制（admission control）。下面就来详细介绍下认证和授权</p>
 
-<p><img src="/Users/thanos/all/note/k8s/assets/rbac.jpg" alt="" /></p>
+<p><img src="../img/rbac01.jpg" alt="" /></p>
 
 <h2 id="认证">认证</h2>
 
@@ -309,66 +309,7 @@ curl -k -H &quot;Authorization: Bearer $TOKEN&quot; https://$MASTER:6443/api
 
 <p>Authorization：授权。这个环节面对的输入是http request context中的各种属性，包括：user、group、request path（比如：/api/v1、/healthz、/version等）、request verb(比如：get、list、create等)。APIServer会将这些属性值与事先配置好的访问策略(access policy）相比较。APIServer支持多种authorization mode，包括Node、RBAC、Webhook等。</p>
 
-<pre><code class="language-bash">Authorization flags:
-
-      --authorization-mode strings
-                Ordered list of plug-ins to do authorization on secure port. Comma-delimited list of: AlwaysAllow,AlwaysDeny,ABAC,Webhook,RBAC,Node. (default [AlwaysAllow])
-      --authorization-policy-file string
-                File with authorization policy in csv format, used with --authorization-mode=ABAC, on the secure port.
-      --authorization-webhook-cache-authorized-ttl duration
-                The duration to cache 'authorized' responses from the webhook authorizer. (default 5m0s)
-      --authorization-webhook-cache-unauthorized-ttl duration
-                The duration to cache 'unauthorized' responses from the webhook authorizer. (default 30s)
-      --authorization-webhook-config-file string
-                File with webhook configuration in kubeconfig format, used with --authorization-mode=Webhook. The API server will query the remote service to determine access on the API server's secure port.
-</code></pre>
-
 <p>APIServer启动时，可以指定一种authorization mode，也可以指定多种authorization mode，如果是后者，只要Request通过了其中一种mode的授权，那么该环节的最终结果就是授权成功。在较新版本kubeadm引导启动的k8s集群的apiserver初始配置中，authorization-mode的默认配置是”Node,RBAC”。Node授权器主要用于各个node上的kubelet访问apiserver时使用的，其他一般均由RBAC授权器来授权。</p>
-
-<h3 id="准入">准入</h3>
-
-<pre><code class="language-bash">Admission flags:
-
-      --admission-control strings
-                Admission is divided into two phases. In the first phase, only mutating admission plugins run. In the second phase, only validating admission plugins run. The names in the below list may
-                represent a validating plugin, a mutating plugin, or both. The order of plugins in which they are passed to this flag does not matter. Comma-delimited list of: AlwaysAdmit, AlwaysDeny,
-                AlwaysPullImages, DefaultStorageClass, DefaultTolerationSeconds, DenyEscalatingExec, DenyExecOnPrivileged, EventRateLimit, ExtendedResourceToleration, ImagePolicyWebhook, Initializers,
-                LimitPodHardAntiAffinityTopology, LimitRanger, MutatingAdmissionWebhook, NamespaceAutoProvision, NamespaceExists, NamespaceLifecycle, NodeRestriction,
-                OwnerReferencesPermissionEnforcement, PersistentVolumeClaimResize, PersistentVolumeLabel, PodNodeSelector, PodPreset, PodSecurityPolicy, PodTolerationRestriction, Priority,
-                ResourceQuota, SecurityContextDeny, ServiceAccount, StorageObjectInUseProtection, TaintNodesByCondition, ValidatingAdmissionWebhook. (DEPRECATED: Use --enable-admission-plugins or
-                --disable-admission-plugins instead. Will be removed in a future version.)
-      --admission-control-config-file string
-                File with admission control configuration.
-      --disable-admission-plugins strings
-                admission plugins that should be disabled although they are in the default enabled plugins list (NamespaceLifecycle, LimitRanger, ServiceAccount, TaintNodesByCondition, Priority,
-                DefaultTolerationSeconds, DefaultStorageClass, PersistentVolumeClaimResize, MutatingAdmissionWebhook, ValidatingAdmissionWebhook, ResourceQuota). Comma-delimited list of admission
-                plugins: AlwaysAdmit, AlwaysDeny, AlwaysPullImages, DefaultStorageClass, DefaultTolerationSeconds, DenyEscalatingExec, DenyExecOnPrivileged, EventRateLimit, ExtendedResourceToleration,
-                ImagePolicyWebhook, Initializers, LimitPodHardAntiAffinityTopology, LimitRanger, MutatingAdmissionWebhook, NamespaceAutoProvision, NamespaceExists, NamespaceLifecycle, NodeRestriction,
-                OwnerReferencesPermissionEnforcement, PersistentVolumeClaimResize, PersistentVolumeLabel, PodNodeSelector, PodPreset, PodSecurityPolicy, PodTolerationRestriction, Priority,
-                ResourceQuota, SecurityContextDeny, ServiceAccount, StorageObjectInUseProtection, TaintNodesByCondition, ValidatingAdmissionWebhook. The order of plugins in this flag does not matter.
-      --enable-admission-plugins strings
-                admission plugins that should be enabled in addition to default enabled ones (NamespaceLifecycle, LimitRanger, ServiceAccount, TaintNodesByCondition, Priority, DefaultTolerationSeconds,
-                DefaultStorageClass, PersistentVolumeClaimResize, MutatingAdmissionWebhook, ValidatingAdmissionWebhook, ResourceQuota). Comma-delimited list of admission plugins: AlwaysAdmit,
-                AlwaysDeny, AlwaysPullImages, DefaultStorageClass, DefaultTolerationSeconds, DenyEscalatingExec, DenyExecOnPrivileged, EventRateLimit, ExtendedResourceToleration, ImagePolicyWebhook,
-                Initializers, LimitPodHardAntiAffinityTopology, LimitRanger, MutatingAdmissionWebhook, NamespaceAutoProvision, NamespaceExists, NamespaceLifecycle, NodeRestriction,
-                OwnerReferencesPermissionEnforcement, PersistentVolumeClaimResize, PersistentVolumeLabel, PodNodeSelector, PodPreset, PodSecurityPolicy, PodTolerationRestriction, Priority,
-                ResourceQuota, SecurityContextDeny, ServiceAccount, StorageObjectInUseProtection, TaintNodesByCondition, ValidatingAdmissionWebhook. The order of plugins in this flag does not matter.
-</code></pre>
-
-<p>经过了前面两个环境之后，就到了admission环节。API Server 可以通过-enable-admission-plugins参数指定加载的授权插件，目前有以下插件</p>
-
-<ul>
-<li>AlwaysAdmit：允许所有请求通过</li>
-<li>AlwaysPullImages：在启动容器之前总是去下载镜像，相当于每当容器启动前做一次用于是否有权使用该容器镜像的检查</li>
-<li>AlwaysDeny：禁止所有请求通过，用于测试</li>
-<li>DenyEscalatingExec：拒绝exec和attach命令到有升级特权的Pod的终端用户访问。如果集中包含升级特权的容器，而要限制终端用户在这些容器中执行命令的能力，推荐使用此插件</li>
-<li>ImagePolicyWebhook</li>
-<li>ServiceAccount：这个插件实现了serviceAccounts等等自动化，如果使用ServiceAccount对象，强烈推荐使用这个插件</li>
-<li>SecurityContextDeny：将Pod定义中定义了的SecurityContext选项全部失效。SecurityContext包含在容器中定义了操作系统级别的安全选型如fsGroup，selinux等选项</li>
-<li>ResourceQuota：用于namespace上的配额管理，它会观察进入的请求，确保在namespace上的配额不超标。推荐将这个插件放到准入控制器列表的最后一个。ResourceQuota准入控制器既可以限制某个namespace中创建资源的数量，又可以限制某个namespace中被Pod请求的资源总量。ResourceQuota准入控制器和ResourceQuota资源对象一起可以实现资源配额管理。</li>
-<li>LimitRanger：用于Pod和容器上的配额管理，它会观察进入的请求，确保Pod和容器上的配额不会超标。准入控制器LimitRanger和资源对象LimitRange一起实现资源限制管理</li>
-<li>NamespaceLifecycle：当一个请求是在一个不存在的namespace下创建资源对象时，该请求会被拒绝。当删除一个namespace时，将会删除该namespace下的所有资源对象</li>
-</ul>
 
 <h2 id="rbac实战">RBAC实战</h2>
 
@@ -429,44 +370,6 @@ kind: ServiceAccount
 metadata:
   name: traefik-ingress-controller
   namespace: kube-system
-</code></pre>
-
-<h2 id="审计">审计</h2>
-
-<pre><code class="language-json">{
-  &quot;kind&quot;: &quot;Event&quot;,
-  &quot;apiVersion&quot;: &quot;audit.k8s.io/v1&quot;,
-  &quot;level&quot;: &quot;Request&quot;,
-  &quot;auditID&quot;: &quot;43af9fa0-d080-4f7b-bcf4-31fe4504348e&quot;,
-  &quot;stage&quot;: &quot;ResponseComplete&quot;,
-  &quot;requestURI&quot;: &quot;/apis/policy/v1beta1/podsecuritypolicies?resourceVersion=1&amp;timeout=9m58s&amp;timeoutSeconds=598&amp;watch=true&quot;,
-  &quot;verb&quot;: &quot;watch&quot;,
-  &quot;user&quot;: {
-    &quot;username&quot;: &quot;system:kube-controller-manager&quot;,
-    &quot;groups&quot;: [
-      &quot;system:authenticated&quot;
-    ]
-  },
-  &quot;sourceIPs&quot;: [
-    &quot;192.168.1.11&quot;
-  ],
-  &quot;userAgent&quot;: &quot;kube-controller-manager/v1.13.1 (linux/amd64) kubernetes/eec55b9/shared-informers&quot;,
-  &quot;objectRef&quot;: {
-    &quot;resource&quot;: &quot;podsecuritypolicies&quot;,
-    &quot;apiGroup&quot;: &quot;policy&quot;,
-    &quot;apiVersion&quot;: &quot;v1beta1&quot;
-  },
-  &quot;responseStatus&quot;: {
-    &quot;metadata&quot;: {},
-    &quot;code&quot;: 200
-  },
-  &quot;requestReceivedTimestamp&quot;: &quot;2019-03-28T09:52:43.369727Z&quot;,
-  &quot;stageTimestamp&quot;: &quot;2019-03-28T09:59:16.037365Z&quot;,
-  &quot;annotations&quot;: {
-    &quot;authorization.k8s.io/decision&quot;: &quot;allow&quot;,
-    &quot;authorization.k8s.io/reason&quot;: &quot;RBAC: allowed by ClusterRoleBinding \&quot;system:kube-controller-manager\&quot; of ClusterRole \&quot;system:kube-controller-manager\&quot; to User \&quot;system:kube-controller-manager\&quot;&quot;
-  }
-}
 </code></pre>
 
 <h2 id="ref">Ref</h2>

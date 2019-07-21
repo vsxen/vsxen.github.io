@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="vsxen"/>
+
+  
+  <meta name="description" content="etcd是coreos根据Raft一致性算法用go实现的分布式KV数据库，作为k8s数据唯一存储的地方，etcd具有高性能的读写以及watch性能，也可以用在服务注册，配置中心等地方，与consul不"/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, k8s, devops"/>
+  
+
+  
+  <link rel="canonical" href="https://vsxen.github.io/2019/06/15/get-start-etcd/"/>
+
+  
+
+  <title>Etcd 使用入门 &middot; Code Life</title>
+
+  <link rel="shortcut icon" href="https://vsxen.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://vsxen.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://vsxen.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://vsxen.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://vsxen.github.io/css/highlight.css"/>
+
+  
+  
+
+  <script>
+    (function(d) {
+      var config = {
+        kitId: 'kfn1kkp',
+        scriptTimeout: 3000,
+        async: true
+      },
+      h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;h.className+=" wf-loading";tk.src='https://use.typekit.net/'+config.kitId+'.js';tk.async=true;tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!="complete"&&a!="loaded")return;f=true;clearTimeout(t);try{Typekit.load(config)}catch(e){}};s.parentNode.insertBefore(tk,s)
+    })(document);
+  </script>
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/posts/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://vsxen.github.io">
+          <span>Code Life</span>
+          <img src="https://vsxen.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">Life is too bug</p>
+      <div class="my_socials">
+        
+        
+        <a href="%20" title="facebook" target="_blank"><i class="remixicon-facebook-fill"></i></a>
+        
+        
+        
+        <a href="%20" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="%20" title="instagram" target="_blank"><i class="remixicon-instagram-fill"></i></a>
+        
+        
+        
+        <a href="%20" title="twitter" target="_blank"><i class="remixicon-twitter-fill"></i></a>
+        
+        
+        
+        <a href="%20" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://vsxen.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/2019/06/15/get-start-etcd/'>Etcd 使用入门</a></h2>
+          <span class="date">2019.06.15</span>
+        </div>
+        <div class="post_content markdown">
+
+<p>etcd是coreos根据Raft一致性算法用go实现的分布式KV数据库，作为k8s数据唯一存储的地方，etcd具有高性能的读写以及watch性能，也可以用在服务注册，配置中心等地方，与consul不同的是，etcd更加轻巧。</p>
+
+<h2 id="安装">安装</h2>
+
+<p>etcd使用了两个端口 2379 grpc 以及2380 http，现在最新的API版本是v3，之前的v2性能有一定问题，建议直接用v3的API。配置etcd可以通过环境变量或者命令行参数。Etcd会有一些默认参数，但是bind的地址都是127.0.0.1</p>
+
+<pre><code class="language-bash">docker run -d --name etcd k8s.gcr.io/etcd:3.3.10 etcd
+2019-06-25 06:26:30.323960 I | etcdmain: etcd Version: 3.3.10
+2019-06-25 06:26:30.324127 I | etcdmain: Git SHA: 27fc7e2
+2019-06-25 06:26:30.324138 I | etcdmain: Go Version: go1.10.4
+2019-06-25 06:26:30.324153 I | etcdmain: Go OS/Arch: linux/amd64
+2019-06-25 06:26:30.324162 I | etcdmain: setting maximum number of CPUs to 2, total number of available CPUs is 2
+2019-06-25 06:26:30.324177 W | etcdmain: no data-dir provided, using default data-dir ./default.etcd
+2019-06-25 06:26:40.336726 I | embed: listening for peers on http://localhost:2380
+2019-06-25 06:26:50.345223 I | embed: listening for client requests on localhost:2379
+2019-06-25 06:26:50.358147 I | etcdserver: name = default
+2019-06-25 06:26:50.358327 I | etcdserver: data dir = default.etcd
+2019-06-25 06:26:50.358749 I | etcdserver: member dir = default.etcd/member
+2019-06-25 06:26:50.358781 I | etcdserver: heartbeat = 100ms
+2019-06-25 06:26:50.358803 I | etcdserver: election = 1000ms
+2019-06-25 06:26:50.358824 I | etcdserver: snapshot count = 100000
+2019-06-25 06:26:50.359052 I | etcdserver: advertise client URLs = http://localhost:2379
+2019-06-25 06:26:50.359121 I | etcdserver: initial advertise peer URLs = http://localhost:2380
+2019-06-25 06:26:50.359170 I | etcdserver: initial cluster = default=http://localhost:2380
+2019-06-25 06:26:50.370417 I | etcdserver: starting member 8e9e05c52164694d in cluster cdf818194e3a8c32
+2019-06-25 06:26:50.370872 I | raft: 8e9e05c52164694d became follower at term 0
+2019-06-25 06:26:50.370946 I | raft: newRaft 8e9e05c52164694d [peers: [], term: 0, commit: 0, applied: 0, lastindex: 0, lastterm: 0]
+2019-06-25 06:26:50.370969 I | raft: 8e9e05c52164694d became follower at term 1
+2019-06-25 06:26:50.396502 W | auth: simple token is not cryptographically signed
+2019-06-25 06:26:50.401063 I | etcdserver: starting server... [version: 3.3.10, cluster version: to_be_decided]
+2019-06-25 06:26:50.408222 I | etcdserver: 8e9e05c52164694d as single-node; fast-forwarding 9 ticks (election ticks 10)
+2019-06-25 06:26:50.412210 I | etcdserver/membership: added member 8e9e05c52164694d [http://localhost:2380] to cluster cdf818194e3a8c32
+2019-06-25 06:26:50.473495 I | raft: 8e9e05c52164694d is starting a new election at term 1
+2019-06-25 06:26:50.473735 I | raft: 8e9e05c52164694d became candidate at term 2
+2019-06-25 06:26:50.474179 I | raft: 8e9e05c52164694d received MsgVoteResp from 8e9e05c52164694d at term 2
+2019-06-25 06:26:50.475485 I | raft: 8e9e05c52164694d became leader at term 2
+2019-06-25 06:26:50.475667 I | raft: raft.node: 8e9e05c52164694d elected leader 8e9e05c52164694d at term 2
+2019-06-25 06:26:50.478249 I | etcdserver: setting up the initial cluster version to 3.3
+2019-06-25 06:26:50.478939 I | etcdserver: published {Name:default ClientURLs:[http://localhost:2379]} to cluster cdf818194e3a8c32
+2019-06-25 06:26:50.479247 I | embed: ready to serve client requests
+2019-06-25 06:26:50.484943 N | etcdserver/membership: set the initial cluster version to 3.3
+2019-06-25 06:26:50.490960 I | etcdserver/api: enabled capabilities for version 3.3
+2019-06-25 06:26:50.491112 N | embed: serving insecure client requests on 127.0.0.1:2379, this is strongly discouraged!
+
+
+</code></pre>
+
+<h2 id="常用操作">常用操作</h2>
+
+<pre><code class="language-bash"># 列出节点
+etcdctl member list -w table
++------------------+---------+---------+-----------------------+-----------------------+
+|        ID        | STATUS  |  NAME   |      PEER ADDRS       |     CLIENT ADDRS      |
++------------------+---------+---------+-----------------------+-----------------------+
+| 8e9e05c52164694d | started | default | http://localhost:2380 | http://localhost:2379 |
++------------------+---------+---------+-----------------------+-----------------------+
+
+
+# 查看单个状态
+ETCDCTL_API=3 etcdctl --cacert=/etc/kubernetes/pki/etcd/server.crt \
+  --key=/etc/kubernetes/pki/etcd/peer.key --cert=/etc/kubernetes/pki/etcd/peer.crt \
+  endpoint health
+  
+curl -k --cacert /etc/kubernetes/pki/etcd/server.crt  \
+  --key /etc/kubernetes/pki/etcd/peer.key --cert /etc/kubernetes/pki/etcd/peer.crt \
+  -L https://127.0.0.1:2379/health &amp;&amp; echo 
+  
+# 删除某个资源  
+ETCDCTL_API=3  etcdctl --cacert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/peer.key --cert=/etc/kubernetes/pki/etcd/peer.crt del /registry/namespaces/cattle-system 
+# 使用--prefix可以看到所有的子目录，如查看集群中的namespace：
+ETCDCTL_API=3 etcdctl get /registry/namespaces --prefix -w=json|python -m json.tool
+
+# 新开一个终端可以用作watch 
+</code></pre>
+
+<h2 id="集群">集群</h2>
+
+<p>集群的初始化算起来有两种方式，主要区别在于initial-cluster-state 参数，如果都是new，则所有节点要同时启动，而existing 则无此要求，后面启动的节点要配置上前面节点的信息，同样可以用作集群扩容。</p>
+
+<pre><code class="language-bash">docker run -d --name etcd1  k8s.gcr.io/etcd:3.3.10 sleep 1d
+
+docker run -d --name etcd2  k8s.gcr.io/etcd:3.3.10 sleep 1d
+
+docker run -d --name etcd3  k8s.gcr.io/etcd:3.3.10 sleep 1d
+
+IP1=$(docker inspect etcd1 --format '{{ .NetworkSettings.IPAddress }}')
+
+IP2=$(docker inspect etcd2 --format '{{ .NetworkSettings.IPAddress }}')
+
+IP3=$(docker inspect etcd3 --format '{{ .NetworkSettings.IPAddress }}')
+
+echo $IP1 $IP2 $IP3
+
+docker exec etcd1 etcd --name infra1 --advertise-client-urls=http://$IP1:2379  \
+ --initial-advertise-peer-urls=http://$IP1:2380   \
+ --initial-cluster=infra1=http://$IP1:2380  \
+ --listen-client-urls=http://127.0.0.1:2379,http://$IP1:2379  \
+ --listen-peer-urls=http://$IP1:2380 
+
+docker exec -e ETCDCTL_API=3 etcd1 etcdctl member add infra2 --peer-urls=http://$IP2:2380
+# 这里会返回第二个节点的启动参数
+Member e6ccd69690165566 added to cluster b55d10073feab447
+
+ETCD_NAME=&quot;infra2&quot;
+ETCD_INITIAL_CLUSTER=&quot;infra1=http://172.17.0.3:2380,infra2=http://172.17.0.4:2380&quot;
+ETCD_INITIAL_ADVERTISE_PEER_URLS=&quot;http://172.17.0.4:2380&quot;
+ETCD_INITIAL_CLUSTER_STATE=&quot;existing&quot;
+
+
+docker exec etcd2 etcd --name infra2  --advertise-client-urls=http://$IP2:2379  \
+ --initial-advertise-peer-urls=http://$IP2:2380  \
+ --initial-cluster=infra1=http://$IP1:2380,infra2=http://$IP2:2380  \
+ --initial-cluster-state=existing  \
+ --listen-client-urls=http://127.0.0.1:2379,http://$IP2:2379  \
+ --listen-peer-urls=http://$IP2:2380 
+
+docker exec -e ETCDCTL_API=3 etcd1 etcdctl member add infra3 --peer-urls=http://$IP3:2380
+
+ETCD_NAME=&quot;infra3&quot;
+ETCD_INITIAL_CLUSTER=&quot;infra1=http://172.17.0.3:2380,infra3=http://172.17.0.5:2380,infra2=http://172.17.0.4:2380&quot;
+ETCD_INITIAL_ADVERTISE_PEER_URLS=&quot;http://172.17.0.5:2380&quot;
+ETCD_INITIAL_CLUSTER_STATE=&quot;existing&quot;
+
+docker exec etcd3 etcd --name infra3 --advertise-client-urls=http://$IP3:2379  \
+ --initial-advertise-peer-urls=http://$IP3:2380  \
+ --initial-cluster=infra1=http://$IP1:2380,infra2=http://$IP2:2380,infra3=http://$IP3:2380  \
+ --initial-cluster-state=existing  \
+ --listen-client-urls=http://127.0.0.1:2379,http://$IP3:2379  \
+ --listen-peer-urls=http://$IP3:2380 
+ 
+etcdctl member list -w table
++------------------+---------+--------+------------------------+------------------------+
+|        ID        | STATUS  |  NAME  |       PEER ADDRS       |      CLIENT ADDRS      |
++------------------+---------+--------+------------------------+------------------------+
+| 660aa483274d103a | started | infra1 | http://172.17.0.3:2380 | http://172.17.0.3:2379 |
+| 77da1d05697d1725 | started | infra3 | http://172.17.0.5:2380 | http://172.17.0.5:2379 |
+| e6ccd69690165566 | started | infra2 | http://172.17.0.4:2380 | http://172.17.0.4:2379 |
++------------------+---------+--------+------------------------+------------------------+
+</code></pre>
+
+<h3 id="备份恢复">备份恢复</h3>
+
+<pre><code class="language-bash"># 备份数据
+ETCDCTL_API=3 etcdctl snapshot save etcd.db
+# 数据状态
+etcdctl snapshot status etcd.db  -w table
++----------+----------+------------+------------+
+|   HASH   | REVISION | TOTAL KEYS | TOTAL SIZE |
++----------+----------+------------+------------+
+| 77e8a851 |        2 |          5 |      20 kB |
++----------+----------+------------+------------+
+
+etcdctl --endpoints $ENDPOINT snapshot restore snapshot.db
+</code></pre>
+
+<h2 id="ref">Ref</h2>
+
+<p>官方文档</p>
+
+<p><a href="https://github.com/etcd-io/etcd/tree/master/Documentation/op-guide">https://github.com/etcd-io/etcd/tree/master/Documentation/op-guide</a></p>
+</div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://vsxen.github.io/tags/k8s/">k8s</a>
+                
+                <a href="https://vsxen.github.io/tags/etcd/">etcd</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<div class="disqus">
+  <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "vsxen" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://zeuk.me">Designed by Zeuk,</a>
+    <a href="http://www.gohugo.io/">Proudly published with Hugo</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>Software Define Everything</span>
+  </div>
+</footer>
+
+
+
+<script src="https://vsxen.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://vsxen.github.io/js/zozo.js"></script>
+<script src="https://vsxen.github.io/js/highlight.pack.js"></script>
+<link  href="https://vsxen.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://vsxen.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-81855844-3', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+
+</body>
+</html>

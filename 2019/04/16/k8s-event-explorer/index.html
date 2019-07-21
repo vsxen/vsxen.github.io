@@ -10,7 +10,7 @@
         content="vsxen"/>
 
   
-  <meta name="description" content="什么是k8s的Events？比如你启动了一个Deployment，k8s的各大组件就开始依次忙碌起来，最终完成Pod的创建，从声明一个Deployment开始，到Pod启动完成，会生成一些列Event"/>
+  <meta name="description" content="Event 什么是k8s的Events？比如你启动了一个Deployment，k8s的各大组件就开始依次忙碌起来，最终完成Pod的创建，从声明一个Deployment开始，到Pod启动完成，会生成一些列Even"/>
   
 
   
@@ -124,6 +124,8 @@
         </div>
         <div class="post_content markdown">
 
+<h2 id="event">Event</h2>
+
 <p>什么是k8s的Events？比如你启动了一个Deployment，k8s的各大组件就开始依次忙碌起来，最终完成Pod的创建，从声明一个Deployment开始，到Pod启动完成，会生成一些列Events，用来告知用户现在的状态。event就是用来回答一些问题，比如为什么pod没有启动，因为没有配置私有仓库的认证，为什么pod会被Kill，因为是超过limit的限制。具体如下所示：</p>
 
 <pre><code class="language-bash">kubectl get ev
@@ -202,7 +204,7 @@ type: Normal
 
 <p>查看源码可以发现，event相关的代码似乎在 <a href="https://github.com/kubernetes/kubernetes/blob/release-1.14/pkg/kubelet/events/event.go">https://github.com/kubernetes/kubernetes/blob/release-1.14/pkg/kubelet/events/event.go</a> 这里。</p>
 
-<h3 id="收集处理">收集处理</h3>
+<h3 id="收集">收集</h3>
 
 <p>对于这些集群的变更信息，如果不收集起来，对于日后的调试和问题追溯会很不方便，目前的开源的收集方案一共有以下几种：</p>
 
@@ -210,9 +212,10 @@ type: Normal
 <li><a href="https://github.com/heptiolabs/eventrouter">https://github.com/heptiolabs/eventrouter</a>  支持kafka，S3等</li>
 <li><a href="https://www.elastic.co/products/beats/metricbeat">https://www.elastic.co/products/beats/metricbeat</a> 支持ES</li>
 <li><a href="https://github.com/kubernetes-retired/heapster">https://github.com/kubernetes-retired/heapster</a> 支持Kafka，ES，InfluxDB（被舍弃）</li>
+<li>Kube-watch发送给Slack等。</li>
 </ol>
 
-<p>同时还有一个Kube-watch的项目，发送给Slack等。下面以metricsbeat为例子，输出到ES。基于官方的一个配置进行修改，主要增加了自定义索引名字，需要ES&gt; 6.4版本</p>
+<p>下面以metricsbeat为例子，输出到ES。基于官方的一个配置进行修改，主要增加了自定义索引名字，需要ES&gt; 6.4版本</p>
 
 <pre><code class="language-yaml">---
 apiVersion: v1
@@ -471,9 +474,57 @@ rules:
     &quot;authorization.k8s.io/reason&quot;: &quot;&quot;
   }
 }
+
 </code></pre>
 
-<h3 id="结语">结语</h3>
+<p>可以看出都是json格式化的，这样收集就特别方便了，以下是用fluent收集的实例：</p>
+
+<pre><code class="language-xml">    &lt;source&gt;
+      @id k8s-audit.log
+      @type tail
+      path /var/log/kubernetes/kubernetes*
+      pos_file /var/log/auditlog.pos
+      tag audit.kubernetes.*
+      read_from_head true
+      &lt;parse&gt;
+        @type multi_format
+        &lt;pattern&gt;
+          format json
+          time_key time
+          time_format %Y-%m-%dT%H:%M:%S.%NZ
+        &lt;/pattern&gt;
+      &lt;/parse&gt;
+    &lt;/source&gt;
+
+    &lt;match **&gt;
+      @id elasticsearch
+      @type elasticsearch
+      @log_level info
+      type_name _doc
+      include_tag_key true
+      host 1.1.1.1
+      port 9200
+      logstash_format true
+      logstash_prefix audit
+      &lt;buffer&gt;
+        @type file
+        path /var/log/fluentd-buffers/kubernetes.system.buffer
+        flush_mode interval
+        retry_type exponential_backoff
+        flush_thread_count 2
+        flush_interval 5s
+        retry_forever
+        retry_max_interval 30
+        chunk_limit_size 2M
+        queue_limit_length 8
+        overflow_action block
+      &lt;/buffer&gt;
+    &lt;/match&gt;
+</code></pre>
+
+<p>之后在es中建立对应的索引就可以方便的查看相关信息，如下图所示：</p>
+
+<p><img src="..imgaudit01.png" alt="" /></p>
 
 <p>总得来说，对于集群中的任何事件都应该关注，不论是做实时报警还是日后分析，都是非常有用的。</p>
 

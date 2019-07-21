@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>storage on Code Life</title>
+    <link>https://vsxen.github.io/tags/storage/</link>
+    <description>Recent content in storage on Code Life</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Sun, 12 May 2019 22:31:20 +0800</lastBuildDate>
+    
+	<atom:link href="https://vsxen.github.io/tags/storage/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Kubernetes中的存储</title>
+      <link>https://vsxen.github.io/2019/05/12/storage-in-kubernets/</link>
+      <pubDate>Sun, 12 May 2019 22:31:20 +0800</pubDate>
+      
+      <guid>https://vsxen.github.io/2019/05/12/storage-in-kubernets/</guid>
+      <description>概念 PersistentVolume PersistentVolume（持久卷，简称PV）是集群内，由管理员提供的网络存储的一部分。就像集群中的节点一样，PV也是集群中的一种资源。它也像Volume一样，是一种volume插件，但是</description>
+    </item>
+    
+  </channel>
+</rss>
