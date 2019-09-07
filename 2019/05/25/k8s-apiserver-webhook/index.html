@@ -133,12 +133,12 @@
 <ul>
 <li>AlwaysAdmit, # 一直允许</li>
 <li>AlwaysDeny, # 一直禁止</li>
-<li>AlwaysPullImages, #在启动容器之前总是去下载镜像，相当于每当容器启动前做一次用于是否有权使用该容器镜像的检查</li>
+<li>AlwaysPullImages, # 在启动容器之前总是去下载镜像，相当于每当容器启动前做一次用于是否有权使用该容器镜像的检查</li>
 <li>DefaultStorageClass, # 默认的sc</li>
 <li>DefaultTolerationSeconds,</li>
 <li>DenyEscalatingExec, # 拒绝exec和attach命令到有升级特权的Pod的终端用户访问。如果集中包含升级特权的容器，而要限制终端用户在这些容器中执行命令的能力，推荐使用此插件</li>
 <li>DenyExecOnPrivileged,</li>
-<li>EventRateLimit,  #event 限流</li>
+<li>EventRateLimit,  # event 限流</li>
 <li>ExtendedResourceToleration,</li>
 <li>ImagePolicyWebhook,</li>
 <li>LimitPodHardAntiAffinityTopology,</li>
@@ -165,7 +165,7 @@
 </ul>
 
 <p>Webhokk控制器主要作用在授权和认证之后，持久化到etcd之前。本文主要介绍的是MutatingAdmissionWebhook和ValidatingAdmissionWebhook，如下图所示：
-<img src="https://d33wubrfki0l68.cloudfront.net/af21ecd38ec67b3d81c1b762221b4ac777fcf02d/7c60e/images/blog/2019-03-21-a-guide-to-kubernetes-admission-controllers/admission-controller-phases.png" alt="" /></p>
+<img src="../images/admission-controller-phases.png" alt="" /></p>
 
 <h2 id="作用">作用</h2>
 

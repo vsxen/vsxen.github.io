@@ -12,21 +12,12 @@
     
     
     <item>
-      <title>k8s 监控体系 --  Prometheus Operator</title>
+      <title>k8s 集群监控 --  Prometheus Operator</title>
       <link>https://vsxen.github.io/2019/01/22/promthus-operator/</link>
       <pubDate>Tue, 22 Jan 2019 22:31:20 +0800</pubDate>
       
       <guid>https://vsxen.github.io/2019/01/22/promthus-operator/</guid>
       <description>对于任何系统来说，监控都是不可或缺的东西，系统现在是什么样，与一周前相比是否需要调整资源等都需要一个监控系统来参考。对于k8s来说常用的开源监控方案也就是下面几种： heaspter+InfluxDB (已被弃用) Prometheus Open falcon Telegraf+InfluxDB 而且k8s所需</description>
-    </item>
-    
-    <item>
-      <title>新式监控系统 — prometheus</title>
-      <link>https://vsxen.github.io/2018/09/14/promethus/</link>
-      <pubDate>Fri, 14 Sep 2018 22:31:20 +0800</pubDate>
-      
-      <guid>https://vsxen.github.io/2018/09/14/promethus/</guid>
-      <description>Prometheus 是一套开源的系统监控报警框架。它启发于 Google 的 borgmon 监控系统，由工作在 SoundCloud 的 google 前员工在 2012 年创建，作为社区开源项目进行开发，并于 2015 年正式发布。2016 年，Prometheus 正式加入 Cloud Native Computing Foundation，</description>
     </item>
     
   </channel>

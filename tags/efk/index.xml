@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>efk on Code Life</title>
+    <link>https://vsxen.github.io/tags/efk/</link>
+    <description>Recent content in efk on Code Life</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Tue, 25 Sep 2018 12:31:20 +0800</lastBuildDate>
+    
+	<atom:link href="https://vsxen.github.io/tags/efk/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>fluent 云原生的下的日志收集工具</title>
+      <link>https://vsxen.github.io/2018/09/25/fluentd/</link>
+      <pubDate>Tue, 25 Sep 2018 12:31:20 +0800</pubDate>
+      
+      <guid>https://vsxen.github.io/2018/09/25/fluentd/</guid>
+      <description>Fluentd 是另一个 Ruby 语言编写的日志收集系统。和 Logstash 不同的是，Fluentd 是基于 MRI 实现的，并不是利用多线程，而是利用事件驱动。单个日志处理的流程如下，当然也可以多个日志流一同处理。 这里穿插一下Docker 的日志</description>
+    </item>
+    
+  </channel>
+</rss>

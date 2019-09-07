@@ -136,7 +136,11 @@
 <li>所有 Node 和所有容器之间无需 NAT 就可以直接互相访问</li>
 <li>容器自己看到的 IP 跟其他容器看到的一样</li>
 </ul></li>
+</ul>
 
+<p>接下来我们来先介绍一下几个概念，</p>
+
+<ul>
 <li><p>Service cluster IP 尽可在集群内部访问，外部请求需要通过 NodePort、LoadBalance 或者 Ingress 来访问</p></li>
 
 <li><p>网络的命名空间：Linux在网络栈中引入网络命名空间，将独立的网络协议栈隔离到不同的命令空间中，彼此间无法通信；docker利用这一特性，实现不容器间的网络隔离。</p></li>
@@ -157,13 +161,7 @@
 <h3 id="如何工作">如何工作</h3>
 
 <p>Flannel 需要在集群中的每台主机上运行一个名为 flanneld 的代理程序，负责从预配置地址空间中为每台主机分配一个网段。Flannel 直接使用 Kubernetes API 或 ETCD 存储网络配置、分配的子网以及任何辅助数据（如主机的公网 IP）。数据包使用几种后端机制之一进行转发，包括 VXLAN 和各种云集成。
-<img src="assets/flannel-packet-01-1536147205571.png" alt="" /></p>
-
-<p><img src="assets/flannel_nic.jpg" alt="" /></p>
-
-<p><img src="assets/node1.jpg" alt="" /></p>
-
-<p><img src="assets/node2.jpg" alt="" /></p>
+<img src="../images/flannel-packet-01.png" alt="" /></p>
 
 <h3 id="backend">backend</h3>
 
@@ -295,6 +293,8 @@ Flannel 可以被添加到任何已经存在的 Kubernetes 集群中。但是在
                 <i class="remixicon-stack-line"></i>
                 
                 <a href="https://vsxen.github.io/tags/k8s/">k8s</a>
+                
+                <a href="https://vsxen.github.io/tags/network/">network</a>
                 
               </span>
             </div>

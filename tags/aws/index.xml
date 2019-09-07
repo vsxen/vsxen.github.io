@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>aws on Code Life</title>
+    <link>https://vsxen.github.io/tags/aws/</link>
+    <description>Recent content in aws on Code Life</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Sun, 12 May 2019 22:31:20 +0800</lastBuildDate>
+    
+	<atom:link href="https://vsxen.github.io/tags/aws/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>在aws上使用kops部署k8s集群</title>
+      <link>https://vsxen.github.io/2019/05/12/use-kops-in-aws/</link>
+      <pubDate>Sun, 12 May 2019 22:31:20 +0800</pubDate>
+      
+      <guid>https://vsxen.github.io/2019/05/12/use-kops-in-aws/</guid>
+      <description>简介：Kubernetes Operations (kops) - Production Grade K8s Installation, Upgrades, and Management kops宣称已经达到生产级别，准备试一下kops，观察其运行控制平面的方式。官方的文档如下： https://github.com/kubernetes/kops/blob/master/docs/aws.md 安装 当然kops也是用golang写的，所以你只要下载预编译</description>
+    </item>
+    
+  </channel>
+</rss>

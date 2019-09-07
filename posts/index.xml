@@ -17,7 +17,7 @@
       <pubDate>Sat, 15 Jun 2019 12:31:20 +0800</pubDate>
       
       <guid>https://vsxen.github.io/2019/06/15/get-start-etcd/</guid>
-      <description>etcd是coreos根据Raft一致性算法用go实现的分布式KV数据库，作为k8s数据唯一存储的地方，etcd具有高性能的读写以及watch性能，也可以用在服务注册，配置中心等地方，与consul不</description>
+      <description>etcd是coreos根据Raft一致性算法用go实现的分布式KV数据库，作为k8s数据唯一存储的地方，etcd具有高性能的读写以及watch性能，也可以用在服务注册，配置中心等。官方Doc https://github.com/etcd-io/etcd/blob/master/Documentation 入门 初识</description>
     </item>
     
     <item>
@@ -48,12 +48,21 @@
     </item>
     
     <item>
+      <title>在aws上使用kops部署k8s集群</title>
+      <link>https://vsxen.github.io/2019/05/12/use-kops-in-aws/</link>
+      <pubDate>Sun, 12 May 2019 22:31:20 +0800</pubDate>
+      
+      <guid>https://vsxen.github.io/2019/05/12/use-kops-in-aws/</guid>
+      <description>简介：Kubernetes Operations (kops) - Production Grade K8s Installation, Upgrades, and Management kops宣称已经达到生产级别，准备试一下kops，观察其运行控制平面的方式。官方的文档如下： https://github.com/kubernetes/kops/blob/master/docs/aws.md 安装 当然kops也是用golang写的，所以你只要下载预编译</description>
+    </item>
+    
+    <item>
       <title>CoreDNS-基于Caddy的DNS Server</title>
       <link>https://vsxen.github.io/2019/04/25/coredns/</link>
       <pubDate>Thu, 25 Apr 2019 22:31:20 +0800</pubDate>
       
       <guid>https://vsxen.github.io/2019/04/25/coredns/</guid>
-      <description>​ CoreDNS利用作为Web服务器Caddy的一部分而开发的服务器框架。该框架具有非常灵活，可扩展的模型，用于通过各种中间件组件传递请求。这些中间件组件根据请求提供不同的操作，例如记录，重定向，修改</description>
+      <description>CoreDNS利用作为Web服务器Caddy的一部分而开发的服务器框架。该框架具有非常灵活，可扩展的模型，用于通过各种中间件组件传递请求。这些中间件组件根据请求提供不同的操作，例如记录，重定向，修改或</description>
     </item>
     
     <item>
@@ -84,7 +93,7 @@
     </item>
     
     <item>
-      <title>k8s 监控体系 --  Prometheus Operator</title>
+      <title>k8s 集群监控 --  Prometheus Operator</title>
       <link>https://vsxen.github.io/2019/01/22/promthus-operator/</link>
       <pubDate>Tue, 22 Jan 2019 22:31:20 +0800</pubDate>
       
@@ -120,21 +129,21 @@
     </item>
     
     <item>
+      <title>fluent 云原生的下的日志收集工具</title>
+      <link>https://vsxen.github.io/2018/09/25/fluentd/</link>
+      <pubDate>Tue, 25 Sep 2018 12:31:20 +0800</pubDate>
+      
+      <guid>https://vsxen.github.io/2018/09/25/fluentd/</guid>
+      <description>Fluentd 是另一个 Ruby 语言编写的日志收集系统。和 Logstash 不同的是，Fluentd 是基于 MRI 实现的，并不是利用多线程，而是利用事件驱动。单个日志处理的流程如下，当然也可以多个日志流一同处理。 这里穿插一下Docker 的日志</description>
+    </item>
+    
+    <item>
       <title>新式监控系统 — prometheus</title>
       <link>https://vsxen.github.io/2018/09/14/promethus/</link>
       <pubDate>Fri, 14 Sep 2018 22:31:20 +0800</pubDate>
       
       <guid>https://vsxen.github.io/2018/09/14/promethus/</guid>
       <description>Prometheus 是一套开源的系统监控报警框架。它启发于 Google 的 borgmon 监控系统，由工作在 SoundCloud 的 google 前员工在 2012 年创建，作为社区开源项目进行开发，并于 2015 年正式发布。2016 年，Prometheus 正式加入 Cloud Native Computing Foundation，</description>
-    </item>
-    
-    <item>
-      <title>在aws上使用kops部署k8s集群</title>
-      <link>https://vsxen.github.io/2018/08/01/use-kops-in-aws/</link>
-      <pubDate>Wed, 01 Aug 2018 14:08:15 +0000</pubDate>
-      
-      <guid>https://vsxen.github.io/2018/08/01/use-kops-in-aws/</guid>
-      <description>简介：Kubernetes Operations (kops) - Production Grade K8s Installation, Upgrades, and Management kops宣称已经达到生产级别，准备试一下kops，观察其运行控制平面的方式。官方的文档如下： https://github.com/kubernetes/kops/blob/master/docs/aws.md 安装 当然kops也是用golang写的，所以你只要下载预编译</description>
     </item>
     
     <item>

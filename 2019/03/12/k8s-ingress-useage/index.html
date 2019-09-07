@@ -199,14 +199,14 @@ metadata:
   name: host
 spec:
   rules:
-  - host: echo.cf86fc3209f4e483493e504197bfdd22f.cn-hangzhou.alicontainer.com
+  - host: echo.vsxen.me
     http:
       paths:
       - path: /
         backend:
           serviceName: echo
           servicePort: 8080
-  - host: nginx.cf86fc3209f4e483493e504197bfdd22f.cn-hangzhou.alicontainer.com
+  - host: nginx.vsxen.me
     http:
       paths:
       - path: /
@@ -385,7 +385,7 @@ spec:
 23.10.19.23 - [23.10.19.23] - - [11/Jan/2019:14:44:55 +0800] &quot;GET /favicon.ico HTTP/1.1&quot; 404 196 &quot;http://nginx.cf86fc3209f4e483493e504197bfdd22f.cn-hangzhou.alicontainer.com/&quot; &quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36&quot; 458 0.001 [default-nginx-80] 172.16.1.173:80 555 0.000 404 7b02134be96609d93aa4318a826a40b3    
 </code></pre>
 
-<pre><code>    &lt;source&gt;
+<pre><code class="language-xml">    &lt;source&gt;
       @id fluentd-containers.log
       @type tail
       path /var/log/containers/*.log

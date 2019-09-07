@@ -17,7 +17,7 @@
       <pubDate>Sat, 15 Jun 2019 12:31:20 +0800</pubDate>
       
       <guid>https://vsxen.github.io/2019/06/15/get-start-etcd/</guid>
-      <description>etcd是coreos根据Raft一致性算法用go实现的分布式KV数据库，作为k8s数据唯一存储的地方，etcd具有高性能的读写以及watch性能，也可以用在服务注册，配置中心等地方，与consul不</description>
+      <description>etcd是coreos根据Raft一致性算法用go实现的分布式KV数据库，作为k8s数据唯一存储的地方，etcd具有高性能的读写以及watch性能，也可以用在服务注册，配置中心等。官方Doc https://github.com/etcd-io/etcd/blob/master/Documentation 入门 初识</description>
     </item>
     
   </channel>

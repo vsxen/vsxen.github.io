@@ -53,9 +53,20 @@
   </url>
   
   <url>
+    <loc>https://vsxen.github.io/tags/aws/</loc>
+    <lastmod>2019-05-12T22:31:20+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>https://vsxen.github.io/tags/storage/</loc>
     <lastmod>2019-05-12T22:31:20+08:00</lastmod>
     <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://vsxen.github.io/2019/05/12/use-kops-in-aws/</loc>
+    <lastmod>2019-05-12T22:31:20+08:00</lastmod>
   </url>
   
   <url>
@@ -75,6 +86,12 @@
   </url>
   
   <url>
+    <loc>https://vsxen.github.io/tags/monitor/</loc>
+    <lastmod>2019-04-16T09:43:24+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>https://vsxen.github.io/2019/03/12/k8s-ingress-useage/</loc>
     <lastmod>2019-03-12T22:31:20+08:00</lastmod>
   </url>
@@ -82,6 +99,12 @@
   <url>
     <loc>https://vsxen.github.io/2019/02/12/kubernetes-network-flannel/</loc>
     <lastmod>2019-02-12T22:31:20+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://vsxen.github.io/tags/network/</loc>
+    <lastmod>2019-02-12T22:31:20+08:00</lastmod>
+    <priority>0</priority>
   </url>
   
   <url>
@@ -116,13 +139,19 @@
   </url>
   
   <url>
-    <loc>https://vsxen.github.io/2018/09/14/promethus/</loc>
-    <lastmod>2018-09-14T22:31:20+08:00</lastmod>
+    <loc>https://vsxen.github.io/tags/efk/</loc>
+    <lastmod>2018-09-25T12:31:20+08:00</lastmod>
+    <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://vsxen.github.io/2018/08/01/use-kops-in-aws/</loc>
-    <lastmod>2018-08-01T14:08:15+00:00</lastmod>
+    <loc>https://vsxen.github.io/2018/09/25/fluentd/</loc>
+    <lastmod>2018-09-25T12:31:20+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://vsxen.github.io/2018/09/14/promethus/</loc>
+    <lastmod>2018-09-14T22:31:20+08:00</lastmod>
   </url>
   
   <url>

@@ -17,7 +17,7 @@
       <pubDate>Thu, 25 Apr 2019 22:31:20 +0800</pubDate>
       
       <guid>https://vsxen.github.io/2019/04/25/coredns/</guid>
-      <description>​ CoreDNS利用作为Web服务器Caddy的一部分而开发的服务器框架。该框架具有非常灵活，可扩展的模型，用于通过各种中间件组件传递请求。这些中间件组件根据请求提供不同的操作，例如记录，重定向，修改</description>
+      <description>CoreDNS利用作为Web服务器Caddy的一部分而开发的服务器框架。该框架具有非常灵活，可扩展的模型，用于通过各种中间件组件传递请求。这些中间件组件根据请求提供不同的操作，例如记录，重定向，修改或</description>
     </item>
     
   </channel>

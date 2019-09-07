@@ -10,7 +10,7 @@
         content="vsxen"/>
 
   
-  <meta name="description" content="​ CoreDNS利用作为Web服务器Caddy的一部分而开发的服务器框架。该框架具有非常灵活，可扩展的模型，用于通过各种中间件组件传递请求。这些中间件组件根据请求提供不同的操作，例如记录，重定向，修改"/>
+  <meta name="description" content="CoreDNS利用作为Web服务器Caddy的一部分而开发的服务器框架。该框架具有非常灵活，可扩展的模型，用于通过各种中间件组件传递请求。这些中间件组件根据请求提供不同的操作，例如记录，重定向，修改或"/>
   
 
   
@@ -124,7 +124,7 @@
         </div>
         <div class="post_content markdown">
 
-<p>​      CoreDNS利用作为Web服务器Caddy的一部分而开发的服务器框架。该框架具有非常灵活，可扩展的模型，用于通过各种中间件组件传递请求。这些中间件组件根据请求提供不同的操作，例如记录，重定向，修改或维护。虽然它一开始作为Web服务器，但是Caddy并不是专门针对HTTP协议的，所以也是开发CoreDNS的理想框架。</p>
+<p>CoreDNS利用作为Web服务器Caddy的一部分而开发的服务器框架。该框架具有非常灵活，可扩展的模型，用于通过各种中间件组件传递请求。这些中间件组件根据请求提供不同的操作，例如记录，重定向，修改或维护。虽然它一开始作为Web服务器，但是Caddy并不是专门针对HTTP协议的，所以也是开发CoreDNS的理想框架。</p>
 
 <h3 id="install">Install</h3>
 
@@ -158,7 +158,7 @@
             - all
 </code></pre>
 
-<p>​      CoreDNS相当于创建了一个Kubernetes中间件。该中间件使用Kubernetes API来满足针对特定Kubernetes pod或服务的DNS请求。而且由于Kube-DNS作为Kubernetes的另一项服务，kubelet和CoreDNS之间没有紧密的绑定。只需要将DNS服务的IP地址和域名传递给kubelet，而Kubernetes并不关心谁在实际处理该IP请求。和DNS相关的配都在kubelet上面，分别是：</p>
+<p>CoreDNS相当于创建了一个Kubernetes中间件。该中间件使用Kubernetes API来满足针对特定Kubernetes pod或服务的DNS请求。而且由于Kube-DNS作为Kubernetes的另一项服务，kubelet和CoreDNS之间没有紧密的绑定。只需要将DNS服务的IP地址和域名传递给kubelet，而Kubernetes并不关心谁在实际处理该IP请求。和DNS相关的配都在kubelet上面，分别是：</p>
 
 <ul>
 <li>--cluster-dns<br /></li>
@@ -275,10 +275,11 @@ Address: 10.244.0.97
 
 <p>第二种是基于pod的 hostname 和subdomain，不过我测试好像是失败的。</p>
 
-<p>subdomain    <string>
+<pre><code class="language-bash">   subdomain	&lt;string&gt;
      If specified, the fully qualified Pod hostname will be
-     &quot;<hostname>.<subdomain>.<pod namespace>.svc.<cluster domain>&quot;. If not
-     specified, the pod will not have a domainname at all.</p>
+     &quot;&lt;hostname&gt;.&lt;subdomain&gt;.&lt;pod namespace&gt;.svc.&lt;cluster domain&gt;&quot;. If not
+     specified, the pod will not have a domainname at all.
+</code></pre>
 
 <h3 id="其他插件">其他插件</h3>
 
