@@ -129,6 +129,15 @@
     </item>
     
     <item>
+      <title>terraform provider Kubernetes 入门</title>
+      <link>https://vsxen.github.io/2018/09/17/terraform/</link>
+      <pubDate>Mon, 17 Sep 2018 11:31:20 +0800</pubDate>
+      
+      <guid>https://vsxen.github.io/2018/09/17/terraform/</guid>
+      <description>下载 初始化 terraform 扩展主要靠的就是provider，所以在使用之前需要准备好或者下载对应的provider。至于你需要什么provider，需要在main.tf指定，如下所示。 如果可以联网的话，貌似会从fa</description>
+    </item>
+    
+    <item>
       <title>Kubernetes 认证与授权</title>
       <link>https://vsxen.github.io/2018/06/15/kubernetes-auth-rbac/</link>
       <pubDate>Fri, 15 Jun 2018 22:31:20 +0800</pubDate>
