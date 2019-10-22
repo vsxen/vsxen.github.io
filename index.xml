@@ -6,10 +6,19 @@
     <description>Recent content on Code Life</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Sat, 15 Jun 2019 12:31:20 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 22 Oct 2019 21:17:05 +0800</lastBuildDate>
     
 	<atom:link href="https://vsxen.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>K8s 集群升级</title>
+      <link>https://vsxen.github.io/2019/10/22/k8s-cluster-update/</link>
+      <pubDate>Tue, 22 Oct 2019 21:17:05 +0800</pubDate>
+      
+      <guid>https://vsxen.github.io/2019/10/22/k8s-cluster-update/</guid>
+      <description>目前k8s差不多三个月就会有一个大版本，差不多半年不更新的话就追不上官方的步伐了，同时还会有一些重大0day的CVE被发现，所以适当的升级集群也是有必要的。本文试尝讨论一种可以把影响降到最低甚至zer</description>
+    </item>
     
     <item>
       <title>Etcd 使用入门</title>
