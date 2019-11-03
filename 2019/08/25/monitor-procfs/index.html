@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="vsxen"/>
+
+  
+  <meta name="description" content="Unix系推崇一个观点，Everything is a file 。对于一些系统以及进程信息，kernel会以文件系统的系统挂载在proc和sys目录，也就是常说的procfs，sysfs虚拟文件系统。包括CPU，内"/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, k8s, devops"/>
+  
+
+  
+  <link rel="canonical" href="https://vsxen.github.io/2019/08/25/monitor-procfs/"/>
+
+  
+
+  <title>procfs 与 Linux 系统监控 &middot; Code Life</title>
+
+  <link rel="shortcut icon" href="https://vsxen.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://vsxen.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://vsxen.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://vsxen.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://vsxen.github.io/css/highlight.css"/>
+
+  
+  
+
+  <script>
+    (function(d) {
+      var config = {
+        kitId: 'kfn1kkp',
+        scriptTimeout: 3000,
+        async: true
+      },
+      h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;h.className+=" wf-loading";tk.src='https://use.typekit.net/'+config.kitId+'.js';tk.async=true;tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!="complete"&&a!="loaded")return;f=true;clearTimeout(t);try{Typekit.load(config)}catch(e){}};s.parentNode.insertBefore(tk,s)
+    })(document);
+  </script>
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/posts/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://vsxen.github.io">
+          <span>Code Life</span>
+          <img src="https://vsxen.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">Life is too bug</p>
+      <div class="my_socials">
+        
+        
+        <a href="%20" title="facebook" target="_blank"><i class="remixicon-facebook-fill"></i></a>
+        
+        
+        
+        <a href="%20" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="%20" title="instagram" target="_blank"><i class="remixicon-instagram-fill"></i></a>
+        
+        
+        
+        <a href="%20" title="twitter" target="_blank"><i class="remixicon-twitter-fill"></i></a>
+        
+        
+        
+        <a href="%20" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://vsxen.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/2019/08/25/monitor-procfs/'>procfs 与 Linux 系统监控</a></h2>
+          <span class="date">2019.08.25</span>
+        </div>
+        <div class="post_content markdown">
+
+<p>Unix系推崇一个观点，Everything is a file 。对于一些系统以及进程信息，kernel会以文件系统的系统挂载在proc和sys目录，也就是常说的procfs，sysfs虚拟文件系统。包括CPU，内存和硬盘等信息。当然对于系统监控来说，这也是重要的数据源。</p>
+
+<p>proc的目录看起来是下面这样的，那些数字都是进程的PID，其他的是一些系统系，比如cpuinfo记录者硬件的CPU信息：</p>
+
+<p>接下来我们看一下进程PID里面的信息，记录者此进程的启动命令，参数等信息。</p>
+
+<pre><code class="language-bash">ls /proc/
+1     1170  1345  19    2116   304  382  406  787  942        consoles     interrupts   kpageflags  pagetypeinfo  sysrq-trigger
+10    12    14    1911  22     305  383  408  8    955        cpuinfo      iomem        loadavg     partitions    sysvipc
+1022  1205  15    1922  24     31   384  41   824  96         crypto       ioports      locks       sched_debug   thread-self
+105   1215  16    1928  25     32   387  42   85   967        devices      irq          mdstat      schedstat     timer_list
+1059  1216  174   2     257    33   389  422  86   979        diskstats    kallsyms     meminfo     scsi          tty
+11    122   175   20    26     34   398  462  87   994        dma          kcore        misc        self          uptime
+1122  1243  176   2098  26150  35   4    555  88   acpi       driver       key-users    modules     slabinfo      version
+1134  1269  177   21    27     36   40   556  89   buddyinfo  execdomains  keys         mounts      softirqs      version_signature
+1147  1289  18    2100  28     37   400  6    9    bus        fb           kmsg         mpt         stat          vmallocinfo
+1152  13    183   2114  29     379  402  639  90   cgroups    filesystems  kpagecgroup  mtrr        swaps         vmstat
+1166  1340  186   2115  30     381  404  7    908  cmdline    fs           kpagecount   net         sys           zoneinfo
+
+
+ls /proc/1/
+attr        cmdline          environ  io         mem         ns             pagemap      sched      smaps_rollup  syscall        wchan
+autogroup   comm             exe      limits     mountinfo   numa_maps      patch_state  schedstat  stack         task
+auxv        coredump_filter  fd       loginuid   mounts      oom_adj        personality  sessionid  stat          timers
+cgroup      cpuset           fdinfo   map_files  mountstats  oom_score      projid_map   setgroups  statm         timerslack_ns
+clear_refs  cwd              gid_map  maps       net         oom_score_adj  root         smaps      status        uid_map
+</code></pre>
+
+<p>sysfs主要记录的系统的设备信息，如果是一个docker0的虚拟网卡：</p>
+
+<pre><code class="language-bash">ls /sys/devices/virtual/net/docker0/
+addr_assign_type  bridge     carrier_changes     dev_port  gro_flush_timeout  link_mode         operstate       power       statistics    uevent
+addr_len          brif       carrier_down_count  dormant   ifalias            mtu               phys_port_id    proto_down  subsystem
+address           broadcast  carrier_up_count    duplex    ifindex            name_assign_type  phys_port_name  queues      tx_queue_len
+brforward         carrier    dev_id              flags     iflink             netdev_group      phys_switch_id  speed       type
+
+</code></pre>
+
+<p>刚才上面已经提到procfs是监控系统重要的数据源之一，接下来用几个实例来说明如何监控这些资源。</p>
+
+<h3 id="cpu">CPU</h3>
+
+<p>我们经常说机器的CPU又到95%了，是不是又被挖矿了？那么这个95%又是怎么计算的呢？其实这些东西在top的手册都写的有，首先我们先看一下top中对于CPU使用率的定义，最后的那个单词很关键<code>CPU time</code>（本文不关注Linux如何对进程的分配CPU时间）， kernel会把进程的CPU time写到<code>/proc/{PID}/stat/</code>这个文件中，。</p>
+
+<pre><code class="language-bash"> %CPU  --  CPU Usage
+The task's share of the elapsed CPU time since the last screen update, expressed as a percentage of total CPU time.
+</code></pre>
+
+<p>下面是dockerd进程的数据示例：</p>
+
+<pre><code class="language-bash">1242 (dockerd) S 1 1242 1242 0 -1 1077936384 36414 247979 270 69 7206 4167 806 875 20 0 14 0 1412 1133367296 18712 18446744073709551615 94364227485696 94364275405412 140725279924976 0 0 0 1006249984 0 2143420159 0 0 0 17 1 0 0 92 0 0 94364277503464 94364298771328 94364323065856 140725279932063 140725279932150 140725279932150 140725279932391 0
+</code></pre>
+
+<p>然后我们写一个很耗CPU的进程，就是死循环啦，它会使某个CPU的使用率达到100%，接受的参数为CPU个数，输出死循环的进程pid，注意在Linux系统中，top显示的CPU使用率和核心数相关，也就是双核的机器最高是200%。</p>
+
+<pre><code class="language-bash">#! /bin/sh
+if [ $# != 1 ] ; then
+  echo &quot;USAGE: $0 &lt;CPUs&gt;&quot;
+  exit 1;
+fi
+for i in `seq $1`; do
+  echo -ne &quot;i=0;while true;do i=i+1;
+done&quot; | /bin/sh &amp;
+  pid_array[$i]=$! ;
+done
+# 输出pid
+for i in &quot;${pid_array[@]}&quot;; do
+  echo 'kill ' $i ';';
+done
+</code></pre>
+
+<p>根据上面的文档写一个计算CPU使用率的脚本，与top显示的进行对比，计算公式注释已经说明了。</p>
+
+<pre><code class="language-bash">pid=9548
+# 输出top计算的与后面进行对比
+top -b -n 1 -p $pid  2&gt;&amp;1 | awk -v pid=$pid '{if ($1 == pid)print $9}'
+
+# 找出CPU数目
+cpu_core=$(grep -c processor /proc/cpuinfo)
+
+# 0秒时的CPU时间
+total_time1=$(awk '{if ($1 == &quot;cpu&quot;) {sum = $2 + $3 + $4 + $5 + $6 + $7 + $8 + $9 + $10 + $11;print sum}}' /proc/stat)
+cpu_time1=$(awk '{sum=$14 + $15;print sum}' /proc/$pid/stat)
+# 1秒后的CPU时间
+sleep 1
+total_time2=$(awk '{if ($1 == &quot;cpu&quot;) {sum = $2 + $3 + $4 + $5 + $6 + $7 + $8 + $9 + $10 + $11;print sum}}' /proc/stat)
+cpu_time2=$(awk '{sum=$14 + $15;print sum}' /proc/$pid/stat)
+# （进程CPU时间差）处以 系统总CPU时间差 乘以CPU个数
+awk -v cpu_time1=$cpu_time1 -v total_time1=$total_time1 -v cpu_time2=$cpu_time2 -v total_time2=$total_time2 -v cpu_core=$cpu_core \
+'BEGIN{cpu=((cpu_time2 - cpu_time1) / (total_time2 - total_time1)) * 100*cpu_core;print cpu}'
+</code></pre>
+
+<h3 id="memory">Memory</h3>
+
+<p>对于内存来说经常使用的命令也就是<code>free</code> ，那么它读取的就是这里<code>/proc/meminfo</code>，例如free命令的输出</p>
+
+<pre><code class="language-bash">free -mh
+              total        used        free      shared  buff/cache   available
+Mem:           1.9G        212M        133M        956K        1.6G        1.6G
+Swap:            0B          0B          0B
+</code></pre>
+
+<p>其中部分数据如下：</p>
+
+<pre><code class="language-bash">cat /proc/meminfo
+MemTotal:        2041120 kB
+MemFree:          131632 kB
+MemAvailable:    1635632 kB
+Buffers:          257304 kB
+Cached:          1220788 kB
+SwapCached:            0 kB
+Active:           914556 kB
+</code></pre>
+
+<h3 id="network">Network</h3>
+
+<p>对于网络的监控，不仅有网卡的说句，还是TCP UDP等的数据。其中网卡数据主要来源于<code>/proc/net/dev</code>，</p>
+
+<pre><code class="language-bash">cat /proc/net/dev
+Inter-|   Receive                                                |  Transmit
+ face |bytes    packets errs drop fifo frame compressed multicast|bytes    packets errs drop fifo colls carrier compressed
+    lo:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0
+enp0s3: 655272901  547097    0    0    0     0          0         0  8184738  111064    0    0    0     0       0          0
+enp0s8:   38372     393    0    0    0     0          0         2     1846      25    0    0    0     0       0          0
+docker0:  210438    4999    0    0    0     0          0         0 25782544    5340    0    0    0     0       0          0
+br-4ef817c04403:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0
+root@ubuntu-bionic:/home/vagrant#
+
+</code></pre>
+
+<p>下面是一个通过读取此文件然后输出对应网卡流量的脚本：</p>
+
+<pre><code class="language-bash">#!/bin/bash
+usage() {
+        echo &quot;Useage : $0&quot;
+        echo &quot;eg. sh $0 eth0 2&quot;
+        exit 1
+}
+if [ $# -lt 2 ]
+then
+        usage
+fi
+eth=$1
+timer=$2
+in_old=$(cat /proc/net/dev | grep $eth | sed -e &quot;s/\(.*\)\:\(.*\)/\2/g&quot; | awk '{print $1 }')
+out_old=$(cat /proc/net/dev | grep $eth | sed -e &quot;s/\(.*\)\:\(.*\)/\2/g&quot; | awk '{print $9 }')
+while true
+do
+        sleep ${timer}
+        in=$(cat /proc/net/dev | grep $eth | sed -e &quot;s/\(.*\)\:\(.*\)/\2/g&quot; | awk '{print $1 }')
+        out=$(cat /proc/net/dev | grep $eth | sed -e &quot;s/\(.*\)\:\(.*\)/\2/g&quot; | awk '{print $9 }')
+        dif_in=$(((in-in_old)/timer))
+        dif_in=$((dif_in/1024))
+        dif_out=$(((out-out_old)/timer))
+        dif_out=$((dif_out/1024))
+        ct=$(date +&quot;%F %H:%M:%S&quot;)
+        echo &quot;${ct} -- IN: ${dif_in} KByte/s     OUT: ${dif_out} KByte/s&quot;
+        in_old=${in}
+        out_old=${out}
+done
+exit 0
+</code></pre>
+
+<h2 id="ref">Ref</h2>
+
+<p>CPU使用率原理及计算方式</p>
+
+<p><a href="https://www.cnblogs.com/gatsby123/p/11127158.html">https://www.cnblogs.com/gatsby123/p/11127158.html</a></p>
+
+<p>PROCFS AND SYSFS</p>
+
+<p><a href="https://landoflinux.com/linux_procfs_sysfs.html">https://landoflinux.com/linux_procfs_sysfs.html</a></p>
+</div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://vsxen.github.io/tags/kernel/">kernel</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<div class="disqus">
+  <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "vsxen" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://zeuk.me">Designed by Zeuk,</a>
+    <a href="http://www.gohugo.io/">Proudly published with Hugo</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>Software Define Everything</span>
+  </div>
+</footer>
+
+
+
+<script src="https://vsxen.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://vsxen.github.io/js/zozo.js"></script>
+<script src="https://vsxen.github.io/js/highlight.pack.js"></script>
+<link  href="https://vsxen.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://vsxen.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-81855844-3', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+
+</body>
+</html>
