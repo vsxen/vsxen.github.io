@@ -21,6 +21,15 @@
     </item>
     
     <item>
+      <title>procfs 与 Linux 系统监控</title>
+      <link>https://vsxen.github.io/2019/08/25/monitor-procfs/</link>
+      <pubDate>Sun, 25 Aug 2019 12:24:20 +0800</pubDate>
+      
+      <guid>https://vsxen.github.io/2019/08/25/monitor-procfs/</guid>
+      <description>Unix系推崇一个观点，Everything is a file 。对于一些系统以及进程信息，kernel会以文件系统的系统挂载在proc和sys目录，也就是常说的procfs，sysfs虚拟文件系统。包括CPU，内</description>
+    </item>
+    
+    <item>
       <title>Etcd 使用入门</title>
       <link>https://vsxen.github.io/2019/06/15/get-start-etcd/</link>
       <pubDate>Sat, 15 Jun 2019 12:31:20 +0800</pubDate>

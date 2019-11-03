@@ -20,14 +20,25 @@
   </url>
   
   <url>
-    <loc>https://vsxen.github.io/2019/06/15/get-start-etcd/</loc>
-    <lastmod>2019-06-15T12:31:20+08:00</lastmod>
+    <loc>https://vsxen.github.io/tags/</loc>
+    <lastmod>2019-08-25T12:24:20+08:00</lastmod>
+    <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://vsxen.github.io/tags/</loc>
-    <lastmod>2019-06-15T12:31:20+08:00</lastmod>
+    <loc>https://vsxen.github.io/tags/kernel/</loc>
+    <lastmod>2019-08-25T12:24:20+08:00</lastmod>
     <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://vsxen.github.io/2019/08/25/monitor-procfs/</loc>
+    <lastmod>2019-08-25T12:24:20+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://vsxen.github.io/2019/06/15/get-start-etcd/</loc>
+    <lastmod>2019-06-15T12:31:20+08:00</lastmod>
   </url>
   
   <url>
