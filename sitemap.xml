@@ -145,6 +145,11 @@
   </url>
   
   <url>
+    <loc>https://vsxen.github.io/2018/11/25/containerd-gvisor/</loc>
+    <lastmod>2018-11-25T12:31:20+08:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://vsxen.github.io/2018/10/09/k8s-resource-qos/</loc>
     <lastmod>2018-10-09T22:31:20+08:00</lastmod>
   </url>

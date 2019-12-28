@@ -129,6 +129,15 @@
     </item>
     
     <item>
+      <title>Containerd gvisor &amp; k8s</title>
+      <link>https://vsxen.github.io/2018/11/25/containerd-gvisor/</link>
+      <pubDate>Sun, 25 Nov 2018 12:31:20 +0800</pubDate>
+      
+      <guid>https://vsxen.github.io/2018/11/25/containerd-gvisor/</guid>
+      <description>本文主要讨论如何在containerd中使用gvisor作为runtime，以及如何对接k8s。 安装containerd 这个就不用多说了，直接apt install containerd 即可，会安装一下几个可执行文件，如下所示 /usr/bin/containerd 守护进</description>
+    </item>
+    
+    <item>
       <title>Kubernetes 中的资源管理和优先级</title>
       <link>https://vsxen.github.io/2018/10/09/k8s-resource-qos/</link>
       <pubDate>Tue, 09 Oct 2018 22:31:20 +0800</pubDate>
