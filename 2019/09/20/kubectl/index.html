@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="vsxen"/>
+
+  
+  <meta name="description" content="查询类 # custom-columns # 比如 查看role=sre 标签pod镜像，当然也可以用go的自定义输出 kubectl -n kube-system get po -l tier=control-plane -o custom-columns=NAME:.metadata.name,image:.spec.containers[0].image NAME image etcd-ubuntu-bionic gcr.azk8s.cn/google_containers/etcd:3.3.15-0 kube-apiserver-ubuntu-bionic gcr.azk8s.cn/google_containers/kube-apiserver:v1.16.2 kube-controller-manager-ubuntu-bionic gcr.azk8s.cn/google_containers/kube-controller-manager:v1.16.2 kube-scheduler-ubuntu-bionic gcr.azk8s.cn/google_containers/kube-scheduler:v1.16.2 # go-template # range 嵌套 # 列出所有容器使用的镜像名 kubectl get pods -o go-template --template=&#39;{{range .items}}{{range .spec.containers}}{{printf &amp;quot;%s\n&amp;quot; .image}}{{end}}{{end}}&#39; istio/examples-bookinfo-details-v1:1.5.0 istio/examples-bookinfo-productpage-v1:1.5.0 istio/examples-bookinfo-ratings-v1:1.5.0 # 条件判断 # 列出所"/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, k8s, devops"/>
+  
+
+  
+  <link rel="canonical" href="https://vsxen.github.io/2019/09/20/kubectl/"/>
+
+  
+
+  <title>kubectl 常用快捷键 &middot; Code Life</title>
+
+  <link rel="shortcut icon" href="https://vsxen.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://vsxen.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://vsxen.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://vsxen.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://vsxen.github.io/css/highlight.css"/>
+
+  
+  
+
+  <script>
+    (function(d) {
+      var config = {
+        kitId: 'kfn1kkp',
+        scriptTimeout: 3000,
+        async: true
+      },
+      h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;h.className+=" wf-loading";tk.src='https://use.typekit.net/'+config.kitId+'.js';tk.async=true;tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!="complete"&&a!="loaded")return;f=true;clearTimeout(t);try{Typekit.load(config)}catch(e){}};s.parentNode.insertBefore(tk,s)
+    })(document);
+  </script>
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/posts/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://vsxen.github.io">
+          <span>Code Life</span>
+          <img src="https://vsxen.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">Life is too bug</p>
+      <div class="my_socials">
+        
+        
+        <a href="%20" title="facebook" target="_blank"><i class="remixicon-facebook-fill"></i></a>
+        
+        
+        
+        <a href="%20" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="%20" title="instagram" target="_blank"><i class="remixicon-instagram-fill"></i></a>
+        
+        
+        
+        <a href="%20" title="twitter" target="_blank"><i class="remixicon-twitter-fill"></i></a>
+        
+        
+        
+        <a href="%20" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://vsxen.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/2019/09/20/kubectl/'>kubectl 常用快捷键</a></h2>
+          <span class="date">2019.09.20</span>
+        </div>
+        <div class="post_content markdown">
+
+<h3 id="查询类">查询类</h3>
+
+<pre><code class="language-bash"># custom-columns
+
+# 比如 查看role=sre 标签pod镜像，当然也可以用go的自定义输出
+kubectl  -n kube-system get po -l tier=control-plane -o custom-columns=NAME:.metadata.name,image:.spec.containers[0].image
+NAME                                    image
+etcd-ubuntu-bionic                      gcr.azk8s.cn/google_containers/etcd:3.3.15-0
+kube-apiserver-ubuntu-bionic            gcr.azk8s.cn/google_containers/kube-apiserver:v1.16.2
+kube-controller-manager-ubuntu-bionic   gcr.azk8s.cn/google_containers/kube-controller-manager:v1.16.2
+kube-scheduler-ubuntu-bionic            gcr.azk8s.cn/google_containers/kube-scheduler:v1.16.2
+
+# go-template 
+
+# range 嵌套
+# 列出所有容器使用的镜像名
+kubectl get pods -o go-template --template='{{range .items}}{{range .spec.containers}}{{printf &quot;%s\n&quot; .image}}{{end}}{{end}}'
+istio/examples-bookinfo-details-v1:1.5.0
+istio/examples-bookinfo-productpage-v1:1.5.0
+istio/examples-bookinfo-ratings-v1:1.5.0
+
+# 条件判断
+# 列出所有不可调度节点的节点名与 IP
+kubectl get no -o go-template='{{range .items}}{{if .spec.unschedulable}}{{.metadata.name}} {{.spec.externalID}}{{&quot;\n&quot;}}{{end}}{{end}}'
+
+
+# jsonpath
+
+# 查询pod的启动时间
+kubectl -n kube-system get pods -o=jsonpath='{range .items[*]}{.metadata.name}{&quot;\t&quot;}{.status.startTime}{&quot;\n&quot;}{end}'
+coredns-667f964f9b-fs6kl	2019-12-25T02:54:20Z
+coredns-667f964f9b-rlsr5	2019-12-25T02:54:20Z
+etcd-ubuntu-bionic	2019-12-25T02:53:19Z
+kube-apiserver-ubuntu-bionic	2019-12-28T06:25:42Z
+kube-controller-manager-ubuntu-bionic	2019-12-28T06:25:43Z
+kube-flannel-ds-amd64-jk586	2019-12-25T02:54:09Z
+kube-proxy-vsjmv	2019-12-25T02:53:48Z
+kube-scheduler-ubuntu-bionic	2019-12-28T06:25:43Z
+</code></pre>
+
+<p>jsonpath查询表</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">Function</th>
+<th align="left">Description</th>
+<th align="left">Example</th>
+<th align="left">Result</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td align="left"><code>text</code></td>
+<td align="left">the plain text</td>
+<td align="left"><code>kind is {.kind}</code></td>
+<td align="left"><code>kind is List</code></td>
+</tr>
+
+<tr>
+<td align="left"><code>@</code></td>
+<td align="left">the current object</td>
+<td align="left"><code>{@}</code></td>
+<td align="left">the same as input</td>
+</tr>
+
+<tr>
+<td align="left"><code>.</code> or <code>[]</code></td>
+<td align="left">child operator</td>
+<td align="left"><code>{.kind}</code>, <code>{['kind']}</code> or <code>{['name\.type']}</code></td>
+<td align="left"><code>List</code></td>
+</tr>
+
+<tr>
+<td align="left"><code>..</code></td>
+<td align="left">recursive descent</td>
+<td align="left"><code>{..name}</code></td>
+<td align="left"><code>127.0.0.1 127.0.0.2 myself e2e</code></td>
+</tr>
+
+<tr>
+<td align="left"><code>*</code></td>
+<td align="left">wildcard. Get all objects</td>
+<td align="left"><code>{.items[*].metadata.name}</code></td>
+<td align="left"><code>[127.0.0.1 127.0.0.2]</code></td>
+</tr>
+
+<tr>
+<td align="left"><code>[start🔚step]</code></td>
+<td align="left">subscript operator</td>
+<td align="left"><code>{.users[0].name}</code></td>
+<td align="left"><code>myself</code></td>
+</tr>
+
+<tr>
+<td align="left"><code>[,]</code></td>
+<td align="left">union operator</td>
+<td align="left"><code>{.items[*]['metadata.name', 'status.capacity']}</code></td>
+<td align="left"><code>127.0.0.1 127.0.0.2 map[cpu:4] map[cpu:8]</code></td>
+</tr>
+
+<tr>
+<td align="left"><code>?()</code></td>
+<td align="left">filter</td>
+<td align="left"><code>{.users[?(@.name==&quot;e2e&quot;)].user.password}</code></td>
+<td align="left"><code>secret</code></td>
+</tr>
+
+<tr>
+<td align="left"><code>range</code>, <code>end</code></td>
+<td align="left">iterate list</td>
+<td align="left"><code>{range .items[*]}[{.metadata.name}, {.status.capacity}] {end}</code></td>
+<td align="left"><code>[127.0.0.1, map[cpu:4]] [127.0.0.2, map[cpu:8]]</code></td>
+</tr>
+
+<tr>
+<td align="left"><code>''</code></td>
+<td align="left">quote interpreted string</td>
+<td align="left"><code>{range .items[*]}{.metadata.name}{'\t'}{end}</code></td>
+<td align="left"><code>127.0.0.1 127.0.0.2</code></td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="补丁类">补丁类</h3>
+
+<pre><code class="language-bash">#Patch 把SVC改为NodePort类型
+kubectl -n istio-system patch svc $SVC  -p  '{&quot;spec&quot;:{&quot;type&quot;:&quot;NodePort&quot;}}'
+
+
+    command: ['sh', '-c', 'echo Hello Kubernetes! &amp;&amp; sleep 3600']
+    args:
+    - /bin/sh
+    - -c
+    - touch /tmp/healthy; sleep 30; rm -rf /tmp/healthy; sleep 60;
+
+# 为Pod template 加上新label 打patch
+kubectl patch deployment simple --type=json -p='[{&quot;op&quot;: &quot;add&quot;, &quot;path&quot;: &quot;/spec/template/metadata/labels/this&quot;, &quot;value&quot;: &quot;that&quot;}]'
+kubectl patch deployment myDeployment --patch '{&quot;spec&quot;: {&quot;template&quot;: {&quot;metadata&quot;: {&quot;labels&quot;: {&quot;myLabelKey&quot;: &quot;myLabelValue&quot;}}}}}'
+
+# 打pacth 使用文件
+spec:
+  template:
+    spec:
+      containers:
+      - name: curl
+        image: nginx:alpine
+        env:
+        - name: key
+          value: value
+
+# 修改po的container的镜像
+kubectl patch deployment patch-demo --patch '{&quot;spec&quot;: {&quot;template&quot;: {&quot;spec&quot;: {&quot;containers&quot;: [{&quot;name&quot;: &quot;patch-demo-ctr-2&quot;,&quot;image&quot;: &quot;redis&quot;}]}}}}'
+
+# 使 node 不可调度 当然cordon 也是可以的 
+kubectl patch node ${NAME}  -p &quot;{\&quot;spec\&quot;:{\&quot;unschedulable\&quot;:false}}&quot;
+
+# 官方的示例
+
+Examples:
+  # Partially update a node using a strategic merge patch. Specify the patch as JSON.
+  kubectl patch node k8s-node-1 -p '{&quot;spec&quot;:{&quot;unschedulable&quot;:true}}'
+
+  # Partially update a node using a strategic merge patch. Specify the patch as YAML.
+  kubectl patch node k8s-node-1 -p $'spec:\n unschedulable: true'
+
+  # Partially update a node identified by the type and name specified in &quot;node.json&quot; using strategic merge patch.
+  kubectl patch -f node.json -p '{&quot;spec&quot;:{&quot;unschedulable&quot;:true}}'
+
+  # Update a container's image; spec.containers[*].name is required because it's a merge key.
+  kubectl patch pod valid-pod -p '{&quot;spec&quot;:{&quot;containers&quot;:[{&quot;name&quot;:&quot;kubernetes-serve-hostname&quot;,&quot;image&quot;:&quot;new image&quot;}]}}'
+
+  # Update a container's image using a json patch with positional arrays.
+  kubectl patch pod valid-pod --type='json' -p='[{&quot;op&quot;: &quot;replace&quot;, &quot;path&quot;: &quot;/spec/containers/0/image&quot;, &quot;value&quot;:&quot;new
+image&quot;}]'
+
+</code></pre>
+
+<h3 id="快捷键">快捷键</h3>
+
+<pre><code class="language-bash"># 运行一个deployment
+kubectl run nginx --image=nginx:alpine --replicas=1 --port=80
+
+# 删除非running Pod
+kubectl get pods --all-namespaces -ojson | jq -r '.items[] | select(.status.reason!=null) | select(.status.reason | contains(&quot;Evicted&quot;)) | .metadata.name + &quot; &quot; + .metadata.namespace' | xargs -n2 -l bash -c 'kubectl delete pods $0 --namespace=$1'
+
+# 正则匹配某个pod
+kubectl logs -n kube-system $(kubectl get po -n kube-system | egrep -o alb-ingress[a-zA-Z0-9-]+)
+
+# 修改po的container的镜像 set image 方式
+kubectl set image deploy -l run=nginx nginx=vsxen/k8s
+deployment.extensions/nginx image updated
+
+kubectl get rs
+NAME               DESIRED   CURRENT   READY     AGE
+nginx-5dbb4c75cd   1         1         1         7m
+nginx-7444d44744   1         1         0         47s
+
+  externalTrafficPolicy: Cluster
+  externalIPs:
+  - 10.0.0.52
+</code></pre>
+</div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://vsxen.github.io/tags/k8s/">k8s</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<div class="disqus">
+  <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "vsxen" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://zeuk.me">Designed by Zeuk,</a>
+    <a href="http://www.gohugo.io/">Proudly published with Hugo</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>Software Define Everything</span>
+  </div>
+</footer>
+
+
+
+<script src="https://vsxen.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://vsxen.github.io/js/zozo.js"></script>
+<script src="https://vsxen.github.io/js/highlight.pack.js"></script>
+<link  href="https://vsxen.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://vsxen.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-81855844-3', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+
+</body>
+</html>

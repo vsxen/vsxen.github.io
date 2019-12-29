@@ -4,7 +4,30 @@
   
   <url>
     <loc>https://vsxen.github.io/</loc>
-    <lastmod>2019-10-22T21:17:05+08:00</lastmod>
+    <lastmod>2019-11-25T12:31:20+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://vsxen.github.io/2019/11/25/containerd-gvisor/</loc>
+    <lastmod>2019-11-25T12:31:20+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://vsxen.github.io/posts/</loc>
+    <lastmod>2019-11-25T12:31:20+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://vsxen.github.io/tags/</loc>
+    <lastmod>2019-11-25T12:31:20+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://vsxen.github.io/tags/k8s/</loc>
+    <lastmod>2019-11-25T12:31:20+08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -14,15 +37,8 @@
   </url>
   
   <url>
-    <loc>https://vsxen.github.io/posts/</loc>
-    <lastmod>2019-10-22T21:17:05+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://vsxen.github.io/tags/</loc>
-    <lastmod>2019-08-25T12:24:20+08:00</lastmod>
-    <priority>0</priority>
+    <loc>https://vsxen.github.io/2019/09/20/kubectl/</loc>
+    <lastmod>2019-09-20T22:31:20+08:00</lastmod>
   </url>
   
   <url>
@@ -43,12 +59,6 @@
   
   <url>
     <loc>https://vsxen.github.io/tags/etcd/</loc>
-    <lastmod>2019-06-15T12:31:20+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://vsxen.github.io/tags/k8s/</loc>
     <lastmod>2019-06-15T12:31:20+08:00</lastmod>
     <priority>0</priority>
   </url>
@@ -142,11 +152,6 @@
   <url>
     <loc>https://vsxen.github.io/2018/12/25/k8s-pod-full-yaml/</loc>
     <lastmod>2018-12-25T22:31:20+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://vsxen.github.io/2018/11/25/containerd-gvisor/</loc>
-    <lastmod>2018-11-25T12:31:20+08:00</lastmod>
   </url>
   
   <url>

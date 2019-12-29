@@ -6,10 +6,19 @@
     <description>Recent content on Code Life</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Tue, 22 Oct 2019 21:17:05 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 25 Nov 2019 12:31:20 +0800</lastBuildDate>
     
 	<atom:link href="https://vsxen.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Containerd gvisor &amp; k8s</title>
+      <link>https://vsxen.github.io/2019/11/25/containerd-gvisor/</link>
+      <pubDate>Mon, 25 Nov 2019 12:31:20 +0800</pubDate>
+      
+      <guid>https://vsxen.github.io/2019/11/25/containerd-gvisor/</guid>
+      <description>本文主要讨论如何在containerd中使用gvisor作为runtime，以及如何对接k8s。 安装containerd 这个就不用多说了，直接apt install containerd 即可，会安装一下几个可执行文件，如下所示 /usr/bin/containerd 守护进</description>
+    </item>
     
     <item>
       <title>K8s 集群升级</title>
@@ -18,6 +27,15 @@
       
       <guid>https://vsxen.github.io/2019/10/22/k8s-cluster-update/</guid>
       <description>目前k8s差不多三个月就会有一个大版本，差不多半年不更新的话就追不上官方的步伐了，同时还会有一些重大0day的CVE被发现，所以适当的升级集群也是有必要的。本文试尝讨论一种可以把影响降到最低甚至zer</description>
+    </item>
+    
+    <item>
+      <title>kubectl 常用快捷键</title>
+      <link>https://vsxen.github.io/2019/09/20/kubectl/</link>
+      <pubDate>Fri, 20 Sep 2019 22:31:20 +0800</pubDate>
+      
+      <guid>https://vsxen.github.io/2019/09/20/kubectl/</guid>
+      <description>查询类 # custom-columns # 比如 查看role=sre 标签pod镜像，当然也可以用go的自定义输出 kubectl -n kube-system get po -l tier=control-plane -o custom-columns=NAME:.metadata.name,image:.spec.containers[0].image NAME image etcd-ubuntu-bionic gcr.azk8s.cn/google_containers/etcd:3.3.15-0 kube-apiserver-ubuntu-bionic gcr.azk8s.cn/google_containers/kube-apiserver:v1.16.2 kube-controller-manager-ubuntu-bionic gcr.azk8s.cn/google_containers/kube-controller-manager:v1.16.2 kube-scheduler-ubuntu-bionic gcr.azk8s.cn/google_containers/kube-scheduler:v1.16.2 # go-template # range 嵌套 # 列出所有容器使用的镜像名 kubectl get pods -o go-template --template=&#39;{{range .items}}{{range .spec.containers}}{{printf &amp;quot;%s\n&amp;quot; .image}}{{end}}{{end}}&#39; istio/examples-bookinfo-details-v1:1.5.0 istio/examples-bookinfo-productpage-v1:1.5.0 istio/examples-bookinfo-ratings-v1:1.5.0 # 条件判断 # 列出所</description>
     </item>
     
     <item>
@@ -135,15 +153,6 @@
       
       <guid>https://vsxen.github.io/2018/12/25/k8s-pod-full-yaml/</guid>
       <description>Pod作为k8s工作负载的基本单位,不论是Deployment还是job等等需要计算资源的控制器，都需要定义将被创建的pod模板，所以熟悉pod的所有字段还是很有必要的。今天就用Deployment作</description>
-    </item>
-    
-    <item>
-      <title>Containerd gvisor &amp; k8s</title>
-      <link>https://vsxen.github.io/2018/11/25/containerd-gvisor/</link>
-      <pubDate>Sun, 25 Nov 2018 12:31:20 +0800</pubDate>
-      
-      <guid>https://vsxen.github.io/2018/11/25/containerd-gvisor/</guid>
-      <description>本文主要讨论如何在containerd中使用gvisor作为runtime，以及如何对接k8s。 安装containerd 这个就不用多说了，直接apt install containerd 即可，会安装一下几个可执行文件，如下所示 /usr/bin/containerd 守护进</description>
     </item>
     
     <item>

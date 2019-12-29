@@ -183,7 +183,7 @@
 
 <p>图 1 为 Prometheus 官方文档中的架构图：</p>
 
-<p><img src="/img/prometueus.png" alt="" /></p>
+<p><img src="../images/prometueus.png" alt="" /></p>
 
 <p>从上图可以看出，Prometheus 的主要模块包括：Prometheus server, exporters, Pushgateway, PromQL, Alertmanager 以及图形界面。</p>
 
@@ -250,6 +250,42 @@
 </ul>
 
 <p>比如go_gc_duration_seconds可以得到go gc 25%，50%，75%的持续时间</p>
+
+<p>summary已经完成了计算，由prom的服务端完成，如下所示：</p>
+
+<pre><code class="language-bash"># HELP prometheus_engine_query_duration_seconds Query timings
+# TYPE prometheus_engine_query_duration_seconds summary
+prometheus_engine_query_duration_seconds{slice=&quot;inner_eval&quot;,quantile=&quot;0.5&quot;} 0.000300242
+prometheus_engine_query_duration_seconds{slice=&quot;inner_eval&quot;,quantile=&quot;0.9&quot;} 0.016269568
+prometheus_engine_query_duration_seconds{slice=&quot;inner_eval&quot;,quantile=&quot;0.99&quot;} 0.027198073
+prometheus_engine_query_duration_seconds_sum{slice=&quot;inner_eval&quot;} 0.080493713
+prometheus_engine_query_duration_seconds_count{slice=&quot;inner_eval&quot;} 21
+prometheus_engine_query_duration_seconds{slice=&quot;prepare_time&quot;,quantile=&quot;0.5&quot;} 7.2256e-05
+prometheus_engine_query_duration_seconds{slice=&quot;prepare_time&quot;,quantile=&quot;0.9&quot;} 0.000894565
+prometheus_engine_query_duration_seconds{slice=&quot;prepare_time&quot;,quantile=&quot;0.99&quot;} 0.001640657
+prometheus_engine_query_duration_seconds_sum{slice=&quot;prepare_time&quot;} 0.004723942
+prometheus_engine_query_duration_seconds_count{slice=&quot;prepare_time&quot;} 21
+</code></pre>
+
+<p>与summary不同的是histogram只负责存储数据，客户端读取之后进行计算。</p>
+
+<pre><code class="language-bash"># HELP prometheus_http_request_duration_seconds Histogram of latencies for HTTP requests.
+# TYPE prometheus_http_request_duration_seconds histogram
+prometheus_http_request_duration_seconds_bucket{handler=&quot;/api/v1/query&quot;,le=&quot;0.1&quot;} 0  # 小于0.1的有0个
+prometheus_http_request_duration_seconds_bucket{handler=&quot;/api/v1/query&quot;,le=&quot;0.2&quot;} 11
+prometheus_http_request_duration_seconds_bucket{handler=&quot;/api/v1/query&quot;,le=&quot;0.4&quot;} 11
+prometheus_http_request_duration_seconds_bucket{handler=&quot;/api/v1/query&quot;,le=&quot;1&quot;} 11
+prometheus_http_request_duration_seconds_bucket{handler=&quot;/api/v1/query&quot;,le=&quot;3&quot;} 11
+prometheus_http_request_duration_seconds_bucket{handler=&quot;/api/v1/query&quot;,le=&quot;8&quot;} 11
+prometheus_http_request_duration_seconds_bucket{handler=&quot;/api/v1/query&quot;,le=&quot;20&quot;} 11
+prometheus_http_request_duration_seconds_bucket{handler=&quot;/api/v1/query&quot;,le=&quot;60&quot;} 11
+prometheus_http_request_duration_seconds_bucket{handler=&quot;/api/v1/query&quot;,le=&quot;120&quot;} 11
+prometheus_http_request_duration_seconds_bucket{handler=&quot;/api/v1/query&quot;,le=&quot;+Inf&quot;} 11 # 无穷大的时候近似等于请求总数
+prometheus_http_request_duration_seconds_sum{handler=&quot;/api/v1/query&quot;} 0.033323976000000005
+prometheus_http_request_duration_seconds_count{handler=&quot;/api/v1/query&quot;} 11 # 一共有11个请求
+
+histogram_quantile(0.95, sum(rate(prometheus_http_request_duration_seconds_bucket{handler=&quot;/api/v1/query_range&quot;}[5m])) by (le))
+</code></pre>
 
 <h2 id="prometheus配置">Prometheus配置</h2>
 

@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="vsxen"/>
+
+  
+  <meta name="description" content="本文主要讨论如何在containerd中使用gvisor作为runtime，以及如何对接k8s。 安装containerd 这个就不用多说了，直接apt install containerd 即可，会安装一下几个可执行文件，如下所示 /usr/bin/containerd 守护进"/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, k8s, devops"/>
+  
+
+  
+  <link rel="canonical" href="https://vsxen.github.io/2019/11/25/containerd-gvisor/"/>
+
+  
+
+  <title>Containerd gvisor &amp; k8s &middot; Code Life</title>
+
+  <link rel="shortcut icon" href="https://vsxen.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://vsxen.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://vsxen.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://vsxen.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://vsxen.github.io/css/highlight.css"/>
+
+  
+  
+
+  <script>
+    (function(d) {
+      var config = {
+        kitId: 'kfn1kkp',
+        scriptTimeout: 3000,
+        async: true
+      },
+      h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;h.className+=" wf-loading";tk.src='https://use.typekit.net/'+config.kitId+'.js';tk.async=true;tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!="complete"&&a!="loaded")return;f=true;clearTimeout(t);try{Typekit.load(config)}catch(e){}};s.parentNode.insertBefore(tk,s)
+    })(document);
+  </script>
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/posts/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://vsxen.github.io">
+          <span>Code Life</span>
+          <img src="https://vsxen.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">Life is too bug</p>
+      <div class="my_socials">
+        
+        
+        <a href="%20" title="facebook" target="_blank"><i class="remixicon-facebook-fill"></i></a>
+        
+        
+        
+        <a href="%20" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="%20" title="instagram" target="_blank"><i class="remixicon-instagram-fill"></i></a>
+        
+        
+        
+        <a href="%20" title="twitter" target="_blank"><i class="remixicon-twitter-fill"></i></a>
+        
+        
+        
+        <a href="%20" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://vsxen.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/2019/11/25/containerd-gvisor/'>Containerd gvisor &amp; k8s</a></h2>
+          <span class="date">2019.11.25</span>
+        </div>
+        <div class="post_content markdown">
+
+<p>本文主要讨论如何在containerd中使用gvisor作为runtime，以及如何对接k8s。</p>
+
+<h3 id="安装containerd">安装containerd</h3>
+
+<p>这个就不用多说了，直接apt install containerd 即可，会安装一下几个可执行文件，如下所示</p>
+
+<pre><code class="language-bash">/usr/bin/containerd 守护进程
+/usr/bin/containerd-shim 应该是负责处理容器内stdout &amp; stderr
+/usr/bin/containerd-shim-runc-v1 应该是负责启动容器内的pid 1
+/usr/bin/containerd-stress 压力测试工具
+/usr/bin/ctr cli工具
+</code></pre>
+
+<blockquote>
+<p>吐槽一下 ctr可能没有docker的cli那么好用</p>
+</blockquote>
+
+<p>接下来我们来运行一个容器测试一下containerd：</p>
+
+<ul>
+<li>因为containerd默认的pause容器使用的是gcr.k8s.io/pause，如果网络有问题的话，就需要提前导入，或者在修改默认配置。</li>
+<li>还要提醒一下，containerd有namespace的区别，默认是在default下面，这里不是k8s的namespace 。</li>
+<li>除此之外还要配置CNI以供容器启动分配网络，可以使用下面的配置：</li>
+</ul>
+
+<pre><code class="language-json">mkdir -p /etc/cni/net.d
+cat &gt;'/etc/cni/net.d'/10-containerd-net.conflist &lt;&lt;EOF
+{
+  &quot;cniVersion&quot;: &quot;0.3.1&quot;,
+  &quot;name&quot;: &quot;containerd-net&quot;,
+  &quot;plugins&quot;: [
+    {
+      &quot;type&quot;: &quot;bridge&quot;,
+      &quot;bridge&quot;: &quot;cni1&quot;,
+      &quot;isGateway&quot;: true,
+      &quot;ipMasq&quot;: true,
+      &quot;promiscMode&quot;: true,
+      &quot;ipam&quot;: {
+        &quot;type&quot;: &quot;host-local&quot;,
+        &quot;subnet&quot;: &quot;10.88.0.0/16&quot;,
+        &quot;routes&quot;: [
+          { &quot;dst&quot;: &quot;0.0.0.0/0&quot; }
+        ]
+      }
+    },
+    {
+      &quot;type&quot;: &quot;portmap&quot;,
+      &quot;capabilities&quot;: {&quot;portMappings&quot;: true}
+    }
+  ]
+}
+EOF
+</code></pre>
+
+<p>接下来就可以真正开始运行容器了。</p>
+
+<pre><code class="language-bash">先拉镜像
+ctr i pull docker.io/library/nginx:alpine 
+运行
+ctr run -d docker.io/library/nginx:alpine demo
+检查一下 containerd会把容器作为task
+ctr c ls
+CONTAINER    IMAGE                             RUNTIME
+demo         docker.io/library/nginx:alpine    io.containerd.runtime.v1.linux
+ ctr t ls
+TASK    PID      STATUS
+demo    19901    RUNNING
+
+这里停掉containerd的守护进程，可以发现已经运行的容器是不受影响的
+pstree
+systemd─┬─VBoxService───7*[{VBoxService}]
+        ├─accounts-daemon───2*[{accounts-daemon}]
+        ├─2*[agetty]
+        ├─atd
+        ├─containerd-shim─┬─nginx───2*[nginx]
+        │                 └─9*[{containerd-shim}]
+        ├─cron
+        ├─dbus-daemon
+        ├─irqbalance───{irqbalance}
+        ├─lvmetad
+        ├─lxcfs───6*[{lxcfs}]
+        ├─networkd-dispat───{networkd-dispat}
+        ├─polkitd───2*[{polkitd}]
+        ├─rsyslogd───3*[{rsyslogd}]
+        ├─sshd───sshd───sshd───bash───sudo───su───bash─┬─containerd───7*[{containerd}]
+        │                                              └─pstree
+        ├─systemd───(sd-pam)
+        ├─systemd-journal
+        ├─systemd-logind
+        ├─systemd-network
+        ├─systemd-resolve
+        ├─systemd-udevd
+        └─unattended-upgr───{unattended-upgr}
+</code></pre>
+
+<h3 id="配置gvisor">配置gvisor</h3>
+
+<p>首先需要编译或者下载runsc，也就是gvisor的运行时，然后需要下载containerd-shim-runsc-v1 放到PATH任意一个目录中</p>
+
+<pre><code># 示例配置
+root = &quot;/var/lib/containerd&quot;
+state = &quot;/run/containerd&quot;
+oom_score = 0
+
+[grpc]
+  address = &quot;/run/containerd/containerd.sock&quot;
+  uid = 0
+  gid = 0
+  max_recv_message_size = 16777216
+  max_send_message_size = 16777216
+
+[debug]
+  address = &quot;&quot;
+  uid = 0
+  gid = 0
+  level = &quot;&quot;
+
+[metrics]
+  address = &quot;&quot;
+  grpc_histogram = false
+
+[cgroup]
+  path = &quot;&quot;
+
+[plugins]
+  [plugins.cgroups]
+    no_prometheus = false
+  [plugins.cri]
+    stream_server_address = &quot;127.0.0.1&quot;
+    stream_server_port = &quot;0&quot;
+    enable_selinux = false
+    sandbox_image = &quot;gcr.azk8s.cn/google_containers/pause:3.1&quot;
+    stats_collect_period = 10
+    systemd_cgroup = false
+    enable_tls_streaming = false
+    max_container_log_line_size = 16384
+    [plugins.cri.containerd]
+      snapshotter = &quot;overlayfs&quot;
+      no_pivot = false
+      [plugins.cri.containerd.default_runtime]
+        runtime_type = &quot;io.containerd.runtime.v1.linux&quot;
+        runtime_engine = &quot;&quot;
+        runtime_root = &quot;&quot;
+      [plugins.cri.containerd.untrusted_workload_runtime]
+        runtime_type = &quot;&quot;
+        runtime_engine = &quot;&quot;
+        runtime_root = &quot;&quot;
+      [plugins.cri.containerd.runtimes.runsc]
+        runtime_type = &quot;io.containerd.runsc.v1&quot;
+    [plugins.cri.cni]
+      bin_dir = &quot;/opt/cni/bin&quot;
+      conf_dir = &quot;/etc/cni/net.d&quot;
+      conf_template = &quot;&quot;
+    [plugins.cri.registry]
+      [plugins.cri.registry.mirrors]
+        [plugins.cri.registry.mirrors.&quot;docker.io&quot;]
+          endpoint = [&quot;https://registry-1.docker.io&quot;]
+    [plugins.cri.x509_key_pair_streaming]
+      tls_cert_file = &quot;&quot;
+      tls_key_file = &quot;&quot;
+  [plugins.diff-service]
+    default = [&quot;walking&quot;]
+  [plugins.linux]
+    shim = &quot;containerd-shim&quot;
+    runtime = &quot;runc&quot;
+    runtime_root = &quot;&quot;
+    no_shim = false
+    shim_debug = false
+  [plugins.opt]
+    path = &quot;/opt/containerd&quot;
+  [plugins.restart]
+    interval = &quot;10s&quot;
+  [plugins.scheduler]
+    pause_threshold = 0.02
+    deletion_threshold = 0
+    mutation_threshold = 100
+    schedule_delay = &quot;0s&quot;
+    startup_delay = &quot;100ms&quot;
+
+</code></pre>
+
+<h3 id="对接k8s">对接k8s</h3>
+
+<p>对于kubeadm，初始化的时候指定containerd的sock即可，如下所示：</p>
+
+<pre><code class="language-bash">kubeadm init --cri-socket /run/containerd/containerd.sock --image-repository gcr.azk8s.cn/google_containers  --kubernetes-version 1.16.3  --apiserver-advertise-address 192.168.2.2 --pod-network-cidr=10.244.0.0/16 
+
+# 创建runtimeclass
+cat &lt;&lt;EOF | kubectl apply -f -
+apiVersion: node.k8s.io/v1beta1
+kind: RuntimeClass
+metadata:
+  name: gvisor
+handler: runsc
+EOF
+
+# 运行pod
+cat &lt;&lt;EOF | kubectl apply -f -
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-gvisor
+spec:
+  runtimeClassName: gvisor
+  containers:
+  - name: nginx
+    image: nginx:alpine
+EOF
+</code></pre>
+
+<h3 id="ref">Ref</h3>
+
+<p>Doc</p>
+
+<p><a href="https://github.com/google/gvisor-containerd-shim/blob/master/docs/runtime-handler-shim-v2-quickstart.md">https://github.com/google/gvisor-containerd-shim/blob/master/docs/runtime-handler-shim-v2-quickstart.md</a></p>
+</div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://vsxen.github.io/tags/k8s/">k8s</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<div class="disqus">
+  <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "vsxen" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://zeuk.me">Designed by Zeuk,</a>
+    <a href="http://www.gohugo.io/">Proudly published with Hugo</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>Software Define Everything</span>
+  </div>
+</footer>
+
+
+
+<script src="https://vsxen.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://vsxen.github.io/js/zozo.js"></script>
+<script src="https://vsxen.github.io/js/highlight.pack.js"></script>
+<link  href="https://vsxen.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://vsxen.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-81855844-3', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+
+</body>
+</html>

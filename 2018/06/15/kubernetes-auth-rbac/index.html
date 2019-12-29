@@ -128,7 +128,7 @@
 
 <p>下图大致描述了k8s认证的流程图，描述了一个请求在经过APIServer的时候都经历了哪些鉴权的过程。如下图所示：需要访问API的有人类，也就是Ops，通过kubectl以及Kubeconfig配置文件和API-Server交互。还有就是Pod，也就是应用，对API资源进行CURD。然后依次经过了身份认证(authentication)、授权(authorization)和准入控制（admission control）。下面就来详细介绍下认证和授权</p>
 
-<p><img src="../img/rbac01.jpg" alt="" /></p>
+<p><img src="../images/rbac01.jpg" alt="" /></p>
 
 <h2 id="认证">认证</h2>
 
