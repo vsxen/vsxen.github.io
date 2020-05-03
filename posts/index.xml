@@ -6,10 +6,19 @@
     <description>Recent content in Posts on Code Life</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Mon, 25 Nov 2019 12:31:20 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 25 Feb 2020 09:04:20 +0800</lastBuildDate>
     
 	<atom:link href="https://vsxen.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>从Nat到TCP_TW</title>
+      <link>https://vsxen.github.io/2020/02/25/tcp_nat/</link>
+      <pubDate>Tue, 25 Feb 2020 09:04:20 +0800</pubDate>
+      
+      <guid>https://vsxen.github.io/2020/02/25/tcp_nat/</guid>
+      <description>看到这个标题，你可能会感到疑惑这两个有什么关系呢？一个是IP转换一个是TCP，似乎关系不大？接下来听我慢慢介绍。 NAT 在IPV4的时代，IP可以分为两种，公网和局域网。当你在局域网时想要访问外面的内容就要</description>
+    </item>
     
     <item>
       <title>Containerd gvisor &amp; k8s</title>
