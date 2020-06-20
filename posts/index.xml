@@ -6,10 +6,19 @@
     <description>Recent content in Posts on Code Life</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Tue, 25 Feb 2020 09:04:20 +0800</lastBuildDate>
+    <lastBuildDate>Sat, 20 Jun 2020 12:44:22 +0800</lastBuildDate>
     
 	<atom:link href="https://vsxen.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>自己动手实现一个kubectl exec</title>
+      <link>https://vsxen.github.io/2020/06/20/kubectl-exec/</link>
+      <pubDate>Sat, 20 Jun 2020 12:44:22 +0800</pubDate>
+      
+      <guid>https://vsxen.github.io/2020/06/20/kubectl-exec/</guid>
+      <description>在日常工作中kubectl exec 可以说是非常高频使用的，如果你想自己了解相关原理，不妨自己动手写一个。 知识储备： websocket 阮一峰这篇《WebSocket 教程- 阮一峰的网络日志》写的比较详进。 kubectl exec 原理 https://itnext.io/how-it-works-kubectl-exec-e31325daa910 https://erkanerol.github.io/post/how-kubectl-exec-works/ 如果你英文</description>
+    </item>
     
     <item>
       <title>从Nat到TCP_TW</title>

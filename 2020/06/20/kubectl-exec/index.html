@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="vsxen"/>
+
+  
+  <meta name="description" content="在日常工作中kubectl exec 可以说是非常高频使用的，如果你想自己了解相关原理，不妨自己动手写一个。 知识储备： websocket 阮一峰这篇《WebSocket 教程- 阮一峰的网络日志》写的比较详进。 kubectl exec 原理 https://itnext.io/how-it-works-kubectl-exec-e31325daa910 https://erkanerol.github.io/post/how-kubectl-exec-works/ 如果你英文"/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, k8s, devops"/>
+  
+
+  
+  <link rel="canonical" href="https://vsxen.github.io/2020/06/20/kubectl-exec/"/>
+
+  
+
+  <title>自己动手实现一个kubectl exec &middot; Code Life</title>
+
+  <link rel="shortcut icon" href="https://vsxen.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://vsxen.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://vsxen.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://vsxen.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://vsxen.github.io/css/highlight.css"/>
+
+  
+  
+
+  <script>
+    (function(d) {
+      var config = {
+        kitId: 'kfn1kkp',
+        scriptTimeout: 3000,
+        async: true
+      },
+      h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;h.className+=" wf-loading";tk.src='https://use.typekit.net/'+config.kitId+'.js';tk.async=true;tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!="complete"&&a!="loaded")return;f=true;clearTimeout(t);try{Typekit.load(config)}catch(e){}};s.parentNode.insertBefore(tk,s)
+    })(document);
+  </script>
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/posts/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://vsxen.github.io">
+          <span>Code Life</span>
+          <img src="https://vsxen.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">Life is too bug</p>
+      <div class="my_socials">
+        
+        
+        <a href="%20" title="facebook" target="_blank"><i class="remixicon-facebook-fill"></i></a>
+        
+        
+        
+        <a href="%20" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="%20" title="instagram" target="_blank"><i class="remixicon-instagram-fill"></i></a>
+        
+        
+        
+        <a href="%20" title="twitter" target="_blank"><i class="remixicon-twitter-fill"></i></a>
+        
+        
+        
+        <a href="%20" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://vsxen.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/2020/06/20/kubectl-exec/'>自己动手实现一个kubectl exec</a></h2>
+          <span class="date">2020.06.20</span>
+        </div>
+        <div class="post_content markdown"><p>在日常工作中kubectl exec 可以说是非常高频使用的，如果你想自己了解相关原理，不妨自己动手写一个。</p>
+
+<p>知识储备：</p>
+
+<ul>
+<li><p>websocket 阮一峰这篇《<a href="https://www.ruanyifeng.com/blog/2017/05/websocket.html">WebSocket 教程- 阮一峰的网络日志</a>》写的比较详进。</p></li>
+
+<li><p>kubectl exec 原理</p></li>
+</ul>
+
+<p><a href="https://itnext.io/how-it-works-kubectl-exec-e31325daa910">https://itnext.io/how-it-works-kubectl-exec-e31325daa910</a></p>
+
+<p><a href="https://erkanerol.github.io/post/how-kubectl-exec-works/">https://erkanerol.github.io/post/how-kubectl-exec-works/</a></p>
+
+<p>如果你英文阅读能还可以，这两篇文章从原理方面介绍了exec是如何工作的。</p>
+
+<p>了解了以上知识之后，接下来我们就开始动手吧。</p>
+
+<p>首先来初始化一下项目，这里使用go mod作为依赖管理工具。k8s的client-go对机器版本是有要求的，所以在初始化的时候最好去官方那边找一下可用的版本。如果遇到<code>mod/k8s.io/client-go@v10.0.0+incompatible/kubernetes/scheme/register.go:22:2: unknown import path &quot;k8s.io/api/admissionregistration
+/v1alpha1&quot;: cannot find module providing package k8s.io/api/admissionregistration/v1alpha1</code></p>
+
+<p>这种报错，可以尝试强制指定版本，这个也是从kubebuilder那里学到的。</p>
+
+<pre><code class="language-go">go mod init k8sdemo
+
+module k8sdemo
+
+go 1.13
+
+require (
+        github.com/gorilla/websocket v1.4.2
+        golang.org/x/crypto v0.0.0-20190820162420-60c769a6c586
+        k8s.io/api v0.17.2
+        k8s.io/apimachinery v0.17.2
+        k8s.io/client-go v0.17.2
+)
+</code></pre>
+
+<p>client-go的example目录也有相关对象的CURD示例，我们可以先从这里入手，先熟悉相关操作，可以看到首先从kuebconfig读取配置，然后初始化各种client的一个集合，最后创建了一个deployment实例。</p>
+
+<pre><code class="language-go">	config, err := clientcmd.BuildConfigFromFlags(&quot;&quot;, *kubeconfig)
+	if err != nil {
+		panic(err)
+	}
+	clientset, err := kubernetes.NewForConfig(config)
+	if err != nil {
+		panic(err)
+	}
+
+	deploymentsClient := clientset.AppsV1().Deployments(apiv1.NamespaceDefault)
+</code></pre>
+
+<p>接下来我们看一下kubectl exec 究竟发送了什么请求，可以看到关键在于<code>exec?command=date&amp;container=nginx&amp;stdin=true&amp;stdout=true&amp;tty=true</code></p>
+
+<pre><code class="language-bash">kubectl  exec nginx-8486565b79-4hb5t -it -v 10 bash
+
+curl -k -v -XPOST  -H &quot;User-Agent: kubectl/v1.16.2 (linux/amd64) kubernetes/c97fe50&quot; 
+-H &quot;X-Stream-Protocol-Version: v4.channel.k8s.io&quot; 
+-H &quot;X-Stream-Protocol-Version: v3.channel.k8s.io&quot; 
+-H &quot;X-Stream-Protocol-Version: v2.channel.k8s.io&quot; 
+-H &quot;X-Stream-Protocol-Version: channel.k8s.io&quot; 
+'https://192.168.2.2:6443/api/v1/namespaces/default/pods/nginx-8486565b79-4hb5t/exec
+?command=date&amp;container=nginx&amp;stdin=true&amp;stdout=true&amp;tty=true'
+</code></pre>
+
+<p>现在就开始做吧，从上面的URL可以看到exec 是属于pod的资源，</p>
+
+<pre><code class="language-go">// 初始化pod所在的corev1资源组，发送请求
+// PodExecOptions struct 包括Container stdout stdout  Command 等结构
+// scheme.ParameterCodec 应该是pod 的GVK （GroupVersion &amp; Kind）之类的
+req := clientset.CoreV1().RESTClient().Post().
+		Resource(&quot;pods&quot;).
+		Name(&quot;nginx-8486565b79-4hb5t&quot;).
+		Namespace(&quot;default&quot;).
+		SubResource(&quot;exec&quot;).
+		VersionedParams(&amp;corev1.PodExecOptions{
+			Command: []string{&quot;bash&quot;},
+			Stdin:   true,
+			Stdout:  true,
+			Stderr:  true,
+			TTY:     false,
+		}, scheme.ParameterCodec)
+
+// remotecommand 主要实现了http 转 SPDY 添加X-Stream-Protocol-Version相关header 并发送请求
+	exec, err := remotecommand.NewSPDYExecutor(config, &quot;POST&quot;, req.URL())
+
+// 建立链接之后从请求的sream中发送、读取数据
+	if err = exec.Stream(remotecommand.StreamOptions{
+		Stdin:  os.Stdin,
+		Stdout: os.Stdout,
+		Stderr: os.Stderr,
+		Tty:    false,
+	}); err != nil {
+		fmt.Print(err)
+	}
+</code></pre>
+
+<p>以上只实现了单个命令，实际上我们更多的是使用-it进入交互式终端，这个应该怎么做呢？</p>
+
+<pre><code class="language-go">// 这里引入了ssh包 来做终端响应 golang.org/x/crypto/ssh/termina
+
+// 检查是不是终端
+	if !terminal.IsTerminal(0) || !terminal.IsTerminal(1) {
+		 fmt.Errorf(&quot;stdin/stdout should be terminal&quot;)
+	}
+	// 这个应该是处理Ctrl + C 这种特殊键位
+	oldState, err := terminal.MakeRaw(0)
+	if err != nil {
+		 fmt.Println(err)
+	}
+	defer terminal.Restore(0, oldState)
+
+	// 用IO读写替换 os stdout 
+	screen := struct {
+		io.Reader
+		io.Writer
+	}{os.Stdin, os.Stdout}
+</code></pre>
+
+<p>完整示例</p>
+
+<pre><code class="language-go">package main
+
+import (
+	&quot;flag&quot;
+	&quot;fmt&quot;
+	&quot;io&quot;
+	&quot;os&quot;
+	&quot;path/filepath&quot;
+
+	&quot;golang.org/x/crypto/ssh/terminal&quot;
+	corev1 &quot;k8s.io/api/core/v1&quot;
+	&quot;k8s.io/client-go/kubernetes&quot;
+	&quot;k8s.io/client-go/kubernetes/scheme&quot;
+	&quot;k8s.io/client-go/tools/clientcmd&quot;
+	&quot;k8s.io/client-go/tools/remotecommand&quot;
+	&quot;k8s.io/client-go/util/homedir&quot;
+)
+
+func main() {
+
+	var kubeconfig *string
+	if home := homedir.HomeDir(); home != &quot;&quot; {
+		kubeconfig = flag.String(&quot;kubeconfig&quot;, filepath.Join(home, &quot;.kube&quot;, &quot;vm&quot;), &quot;(optional) absolute path to the kubeconfig file&quot;)
+	} else {
+		kubeconfig = flag.String(&quot;kubeconfig&quot;, &quot;&quot;, &quot;absolute path to the kubeconfig file&quot;)
+	}
+	flag.Parse()
+
+	config, err := clientcmd.BuildConfigFromFlags(&quot;&quot;, *kubeconfig)
+	if err != nil {
+		panic(err)
+	}
+	clientset, err := kubernetes.NewForConfig(config)
+	if err != nil {
+		panic(err)
+	}
+
+	// 初始化pod所在的corev1资源组，发送请求
+	// PodExecOptions struct 包括Container stdout stdout  Command 等结构
+	// scheme.ParameterCodec 应该是pod 的GVK （GroupVersion &amp; Kind）之类的
+	req := clientset.CoreV1().RESTClient().Post().
+		Resource(&quot;pods&quot;).
+		Name(&quot;nginx-8486565b79-4hb5t&quot;).
+		Namespace(&quot;default&quot;).
+		SubResource(&quot;exec&quot;).
+		VersionedParams(&amp;corev1.PodExecOptions{
+			Command: []string{&quot;bash&quot;},
+			Stdin:   true,
+			Stdout:  true,
+			Stderr:  true,
+			TTY:     false,
+		}, scheme.ParameterCodec)
+
+	// remotecommand 主要实现了http 转 SPDY 添加X-Stream-Protocol-Version相关header 并发送请求
+	exec, err := remotecommand.NewSPDYExecutor(config, &quot;POST&quot;, req.URL())
+
+	// 检查是不是终端
+	if !terminal.IsTerminal(0) || !terminal.IsTerminal(1) {
+		 fmt.Errorf(&quot;stdin/stdout should be terminal&quot;)
+	}
+	// 这个应该是处理Ctrl + C 这种特殊键位
+	oldState, err := terminal.MakeRaw(0)
+	if err != nil {
+		 fmt.Println(err)
+	}
+	defer terminal.Restore(0, oldState)
+
+	// 用IO读写替换 os stdout
+	screen := struct {
+		io.Reader
+		io.Writer
+	}{os.Stdin, os.Stdout}
+
+	// 建立链接之后从请求的sream中发送、读取数据
+	if err = exec.Stream(remotecommand.StreamOptions{
+		Stdin:  screen,
+		Stdout: screen,
+		Stderr: screen,
+		Tty:    false,
+	}); err != nil {
+		fmt.Print(err)
+	}
+}
+
+</code></pre>
+</div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://vsxen.github.io/tags/k8s/">k8s</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<div class="disqus">
+  <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "vsxen" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://zeuk.me">Designed by Zeuk,</a>
+    <a href="http://www.gohugo.io/">Proudly published with Hugo</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>Software Define Everything</span>
+  </div>
+</footer>
+
+
+
+<script src="https://vsxen.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://vsxen.github.io/js/zozo.js"></script>
+<script src="https://vsxen.github.io/js/highlight.pack.js"></script>
+<link  href="https://vsxen.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://vsxen.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-81855844-3', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+
+</body>
+</html>

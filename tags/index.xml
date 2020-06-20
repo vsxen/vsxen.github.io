@@ -6,10 +6,19 @@
     <description>Recent content in Tags on Code Life</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Tue, 25 Feb 2020 09:04:20 +0800</lastBuildDate>
+    <lastBuildDate>Sat, 20 Jun 2020 12:44:22 +0800</lastBuildDate>
     
 	<atom:link href="https://vsxen.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>k8s</title>
+      <link>https://vsxen.github.io/tags/k8s/</link>
+      <pubDate>Sat, 20 Jun 2020 12:44:22 +0800</pubDate>
+      
+      <guid>https://vsxen.github.io/tags/k8s/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>Linux</title>
@@ -26,15 +35,6 @@
       <pubDate>Tue, 25 Feb 2020 09:04:20 +0800</pubDate>
       
       <guid>https://vsxen.github.io/tags/network/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>k8s</title>
-      <link>https://vsxen.github.io/tags/k8s/</link>
-      <pubDate>Mon, 25 Nov 2019 12:31:20 +0800</pubDate>
-      
-      <guid>https://vsxen.github.io/tags/k8s/</guid>
       <description></description>
     </item>
     
