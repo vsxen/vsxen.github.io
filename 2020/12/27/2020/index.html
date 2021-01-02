@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="vsxen"/>
+
+  
+  <meta name="description" content="嗯，2020年就要过去了，距离我上次写博客居然都有半年了，果然是忙了很多，亦或是自己在找借口？，我呢也只想写一下有深度的东西，又需要更多的时间。 惯例先记一下流水账，2月一直都在家里，比较差的信号加上自"/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, k8s, devops"/>
+  
+
+  
+  <link rel="canonical" href="https://vsxen.github.io/2020/12/27/2020/"/>
+
+  
+
+  <title>2020 &middot; Code Life</title>
+
+  <link rel="shortcut icon" href="https://vsxen.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://vsxen.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://vsxen.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://vsxen.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://vsxen.github.io/css/highlight.css"/>
+
+  
+  
+
+  <script>
+    (function(d) {
+      var config = {
+        kitId: 'kfn1kkp',
+        scriptTimeout: 3000,
+        async: true
+      },
+      h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;h.className+=" wf-loading";tk.src='https://use.typekit.net/'+config.kitId+'.js';tk.async=true;tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!="complete"&&a!="loaded")return;f=true;clearTimeout(t);try{Typekit.load(config)}catch(e){}};s.parentNode.insertBefore(tk,s)
+    })(document);
+  </script>
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/posts/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://vsxen.github.io">
+          <span>Code Life</span>
+          <img src="https://vsxen.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">Life is too bug</p>
+      <div class="my_socials">
+        
+        
+        <a href="%20" title="facebook" target="_blank"><i class="remixicon-facebook-fill"></i></a>
+        
+        
+        
+        <a href="%20" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="%20" title="instagram" target="_blank"><i class="remixicon-instagram-fill"></i></a>
+        
+        
+        
+        <a href="%20" title="twitter" target="_blank"><i class="remixicon-twitter-fill"></i></a>
+        
+        
+        
+        <a href="%20" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://vsxen.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/2020/12/27/2020/'>2020</a></h2>
+          <span class="date">2020.12.27</span>
+        </div>
+        <div class="post_content markdown"><p>嗯，2020年就要过去了，距离我上次写博客居然都有半年了，果然是忙了很多，亦或是自己在找借口？，我呢也只想写一下有深度的东西，又需要更多的时间。</p>
+
+<p>惯例先记一下流水账，2月一直都在家里，比较差的信号加上自身的自制力也不强，其实花在工作的时间不长。大概03上旬的时候去的公司吧，然后就开始居家隔离（笑。4月的时候开启了招聘旺季，我也面了几个，也算是我做的比较后悔的地方，不要招一个技术不行而且无法沟通的人。五一的时候也没回去，就在附近转了一圈，手机也在那个时候进水了，原来现代技术在水火面前不值一提，另外大家如果是进水机器一般都可以放弃了，修好之后也可能有暗病，当然也取决于师傅的手艺。6月的时候搬家，终于我又达到了步行上班的水平，随之到来的是房租增长。接下来就重点讲讲做过的东西吧：</p>
+
+<p>首先是vGPU相关的，为了更好的性能，我们找了几块网卡搭建RDMA的环境，用的应该是这块卡，<a href="https://www.mellanox.com/products/ethernet-adapters/connectx-4-en">https://www.mellanox.com/products/ethernet-adapters/connectx-4-en</a> ，当然不是原厂的，问题就出在这个OEM版本的设备上，我一直在用官方的驱动，因为我对这一块也不是很熟，到现在也不能准备的解释什么是ROCE以及纯IB网，更坑的代码在调用网卡的时候写死了一部分参数，导致在宿主上用ibwrite和ibread都是成功的，但是在容器中一直失败，报ibv_create_qp failed to create a queue pair (qp)的错误，最后甚至怀疑到了操作系统上（而且我们都升级了内核），然后在github上面找了一个示例看能不能跑起来 <a href="https://github.com/jcxue/RDMA-Tutorial，当然也需要修改一部分，最后终于发现是写死设备号的问题。邮件列表也翻过">https://github.com/jcxue/RDMA-Tutorial，当然也需要修改一部分，最后终于发现是写死设备号的问题。邮件列表也翻过</a> <a href="https://www.spinics.net/lists/linux-rdma/msg81222.html">https://www.spinics.net/lists/linux-rdma/msg81222.html</a> 。</p>
+
+<p>接着是harbor，在镜像存储这一块，其实选择这一个...官方的registry只有cli，quay开源的时候太晚，而且安装也有些复杂？harbor在可观测性上真是辣鸡，首先镜像同步没有进度条，如果遇到一个特别大的项目，或者特别多的tag，那你就自求多福吧。当你想看看谁用了空间最多，貌似没有，虽然现在可以设置存储配置。官方的registry虽然提供了metrics，但是harbor默认没有暴露出来，这里也有携程大佬的文章可以参考一下<a href="http://arthurchiao.art/blog/monitoring-hub/">http://arthurchiao.art/blog/monitoring-hub/</a> 。UI更是可怕，翻页翻到手酸。2.x之前的版本没有在线GC，这就意味着你要清理镜像的时候必须先停掉！！！<a href="https://github.com/c4po/harbor_exporter">https://github.com/c4po/harbor_exporter</a></p>
+
+<p>紧接着我们就测试了Calico的集群，和官方文档上面不同的是，我们使用了外部的gobgp作为RR节点与集群连接。说一下遇到的问题的吧，首先calico并不支持固定IP，calico仅可以分配一个IP给workload，当你在滚动更新、多副本的时候就几乎不能用了，这里也有分析 <a href="https://www.ichenfu.com/2019/09/21/calico-ip-allocation-problems/，其次是IPPool不能扩充，IP">https://www.ichenfu.com/2019/09/21/calico-ip-allocation-problems/，其次是IPPool不能扩充，IP</a> Block的生命周期和节点其实是强相关的，这边文章也有分析，最后他们是用了一个CRD完成了ippool的扩充 <a href="https://mp.weixin.qq.com/s/FF8c7g8iOTX-e-efrSo5dA。https://shimo.im/docs/tXck8cGKxKWKctp8">https://mp.weixin.qq.com/s/FF8c7g8iOTX-e-efrSo5dA。https://shimo.im/docs/tXck8cGKxKWKctp8</a></p>
+
+<p>然后是cilium的网络方案，这个就属于很硬核的，对内核要求再4.X，一些特性还要再4.18以上，在1.6之后的版本提供了网络流的可视化支持，有空再细讲。</p>
+
+<p>安全相关，k8s官方提供了psp这个对象来限制用户容器的一些行为，禁止挂载hostpath、selinux、capabilities等，主要是当你在容器里面使用root用户挂载上宿主机的文件之后，你会发现可以使用rm -rf 了，这就需要CI流程的配合了。除此之外sysdig开源了falco <a href="https://falco.org/，采用内核模块加ebpf的方式，加上自定义规则，可以控制容器的行为，所以和psp的功能有重复。">https://falco.org/，采用内核模块加ebpf的方式，加上自定义规则，可以控制容器的行为，所以和psp的功能有重复。</a></p>
+
+<p>除了进程的一些限制之外，资源的限制也是很重要的，尤其是磁盘和内存，当然这些都可以通过request和limit来设置，对容器磁盘的限制主要是针对可写层以及挂载这两种，这个kubelet和CRI配合。除此之外还有一下策略相关的安全，比如不设置limit不让部署，这就要用到OPA了（同类中个人觉得比较完善），可以把规则作为CRD来使用。</p>
+
+<p>接着我们升级了集群，从1.14升级到1.16，然后jenkins插件就出了问题，<a href="https://github.com/fabric8io/kubernetes-client/pull/1669，是少了一个http">https://github.com/fabric8io/kubernetes-client/pull/1669，是少了一个http</a> header，最好把集群的event都整合到了一起，并用kibana画了一个dashboard。</p>
+</div>
+        <div class="post_footer">
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<div class="disqus">
+  <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "vsxen" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://zeuk.me">Designed by Zeuk,</a>
+    <a href="http://www.gohugo.io/">Proudly published with Hugo</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>Software Define Everything</span>
+  </div>
+</footer>
+
+
+
+<script src="https://vsxen.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://vsxen.github.io/js/zozo.js"></script>
+<script src="https://vsxen.github.io/js/highlight.pack.js"></script>
+<link  href="https://vsxen.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://vsxen.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-81855844-3', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+
+</body>
+</html>
