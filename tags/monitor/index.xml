@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>monitor on Code Life</title>
@@ -6,11 +6,7 @@
     <description>Recent content in monitor on Code Life</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Tue, 16 Apr 2019 09:43:24 +0000</lastBuildDate>
-    
-	<atom:link href="https://vsxen.github.io/tags/monitor/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Tue, 16 Apr 2019 09:43:24 +0000</lastBuildDate><atom:link href="https://vsxen.github.io/tags/monitor/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>k8s 的实时日志 Events</title>
       <link>https://vsxen.github.io/2019/04/16/k8s-event-explorer/</link>

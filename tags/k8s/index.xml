@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>k8s on Code Life</title>
@@ -6,11 +6,7 @@
     <description>Recent content in k8s on Code Life</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Sat, 20 Jun 2020 12:44:22 +0800</lastBuildDate>
-    
-	<atom:link href="https://vsxen.github.io/tags/k8s/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Sat, 20 Jun 2020 12:44:22 +0800</lastBuildDate><atom:link href="https://vsxen.github.io/tags/k8s/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>自己动手实现一个kubectl exec</title>
       <link>https://vsxen.github.io/2020/06/20/kubectl-exec/</link>
@@ -35,7 +31,7 @@
       <pubDate>Fri, 20 Sep 2019 22:31:20 +0800</pubDate>
       
       <guid>https://vsxen.github.io/2019/09/20/kubectl/</guid>
-      <description>查询类 # custom-columns # 比如 查看role=sre 标签pod镜像，当然也可以用go的自定义输出 kubectl -n kube-system get po -l tier=control-plane -o custom-columns=NAME:.metadata.name,image:.spec.containers[0].image NAME image etcd-ubuntu-bionic gcr.azk8s.cn/google_containers/etcd:3.3.15-0 kube-apiserver-ubuntu-bionic gcr.azk8s.cn/google_containers/kube-apiserver:v1.16.2 kube-controller-manager-ubuntu-bionic gcr.azk8s.cn/google_containers/kube-controller-manager:v1.16.2 kube-scheduler-ubuntu-bionic gcr.azk8s.cn/google_containers/kube-scheduler:v1.16.2 # go-template # range 嵌套 # 列出所有容器使用的镜像名 kubectl get pods -o go-template --template=&#39;{{range .items}}{{range .spec.containers}}{{printf &amp;quot;%s\n&amp;quot; .image}}{{end}}{{end}}&#39; istio/examples-bookinfo-details-v1:1.5.0 istio/examples-bookinfo-productpage-v1:1.5.0 istio/examples-bookinfo-ratings-v1:1.5.0 # 条件判断 # 列出所</description>
+      <description>查询类 # custom-columns # 比如 查看role=sre 标签pod镜像，当然也可以用go的自定义输出 kubectl -n kube-system get po -l tier=control-plane -o custom-columns=NAME:.metadata.name,image:.spec.containers[0].image NAME image etcd-ubuntu-bionic gcr.azk8s.cn/google_containers/etcd:3.3.15-0 kube-apiserver-ubuntu-bionic gcr.azk8s.cn/google_containers/kube-apiserver:v1.16.2 kube-controller-manager-ubuntu-bionic gcr.azk8s.cn/google_containers/kube-controller-manager:v1.16.2 kube-scheduler-ubuntu-bionic gcr.azk8s.cn/google_containers/kube-scheduler:v1.16.2 # go-template # range 嵌套 # 列出所有容器使用的镜像名 kubectl get pods -o go-template --template=&amp;#39;{{range .items}}{{range .spec.containers}}{{printf &amp;#34;%s\n&amp;#34; .image}}{{end}}{{end}}&amp;#39; istio/examples-bookinfo-details-v1:1.5.0 istio/examples-bookinfo-productpage-v1:1.5.0 istio/examples-bookinfo-ratings-v1:1.5.0 # 条件判断 # 列出所</description>
     </item>
     
     <item>
@@ -62,7 +58,7 @@
       <pubDate>Fri, 17 May 2019 22:31:20 +0800</pubDate>
       
       <guid>https://vsxen.github.io/2019/05/17/create-cluster-use-kubeadm/</guid>
-      <description>很久之前就写过这篇笔记，一直没发出来，虽说这样的文章差不多已经烂大街了，还是可以看一下的。 ⎈⎈ apt install -y bash-completion yum install -y bash-completion echo &amp;quot;source &amp;lt;(kubectl completion bash)&amp;quot; &amp;gt;&amp;gt; ~/.bashrc echo &amp;quot;source &amp;lt;(kubeadm completion bash)&amp;quot; &amp;gt;&amp;gt; ~/.bashrc source ~/.bashrc modprobe ip_vs &amp;amp;&amp;amp; modprobe ip_vs_rr &amp;amp;&amp;amp; modprobe ip_vs_wrr &amp;amp;&amp;amp; modprobe ip_vs_sh rm -rf /var/lib/cni/ rm -rf /var/lib/kubelet/* rm -rf /etc/cni/ ip link del cni0 &amp;amp;&amp;amp; ip link del flannel.1</description>
+      <description>很久之前就写过这篇笔记，一直没发出来，虽说这样的文章差不多已经烂大街了，还是可以看一下的。 ⎈⎈ apt install -y bash-completion yum install -y bash-completion echo &amp;#34;source &amp;lt;(kubectl completion bash)&amp;#34; &amp;gt;&amp;gt; ~/.bashrc echo &amp;#34;source &amp;lt;(kubeadm completion bash)&amp;#34; &amp;gt;&amp;gt; ~/.bashrc source ~/.bashrc modprobe ip_vs &amp;amp;&amp;amp; modprobe ip_vs_rr &amp;amp;&amp;amp; modprobe ip_vs_wrr &amp;amp;&amp;amp; modprobe ip_vs_sh rm -rf /var/lib/cni/ rm -rf /var/lib/kubelet/* rm -rf /etc/cni/ ip link del cni0 &amp;amp;&amp;amp; ip link del flannel.1</description>
     </item>
     
     <item>
@@ -107,7 +103,7 @@
       <pubDate>Tue, 12 Mar 2019 22:31:20 +0800</pubDate>
       
       <guid>https://vsxen.github.io/2019/03/12/k8s-ingress-useage/</guid>
-      <description>k8s初期的时候，只有Service作为四层负载均衡，后来才推出了专门用作七层的负载均衡--Ingress。第一批实现Ingress Controller的就是traefik以及Nginx Ingress</description>
+      <description>k8s初期的时候，只有Service作为四层负载均衡，后来才推出了专门用作七层的负载均衡&amp;ndash;Ingress。第一批实现Ingress Controller的就是traefik以及Nginx In</description>
     </item>
     
     <item>

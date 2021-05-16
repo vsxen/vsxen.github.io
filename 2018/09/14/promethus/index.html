@@ -122,56 +122,52 @@
           <h2><a href='/2018/09/14/promethus/'>新式监控系统 — prometheus</a></h2>
           <span class="date">2018.09.14</span>
         </div>
-        <div class="post_content markdown">
-
-<p>Prometheus 是一套开源的系统监控报警框架。它启发于 Google 的 borgmon 监控系统，由工作在 SoundCloud 的 google 前员工在 2012 年创建，作为社区开源项目进行开发，并于 2015 年正式发布。2016 年，Prometheus 正式加入 Cloud Native Computing Foundation，成为受欢迎度仅次于 Kubernetes 的项目。</p>
-
+        <div class="post_content markdown"><p>Prometheus 是一套开源的系统监控报警框架。它启发于 Google 的 borgmon 监控系统，由工作在 SoundCloud 的 google 前员工在 2012 年创建，作为社区开源项目进行开发，并于 2015 年正式发布。2016 年，Prometheus 正式加入 Cloud Native Computing Foundation，成为受欢迎度仅次于 Kubernetes 的项目。</p>
 <h2 id="prometheus简介">Prometheus简介</h2>
-
 <p>作为新一代的监控框架，Prometheus 具有以下特点：</p>
-
 <ul>
-<li><p>强大的多维度数据模型：</p>
-
+<li>
+<p>强大的多维度数据模型：</p>
 <ol>
 <li>时间序列数据通过 metric 名和键值对来区分。</li>
 <li>所有的 metrics 都可以设置任意的多维标签。</li>
 <li>数据模型更随意，不需要刻意设置为以点分隔的字符串。</li>
 <li>可以对数据模型进行聚合，切割和切片操作。</li>
 <li>支持双精度浮点类型，标签可以设为全 unicode。</li>
-</ol></li>
-
-<li><p>灵活而强大的查询语句（PromQL）：在同一个查询语句，可以对多个 metrics 进行乘法、加法、连接、取分数位等操作。</p></li>
-
-<li><p>易于管理： Prometheus server 是一个单独的二进制文件，可直接在本地工作，不依赖于分布式存储。</p></li>
-
-<li><p>高效：平均每个采样点仅占 3.5 bytes，且一个 Prometheus server 可以处理数百万的 metrics。</p></li>
-
-<li><p>使用 pull 模式采集时间序列数据，这样不仅有利于本机测试而且可以避免有问题的服务器推送坏的 metrics。</p></li>
-
-<li><p>可以采用 push gateway 的方式把时间序列数据推送至 Prometheus server 端。</p></li>
-
-<li><p>可以通过服务发现或者静态配置去获取监控的 targets。</p></li>
-
-<li><p>有多种可视化图形界面。</p></li>
-
-<li><p>易于伸缩。</p></li>
+</ol>
+</li>
+<li>
+<p>灵活而强大的查询语句（PromQL）：在同一个查询语句，可以对多个 metrics 进行乘法、加法、连接、取分数位等操作。</p>
+</li>
+<li>
+<p>易于管理： Prometheus server 是一个单独的二进制文件，可直接在本地工作，不依赖于分布式存储。</p>
+</li>
+<li>
+<p>高效：平均每个采样点仅占 3.5 bytes，且一个 Prometheus server 可以处理数百万的 metrics。</p>
+</li>
+<li>
+<p>使用 pull 模式采集时间序列数据，这样不仅有利于本机测试而且可以避免有问题的服务器推送坏的 metrics。</p>
+</li>
+<li>
+<p>可以采用 push gateway 的方式把时间序列数据推送至 Prometheus server 端。</p>
+</li>
+<li>
+<p>可以通过服务发现或者静态配置去获取监控的 targets。</p>
+</li>
+<li>
+<p>有多种可视化图形界面。</p>
+</li>
+<li>
+<p>易于伸缩。</p>
+</li>
 </ul>
-
 <p>需要指出的是，由于数据采集可能会有丢失，所以 Prometheus 不适用对采集数据要 100% 准确的情形。但如果用于记录时间序列数据，Prometheus 具有很大的查询优势，此外，Prometheus 适用于微服务的体系架构。这样做非常适合虚拟化环境比如 VM 或者 Docker ，故其为为数不多的适合 Docker、Mesos 、Kubernetes 环境的监控系统之一，被很多人称为下一代监控系统。</p>
-
 <p><strong>pull 方式</strong></p>
-
 <p>Prometheus 采集数据用的是 pull 也就是拉模型,通过 HTTP 协议去采集指标，只要应用系统能够提供 HTTP 接口就可以接入监控系统，相比于私有协议或二进制协议来说开发简单。</p>
-
 <p><strong>push 方式</strong></p>
-
 <p>对于定时任务这种短周期的指标采集，如果采用 pull 模式，可能造成任务结束了 Prometheus 还没有来得及采集的情况，这个时候可以使用加一个中转层，客户端推数据到 Push Gateway 缓存一下，由 Prometheus 从 push gateway pull 指标过来。</p>
-
 <h3 id="组成及架构">组成及架构</h3>
-
 <p>Prometheus 生态圈中包含了多个组件，其中许多组件是可选的：</p>
-
 <ul>
 <li><strong>Prometheus Server</strong>: 用于收集和存储时间序列数据。</li>
 <li><strong>Client Library</strong>: 客户端库，为需要监控的服务生成相应的 metrics 并暴露给 Prometheus server。当 Prometheus server 来 pull 时，直接返回实时状态的 metrics。</li>
@@ -180,165 +176,129 @@
 <li><strong>Alertmanager</strong>: 从 Prometheus server 端接收到 alerts 后，会进行去除重复数据，分组，并路由到对收的接受方式，发出报警。常见的接收方式有：电子邮件，pagerduty，OpsGenie, webhook 等。</li>
 <li>一些其他的工具。</li>
 </ul>
-
 <p>图 1 为 Prometheus 官方文档中的架构图：</p>
-
-<p><img src="./images/prometueus.png" alt="" /></p>
-
+<p><img src="./images/prometueus.png" alt=""></p>
 <p>从上图可以看出，Prometheus 的主要模块包括：Prometheus server, exporters, Pushgateway, PromQL, Alertmanager 以及图形界面。</p>
-
 <p>其大概的工作流程是：</p>
-
 <ol>
 <li>Prometheus server 定期从配置好的 jobs 或者 exporters 中拉 metrics，或者接收来自 Pushgateway 发过来的 metrics，或者从其他的 Prometheus server 中拉 metrics。</li>
 <li>Prometheus server 在本地存储收集到的 metrics，并运行已定义好的 alert.rules，记录新的时间序列或者向 Alertmanager 推送警报。</li>
 <li>Alertmanager 根据配置文件，对接收到的警报进行处理，发出告警。</li>
 <li>在图形界面中，可视化采集数据。</li>
 </ol>
-
 <h3 id="prometheus-相关概念">Prometheus 相关概念</h3>
-
 <p>下面将对 Prometheus 中的数据模型，metric 类型以及 instance 和 job 等概念进行介绍，以便读者在 Prometheus 的配置和使用中可以有一个更好的理解。</p>
-
 <p><strong>数据模型</strong></p>
-
 <p>Prometheus 中存储的数据为时间序列，是由 metric 的名字和一系列的标签（键值对）唯一标识的，不同的标签则代表不同的时间序列。</p>
-
 <ul>
 <li>metric 名字：该名字应该具有语义，一般用于表示 metric 的功能，例如：http_requests_total, 表示 http 请求的总数。其中，metric 名字由 ASCII 字符，数字，下划线，以及冒号组成。</li>
-<li>标签：使同一个时间序列有了不同维度的识别。例如 http_requests_total{method=&quot;Get&quot;} 表示所有 http 请求中的 Get 请求。当 method=&quot;post&quot; 时，则为新的一个 metric。标签中的键由 ASCII 字符，数字，以及下划线组成。</li>
+<li>标签：使同一个时间序列有了不同维度的识别。例如 http_requests_total{method=&ldquo;Get&rdquo;} 表示所有 http 请求中的 Get 请求。当 method=&ldquo;post&rdquo; 时，则为新的一个 metric。标签中的键由 ASCII 字符，数字，以及下划线组成。</li>
 <li>样本：实际的时间序列，每个序列包括一个 float64 的值和一个毫秒级的时间戳。</li>
-<li>格式：<metric name>{<label name>=<label value>, …}，例如：http_requests_total{method=&quot;POST&quot;,endpoint=&quot;/api/tracks&quot;}。</li>
+<li>格式：<!-- raw HTML omitted -->{<!-- raw HTML omitted -->=<!-- raw HTML omitted -->, …}，例如：http_requests_total{method=&ldquo;POST&rdquo;,endpoint=&quot;/api/tracks&quot;}。</li>
 </ul>
-
 <p><strong>四种 Metric 类型</strong></p>
-
 <p>Prometheus 客户端库主要提供四种主要的 metric 类型：</p>
-
 <p><strong>Counter</strong> 计数器</p>
-
 <ul>
 <li>一种累加的 metric，典型的应用如：请求的个数，结束的任务数， 出现的错误数等等。</li>
 </ul>
-
-<p>例如，查询 http_requests_total{method=&quot;get&quot;, job=&quot;Prometheus&quot;, handler=&quot;query&quot;} 返回 8，10 秒后，再次查询，则返回 14。</p>
-
+<p>例如，查询 http_requests_total{method=&ldquo;get&rdquo;, job=&ldquo;Prometheus&rdquo;, handler=&ldquo;query&rdquo;} 返回 8，10 秒后，再次查询，则返回 14。</p>
 <p><strong>Gauge</strong> 瞬时值</p>
-
 <ul>
 <li>一种常规的 metric，典型的应用如：温度，运行的 goroutines 的个数。</li>
 <li>可以任意加减。</li>
 </ul>
-
-<p>例如：go_goroutines{instance=&quot;172.17.0.2&quot;, job=&quot;Prometheus&quot;} 返回值 147，表示有147个goroutine</p>
-
+<p>例如：go_goroutines{instance=&ldquo;172.17.0.2&rdquo;, job=&ldquo;Prometheus&rdquo;} 返回值 147，表示有147个goroutine</p>
 <p><strong>Histogram</strong> 直方图</p>
-
 <p>这种主要用来统计百分位的，什么是百分位？英文叫做quantiles。比如你有100条访问请求的耗时时间，把它们从小到大排序，第90个时间是200ms，那么我们可以说90%的请求都小于200ms，这也叫做”90分位是200ms”，能够反映出服务的基本质量。当然，也许第91个时间是2000ms，这就没法说了。实际情况是，我们每天访问量至少几个亿，不可能把所有访问数据都存起来，然后排序找到90分位的时间是多少。因此，类似这种问题都采用了一些估算的算法来处理，不需要把所有数据都存下来，这里面数学原理比较高端，我们就直接看看prometheus的用法好了。</p>
-
 <ul>
 <li>可以理解为柱状图，典型的应用如：请求持续时间，响应大小。</li>
 <li>可以对观察结果采样，分组及统计。</li>
 </ul>
-
 <p><strong>Summary</strong></p>
-
 <ul>
 <li>类似于 Histogram, 典型的应用如：请求持续时间，响应大小。</li>
 <li>提供观测值的 count 和 sum 功能。</li>
 <li>提供百分位的功能，即可以按百分比划分跟踪结果。</li>
 </ul>
-
 <p>比如go_gc_duration_seconds可以得到go gc 25%，50%，75%的持续时间</p>
-
 <p>summary已经完成了计算，由prom的服务端完成，如下所示：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># HELP prometheus_engine_query_duration_seconds Query timings</span>
+<span style="color:#75715e"># TYPE prometheus_engine_query_duration_seconds summary</span>
+prometheus_engine_query_duration_seconds<span style="color:#f92672">{</span>slice<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;inner_eval&#34;</span>,quantile<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;0.5&#34;</span><span style="color:#f92672">}</span> 0.000300242
+prometheus_engine_query_duration_seconds<span style="color:#f92672">{</span>slice<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;inner_eval&#34;</span>,quantile<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;0.9&#34;</span><span style="color:#f92672">}</span> 0.016269568
+prometheus_engine_query_duration_seconds<span style="color:#f92672">{</span>slice<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;inner_eval&#34;</span>,quantile<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;0.99&#34;</span><span style="color:#f92672">}</span> 0.027198073
+prometheus_engine_query_duration_seconds_sum<span style="color:#f92672">{</span>slice<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;inner_eval&#34;</span><span style="color:#f92672">}</span> 0.080493713
+prometheus_engine_query_duration_seconds_count<span style="color:#f92672">{</span>slice<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;inner_eval&#34;</span><span style="color:#f92672">}</span> <span style="color:#ae81ff">21</span>
+prometheus_engine_query_duration_seconds<span style="color:#f92672">{</span>slice<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;prepare_time&#34;</span>,quantile<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;0.5&#34;</span><span style="color:#f92672">}</span> 7.2256e-05
+prometheus_engine_query_duration_seconds<span style="color:#f92672">{</span>slice<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;prepare_time&#34;</span>,quantile<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;0.9&#34;</span><span style="color:#f92672">}</span> 0.000894565
+prometheus_engine_query_duration_seconds<span style="color:#f92672">{</span>slice<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;prepare_time&#34;</span>,quantile<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;0.99&#34;</span><span style="color:#f92672">}</span> 0.001640657
+prometheus_engine_query_duration_seconds_sum<span style="color:#f92672">{</span>slice<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;prepare_time&#34;</span><span style="color:#f92672">}</span> 0.004723942
+prometheus_engine_query_duration_seconds_count<span style="color:#f92672">{</span>slice<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;prepare_time&#34;</span><span style="color:#f92672">}</span> <span style="color:#ae81ff">21</span>
+</code></pre></div><p>与summary不同的是histogram只负责存储数据，客户端读取之后进行计算。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># HELP prometheus_http_request_duration_seconds Histogram of latencies for HTTP requests.</span>
+<span style="color:#75715e"># TYPE prometheus_http_request_duration_seconds histogram</span>
+prometheus_http_request_duration_seconds_bucket<span style="color:#f92672">{</span>handler<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/api/v1/query&#34;</span>,le<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;0.1&#34;</span><span style="color:#f92672">}</span> <span style="color:#ae81ff">0</span>  <span style="color:#75715e"># 小于0.1的有0个</span>
+prometheus_http_request_duration_seconds_bucket<span style="color:#f92672">{</span>handler<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/api/v1/query&#34;</span>,le<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;0.2&#34;</span><span style="color:#f92672">}</span> <span style="color:#ae81ff">11</span>
+prometheus_http_request_duration_seconds_bucket<span style="color:#f92672">{</span>handler<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/api/v1/query&#34;</span>,le<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;0.4&#34;</span><span style="color:#f92672">}</span> <span style="color:#ae81ff">11</span>
+prometheus_http_request_duration_seconds_bucket<span style="color:#f92672">{</span>handler<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/api/v1/query&#34;</span>,le<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;1&#34;</span><span style="color:#f92672">}</span> <span style="color:#ae81ff">11</span>
+prometheus_http_request_duration_seconds_bucket<span style="color:#f92672">{</span>handler<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/api/v1/query&#34;</span>,le<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;3&#34;</span><span style="color:#f92672">}</span> <span style="color:#ae81ff">11</span>
+prometheus_http_request_duration_seconds_bucket<span style="color:#f92672">{</span>handler<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/api/v1/query&#34;</span>,le<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;8&#34;</span><span style="color:#f92672">}</span> <span style="color:#ae81ff">11</span>
+prometheus_http_request_duration_seconds_bucket<span style="color:#f92672">{</span>handler<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/api/v1/query&#34;</span>,le<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;20&#34;</span><span style="color:#f92672">}</span> <span style="color:#ae81ff">11</span>
+prometheus_http_request_duration_seconds_bucket<span style="color:#f92672">{</span>handler<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/api/v1/query&#34;</span>,le<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;60&#34;</span><span style="color:#f92672">}</span> <span style="color:#ae81ff">11</span>
+prometheus_http_request_duration_seconds_bucket<span style="color:#f92672">{</span>handler<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/api/v1/query&#34;</span>,le<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;120&#34;</span><span style="color:#f92672">}</span> <span style="color:#ae81ff">11</span>
+prometheus_http_request_duration_seconds_bucket<span style="color:#f92672">{</span>handler<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/api/v1/query&#34;</span>,le<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;+Inf&#34;</span><span style="color:#f92672">}</span> <span style="color:#ae81ff">11</span> <span style="color:#75715e"># 无穷大的时候近似等于请求总数</span>
+prometheus_http_request_duration_seconds_sum<span style="color:#f92672">{</span>handler<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/api/v1/query&#34;</span><span style="color:#f92672">}</span> 0.033323976000000005
+prometheus_http_request_duration_seconds_count<span style="color:#f92672">{</span>handler<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/api/v1/query&#34;</span><span style="color:#f92672">}</span> <span style="color:#ae81ff">11</span> <span style="color:#75715e"># 一共有11个请求</span>
 
-<pre><code class="language-bash"># HELP prometheus_engine_query_duration_seconds Query timings
-# TYPE prometheus_engine_query_duration_seconds summary
-prometheus_engine_query_duration_seconds{slice=&quot;inner_eval&quot;,quantile=&quot;0.5&quot;} 0.000300242
-prometheus_engine_query_duration_seconds{slice=&quot;inner_eval&quot;,quantile=&quot;0.9&quot;} 0.016269568
-prometheus_engine_query_duration_seconds{slice=&quot;inner_eval&quot;,quantile=&quot;0.99&quot;} 0.027198073
-prometheus_engine_query_duration_seconds_sum{slice=&quot;inner_eval&quot;} 0.080493713
-prometheus_engine_query_duration_seconds_count{slice=&quot;inner_eval&quot;} 21
-prometheus_engine_query_duration_seconds{slice=&quot;prepare_time&quot;,quantile=&quot;0.5&quot;} 7.2256e-05
-prometheus_engine_query_duration_seconds{slice=&quot;prepare_time&quot;,quantile=&quot;0.9&quot;} 0.000894565
-prometheus_engine_query_duration_seconds{slice=&quot;prepare_time&quot;,quantile=&quot;0.99&quot;} 0.001640657
-prometheus_engine_query_duration_seconds_sum{slice=&quot;prepare_time&quot;} 0.004723942
-prometheus_engine_query_duration_seconds_count{slice=&quot;prepare_time&quot;} 21
-</code></pre>
-
-<p>与summary不同的是histogram只负责存储数据，客户端读取之后进行计算。</p>
-
-<pre><code class="language-bash"># HELP prometheus_http_request_duration_seconds Histogram of latencies for HTTP requests.
-# TYPE prometheus_http_request_duration_seconds histogram
-prometheus_http_request_duration_seconds_bucket{handler=&quot;/api/v1/query&quot;,le=&quot;0.1&quot;} 0  # 小于0.1的有0个
-prometheus_http_request_duration_seconds_bucket{handler=&quot;/api/v1/query&quot;,le=&quot;0.2&quot;} 11
-prometheus_http_request_duration_seconds_bucket{handler=&quot;/api/v1/query&quot;,le=&quot;0.4&quot;} 11
-prometheus_http_request_duration_seconds_bucket{handler=&quot;/api/v1/query&quot;,le=&quot;1&quot;} 11
-prometheus_http_request_duration_seconds_bucket{handler=&quot;/api/v1/query&quot;,le=&quot;3&quot;} 11
-prometheus_http_request_duration_seconds_bucket{handler=&quot;/api/v1/query&quot;,le=&quot;8&quot;} 11
-prometheus_http_request_duration_seconds_bucket{handler=&quot;/api/v1/query&quot;,le=&quot;20&quot;} 11
-prometheus_http_request_duration_seconds_bucket{handler=&quot;/api/v1/query&quot;,le=&quot;60&quot;} 11
-prometheus_http_request_duration_seconds_bucket{handler=&quot;/api/v1/query&quot;,le=&quot;120&quot;} 11
-prometheus_http_request_duration_seconds_bucket{handler=&quot;/api/v1/query&quot;,le=&quot;+Inf&quot;} 11 # 无穷大的时候近似等于请求总数
-prometheus_http_request_duration_seconds_sum{handler=&quot;/api/v1/query&quot;} 0.033323976000000005
-prometheus_http_request_duration_seconds_count{handler=&quot;/api/v1/query&quot;} 11 # 一共有11个请求
-
-histogram_quantile(0.95, sum(rate(prometheus_http_request_duration_seconds_bucket{handler=&quot;/api/v1/query_range&quot;}[5m])) by (le))
-</code></pre>
-
-<h2 id="prometheus配置">Prometheus配置</h2>
-
+histogram_quantile<span style="color:#f92672">(</span>0.95, sum<span style="color:#f92672">(</span>rate<span style="color:#f92672">(</span>prometheus_http_request_duration_seconds_bucket<span style="color:#f92672">{</span>handler<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/api/v1/query_range&#34;</span><span style="color:#f92672">}[</span>5m<span style="color:#f92672">]))</span> by <span style="color:#f92672">(</span>le<span style="color:#f92672">))</span>
+</code></pre></div><h2 id="prometheus配置">Prometheus配置</h2>
 <p>配置文件可以分为6个部分，如下所示：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e"># 全局配置</span>
+<span style="color:#f92672">global</span>:
+  <span style="color:#f92672">scrape_interval</span>:     <span style="color:#ae81ff">15s</span> <span style="color:#75715e"># 默认抓取间隔, 15秒向目标抓取一次数据。</span>
+  <span style="color:#f92672">evaluation_interval</span>: <span style="color:#ae81ff">15s</span> <span style="color:#75715e"># Evaluate rules every 15 seconds. The default is every 1 minute.</span>
+  <span style="color:#75715e"># scrape_timeout is set to the global default (10s).</span>
 
-<pre><code class="language-yaml"># 全局配置
-global:
-  scrape_interval:     15s # 默认抓取间隔, 15秒向目标抓取一次数据。
-  evaluation_interval: 15s # Evaluate rules every 15 seconds. The default is every 1 minute.
-  # scrape_timeout is set to the global default (10s).
+  <span style="color:#75715e"># 这个标签是在本机上每一条时间序列上都会默认产生的，主要可以用于联合查询、远程存储、Alertmanger时使用。</span>
+  <span style="color:#f92672">external_labels</span>:
+      <span style="color:#f92672">monitor</span>: <span style="color:#e6db74">&#39;codelab-monitor&#39;</span>
+      <span style="color:#f92672">cluster</span>:  <span style="color:#e6db74">&#39;prod-k8s&#39;</span>
 
-  # 这个标签是在本机上每一条时间序列上都会默认产生的，主要可以用于联合查询、远程存储、Alertmanger时使用。
-  external_labels:
-      monitor: 'codelab-monitor'
-      cluster:  'prod-k8s'
+<span style="color:#75715e"># 加载ruls文件</span>
+<span style="color:#f92672">rule_files</span>:
+  <span style="color:#75715e"># - &#34;first.rules&#34;</span>
+  <span style="color:#75715e"># - &#34;second.rules&#34;</span>
 
-# 加载ruls文件
-rule_files:
-  # - &quot;first.rules&quot;
-  # - &quot;second.rules&quot;
+<span style="color:#75715e"># 这里就表示抓取对象的配置</span>
+<span style="color:#75715e"># 这里是抓去promethues自身的配置</span>
+<span style="color:#f92672">scrape_configs</span>:
+<span style="color:#75715e"># job name 这个配置是表示在这个配置内的时间序例，每一条都会自动添加上这个{job_name:&#34;prometheus&#34;}的标签。</span>
+  - <span style="color:#f92672">job_name</span>: <span style="color:#e6db74">&#39;prometheus&#39;</span>
 
-# 这里就表示抓取对象的配置
-# 这里是抓去promethues自身的配置
-scrape_configs:
-# job name 这个配置是表示在这个配置内的时间序例，每一条都会自动添加上这个{job_name:&quot;prometheus&quot;}的标签。
-  - job_name: 'prometheus'
+    <span style="color:#75715e"># metrics_path defaults to &#39;/metrics&#39;</span>
+    <span style="color:#75715e"># scheme defaults to &#39;http&#39;.</span>
 
-    # metrics_path defaults to '/metrics'
-    # scheme defaults to 'http'.
+    <span style="color:#75715e"># 重写了全局抓取间隔时间，由15秒重写成5秒。</span>
+    <span style="color:#f92672">scrape_interval</span>: <span style="color:#ae81ff">5s</span>
 
-    # 重写了全局抓取间隔时间，由15秒重写成5秒。
-    scrape_interval: 5s
+    <span style="color:#f92672">static_configs</span>:
+      - <span style="color:#f92672">targets</span>: [<span style="color:#e6db74">&#39;localhost:9090&#39;</span>]
+<span style="color:#75715e"># 与Alertmanager相关的设置。</span>
+<span style="color:#f92672">alerting</span>:
+  <span style="color:#f92672">alert_relabel_configs</span>:
+    [ - <span style="color:#ae81ff">&lt;relabel_config&gt; ... ]</span>
+  <span style="color:#f92672">alertmanagers</span>:
+    [ - <span style="color:#ae81ff">&lt;alertmanager_config&gt; ... ]</span>
 
-    static_configs:
-      - targets: ['localhost:9090']
-# 与Alertmanager相关的设置。
-alerting:
-  alert_relabel_configs:
-    [ - &lt;relabel_config&gt; ... ]
-  alertmanagers:
-    [ - &lt;alertmanager_config&gt; ... ]
+<span style="color:#75715e"># 将数据写到远程</span>
+<span style="color:#f92672">remote_write</span>:
+  [ - <span style="color:#ae81ff">&lt;remote_write&gt; ... ]</span>
 
-# 将数据写到远程
-remote_write:
-  [ - &lt;remote_write&gt; ... ]
-
-# 读取远程的数据
-remote_read:
-  [ - &lt;remote_read&gt; ... ]      
-</code></pre>
-
-<p>scrape_configs 主要用于配置拉取数据节点，每一个拉取配置主要包含以下参数：</p>
-
+<span style="color:#75715e"># 读取远程的数据</span>
+<span style="color:#f92672">remote_read</span>:
+  [ - <span style="color:#ae81ff">&lt;remote_read&gt; ... ]      </span>
+</code></pre></div><p>scrape_configs 主要用于配置拉取数据节点，每一个拉取配置主要包含以下参数：</p>
 <ul>
 <li>job_name：任务名称</li>
 <li>honor_labels： 用于解决拉取数据标签有冲突，当设置为 true, 以拉取数据为准，否则以服务配置为准</li>
@@ -351,51 +311,38 @@ remote_read:
 <li>relabel_configs： 拉取数据重置标签配置</li>
 <li>metric_relabel_configs：metric 重置标签配置</li>
 </ul>
-
 <h4 id="rules规则">rules规则</h4>
-
 <p>当某些metrics不正常时，就需要发出告警，而rules正是做这个事情的，比如CPU连续1小时超过99%等。如下是一个request响应时间过高的rule：</p>
-
-<pre><code class="language-yaml">groups:
-- name: example
-  rules:
-  - alert: HighErrorRate
-    expr: job:request_latency_seconds:mean5m{job=&quot;myjob&quot;} &gt; 0.5
-    for: 10m
-    labels:
-      severity: page
-    annotations:
-      summary: High request latency
-      description: description info
-  - alert: ExampleAlert
-    expr: vector(1)
-</code></pre>
-
-<h3 id="四种数据类型">四种数据类型</h3>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">groups</span>:
+- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">example</span>
+  <span style="color:#f92672">rules</span>:
+  - <span style="color:#f92672">alert</span>: <span style="color:#ae81ff">HighErrorRate</span>
+    <span style="color:#f92672">expr</span>: <span style="color:#ae81ff">job:request_latency_seconds:mean5m{job=&#34;myjob&#34;} &gt; 0.5</span>
+    <span style="color:#f92672">for</span>: <span style="color:#ae81ff">10m</span>
+    <span style="color:#f92672">labels</span>:
+      <span style="color:#f92672">severity</span>: <span style="color:#ae81ff">page</span>
+    <span style="color:#f92672">annotations</span>:
+      <span style="color:#f92672">summary</span>: <span style="color:#ae81ff">High request latency</span>
+      <span style="color:#f92672">description</span>: <span style="color:#ae81ff">description info</span>
+  - <span style="color:#f92672">alert</span>: <span style="color:#ae81ff">ExampleAlert</span>
+    <span style="color:#f92672">expr</span>: <span style="color:#ae81ff">vector(1)</span>
+</code></pre></div><h3 id="四种数据类型">四种数据类型</h3>
 <ol>
 <li>Instant vector : 每个指标返回一个值,且指标集合里面的时间戳都相同.类似于即时数据.</li>
 <li>Range vector: 每个指标包含多个时序数据.</li>
 <li>Scalar: 只有一个浮点值</li>
 <li>String: 未开放使用.</li>
 </ol>
-
 <h3 id="promql">Promql</h3>
-
 <h4 id="二元操作">二元操作</h4>
-
 <p>+ - * / % ^ 加减乘除 取余</p>
-
 <p>二元操作符使用范围:</p>
-
 <ol>
 <li>scalar/scalar</li>
 <li>vector/scalar</li>
 <li>vector/vector</li>
 </ol>
-
 <h4 id="聚合操作">聚合操作</h4>
-
 <ol>
 <li>sum (calculate sum over dimensions)</li>
 <li>min (select minimum over dimensions)</li>
@@ -409,110 +356,88 @@ remote_read:
 <li>topk (largest k elements by sample value)</li>
 <li>quantile (calculate φ-quantile (0 ≤ φ ≤ 1) over dimensions)</li>
 </ol>
-
 <h4 id="函数">函数</h4>
-
 <ol>
-<li>rate(v range-vector)</li>
-</ol>
-
+<li>
+<p>rate(v range-vector)</p>
 <p>根据每个点计算每秒的平均变化率.</p>
-
-<ol>
-<li>irate(v range-vector)</li>
-</ol>
-
+</li>
+<li>
+<p>irate(v range-vector)</p>
 <p>根据最后两个数据点计算变化率.irate()适合于变化较快的数据,rate()适合变化较慢的数据.</p>
-
+</li>
+</ol>
 <h3 id="常用例子">常用例子:</h3>
-
 <p>查询CPU使用率:</p>
-
-<pre><code class="language-bash">100 - (avg by (job) (irate(node_cpu{mode=&quot;idle&quot;}[5m])) * 100)
-</code></pre>
-
-<p>查询网卡即时速率</p>
-
-<pre><code class="language-bash">irate(node_network_receive_bytes[2m])
-vector(1)  #始终为真，可以用来测试告警
-</code></pre>
-
-<h2 id="alertmanager配置">AlertManager配置</h2>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#ae81ff">100</span> - <span style="color:#f92672">(</span>avg by <span style="color:#f92672">(</span>job<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>irate<span style="color:#f92672">(</span>node_cpu<span style="color:#f92672">{</span>mode<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;idle&#34;</span><span style="color:#f92672">}[</span>5m<span style="color:#f92672">]))</span> * 100<span style="color:#f92672">)</span>
+</code></pre></div><p>查询网卡即时速率</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">irate<span style="color:#f92672">(</span>node_network_receive_bytes<span style="color:#f92672">[</span>2m<span style="color:#f92672">])</span>
+vector<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>  <span style="color:#75715e">#始终为真，可以用来测试告警</span>
+</code></pre></div><h2 id="alertmanager配置">AlertManager配置</h2>
 <p>Prometheus只会产生告警并把告警发送给AlertManager，至于什么等级的告警发送给谁，还是要在AlertManager中配置的。目前官方支持slack，企业微信和Email，钉钉可以用这个webhook的容器实现。</p>
-
-<p>docker run --network host -d timonwong/prometheus-webhook-dingtalk --ding.profile=&quot;webhook1=<a href="https://oapi.dingtalk.com/robot/send?access_token=xxxx&quot;">https://oapi.dingtalk.com/robot/send?access_token=xxxx&quot;</a></p>
-
+<p>docker run &ndash;network host -d timonwong/prometheus-webhook-dingtalk &ndash;ding.profile=&ldquo;webhook1=https://oapi.dingtalk.com/robot/send?access_token=xxxx&rdquo;</p>
 <p>配置文件示例：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">global</span>:
+  <span style="color:#75715e"># ResolveTimeout is the time after which an alert is declared resolved</span>
+  <span style="color:#75715e"># if it has not been updated.</span>
+  <span style="color:#f92672">[ resolve_timeout</span>: <span style="color:#ae81ff">&lt;duration&gt; | default = 5m ]</span>
 
-<pre><code class="language-yaml">global:
-  # ResolveTimeout is the time after which an alert is declared resolved
-  # if it has not been updated.
-  [ resolve_timeout: &lt;duration&gt; | default = 5m ]
+  <span style="color:#75715e"># The default HTTP client configuration</span>
+  <span style="color:#f92672">[ http_config</span>: <span style="color:#ae81ff">&lt;http_config&gt; ]</span>
 
-  # The default HTTP client configuration
-  [ http_config: &lt;http_config&gt; ]
+<span style="color:#75715e"># Files from which custom notification template definitions are read.</span>
+<span style="color:#75715e"># The last component may use a wildcard matcher, e.g. &#39;templates/*.tmpl&#39;.</span>
+<span style="color:#f92672">templates</span>:
+  [ - <span style="color:#ae81ff">&lt;filepath&gt; ... ]</span>
 
-# Files from which custom notification template definitions are read.
-# The last component may use a wildcard matcher, e.g. 'templates/*.tmpl'.
-templates:
-  [ - &lt;filepath&gt; ... ]
+<span style="color:#75715e"># The root node of the routing tree.</span>
+<span style="color:#f92672">route</span>: <span style="color:#ae81ff">&lt;route&gt;</span>
+  <span style="color:#f92672">routes</span>:
+  - <span style="color:#f92672">receiver</span>: <span style="color:#e6db74">&#39;database-pager&#39;</span>
+    <span style="color:#f92672">group_wait</span>: <span style="color:#ae81ff">10s</span>
+    <span style="color:#f92672">match_re</span>:
+      <span style="color:#f92672">service</span>: <span style="color:#ae81ff">mysql|cassandra</span>
+  - <span style="color:#f92672">receiver</span>: <span style="color:#e6db74">&#39;frontend-pager&#39;</span>
+    <span style="color:#f92672">group_by</span>: [<span style="color:#ae81ff">product, environment]</span>
+    <span style="color:#f92672">match</span>:
+      <span style="color:#f92672">team</span>: <span style="color:#ae81ff">frontend</span>
+<span style="color:#75715e"># A list of notification receivers.</span>
+<span style="color:#f92672">receivers</span>:
+  - <span style="color:#ae81ff">&lt;receiver&gt; ...</span>
 
-# The root node of the routing tree.
-route: &lt;route&gt;
-  routes:
-  - receiver: 'database-pager'
-    group_wait: 10s
-    match_re:
-      service: mysql|cassandra
-  - receiver: 'frontend-pager'
-    group_by: [product, environment]
-    match:
-      team: frontend
-# A list of notification receivers.
-receivers:
-  - &lt;receiver&gt; ...
-
-# A list of inhibition rules.
-inhibit_rules:
-  [ - &lt;inhibit_rule&gt; ... ]
---- #具体示例
-global: 
-  &quot;resolve_timeout&quot;: &quot;5m&quot;
-route: 
-  group_by: ['job']
-  group_wait: 30s
-  group_interval: 5m
-  repeat_interval: 12h
-  receiver: 'slack_general'
-  routes:
-  - receiver: &quot;slack_general&quot;
-    match:  
-      alertname: DeadMansSwitch
-  - receiver: &quot;send_to_dingding_webhook1&quot;
-    match:  
-      severity: warning
-receivers: 
-- name: slack_general
-  slack_configs:
-  - api_url: https://hooks.slack.com/services/TCXP8SPD4/BCW9QDP8T/
-    channel: '#general'
-- name: send_to_dingding_webhook1
-  webhook_configs:
-  - send_resolved: false
-    url: http://localhost:8060/dingtalk/webhook1/send
-</code></pre>
-
-<h2 id="ref">Ref</h2>
-
+<span style="color:#75715e"># A list of inhibition rules.</span>
+<span style="color:#f92672">inhibit_rules</span>:
+  [ - <span style="color:#ae81ff">&lt;inhibit_rule&gt; ... ]</span>
+--- <span style="color:#75715e">#具体示例</span>
+<span style="color:#f92672">global</span>: 
+  <span style="color:#f92672">&#34;resolve_timeout&#34;: </span><span style="color:#e6db74">&#34;5m&#34;</span>
+<span style="color:#f92672">route</span>: 
+  <span style="color:#f92672">group_by</span>: [<span style="color:#e6db74">&#39;job&#39;</span>]
+  <span style="color:#f92672">group_wait</span>: <span style="color:#ae81ff">30s</span>
+  <span style="color:#f92672">group_interval</span>: <span style="color:#ae81ff">5m</span>
+  <span style="color:#f92672">repeat_interval</span>: <span style="color:#ae81ff">12h</span>
+  <span style="color:#f92672">receiver</span>: <span style="color:#e6db74">&#39;slack_general&#39;</span>
+  <span style="color:#f92672">routes</span>:
+  - <span style="color:#f92672">receiver</span>: <span style="color:#e6db74">&#34;slack_general&#34;</span>
+    <span style="color:#f92672">match</span>:  
+      <span style="color:#f92672">alertname</span>: <span style="color:#ae81ff">DeadMansSwitch</span>
+  - <span style="color:#f92672">receiver</span>: <span style="color:#e6db74">&#34;send_to_dingding_webhook1&#34;</span>
+    <span style="color:#f92672">match</span>:  
+      <span style="color:#f92672">severity</span>: <span style="color:#ae81ff">warning</span>
+<span style="color:#f92672">receivers</span>: 
+- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">slack_general</span>
+  <span style="color:#f92672">slack_configs</span>:
+  - <span style="color:#f92672">api_url</span>: <span style="color:#ae81ff">https://hooks.slack.com/services/TCXP8SPD4/BCW9QDP8T/</span>
+    <span style="color:#f92672">channel</span>: <span style="color:#e6db74">&#39;#general&#39;</span>
+- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">send_to_dingding_webhook1</span>
+  <span style="color:#f92672">webhook_configs</span>:
+  - <span style="color:#f92672">send_resolved</span>: <span style="color:#66d9ef">false</span>
+    <span style="color:#f92672">url</span>: <span style="color:#ae81ff">http://localhost:8060/dingtalk/webhook1/send</span>
+</code></pre></div><h2 id="ref">Ref</h2>
 <p>Prometheus 入门</p>
-
 <p><a href="https://www.hi-linux.com/posts/25047.html">https://www.hi-linux.com/posts/25047.html</a></p>
-
 <p>Prometheus 实战</p>
-
 <p><a href="https://songjiayang.gitbooks.io/prometheus/content/">https://songjiayang.gitbooks.io/prometheus/content/</a></p>
-
 <p><a href="https://yunlzheng.gitbook.io/prometheus-book/part-iii-prometheus-shi-zhan/references">https://yunlzheng.gitbook.io/prometheus-book/part-iii-prometheus-shi-zhan/references</a></p>
 </div>
         <div class="post_footer">

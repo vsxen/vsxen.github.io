@@ -122,34 +122,19 @@
           <h2><a href='/2019/10/22/k8s-cluster-update/'>K8s 集群升级</a></h2>
           <span class="date">2019.10.22</span>
         </div>
-        <div class="post_content markdown">
-
-<p>目前k8s差不多三个月就会有一个大版本，差不多半年不更新的话就追不上官方的步伐了，同时还会有一些重大0day的CVE被发现，所以适当的升级集群也是有必要的。本文试尝讨论一种可以把影响降到最低甚至zero down time的升级方式。另外本文主要讨论kubeadm搭建的集群，在原基群中升级。</p>
-
+        <div class="post_content markdown"><p>目前k8s差不多三个月就会有一个大版本，差不多半年不更新的话就追不上官方的步伐了，同时还会有一些重大0day的CVE被发现，所以适当的升级集群也是有必要的。本文试尝讨论一种可以把影响降到最低甚至zero down time的升级方式。另外本文主要讨论kubeadm搭建的集群，在原基群中升级。</p>
 <h3 id="何时升级">何时升级</h3>
-
 <p>k8s遵守语义化版本的规定，比如x.y.z中，最后的小版本可以随意升级，当发现有新的CVE之后，可以通过升级小版本来快速修复，当然如果在VPC或者内网之内，就不用太担心了。</p>
-
-<p>当y需要升级的时候，官方不建议跨两个版本号升级，虽然代码中有兼容的方式，这时候通过kubeadm upgrade的命令也是可以升级的，需要注意的是检测更新的时候需要科学上网，doc见 <a href="https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/。">https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/。</a></p>
-
+<p>当y需要升级的时候，官方不建议跨两个版本号升级，虽然代码中有兼容的方式，这时候通过kubeadm upgrade的命令也是可以升级的，需要注意的是检测更新的时候需要科学上网，doc见 <a href="https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/">https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/</a>。</p>
 <h3 id="升级准备">升级准备</h3>
-
 <p>备份数据，这个应该在平时就做好，etcd的数据全量备份，数据目录也应该备份，集群中应用对应的yaml文件，甚至是pvc中的数据，当然这个要根据实际情况进行备份。</p>
-
 <p>然后阅读相关<code>release node</code>，重点关注其中几部分： Known Issues，Action Requireed，Deprecations and removals。社区会将一些变化highlight到这里，阅读这些变化可以明确自己需要采取哪些行动。有哪些参数变化，哪些feature发生更改。比如1.13到1.14 Node Lease的feature就默认打开了。见 <a href="https://github.com/kubernetes/kubernetes/pull/72096">https://github.com/kubernetes/kubernetes/pull/72096</a></p>
-
 <p>升级流程，按照我的经验，升级步骤应该是etcd master  node  addons，node组件可以与master组件最多延迟两个小版本(minor version)，但是不能比master组件新，因为可能会有新的字段，所以master版本应该高一点。</p>
-
 <p>etcd需要注意的是，要保证集群的可用性必须要有(n+1)/2个可用节点，这时候才能进行读写操作，否则etcd就会拒绝写入。</p>
-
 <p>除此以外 <a href="https://www.cnblogs.com/gaorong/p/11266629.html">https://www.cnblogs.com/gaorong/p/11266629.html</a> 这篇文章提到应该暂时停掉KCM，避免pod漂移或者副本发送变化，仔细想来也是很有必要的，不过这样降低了集群的可用时间，也就是升级的时候不能进行其他操作，当然可用性和一致性也是需要做一个选择。</p>
-
 <p>升级测试，自己搭建一个旧的集群，然后按照步骤升级，看看是否有一些意料之外的问题出现。</p>
-
 <h3 id="ref">Ref</h3>
-
 <p>kubernetes集群升级的正确姿势</p>
-
 <p><a href="https://www.cnblogs.com/gaorong/p/11266629.html">https://www.cnblogs.com/gaorong/p/11266629.html</a></p>
 </div>
         <div class="post_footer">

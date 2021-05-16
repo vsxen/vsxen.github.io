@@ -122,267 +122,222 @@
           <h2><a href='/2018/06/15/kubernetes-auth-rbac/'>Kubernetes 认证与授权</a></h2>
           <span class="date">2018.06.15</span>
         </div>
-        <div class="post_content markdown">
-
-<p>对于一个系统来说，认证和授权不可或缺的部分，最常见的方式要数账号密码，管理员和普通用户这种认证方式，也就是常说的ABAC。但是每次修改权限都需要重启，或者修改记录，会有些不方便，于是基于角色的访问控制--RBAC就出现了，同时k8s分离了认证，授权和准入的过程，方便第三方开发相关插件。</p>
-
+        <div class="post_content markdown"><p>对于一个系统来说，认证和授权不可或缺的部分，最常见的方式要数账号密码，管理员和普通用户这种认证方式，也就是常说的ABAC。但是每次修改权限都需要重启，或者修改记录，会有些不方便，于是基于角色的访问控制&ndash;RBAC就出现了，同时k8s分离了认证，授权和准入的过程，方便第三方开发相关插件。</p>
 <p>下图大致描述了k8s认证的流程图，描述了一个请求在经过APIServer的时候都经历了哪些鉴权的过程。如下图所示：需要访问API的有人类，也就是Ops，通过kubectl以及Kubeconfig配置文件和API-Server交互。还有就是Pod，也就是应用，对API资源进行CURD。然后依次经过了身份认证(authentication)、授权(authorization)和准入控制（admission control）。下面就来详细介绍下认证和授权</p>
-
-<p><img src="../images/rbac01.jpg" alt="" /></p>
-
+<p><img src="../images/rbac01.jpg" alt=""></p>
 <h2 id="认证">认证</h2>
-
 <ul>
 <li>Authentication：即身份验证，这个环节它面对的输入是整个http request，它负责对来自client的请求进行身份校验，支持的方法包括：
-
 <ul>
 <li>client证书验证（https双向验证）</li>
 <li>basic auth</li>
 <li>普通token</li>
 <li>jwt token(用于serviceaccount)</li>
-</ul></li>
 </ul>
-
+</li>
+</ul>
 <p>APIServer启动时，可以指定一种Authentication方法，也可以指定多种方法。如果指定了多种方法，那么APIServer将会逐个使用这些方法对客户端请求进行验证，只要请求数据通过其中一种方法的验证，APIServer就会认为Authentication成功；在较新版本kubeadm引导启动的k8s集群的apiserver初始配置中，默认支持client证书验证和serviceaccount两种身份验证方式。在这个环节，apiserver会通过client证书或http header中的字段(比如serviceaccount的jwt token)来识别出请求的“用户身份”，包括”user”、”group”等，这些信息将在后面的authorization环节用到。</p>
-
 <h3 id="client-证书">Client 证书</h3>
-
 <p>首先我们看一下kubectl的默认配置文件~/.kube/config</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+<span style="color:#f92672">clusters</span>:
+- <span style="color:#f92672">cluster</span>:
+    <span style="color:#f92672">certificate-authority-data</span>: <span style="color:#ae81ff">REDACTED</span>
+    <span style="color:#f92672">server</span>: <span style="color:#ae81ff">https://172.16.66.101:6443</span>
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">kubernetes</span>
+<span style="color:#f92672">contexts</span>:
+- <span style="color:#f92672">context</span>:
+    <span style="color:#f92672">cluster</span>: <span style="color:#ae81ff">kubernetes</span>
+    <span style="color:#f92672">user</span>: <span style="color:#ae81ff">kubernetes-admin</span>
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">kubernetes-admin@kubernetes</span>
+<span style="color:#f92672">current-context</span>: <span style="color:#ae81ff">kubernetes-admin@kubernetes</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Config</span>
+<span style="color:#f92672">preferences</span>: {}
+<span style="color:#f92672">users</span>:
+- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">kubernetes-admin</span>
+  <span style="color:#f92672">user</span>:
+    <span style="color:#f92672">client-certificate-data</span>: <span style="color:#ae81ff">REDACTED</span>
+    <span style="color:#f92672">client-key-data</span>: <span style="color:#ae81ff">REDACTED</span>
+</code></pre></div><p>这有两个重要的信息 client-certificate-data, client-key-data,首先把data提取出来</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># 生成client-certificate-data</span>
+grep <span style="color:#e6db74">&#39;client-certificate-data&#39;</span> ~/.kube/config | head -n <span style="color:#ae81ff">1</span> | awk <span style="color:#e6db74">&#39;{print $2}&#39;</span> | base64 -d &gt;&gt; kubecfg.crt
 
-<pre><code class="language-yaml">apiVersion: v1
-clusters:
-- cluster:
-    certificate-authority-data: REDACTED
-    server: https://172.16.66.101:6443
-  name: kubernetes
-contexts:
-- context:
-    cluster: kubernetes
-    user: kubernetes-admin
-  name: kubernetes-admin@kubernetes
-current-context: kubernetes-admin@kubernetes
-kind: Config
-preferences: {}
-users:
-- name: kubernetes-admin
-  user:
-    client-certificate-data: REDACTED
-    client-key-data: REDACTED
-</code></pre>
-
-<p>这有两个重要的信息 client-certificate-data, client-key-data,首先把data提取出来</p>
-
-<pre><code class="language-bash"># 生成client-certificate-data
-grep 'client-certificate-data' ~/.kube/config | head -n 1 | awk '{print $2}' | base64 -d &gt;&gt; kubecfg.crt
-
-# 生成client-key-data
-grep 'client-key-data' ~/.kube/config | head -n 1 | awk '{print $2}' | base64 -d &gt;&gt; kubecfg.key
+<span style="color:#75715e"># 生成client-key-data</span>
+grep <span style="color:#e6db74">&#39;client-key-data&#39;</span> ~/.kube/config | head -n <span style="color:#ae81ff">1</span> | awk <span style="color:#e6db74">&#39;{print $2}&#39;</span> | base64 -d &gt;&gt; kubecfg.key
 
 openssl x509 -noout -text -in kubecfg.crt
 Certificate:
     Data:
-        Version: 3 (0x2)
-        Serial Number: 6675913985209031083 (0x5ca59c66277259ab)
+        Version: <span style="color:#ae81ff">3</span> <span style="color:#f92672">(</span>0x2<span style="color:#f92672">)</span>
+        Serial Number: <span style="color:#ae81ff">6675913985209031083</span> <span style="color:#f92672">(</span>0x5ca59c66277259ab<span style="color:#f92672">)</span>
     Signature Algorithm: sha256WithRSAEncryption
-        Issuer: CN=kubernetes
+        Issuer: CN<span style="color:#f92672">=</span>kubernetes
         Validity
-            Not Before: Apr 13 10:22:37 2019 GMT
-            Not After : Apr 12 10:22:38 2020 GMT
-        Subject: O=system:masters, CN=kubernetes-admin #此证书是签发给system:masters的，
+            Not Before: Apr <span style="color:#ae81ff">13</span> 10:22:37 <span style="color:#ae81ff">2019</span> GMT
+            Not After : Apr <span style="color:#ae81ff">12</span> 10:22:38 <span style="color:#ae81ff">2020</span> GMT
+        Subject: O<span style="color:#f92672">=</span>system:masters, CN<span style="color:#f92672">=</span>kubernetes-admin <span style="color:#75715e">#此证书是签发给system:masters的，</span>
         Subject Public Key Info:
             Public Key Algorithm: rsaEncryption
-                Public-Key: (2048 bit)
+                Public-Key: <span style="color:#f92672">(</span><span style="color:#ae81ff">2048</span> bit<span style="color:#f92672">)</span>
                 Modulus:
                     .....
-                Exponent: 65537 (0x10001)
+                Exponent: <span style="color:#ae81ff">65537</span> <span style="color:#f92672">(</span>0x10001<span style="color:#f92672">)</span>
         X509v3 extensions:
             X509v3 Key Usage: critical
                 Digital Signature, Key Encipherment
             X509v3 Extended Key Usage: 
-                TLS Web Client Authentication # 此证书可以作为TLS的客户端证书
+                TLS Web Client Authentication <span style="color:#75715e"># 此证书可以作为TLS的客户端证书</span>
     Signature Algorithm: sha256WithRSAEncryption
-</code></pre>
-
-<p>为什么是这个用户呢？在集群中可以看到这样一条记录，k8s默认把system:masters用户绑定上了clsuter-admin的角色，也就是整个集群的管理员，所以当我们有了这个客户端证书之后，就可以管理集群的任何资源。</p>
-
-<pre><code class="language-bash">kubectl -n kube-system describe clusterrolebindings cluster-admin
+</code></pre></div><p>为什么是这个用户呢？在集群中可以看到这样一条记录，k8s默认把system:masters用户绑定上了clsuter-admin的角色，也就是整个集群的管理员，所以当我们有了这个客户端证书之后，就可以管理集群的任何资源。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl -n kube-system describe clusterrolebindings cluster-admin
 
 Name:         cluster-admin
-Labels:       kubernetes.io/bootstrapping=rbac-defaults
-Annotations:  rbac.authorization.kubernetes.io/autoupdate=true
+Labels:       kubernetes.io/bootstrapping<span style="color:#f92672">=</span>rbac-defaults
+Annotations:  rbac.authorization.kubernetes.io/autoupdate<span style="color:#f92672">=</span>true
 Role:
   Kind:  ClusterRole
   Name:  cluster-admin
 Subjects:
   Kind   Name            Namespace
-</code></pre>
-
-<p>下面我们来手动访问下API Server：</p>
-
-<pre><code class="language-bash">MASTER=192.168.1.1
-# 因为是自签名证书 用-k 忽略证书校验 
-# 默认的request是system:anonymous用户 没有权限访问
+</code></pre></div><p>下面我们来手动访问下API Server：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">MASTER<span style="color:#f92672">=</span>192.168.1.1
+<span style="color:#75715e"># 因为是自签名证书 用-k 忽略证书校验 </span>
+<span style="color:#75715e"># 默认的request是system:anonymous用户 没有权限访问</span>
 curl -k  https://$MASTER:6443/api
-{
-  &quot;kind&quot;: &quot;Status&quot;,
-  &quot;apiVersion&quot;: &quot;v1&quot;,
-  &quot;metadata&quot;: {
+<span style="color:#f92672">{</span>
+  <span style="color:#e6db74">&#34;kind&#34;</span>: <span style="color:#e6db74">&#34;Status&#34;</span>,
+  <span style="color:#e6db74">&#34;apiVersion&#34;</span>: <span style="color:#e6db74">&#34;v1&#34;</span>,
+  <span style="color:#e6db74">&#34;metadata&#34;</span>: <span style="color:#f92672">{</span>
 
-  },
-  &quot;status&quot;: &quot;Failure&quot;,
-  &quot;message&quot;: &quot;forbidden: User \&quot;system:anonymous\&quot; cannot get path \&quot;/api\&quot;&quot;,
-  &quot;reason&quot;: &quot;Forbidden&quot;,
-  &quot;details&quot;: {
+  <span style="color:#f92672">}</span>,
+  <span style="color:#e6db74">&#34;status&#34;</span>: <span style="color:#e6db74">&#34;Failure&#34;</span>,
+  <span style="color:#e6db74">&#34;message&#34;</span>: <span style="color:#e6db74">&#34;forbidden: User \&#34;system:anonymous\&#34; cannot get path \&#34;/api\&#34;&#34;</span>,
+  <span style="color:#e6db74">&#34;reason&#34;</span>: <span style="color:#e6db74">&#34;Forbidden&#34;</span>,
+  <span style="color:#e6db74">&#34;details&#34;</span>: <span style="color:#f92672">{</span>
 
-  },
-  &quot;code&quot;: 403
-}
-# 使用客户端证书进行认证
+  <span style="color:#f92672">}</span>,
+  <span style="color:#e6db74">&#34;code&#34;</span>: <span style="color:#ae81ff">403</span>
+<span style="color:#f92672">}</span>
+<span style="color:#75715e"># 使用客户端证书进行认证</span>
 curl -v --cacert /etc/kubernetes/pki/ca.crt  --key ./kubecfg.key --cert ./kubecfg.crt https://$MASTER:6443/api
-# 同理访问kubelet的metrics接口
+<span style="color:#75715e"># 同理访问kubelet的metrics接口</span>
 curl -k  --cacert /etc/kubernetes/pki/ca.crt --cert /etc/kubernetes/pki/apiserver-kubelet-client.crt --key /etc/kubernetes/pki/apiserver-kubelet-client.key https://127.0.0.1:10250/metrics
 
-# 也可以生成另一类p12证书
-openssl pkcs12 -export -clcerts -inkey kubecfg.key -in kubecfg.crt -out kubecfg.p12 -name &quot;kubernetes-client&quot;
-</code></pre>
+<span style="color:#75715e"># 也可以生成另一类p12证书</span>
+openssl pkcs12 -export -clcerts -inkey kubecfg.key -in kubecfg.crt -out kubecfg.p12 -name <span style="color:#e6db74">&#34;kubernetes-client&#34;</span>
+</code></pre></div><h3 id="basic-auth">Basic Auth</h3>
+<p>API有一个启动参数&ndash;basic-auth-file，可以指定一个csv格式的文件作为Basic Auth</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">cat &lt;&lt;EOF &gt; basicauth.csv</span>
+<span style="color:#ae81ff">admin,admin,1,&#34;demo&#34;</span>
+<span style="color:#ae81ff">EOF</span>
 
-<h3 id="basic-auth">Basic Auth</h3>
-
-<p>API有一个启动参数--basic-auth-file，可以指定一个csv格式的文件作为Basic Auth</p>
-
-<pre><code class="language-yaml">cat &lt;&lt;EOF &gt; basicauth.csv
-admin,admin,1,&quot;demo&quot;
-EOF
-
-cat &lt;&lt;EOF &gt; kubectl apply -f -
-kind: ClusterRole
-apiVersion: rbac.authorization.k8s.io/v1
-metadata:
-  name: ui-admin
-rules:
-- apiGroups:
-  - &quot;&quot;
-  resources:
-  - services
-  - services/proxy
-  verbs:
-  - '*'
+<span style="color:#ae81ff">cat &lt;&lt;EOF &gt; kubectl apply -f -</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ClusterRole</span>
+<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">rbac.authorization.k8s.io/v1</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">ui-admin</span>
+<span style="color:#f92672">rules</span>:
+- <span style="color:#f92672">apiGroups</span>:
+  - <span style="color:#e6db74">&#34;&#34;</span>
+  <span style="color:#f92672">resources</span>:
+  - <span style="color:#ae81ff">services</span>
+  - <span style="color:#ae81ff">services/proxy</span>
+  <span style="color:#f92672">verbs</span>:
+  - <span style="color:#e6db74">&#39;*&#39;</span>
 ---
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: ui-admin-binding
-  namespace: kube-system
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: ui-admin
-subjects:
-- apiGroup: rbac.authorization.k8s.io
-  kind: User
-  name: admin
-EOF  
-</code></pre>
-
-<h3 id="service-account">Service Account</h3>
-
+<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">rbac.authorization.k8s.io/v1</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">RoleBinding</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">ui-admin-binding</span>
+  <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">kube-system</span>
+<span style="color:#f92672">roleRef</span>:
+  <span style="color:#f92672">apiGroup</span>: <span style="color:#ae81ff">rbac.authorization.k8s.io</span>
+  <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ClusterRole</span>
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">ui-admin</span>
+<span style="color:#f92672">subjects</span>:
+- <span style="color:#f92672">apiGroup</span>: <span style="color:#ae81ff">rbac.authorization.k8s.io</span>
+  <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">User</span>
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">admin</span>
+<span style="color:#ae81ff">EOF  </span>
+</code></pre></div><h3 id="service-account">Service Account</h3>
 <p>当创建一个Service Account会生成一个token，通过<code>kubectl -n kube-system describe secrets  ${Service account}</code>可以看到一个以<code>eyJhbGciOiJSUzI1NiIsImtpZCI6IiJ9</code>开头的Token。可以在jwt.io上面解码一下，得到的结果如下所示：APIServer也就是通过这些字段进行鉴权的。</p>
-
-<pre><code class="language-bash">{
-  &quot;iss&quot;: &quot;kubernetes/serviceaccount&quot;,
-  &quot;kubernetes.io/serviceaccount/namespace&quot;: &quot;default&quot;,
-  &quot;kubernetes.io/serviceaccount/secret.name&quot;: &quot;default-token-ph2f5&quot;,
-  &quot;kubernetes.io/serviceaccount/service-account.name&quot;: &quot;default&quot;,
-  &quot;kubernetes.io/serviceaccount/service-account.uid&quot;: &quot;7ce56043-7dcc-11e9-9925-00163e132347&quot;,
-  &quot;sub&quot;: &quot;system:serviceaccount:default:default&quot;
-}
-</code></pre>
-
-<pre><code class="language-bash"># 手动使用Token认证一下
-TOKEN=$(kubectl describe secret $(kubectl get secrets | grep default | cut -f1 -d ' ') | grep -E '^token' | cut -f2 -d':' | tr -d '\t')
-MASTER=10.96.0.1
-TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
-curl -k -H &quot;Authorization: Bearer $TOKEN&quot; https://$MASTER:6443/api
-</code></pre>
-
-<h2 id="授权">授权</h2>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">{</span>
+  <span style="color:#e6db74">&#34;iss&#34;</span>: <span style="color:#e6db74">&#34;kubernetes/serviceaccount&#34;</span>,
+  <span style="color:#e6db74">&#34;kubernetes.io/serviceaccount/namespace&#34;</span>: <span style="color:#e6db74">&#34;default&#34;</span>,
+  <span style="color:#e6db74">&#34;kubernetes.io/serviceaccount/secret.name&#34;</span>: <span style="color:#e6db74">&#34;default-token-ph2f5&#34;</span>,
+  <span style="color:#e6db74">&#34;kubernetes.io/serviceaccount/service-account.name&#34;</span>: <span style="color:#e6db74">&#34;default&#34;</span>,
+  <span style="color:#e6db74">&#34;kubernetes.io/serviceaccount/service-account.uid&#34;</span>: <span style="color:#e6db74">&#34;7ce56043-7dcc-11e9-9925-00163e132347&#34;</span>,
+  <span style="color:#e6db74">&#34;sub&#34;</span>: <span style="color:#e6db74">&#34;system:serviceaccount:default:default&#34;</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># 手动使用Token认证一下</span>
+TOKEN<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>kubectl describe secret <span style="color:#66d9ef">$(</span>kubectl get secrets | grep default | cut -f1 -d <span style="color:#e6db74">&#39; &#39;</span><span style="color:#66d9ef">)</span> | grep -E <span style="color:#e6db74">&#39;^token&#39;</span> | cut -f2 -d<span style="color:#e6db74">&#39;:&#39;</span> | tr -d <span style="color:#e6db74">&#39;\t&#39;</span><span style="color:#66d9ef">)</span>
+MASTER<span style="color:#f92672">=</span>10.96.0.1
+TOKEN<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>cat /var/run/secrets/kubernetes.io/serviceaccount/token<span style="color:#66d9ef">)</span>
+curl -k -H <span style="color:#e6db74">&#34;Authorization: Bearer </span>$TOKEN<span style="color:#e6db74">&#34;</span> https://$MASTER:6443/api
+</code></pre></div><h2 id="授权">授权</h2>
 <p>Authorization：授权。这个环节面对的输入是http request context中的各种属性，包括：user、group、request path（比如：/api/v1、/healthz、/version等）、request verb(比如：get、list、create等)。APIServer会将这些属性值与事先配置好的访问策略(access policy）相比较。APIServer支持多种authorization mode，包括Node、RBAC、Webhook等。</p>
-
 <p>APIServer启动时，可以指定一种authorization mode，也可以指定多种authorization mode，如果是后者，只要Request通过了其中一种mode的授权，那么该环节的最终结果就是授权成功。在较新版本kubeadm引导启动的k8s集群的apiserver初始配置中，authorization-mode的默认配置是”Node,RBAC”。Node授权器主要用于各个node上的kubelet访问apiserver时使用的，其他一般均由RBAC授权器来授权。</p>
-
 <h2 id="rbac实战">RBAC实战</h2>
-
 <p>k8s 大约有以下几种角色</p>
-
 <ul>
 <li>role 和 clusterrole 规定了权限的内容，也就是某个人或者角色能干什么</li>
 <li>Service account 也就是具体的角色或者账户</li>
 <li>rolebinding 和 clusterrolebinding 就是将两者结合在一起，规定什么人有什么样的权限</li>
 </ul>
-
 <p>下面我们来看一下例子</p>
-
-<pre><code class="language-yaml">---
-# ------------------- ClusterRole ------------------- #
-kind: ClusterRole
-apiVersion: rbac.authorization.k8s.io/v1beta1
-metadata:
-  name: traefik-ingress-controller
-rules:
-  - apiGroups:
-      - &quot;&quot;
-    resources:
-      - services
-      - endpoints
-      - secrets
-    verbs:
-      - get
-      - list
-      - watch
-  - apiGroups:
-      - extensions
-    resources:
-      - ingresses
-    verbs:
-      - get
-      - list
-      - watch
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
+<span style="color:#75715e"># ------------------- ClusterRole ------------------- #</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ClusterRole</span>
+<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">rbac.authorization.k8s.io/v1beta1</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">traefik-ingress-controller</span>
+<span style="color:#f92672">rules</span>:
+  - <span style="color:#f92672">apiGroups</span>:
+      - <span style="color:#e6db74">&#34;&#34;</span>
+    <span style="color:#f92672">resources</span>:
+      - <span style="color:#ae81ff">services</span>
+      - <span style="color:#ae81ff">endpoints</span>
+      - <span style="color:#ae81ff">secrets</span>
+    <span style="color:#f92672">verbs</span>:
+      - <span style="color:#ae81ff">get</span>
+      - <span style="color:#ae81ff">list</span>
+      - <span style="color:#ae81ff">watch</span>
+  - <span style="color:#f92672">apiGroups</span>:
+      - <span style="color:#ae81ff">extensions</span>
+    <span style="color:#f92672">resources</span>:
+      - <span style="color:#ae81ff">ingresses</span>
+    <span style="color:#f92672">verbs</span>:
+      - <span style="color:#ae81ff">get</span>
+      - <span style="color:#ae81ff">list</span>
+      - <span style="color:#ae81ff">watch</span>
 ---
-# ------------------- ClusterRoleBinding ------------------- #
-kind: ClusterRoleBinding
-apiVersion: rbac.authorization.k8s.io/v1beta1
-metadata:
-  name: traefik-ingress-controller
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: traefik-ingress-controller
-subjects:
-- kind: ServiceAccount
-  name: traefik-ingress-controller
-  namespace: kube-system
+<span style="color:#75715e"># ------------------- ClusterRoleBinding ------------------- #</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ClusterRoleBinding</span>
+<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">rbac.authorization.k8s.io/v1beta1</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">traefik-ingress-controller</span>
+<span style="color:#f92672">roleRef</span>:
+  <span style="color:#f92672">apiGroup</span>: <span style="color:#ae81ff">rbac.authorization.k8s.io</span>
+  <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ClusterRole</span>
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">traefik-ingress-controller</span>
+<span style="color:#f92672">subjects</span>:
+- <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ServiceAccount</span>
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">traefik-ingress-controller</span>
+  <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">kube-system</span>
 ---
-# ------------------- ServiceAccount ------------------- #
+<span style="color:#75715e"># ------------------- ServiceAccount ------------------- #</span>
 ---
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: traefik-ingress-controller
-  namespace: kube-system
-</code></pre>
-
-<h2 id="ref">Ref</h2>
-
+<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ServiceAccount</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">traefik-ingress-controller</span>
+  <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">kube-system</span>
+</code></pre></div><h2 id="ref">Ref</h2>
 <p>Kubernetes集群的安全配置</p>
-
 <p><a href="https://tonybai.com/2016/11/25/the-security-settings-for-kubernetes-cluster/">https://tonybai.com/2016/11/25/the-security-settings-for-kubernetes-cluster/</a></p>
-
 <p>Kubernetes RBAC 详解
 <a href="https://blog.qikqiak.com/post/use-rbac-in-k8s/">https://blog.qikqiak.com/post/use-rbac-in-k8s/</a></p>
-
 <p>使用 RBAC 控制 kubectl 权限</p>
-
 <p><a href="https://mritd.me/2018/03/20/use-rbac-to-control-kubectl-permissions/">https://mritd.me/2018/03/20/use-rbac-to-control-kubectl-permissions/</a></p>
 </div>
         <div class="post_footer">

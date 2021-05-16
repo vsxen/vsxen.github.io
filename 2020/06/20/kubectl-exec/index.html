@@ -123,212 +123,189 @@
           <span class="date">2020.06.20</span>
         </div>
         <div class="post_content markdown"><p>在日常工作中kubectl exec 可以说是非常高频使用的，如果你想自己了解相关原理，不妨自己动手写一个。</p>
-
 <p>知识储备：</p>
-
 <ul>
-<li><p>websocket 阮一峰这篇《<a href="https://www.ruanyifeng.com/blog/2017/05/websocket.html">WebSocket 教程- 阮一峰的网络日志</a>》写的比较详进。</p></li>
-
-<li><p>kubectl exec 原理</p></li>
-</ul>
-
+<li>
+<p>websocket 阮一峰这篇《<a href="https://www.ruanyifeng.com/blog/2017/05/websocket.html">WebSocket 教程- 阮一峰的网络日志</a>》写的比较详进。</p>
+</li>
+<li>
+<p>kubectl exec 原理</p>
 <p><a href="https://itnext.io/how-it-works-kubectl-exec-e31325daa910">https://itnext.io/how-it-works-kubectl-exec-e31325daa910</a></p>
-
 <p><a href="https://erkanerol.github.io/post/how-kubectl-exec-works/">https://erkanerol.github.io/post/how-kubectl-exec-works/</a></p>
-
 <p>如果你英文阅读能还可以，这两篇文章从原理方面介绍了exec是如何工作的。</p>
-
+</li>
+</ul>
 <p>了解了以上知识之后，接下来我们就开始动手吧。</p>
-
-<p>首先来初始化一下项目，这里使用go mod作为依赖管理工具。k8s的client-go对机器版本是有要求的，所以在初始化的时候最好去官方那边找一下可用的版本。如果遇到<code>mod/k8s.io/client-go@v10.0.0+incompatible/kubernetes/scheme/register.go:22:2: unknown import path &quot;k8s.io/api/admissionregistration
-/v1alpha1&quot;: cannot find module providing package k8s.io/api/admissionregistration/v1alpha1</code></p>
-
+<p>首先来初始化一下项目，这里使用go mod作为依赖管理工具。k8s的client-go对机器版本是有要求的，所以在初始化的时候最好去官方那边找一下可用的版本。如果遇到<code>mod/k8s.io/client-go@v10.0.0+incompatible/kubernetes/scheme/register.go:22:2: unknown import path &quot;k8s.io/api/admissionregistration /v1alpha1&quot;: cannot find module providing package k8s.io/api/admissionregistration/v1alpha1</code></p>
 <p>这种报错，可以尝试强制指定版本，这个也是从kubebuilder那里学到的。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">go</span> <span style="color:#a6e22e">mod</span> <span style="color:#a6e22e">init</span> <span style="color:#a6e22e">k8sdemo</span>
 
-<pre><code class="language-go">go mod init k8sdemo
+<span style="color:#a6e22e">module</span> <span style="color:#a6e22e">k8sdemo</span>
 
-module k8sdemo
+<span style="color:#66d9ef">go</span> <span style="color:#ae81ff">1.13</span>
 
-go 1.13
-
-require (
-        github.com/gorilla/websocket v1.4.2
-        golang.org/x/crypto v0.0.0-20190820162420-60c769a6c586
-        k8s.io/api v0.17.2
-        k8s.io/apimachinery v0.17.2
-        k8s.io/client-go v0.17.2
+<span style="color:#a6e22e">require</span> (
+        <span style="color:#a6e22e">github</span>.<span style="color:#a6e22e">com</span><span style="color:#f92672">/</span><span style="color:#a6e22e">gorilla</span><span style="color:#f92672">/</span><span style="color:#a6e22e">websocket</span> <span style="color:#a6e22e">v1</span><span style="color:#ae81ff">.4.2</span>
+        <span style="color:#a6e22e">golang</span>.<span style="color:#a6e22e">org</span><span style="color:#f92672">/</span><span style="color:#a6e22e">x</span><span style="color:#f92672">/</span><span style="color:#a6e22e">crypto</span> <span style="color:#a6e22e">v0</span><span style="color:#ae81ff">.0.0</span><span style="color:#f92672">-</span><span style="color:#ae81ff">20190820162420</span><span style="color:#f92672">-</span><span style="color:#ae81ff">60</span><span style="color:#a6e22e">c769a6c586</span>
+        <span style="color:#a6e22e">k8s</span>.<span style="color:#a6e22e">io</span><span style="color:#f92672">/</span><span style="color:#a6e22e">api</span> <span style="color:#a6e22e">v0</span><span style="color:#ae81ff">.17.2</span>
+        <span style="color:#a6e22e">k8s</span>.<span style="color:#a6e22e">io</span><span style="color:#f92672">/</span><span style="color:#a6e22e">apimachinery</span> <span style="color:#a6e22e">v0</span><span style="color:#ae81ff">.17.2</span>
+        <span style="color:#a6e22e">k8s</span>.<span style="color:#a6e22e">io</span><span style="color:#f92672">/</span><span style="color:#a6e22e">client</span><span style="color:#f92672">-</span><span style="color:#66d9ef">go</span> <span style="color:#a6e22e">v0</span><span style="color:#ae81ff">.17.2</span>
 )
-</code></pre>
-
-<p>client-go的example目录也有相关对象的CURD示例，我们可以先从这里入手，先熟悉相关操作，可以看到首先从kuebconfig读取配置，然后初始化各种client的一个集合，最后创建了一个deployment实例。</p>
-
-<pre><code class="language-go">	config, err := clientcmd.BuildConfigFromFlags(&quot;&quot;, *kubeconfig)
-	if err != nil {
-		panic(err)
+</code></pre></div><p>client-go的example目录也有相关对象的CURD示例，我们可以先从这里入手，先熟悉相关操作，可以看到首先从kuebconfig读取配置，然后初始化各种client的一个集合，最后创建了一个deployment实例。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">	<span style="color:#a6e22e">config</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">clientcmd</span>.<span style="color:#a6e22e">BuildConfigFromFlags</span>(<span style="color:#e6db74">&#34;&#34;</span>, <span style="color:#f92672">*</span><span style="color:#a6e22e">kubeconfig</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
 	}
-	clientset, err := kubernetes.NewForConfig(config)
-	if err != nil {
-		panic(err)
+	<span style="color:#a6e22e">clientset</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">kubernetes</span>.<span style="color:#a6e22e">NewForConfig</span>(<span style="color:#a6e22e">config</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
 	}
 
-	deploymentsClient := clientset.AppsV1().Deployments(apiv1.NamespaceDefault)
-</code></pre>
+	<span style="color:#a6e22e">deploymentsClient</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">clientset</span>.<span style="color:#a6e22e">AppsV1</span>().<span style="color:#a6e22e">Deployments</span>(<span style="color:#a6e22e">apiv1</span>.<span style="color:#a6e22e">NamespaceDefault</span>)
+</code></pre></div><p>接下来我们看一下kubectl exec 究竟发送了什么请求，可以看到关键在于<code>exec?command=date&amp;container=nginx&amp;stdin=true&amp;stdout=true&amp;tty=true</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl  exec nginx-8486565b79-4hb5t -it -v <span style="color:#ae81ff">10</span> bash
 
-<p>接下来我们看一下kubectl exec 究竟发送了什么请求，可以看到关键在于<code>exec?command=date&amp;container=nginx&amp;stdin=true&amp;stdout=true&amp;tty=true</code></p>
+curl -k -v -XPOST  -H <span style="color:#e6db74">&#34;User-Agent: kubectl/v1.16.2 (linux/amd64) kubernetes/c97fe50&#34;</span> 
+-H <span style="color:#e6db74">&#34;X-Stream-Protocol-Version: v4.channel.k8s.io&#34;</span> 
+-H <span style="color:#e6db74">&#34;X-Stream-Protocol-Version: v3.channel.k8s.io&#34;</span> 
+-H <span style="color:#e6db74">&#34;X-Stream-Protocol-Version: v2.channel.k8s.io&#34;</span> 
+-H <span style="color:#e6db74">&#34;X-Stream-Protocol-Version: channel.k8s.io&#34;</span> 
+<span style="color:#e6db74">&#39;https://192.168.2.2:6443/api/v1/namespaces/default/pods/nginx-8486565b79-4hb5t/exec
+</span><span style="color:#e6db74">?command=date&amp;container=nginx&amp;stdin=true&amp;stdout=true&amp;tty=true&#39;</span>
+</code></pre></div><p>现在就开始做吧，从上面的URL可以看到exec 是属于pod的资源，</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#75715e">// 初始化pod所在的corev1资源组，发送请求
+</span><span style="color:#75715e">// PodExecOptions struct 包括Container stdout stdout  Command 等结构
+</span><span style="color:#75715e">// scheme.ParameterCodec 应该是pod 的GVK （GroupVersion &amp; Kind）之类的
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">req</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">clientset</span>.<span style="color:#a6e22e">CoreV1</span>().<span style="color:#a6e22e">RESTClient</span>().<span style="color:#a6e22e">Post</span>().
+		<span style="color:#a6e22e">Resource</span>(<span style="color:#e6db74">&#34;pods&#34;</span>).
+		<span style="color:#a6e22e">Name</span>(<span style="color:#e6db74">&#34;nginx-8486565b79-4hb5t&#34;</span>).
+		<span style="color:#a6e22e">Namespace</span>(<span style="color:#e6db74">&#34;default&#34;</span>).
+		<span style="color:#a6e22e">SubResource</span>(<span style="color:#e6db74">&#34;exec&#34;</span>).
+		<span style="color:#a6e22e">VersionedParams</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">corev1</span>.<span style="color:#a6e22e">PodExecOptions</span>{
+			<span style="color:#a6e22e">Command</span>: []<span style="color:#66d9ef">string</span>{<span style="color:#e6db74">&#34;bash&#34;</span>},
+			<span style="color:#a6e22e">Stdin</span>:   <span style="color:#66d9ef">true</span>,
+			<span style="color:#a6e22e">Stdout</span>:  <span style="color:#66d9ef">true</span>,
+			<span style="color:#a6e22e">Stderr</span>:  <span style="color:#66d9ef">true</span>,
+			<span style="color:#a6e22e">TTY</span>:     <span style="color:#66d9ef">false</span>,
+		}, <span style="color:#a6e22e">scheme</span>.<span style="color:#a6e22e">ParameterCodec</span>)
 
-<pre><code class="language-bash">kubectl  exec nginx-8486565b79-4hb5t -it -v 10 bash
+<span style="color:#75715e">// remotecommand 主要实现了http 转 SPDY 添加X-Stream-Protocol-Version相关header 并发送请求
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">exec</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">remotecommand</span>.<span style="color:#a6e22e">NewSPDYExecutor</span>(<span style="color:#a6e22e">config</span>, <span style="color:#e6db74">&#34;POST&#34;</span>, <span style="color:#a6e22e">req</span>.<span style="color:#a6e22e">URL</span>())
 
-curl -k -v -XPOST  -H &quot;User-Agent: kubectl/v1.16.2 (linux/amd64) kubernetes/c97fe50&quot; 
--H &quot;X-Stream-Protocol-Version: v4.channel.k8s.io&quot; 
--H &quot;X-Stream-Protocol-Version: v3.channel.k8s.io&quot; 
--H &quot;X-Stream-Protocol-Version: v2.channel.k8s.io&quot; 
--H &quot;X-Stream-Protocol-Version: channel.k8s.io&quot; 
-'https://192.168.2.2:6443/api/v1/namespaces/default/pods/nginx-8486565b79-4hb5t/exec
-?command=date&amp;container=nginx&amp;stdin=true&amp;stdout=true&amp;tty=true'
-</code></pre>
-
-<p>现在就开始做吧，从上面的URL可以看到exec 是属于pod的资源，</p>
-
-<pre><code class="language-go">// 初始化pod所在的corev1资源组，发送请求
-// PodExecOptions struct 包括Container stdout stdout  Command 等结构
-// scheme.ParameterCodec 应该是pod 的GVK （GroupVersion &amp; Kind）之类的
-req := clientset.CoreV1().RESTClient().Post().
-		Resource(&quot;pods&quot;).
-		Name(&quot;nginx-8486565b79-4hb5t&quot;).
-		Namespace(&quot;default&quot;).
-		SubResource(&quot;exec&quot;).
-		VersionedParams(&amp;corev1.PodExecOptions{
-			Command: []string{&quot;bash&quot;},
-			Stdin:   true,
-			Stdout:  true,
-			Stderr:  true,
-			TTY:     false,
-		}, scheme.ParameterCodec)
-
-// remotecommand 主要实现了http 转 SPDY 添加X-Stream-Protocol-Version相关header 并发送请求
-	exec, err := remotecommand.NewSPDYExecutor(config, &quot;POST&quot;, req.URL())
-
-// 建立链接之后从请求的sream中发送、读取数据
-	if err = exec.Stream(remotecommand.StreamOptions{
-		Stdin:  os.Stdin,
-		Stdout: os.Stdout,
-		Stderr: os.Stderr,
-		Tty:    false,
-	}); err != nil {
-		fmt.Print(err)
+<span style="color:#75715e">// 建立链接之后从请求的sream中发送、读取数据
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">exec</span>.<span style="color:#a6e22e">Stream</span>(<span style="color:#a6e22e">remotecommand</span>.<span style="color:#a6e22e">StreamOptions</span>{
+		<span style="color:#a6e22e">Stdin</span>:  <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Stdin</span>,
+		<span style="color:#a6e22e">Stdout</span>: <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Stdout</span>,
+		<span style="color:#a6e22e">Stderr</span>: <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Stderr</span>,
+		<span style="color:#a6e22e">Tty</span>:    <span style="color:#66d9ef">false</span>,
+	}); <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Print</span>(<span style="color:#a6e22e">err</span>)
 	}
-</code></pre>
-
-<p>以上只实现了单个命令，实际上我们更多的是使用-it进入交互式终端，这个应该怎么做呢？</p>
-
-<pre><code class="language-go">// 这里引入了ssh包 来做终端响应 golang.org/x/crypto/ssh/termina
-
-// 检查是不是终端
-	if !terminal.IsTerminal(0) || !terminal.IsTerminal(1) {
-		 fmt.Errorf(&quot;stdin/stdout should be terminal&quot;)
+</code></pre></div><p>以上只实现了单个命令，实际上我们更多的是使用-it进入交互式终端，这个应该怎么做呢？</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#75715e">// 这里引入了ssh包 来做终端响应 golang.org/x/crypto/ssh/termina
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">// 检查是不是终端
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">if</span> !<span style="color:#a6e22e">terminal</span>.<span style="color:#a6e22e">IsTerminal</span>(<span style="color:#ae81ff">0</span>) <span style="color:#f92672">||</span> !<span style="color:#a6e22e">terminal</span>.<span style="color:#a6e22e">IsTerminal</span>(<span style="color:#ae81ff">1</span>) {
+		 <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Errorf</span>(<span style="color:#e6db74">&#34;stdin/stdout should be terminal&#34;</span>)
 	}
-	// 这个应该是处理Ctrl + C 这种特殊键位
-	oldState, err := terminal.MakeRaw(0)
-	if err != nil {
-		 fmt.Println(err)
+	<span style="color:#75715e">// 这个应该是处理Ctrl + C 这种特殊键位
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">oldState</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">terminal</span>.<span style="color:#a6e22e">MakeRaw</span>(<span style="color:#ae81ff">0</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		 <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">err</span>)
 	}
-	defer terminal.Restore(0, oldState)
+	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">terminal</span>.<span style="color:#a6e22e">Restore</span>(<span style="color:#ae81ff">0</span>, <span style="color:#a6e22e">oldState</span>)
 
-	// 用IO读写替换 os stdout 
-	screen := struct {
-		io.Reader
-		io.Writer
-	}{os.Stdin, os.Stdout}
-</code></pre>
+	<span style="color:#75715e">// 用IO读写替换 os stdout 
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">screen</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">struct</span> {
+		<span style="color:#a6e22e">io</span>.<span style="color:#a6e22e">Reader</span>
+		<span style="color:#a6e22e">io</span>.<span style="color:#a6e22e">Writer</span>
+	}{<span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Stdin</span>, <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Stdout</span>}
+</code></pre></div><p>完整示例</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
 
-<p>完整示例</p>
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;flag&#34;</span>
+	<span style="color:#e6db74">&#34;fmt&#34;</span>
+	<span style="color:#e6db74">&#34;io&#34;</span>
+	<span style="color:#e6db74">&#34;os&#34;</span>
+	<span style="color:#e6db74">&#34;path/filepath&#34;</span>
 
-<pre><code class="language-go">package main
-
-import (
-	&quot;flag&quot;
-	&quot;fmt&quot;
-	&quot;io&quot;
-	&quot;os&quot;
-	&quot;path/filepath&quot;
-
-	&quot;golang.org/x/crypto/ssh/terminal&quot;
-	corev1 &quot;k8s.io/api/core/v1&quot;
-	&quot;k8s.io/client-go/kubernetes&quot;
-	&quot;k8s.io/client-go/kubernetes/scheme&quot;
-	&quot;k8s.io/client-go/tools/clientcmd&quot;
-	&quot;k8s.io/client-go/tools/remotecommand&quot;
-	&quot;k8s.io/client-go/util/homedir&quot;
+	<span style="color:#e6db74">&#34;golang.org/x/crypto/ssh/terminal&#34;</span>
+	<span style="color:#a6e22e">corev1</span> <span style="color:#e6db74">&#34;k8s.io/api/core/v1&#34;</span>
+	<span style="color:#e6db74">&#34;k8s.io/client-go/kubernetes&#34;</span>
+	<span style="color:#e6db74">&#34;k8s.io/client-go/kubernetes/scheme&#34;</span>
+	<span style="color:#e6db74">&#34;k8s.io/client-go/tools/clientcmd&#34;</span>
+	<span style="color:#e6db74">&#34;k8s.io/client-go/tools/remotecommand&#34;</span>
+	<span style="color:#e6db74">&#34;k8s.io/client-go/util/homedir&#34;</span>
 )
 
-func main() {
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
 
-	var kubeconfig *string
-	if home := homedir.HomeDir(); home != &quot;&quot; {
-		kubeconfig = flag.String(&quot;kubeconfig&quot;, filepath.Join(home, &quot;.kube&quot;, &quot;vm&quot;), &quot;(optional) absolute path to the kubeconfig file&quot;)
-	} else {
-		kubeconfig = flag.String(&quot;kubeconfig&quot;, &quot;&quot;, &quot;absolute path to the kubeconfig file&quot;)
+	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">kubeconfig</span> <span style="color:#f92672">*</span><span style="color:#66d9ef">string</span>
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">home</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">homedir</span>.<span style="color:#a6e22e">HomeDir</span>(); <span style="color:#a6e22e">home</span> <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#34;&#34;</span> {
+		<span style="color:#a6e22e">kubeconfig</span> = <span style="color:#a6e22e">flag</span>.<span style="color:#a6e22e">String</span>(<span style="color:#e6db74">&#34;kubeconfig&#34;</span>, <span style="color:#a6e22e">filepath</span>.<span style="color:#a6e22e">Join</span>(<span style="color:#a6e22e">home</span>, <span style="color:#e6db74">&#34;.kube&#34;</span>, <span style="color:#e6db74">&#34;vm&#34;</span>), <span style="color:#e6db74">&#34;(optional) absolute path to the kubeconfig file&#34;</span>)
+	} <span style="color:#66d9ef">else</span> {
+		<span style="color:#a6e22e">kubeconfig</span> = <span style="color:#a6e22e">flag</span>.<span style="color:#a6e22e">String</span>(<span style="color:#e6db74">&#34;kubeconfig&#34;</span>, <span style="color:#e6db74">&#34;&#34;</span>, <span style="color:#e6db74">&#34;absolute path to the kubeconfig file&#34;</span>)
 	}
-	flag.Parse()
+	<span style="color:#a6e22e">flag</span>.<span style="color:#a6e22e">Parse</span>()
 
-	config, err := clientcmd.BuildConfigFromFlags(&quot;&quot;, *kubeconfig)
-	if err != nil {
-		panic(err)
+	<span style="color:#a6e22e">config</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">clientcmd</span>.<span style="color:#a6e22e">BuildConfigFromFlags</span>(<span style="color:#e6db74">&#34;&#34;</span>, <span style="color:#f92672">*</span><span style="color:#a6e22e">kubeconfig</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
 	}
-	clientset, err := kubernetes.NewForConfig(config)
-	if err != nil {
-		panic(err)
+	<span style="color:#a6e22e">clientset</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">kubernetes</span>.<span style="color:#a6e22e">NewForConfig</span>(<span style="color:#a6e22e">config</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
 	}
 
-	// 初始化pod所在的corev1资源组，发送请求
-	// PodExecOptions struct 包括Container stdout stdout  Command 等结构
-	// scheme.ParameterCodec 应该是pod 的GVK （GroupVersion &amp; Kind）之类的
-	req := clientset.CoreV1().RESTClient().Post().
-		Resource(&quot;pods&quot;).
-		Name(&quot;nginx-8486565b79-4hb5t&quot;).
-		Namespace(&quot;default&quot;).
-		SubResource(&quot;exec&quot;).
-		VersionedParams(&amp;corev1.PodExecOptions{
-			Command: []string{&quot;bash&quot;},
-			Stdin:   true,
-			Stdout:  true,
-			Stderr:  true,
-			TTY:     false,
-		}, scheme.ParameterCodec)
+	<span style="color:#75715e">// 初始化pod所在的corev1资源组，发送请求
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">// PodExecOptions struct 包括Container stdout stdout  Command 等结构
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">// scheme.ParameterCodec 应该是pod 的GVK （GroupVersion &amp; Kind）之类的
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">req</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">clientset</span>.<span style="color:#a6e22e">CoreV1</span>().<span style="color:#a6e22e">RESTClient</span>().<span style="color:#a6e22e">Post</span>().
+		<span style="color:#a6e22e">Resource</span>(<span style="color:#e6db74">&#34;pods&#34;</span>).
+		<span style="color:#a6e22e">Name</span>(<span style="color:#e6db74">&#34;nginx-8486565b79-4hb5t&#34;</span>).
+		<span style="color:#a6e22e">Namespace</span>(<span style="color:#e6db74">&#34;default&#34;</span>).
+		<span style="color:#a6e22e">SubResource</span>(<span style="color:#e6db74">&#34;exec&#34;</span>).
+		<span style="color:#a6e22e">VersionedParams</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">corev1</span>.<span style="color:#a6e22e">PodExecOptions</span>{
+			<span style="color:#a6e22e">Command</span>: []<span style="color:#66d9ef">string</span>{<span style="color:#e6db74">&#34;bash&#34;</span>},
+			<span style="color:#a6e22e">Stdin</span>:   <span style="color:#66d9ef">true</span>,
+			<span style="color:#a6e22e">Stdout</span>:  <span style="color:#66d9ef">true</span>,
+			<span style="color:#a6e22e">Stderr</span>:  <span style="color:#66d9ef">true</span>,
+			<span style="color:#a6e22e">TTY</span>:     <span style="color:#66d9ef">false</span>,
+		}, <span style="color:#a6e22e">scheme</span>.<span style="color:#a6e22e">ParameterCodec</span>)
 
-	// remotecommand 主要实现了http 转 SPDY 添加X-Stream-Protocol-Version相关header 并发送请求
-	exec, err := remotecommand.NewSPDYExecutor(config, &quot;POST&quot;, req.URL())
+	<span style="color:#75715e">// remotecommand 主要实现了http 转 SPDY 添加X-Stream-Protocol-Version相关header 并发送请求
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">exec</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">remotecommand</span>.<span style="color:#a6e22e">NewSPDYExecutor</span>(<span style="color:#a6e22e">config</span>, <span style="color:#e6db74">&#34;POST&#34;</span>, <span style="color:#a6e22e">req</span>.<span style="color:#a6e22e">URL</span>())
 
-	// 检查是不是终端
-	if !terminal.IsTerminal(0) || !terminal.IsTerminal(1) {
-		 fmt.Errorf(&quot;stdin/stdout should be terminal&quot;)
+	<span style="color:#75715e">// 检查是不是终端
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">if</span> !<span style="color:#a6e22e">terminal</span>.<span style="color:#a6e22e">IsTerminal</span>(<span style="color:#ae81ff">0</span>) <span style="color:#f92672">||</span> !<span style="color:#a6e22e">terminal</span>.<span style="color:#a6e22e">IsTerminal</span>(<span style="color:#ae81ff">1</span>) {
+		 <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Errorf</span>(<span style="color:#e6db74">&#34;stdin/stdout should be terminal&#34;</span>)
 	}
-	// 这个应该是处理Ctrl + C 这种特殊键位
-	oldState, err := terminal.MakeRaw(0)
-	if err != nil {
-		 fmt.Println(err)
+	<span style="color:#75715e">// 这个应该是处理Ctrl + C 这种特殊键位
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">oldState</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">terminal</span>.<span style="color:#a6e22e">MakeRaw</span>(<span style="color:#ae81ff">0</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		 <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">err</span>)
 	}
-	defer terminal.Restore(0, oldState)
+	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">terminal</span>.<span style="color:#a6e22e">Restore</span>(<span style="color:#ae81ff">0</span>, <span style="color:#a6e22e">oldState</span>)
 
-	// 用IO读写替换 os stdout
-	screen := struct {
-		io.Reader
-		io.Writer
-	}{os.Stdin, os.Stdout}
+	<span style="color:#75715e">// 用IO读写替换 os stdout
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">screen</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">struct</span> {
+		<span style="color:#a6e22e">io</span>.<span style="color:#a6e22e">Reader</span>
+		<span style="color:#a6e22e">io</span>.<span style="color:#a6e22e">Writer</span>
+	}{<span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Stdin</span>, <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Stdout</span>}
 
-	// 建立链接之后从请求的sream中发送、读取数据
-	if err = exec.Stream(remotecommand.StreamOptions{
-		Stdin:  screen,
-		Stdout: screen,
-		Stderr: screen,
-		Tty:    false,
-	}); err != nil {
-		fmt.Print(err)
+	<span style="color:#75715e">// 建立链接之后从请求的sream中发送、读取数据
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">exec</span>.<span style="color:#a6e22e">Stream</span>(<span style="color:#a6e22e">remotecommand</span>.<span style="color:#a6e22e">StreamOptions</span>{
+		<span style="color:#a6e22e">Stdin</span>:  <span style="color:#a6e22e">screen</span>,
+		<span style="color:#a6e22e">Stdout</span>: <span style="color:#a6e22e">screen</span>,
+		<span style="color:#a6e22e">Stderr</span>: <span style="color:#a6e22e">screen</span>,
+		<span style="color:#a6e22e">Tty</span>:    <span style="color:#66d9ef">false</span>,
+	}); <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Print</span>(<span style="color:#a6e22e">err</span>)
 	}
 }
 
-</code></pre>
-</div>
+</code></pre></div></div>
         <div class="post_footer">
           
           <div class="meta">

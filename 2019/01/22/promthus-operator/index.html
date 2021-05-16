@@ -122,268 +122,208 @@
           <h2><a href='/2019/01/22/promthus-operator/'>k8s 集群监控 --  Prometheus Operator</a></h2>
           <span class="date">2019.01.22</span>
         </div>
-        <div class="post_content markdown">
-
-<p>对于任何系统来说，监控都是不可或缺的东西，系统现在是什么样，与一周前相比是否需要调整资源等都需要一个监控系统来参考。对于k8s来说常用的开源监控方案也就是下面几种：</p>
-
+        <div class="post_content markdown"><p>对于任何系统来说，监控都是不可或缺的东西，系统现在是什么样，与一周前相比是否需要调整资源等都需要一个监控系统来参考。对于k8s来说常用的开源监控方案也就是下面几种：</p>
 <ol>
 <li>heaspter+InfluxDB (已被弃用)</li>
 <li>Prometheus</li>
 <li>Open falcon</li>
 <li>Telegraf+InfluxDB</li>
 </ol>
-
-<h2 id="而且k8s所需的监控项目是比较多的-如下表-k8s-1-14-0">而且k8s所需的监控项目是比较多的，如下表：(k8s 1.14.0)</h2>
-
+<h2 id="而且k8s所需的监控项目是比较多的如下表k8s-1140">而且k8s所需的监控项目是比较多的，如下表：(k8s 1.14.0)</h2>
 <table>
 <thead>
 <tr>
-<th align="left">监控组件</th>
-<th align="left">metric PATＨ</th>
+<th style="text-align:left">监控组件</th>
+<th style="text-align:left">metric PATＨ</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
-<td align="left">API Server</td>
-<td align="left">6443/metrics</td>
+<td style="text-align:left">API Server</td>
+<td style="text-align:left">6443/metrics</td>
 </tr>
-
 <tr>
-<td align="left">Controller Ｍanager</td>
-<td align="left">10257/metrics</td>
+<td style="text-align:left">Controller Ｍanager</td>
+<td style="text-align:left">10257/metrics</td>
 </tr>
-
 <tr>
-<td align="left">kube Scheduler</td>
-<td align="left">10259/metrics</td>
+<td style="text-align:left">kube Scheduler</td>
+<td style="text-align:left">10259/metrics</td>
 </tr>
-
 <tr>
-<td align="left">Etcd</td>
-<td align="left">2379/metrics</td>
+<td style="text-align:left">Etcd</td>
+<td style="text-align:left">2379/metrics</td>
 </tr>
-
 <tr>
-<td align="left">Kubelet API</td>
-<td align="left">10252/metrics</td>
+<td style="text-align:left">Kubelet API</td>
+<td style="text-align:left">10252/metrics</td>
 </tr>
-
 <tr>
-<td align="left">Cadvisor</td>
-<td align="left">10250/metrics/cadvisor</td>
+<td style="text-align:left">Cadvisor</td>
+<td style="text-align:left">10250/metrics/cadvisor</td>
 </tr>
-
 <tr>
-<td align="left">Node</td>
-<td align="left">9100/metrics</td>
+<td style="text-align:left">Node</td>
+<td style="text-align:left">9100/metrics</td>
 </tr>
 </tbody>
 </table>
-
 <p>因此想要全面的监控集群状态，我个人感觉Prometheus是比较合适的，但是当你修改依次规则就需要重启一次。而且云原生中比较推荐使用声明式代替命令式，于是Prometheus Operator就诞生了，整体结构如下图：</p>
-
-<p><img src="../images/prom.jpg" alt="" /></p>
-
+<p><img src="../images/prom.jpg" alt=""></p>
 <h2 id="install">Install</h2>
-
 <p>个人推荐的方式是从repo中apply一堆yaml，如果你擅长helm，也是可以的。</p>
-
-<pre><code class="language-bash">git clone https://github.com/coreos/prometheus-operator
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">git clone https://github.com/coreos/prometheus-operator
 kubectl get crd
 NAME                                    CREATED AT
 alertmanagers.monitoring.coreos.com     2018-09-12T02:13:19Z
 prometheuses.monitoring.coreos.com      2018-09-12T02:13:19Z
 prometheusrules.monitoring.coreos.com   2018-09-12T02:13:20Z
 servicemonitors.monitoring.coreos.com   2018-09-12T02:13:20Z
-</code></pre>
-
-<p>这里创建了四个CRD，分别是alertmanager实例，prometheus实例，告警规则，以及prometheus监控对象。</p>
-
+</code></pre></div><p>这里创建了四个CRD，分别是alertmanager实例，prometheus实例，告警规则，以及prometheus监控对象。</p>
 <h2 id="metrics">Metrics</h2>
-
 <h3 id="api-server">API-Server</h3>
-
 <p>不需要做太多的设置，直接就可以采集到。</p>
-
-<pre><code class="language-bash">APIServer Self
-kubectl get --raw=&quot;/metrics&quot;
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">APIServer Self
+kubectl get --raw<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/metrics&#34;</span>
 APIServer Proxy
 - Kubelet 
-kubectl get --raw=&quot;/api/v1/nodes/${HOSTNAME}/proxy/metrics&quot;
+kubectl get --raw<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/api/v1/nodes/</span><span style="color:#e6db74">${</span>HOSTNAME<span style="color:#e6db74">}</span><span style="color:#e6db74">/proxy/metrics&#34;</span>
 - Cadvisor 
-kubectl get --raw=&quot;/api/v1/nodes/${HOSTNAME}/proxy/metrics/cadvisor&quot;
-</code></pre>
-
-<h3 id="controller-manager-scheduler">Controller Manager &amp;&amp; Scheduler</h3>
-
+kubectl get --raw<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/api/v1/nodes/</span><span style="color:#e6db74">${</span>HOSTNAME<span style="color:#e6db74">}</span><span style="color:#e6db74">/proxy/metrics/cadvisor&#34;</span>
+</code></pre></div><h3 id="controller-manager--scheduler">Controller Manager &amp;&amp; Scheduler</h3>
 <p>需要添加对于的Service，使Prometheus发现对应的metrics。如下所示</p>
-
-<pre><code class="language-yaml">cat &lt;&lt;EOF | kubectl create -f -
-apiVersion: v1
-kind: Service
-metadata:
-  namespace: kube-system
-  name: kube-controller-manager-prometheus
-  labels:
-    k8s-app: kube-controller-manager
-spec:
-  selector:
-    component: kube-controller-manager
-  type: ClusterIP
-  clusterIP: None
-  ports:
-  - name: http-metrics
-    port: 10252
-    targetPort: 10252
-    protocol: TCP
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">cat &lt;&lt;EOF | kubectl create -f -</span>
+<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Service</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">kube-system</span>
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">kube-controller-manager-prometheus</span>
+  <span style="color:#f92672">labels</span>:
+    <span style="color:#f92672">k8s-app</span>: <span style="color:#ae81ff">kube-controller-manager</span>
+<span style="color:#f92672">spec</span>:
+  <span style="color:#f92672">selector</span>:
+    <span style="color:#f92672">component</span>: <span style="color:#ae81ff">kube-controller-manager</span>
+  <span style="color:#f92672">type</span>: <span style="color:#ae81ff">ClusterIP</span>
+  <span style="color:#f92672">clusterIP</span>: <span style="color:#ae81ff">None</span>
+  <span style="color:#f92672">ports</span>:
+  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">http-metrics</span>
+    <span style="color:#f92672">port</span>: <span style="color:#ae81ff">10252</span>
+    <span style="color:#f92672">targetPort</span>: <span style="color:#ae81ff">10252</span>
+    <span style="color:#f92672">protocol</span>: <span style="color:#ae81ff">TCP</span>
 ---    
-apiVersion: v1
-kind: Service
-metadata:
-  namespace: kube-system
-  name: kube-scheduler-prometheus
-  labels:
-    k8s-app: kube-scheduler
-spec:
-  selector:
-    component: kube-scheduler
-  type: ClusterIP
-  clusterIP: None
-  ports:
-  - name: http-metrics
-    port: 10251
-    targetPort: 10251
-    protocol: TCP
-EOF
-</code></pre>
-
-<h3 id="etcd">Etcd</h3>
-
-<p>如果你的Etcd集群启用了TLS，那么监控会稍微有点麻烦，以下内容来自<a href="https://www.qikqiak.com/post/prometheus-operator-monitor-etcd/">https://www.qikqiak.com/post/prometheus-operator-monitor-etcd/</a></p>
-
+<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Service</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">kube-system</span>
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">kube-scheduler-prometheus</span>
+  <span style="color:#f92672">labels</span>:
+    <span style="color:#f92672">k8s-app</span>: <span style="color:#ae81ff">kube-scheduler</span>
+<span style="color:#f92672">spec</span>:
+  <span style="color:#f92672">selector</span>:
+    <span style="color:#f92672">component</span>: <span style="color:#ae81ff">kube-scheduler</span>
+  <span style="color:#f92672">type</span>: <span style="color:#ae81ff">ClusterIP</span>
+  <span style="color:#f92672">clusterIP</span>: <span style="color:#ae81ff">None</span>
+  <span style="color:#f92672">ports</span>:
+  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">http-metrics</span>
+    <span style="color:#f92672">port</span>: <span style="color:#ae81ff">10251</span>
+    <span style="color:#f92672">targetPort</span>: <span style="color:#ae81ff">10251</span>
+    <span style="color:#f92672">protocol</span>: <span style="color:#ae81ff">TCP</span>
+<span style="color:#ae81ff">EOF</span>
+</code></pre></div><h3 id="etcd">Etcd</h3>
+<p>如果你的Etcd集群启用了TLS，那么监控会稍微有点麻烦，以下内容来自https://www.qikqiak.com/post/prometheus-operator-monitor-etcd/</p>
 <p>当你成功抓到Etcd的Metrics之后可以到图Grafana ID为3070的面板。</p>
-
-<pre><code class="language-bash"># 创建包含Etcd证书的secret
-kubectl -n monitoring create secret generic etcd-certs --from-file=/etc/kubernetes/pki/etcd/healthcheck-client.crt --from-file=/etc/kubernetes/pki/etcd/healthcheck-client.key --from-file=/etc/kubernetes/pki/etcd/ca.crt
-# 设置证书挂载到Prometheus中
-  replicas: 1
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># 创建包含Etcd证书的secret</span>
+kubectl -n monitoring create secret generic etcd-certs --from-file<span style="color:#f92672">=</span>/etc/kubernetes/pki/etcd/healthcheck-client.crt --from-file<span style="color:#f92672">=</span>/etc/kubernetes/pki/etcd/healthcheck-client.key --from-file<span style="color:#f92672">=</span>/etc/kubernetes/pki/etcd/ca.crt
+<span style="color:#75715e"># 设置证书挂载到Prometheus中</span>
+  replicas: <span style="color:#ae81ff">1</span>
   secrets:
   - etcd-certs
-# 创建对应的 ServiceMonitor
-cat &lt;&lt;EOF | kubectl create -f -
-apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
-metadata:
-  name: etcd-k8s
-  namespace: monitoring
-  labels:
-    k8s-app: etcd-k8s
-spec:
-  jobLabel: k8s-app
-  endpoints:
-  - port: port
-    interval: 30s
-    scheme: https
-    tlsConfig:
-      caFile: /etc/prometheus/secrets/etcd-certs/ca.crt
-      certFile: /etc/prometheus/secrets/etcd-certs/healthcheck-client.crt
-      keyFile: /etc/prometheus/secrets/etcd-certs/healthcheck-client.key
-      insecureSkipVerify: true
-  selector:
-    matchLabels:
-      k8s-app: etcd
-  namespaceSelector:
-    matchNames:
-    - kube-system
-EOF
-#创建Etcd的 Service
-cat &lt;&lt;EOF | kubectl create -f -    
-apiVersion: v1
-kind: Service
-metadata:
-  name: etcd-k8s
-  namespace: kube-system
-  labels:
-    k8s-app: etcd
-spec:
-  selector:
-    component: etcd
-  type: ClusterIP
-  clusterIP: None
-  ports:
-  - name: port
-    port: 2379
-    protocol: TCP
-EOF    
-</code></pre>
-
-<h3 id="kubelet">Kubelet</h3>
-
+<span style="color:#75715e"># 创建对应的 ServiceMonitor</span>
+cat <span style="color:#e6db74">&lt;&lt;EOF | kubectl create -f -
+</span><span style="color:#e6db74">apiVersion: monitoring.coreos.com/v1
+</span><span style="color:#e6db74">kind: ServiceMonitor
+</span><span style="color:#e6db74">metadata:
+</span><span style="color:#e6db74">  name: etcd-k8s
+</span><span style="color:#e6db74">  namespace: monitoring
+</span><span style="color:#e6db74">  labels:
+</span><span style="color:#e6db74">    k8s-app: etcd-k8s
+</span><span style="color:#e6db74">spec:
+</span><span style="color:#e6db74">  jobLabel: k8s-app
+</span><span style="color:#e6db74">  endpoints:
+</span><span style="color:#e6db74">  - port: port
+</span><span style="color:#e6db74">    interval: 30s
+</span><span style="color:#e6db74">    scheme: https
+</span><span style="color:#e6db74">    tlsConfig:
+</span><span style="color:#e6db74">      caFile: /etc/prometheus/secrets/etcd-certs/ca.crt
+</span><span style="color:#e6db74">      certFile: /etc/prometheus/secrets/etcd-certs/healthcheck-client.crt
+</span><span style="color:#e6db74">      keyFile: /etc/prometheus/secrets/etcd-certs/healthcheck-client.key
+</span><span style="color:#e6db74">      insecureSkipVerify: true
+</span><span style="color:#e6db74">  selector:
+</span><span style="color:#e6db74">    matchLabels:
+</span><span style="color:#e6db74">      k8s-app: etcd
+</span><span style="color:#e6db74">  namespaceSelector:
+</span><span style="color:#e6db74">    matchNames:
+</span><span style="color:#e6db74">    - kube-system
+</span><span style="color:#e6db74">EOF</span>
+<span style="color:#75715e">#创建Etcd的 Service</span>
+cat <span style="color:#e6db74">&lt;&lt;EOF | kubectl create -f -    
+</span><span style="color:#e6db74">apiVersion: v1
+</span><span style="color:#e6db74">kind: Service
+</span><span style="color:#e6db74">metadata:
+</span><span style="color:#e6db74">  name: etcd-k8s
+</span><span style="color:#e6db74">  namespace: kube-system
+</span><span style="color:#e6db74">  labels:
+</span><span style="color:#e6db74">    k8s-app: etcd
+</span><span style="color:#e6db74">spec:
+</span><span style="color:#e6db74">  selector:
+</span><span style="color:#e6db74">    component: etcd
+</span><span style="color:#e6db74">  type: ClusterIP
+</span><span style="color:#e6db74">  clusterIP: None
+</span><span style="color:#e6db74">  ports:
+</span><span style="color:#e6db74">  - name: port
+</span><span style="color:#e6db74">    port: 2379
+</span><span style="color:#e6db74">    protocol: TCP
+</span><span style="color:#e6db74">EOF</span>    
+</code></pre></div><h3 id="kubelet">Kubelet</h3>
 <p>分为Kubelet本身和cadvisor两个Metrics，</p>
-
-<pre><code class="language-bash"># Kubelet
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># Kubelet</span>
 curl --cacert /var/lib/kubelet/pki/kubelet.crt --cert /etc/kubernetes/pki/apiserver-kubelet-client.crt --key /etc/kubernetes/pki/apiserver-kubelet-client.key  https://127.0.0.1:10250/metrics
-# Cadvisor
+<span style="color:#75715e"># Cadvisor</span>
 curl --cacert /var/lib/kubelet/pki/kubelet.crt --cert /etc/kubernetes/pki/apiserver-kubelet-client.crt --key /etc/kubernetes/pki/apiserver-kubelet-client.key  https://127.0.0.1:10250/metrics/cadvisor
-# Summary
+<span style="color:#75715e"># Summary</span>
 curl --cacert /var/lib/kubelet/pki/kubelet.crt --cert /etc/kubernetes/pki/apiserver-kubelet-client.crt --key /etc/kubernetes/pki/apiserver-kubelet-client.y  https://ubuntu-bionic:10250/stats/summary
-</code></pre>
-
-<p>对于前者主要是一个pod，CNI，volume等等，后者则是pod内的CPU，Memory，网络流量等。</p>
-
-<pre><code class="language-bash"># 查询全部容器的CPU
-sum by (container_name) (rate(container_cpu_usage_seconds_total{}[1m]))
-# 查询全部容器的Memory
-sum by (container_name) (rate(container_memory_usage_bytes{}[1m]))
-# 查询全部容器收到的bytes
-sort_desc(sum by (pod_name) (rate(container_network_receive_bytes_total[1m])
-</code></pre>
-
-<h3 id="kube-state-metrics">kube state metrics</h3>
-
+</code></pre></div><p>对于前者主要是一个pod，CNI，volume等等，后者则是pod内的CPU，Memory，网络流量等。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># 查询全部容器的CPU</span>
+sum by <span style="color:#f92672">(</span>container_name<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>rate<span style="color:#f92672">(</span>container_cpu_usage_seconds_total<span style="color:#f92672">{}[</span>1m<span style="color:#f92672">]))</span>
+<span style="color:#75715e"># 查询全部容器的Memory</span>
+sum by <span style="color:#f92672">(</span>container_name<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>rate<span style="color:#f92672">(</span>container_memory_usage_bytes<span style="color:#f92672">{}[</span>1m<span style="color:#f92672">]))</span>
+<span style="color:#75715e"># 查询全部容器收到的bytes</span>
+sort_desc<span style="color:#f92672">(</span>sum by <span style="color:#f92672">(</span>pod_name<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>rate<span style="color:#f92672">(</span>container_network_receive_bytes_total<span style="color:#f92672">[</span>1m<span style="color:#f92672">])</span>
+</code></pre></div><h3 id="kube-state-metrics">kube state metrics</h3>
 <p>作为监控设置的补充，kube-state-metrics它会轮询Kubernetes API并将有关你的Kubernetes结构化特征信息转换为metrics信息。以下是kube-state-metrics会回答的一些问题：</p>
-
 <ul>
 <li>我调度了多少个replicas？现在可用的有几个？</li>
 <li>多少个Pod是running/stopped/terminated状态？</li>
 <li>Pod重启了多少次？</li>
 </ul>
-
 <p>一般来说，该模型将采集Kubernetes事件并将其转换为metrics信息。需要Kubernetes 1.2+版本，不过，需要提醒的是metrics名称和标签是不稳定的，可能会改变。</p>
-
 <p>6615 Kubernetes: DaemonSet (Prometheus)</p>
-
 <p>5303 Kubernetes Deployment (Prometheus)</p>
-
 <p>741  Kubernetes Deployment metrics</p>
-
 <h3 id="coredns">CoreDNS</h3>
-
 <p>这个在v0.29的版本中，安装完成以后就可以自动抓取到，同时导入5926 这个Dashboard模版即可观察到Coredns的监控信息。</p>
-
 <h3 id="node-exporder">Node Exporder</h3>
-
 <p>对于节点级别的监控，使用的 DaemonSet 启动的Node Exporder，也是比较简单的，之后导入ID 1860 的Grafana即可看到Node Exporter Full监控图。</p>
-
-<pre><code class="language-bash"># 预测磁盘将于24H内空间不足
-predict_linear(node:node_filesystem_avail:[6h], 3600 * 24)  
-</code></pre>
-
-<h2 id="ref">Ref</h2>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># 预测磁盘将于24H内空间不足</span>
+predict_linear<span style="color:#f92672">(</span>node:node_filesystem_avail:<span style="color:#f92672">[</span>6h<span style="color:#f92672">]</span>, <span style="color:#ae81ff">3600</span> * 24<span style="color:#f92672">)</span>  
+</code></pre></div><h2 id="ref">Ref</h2>
 <p>Kubernetes监控系列（一）：Kubernetes监控开源工具基本介绍以及如何使用Sysdig进行监控</p>
-
 <p><a href="http://dockone.io/article/4052">http://dockone.io/article/4052</a>
 Prometheus监控实践：Kubernetes集群监控</p>
-
 <p><a href="https://blog.frognew.com/2017/12/using-prometheus-to-monitor-kubernetes.html">https://blog.frognew.com/2017/12/using-prometheus-to-monitor-kubernetes.html</a>
 Get Kubernetes Cluster Metrics with Prometheus in 5 Minutes</p>
-
 <p><a href="https://akomljen.com/get-kubernetes-cluster-metrics-with-prometheus-in-5-minutes/">https://akomljen.com/get-kubernetes-cluster-metrics-with-prometheus-in-5-minutes/</a></p>
-
-<p>k8s与监控--解读prometheus监控kubernetes的配置文件</p>
-
+<p>k8s与监控&ndash;解读prometheus监控kubernetes的配置文件</p>
 <p><a href="https://segmentfault.com/a/1190000013230914">https://segmentfault.com/a/1190000013230914</a></p>
 </div>
         <div class="post_footer">

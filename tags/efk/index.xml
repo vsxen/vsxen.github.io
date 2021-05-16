@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>efk on Code Life</title>
@@ -6,11 +6,7 @@
     <description>Recent content in efk on Code Life</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Tue, 25 Sep 2018 12:31:20 +0800</lastBuildDate>
-    
-	<atom:link href="https://vsxen.github.io/tags/efk/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Tue, 25 Sep 2018 12:31:20 +0800</lastBuildDate><atom:link href="https://vsxen.github.io/tags/efk/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>fluent 云原生的下的日志收集工具</title>
       <link>https://vsxen.github.io/2018/09/25/fluentd/</link>

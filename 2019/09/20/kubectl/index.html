@@ -10,7 +10,7 @@
         content="vsxen"/>
 
   
-  <meta name="description" content="查询类 # custom-columns # 比如 查看role=sre 标签pod镜像，当然也可以用go的自定义输出 kubectl -n kube-system get po -l tier=control-plane -o custom-columns=NAME:.metadata.name,image:.spec.containers[0].image NAME image etcd-ubuntu-bionic gcr.azk8s.cn/google_containers/etcd:3.3.15-0 kube-apiserver-ubuntu-bionic gcr.azk8s.cn/google_containers/kube-apiserver:v1.16.2 kube-controller-manager-ubuntu-bionic gcr.azk8s.cn/google_containers/kube-controller-manager:v1.16.2 kube-scheduler-ubuntu-bionic gcr.azk8s.cn/google_containers/kube-scheduler:v1.16.2 # go-template # range 嵌套 # 列出所有容器使用的镜像名 kubectl get pods -o go-template --template=&#39;{{range .items}}{{range .spec.containers}}{{printf &amp;quot;%s\n&amp;quot; .image}}{{end}}{{end}}&#39; istio/examples-bookinfo-details-v1:1.5.0 istio/examples-bookinfo-productpage-v1:1.5.0 istio/examples-bookinfo-ratings-v1:1.5.0 # 条件判断 # 列出所"/>
+  <meta name="description" content="查询类 # custom-columns # 比如 查看role=sre 标签pod镜像，当然也可以用go的自定义输出 kubectl -n kube-system get po -l tier=control-plane -o custom-columns=NAME:.metadata.name,image:.spec.containers[0].image NAME image etcd-ubuntu-bionic gcr.azk8s.cn/google_containers/etcd:3.3.15-0 kube-apiserver-ubuntu-bionic gcr.azk8s.cn/google_containers/kube-apiserver:v1.16.2 kube-controller-manager-ubuntu-bionic gcr.azk8s.cn/google_containers/kube-controller-manager:v1.16.2 kube-scheduler-ubuntu-bionic gcr.azk8s.cn/google_containers/kube-scheduler:v1.16.2 # go-template # range 嵌套 # 列出所有容器使用的镜像名 kubectl get pods -o go-template --template=&amp;#39;{{range .items}}{{range .spec.containers}}{{printf &amp;#34;%s\n&amp;#34; .image}}{{end}}{{end}}&amp;#39; istio/examples-bookinfo-details-v1:1.5.0 istio/examples-bookinfo-productpage-v1:1.5.0 istio/examples-bookinfo-ratings-v1:1.5.0 # 条件判断 # 列出所"/>
   
 
   
@@ -122,38 +122,35 @@
           <h2><a href='/2019/09/20/kubectl/'>kubectl 常用快捷键</a></h2>
           <span class="date">2019.09.20</span>
         </div>
-        <div class="post_content markdown">
+        <div class="post_content markdown"><h3 id="查询类">查询类</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># custom-columns</span>
 
-<h3 id="查询类">查询类</h3>
-
-<pre><code class="language-bash"># custom-columns
-
-# 比如 查看role=sre 标签pod镜像，当然也可以用go的自定义输出
-kubectl  -n kube-system get po -l tier=control-plane -o custom-columns=NAME:.metadata.name,image:.spec.containers[0].image
+<span style="color:#75715e"># 比如 查看role=sre 标签pod镜像，当然也可以用go的自定义输出</span>
+kubectl  -n kube-system get po -l tier<span style="color:#f92672">=</span>control-plane -o custom-columns<span style="color:#f92672">=</span>NAME:.metadata.name,image:.spec.containers<span style="color:#f92672">[</span>0<span style="color:#f92672">]</span>.image
 NAME                                    image
 etcd-ubuntu-bionic                      gcr.azk8s.cn/google_containers/etcd:3.3.15-0
 kube-apiserver-ubuntu-bionic            gcr.azk8s.cn/google_containers/kube-apiserver:v1.16.2
 kube-controller-manager-ubuntu-bionic   gcr.azk8s.cn/google_containers/kube-controller-manager:v1.16.2
 kube-scheduler-ubuntu-bionic            gcr.azk8s.cn/google_containers/kube-scheduler:v1.16.2
 
-# go-template 
+<span style="color:#75715e"># go-template </span>
 
-# range 嵌套
-# 列出所有容器使用的镜像名
-kubectl get pods -o go-template --template='{{range .items}}{{range .spec.containers}}{{printf &quot;%s\n&quot; .image}}{{end}}{{end}}'
+<span style="color:#75715e"># range 嵌套</span>
+<span style="color:#75715e"># 列出所有容器使用的镜像名</span>
+kubectl get pods -o go-template --template<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;{{range .items}}{{range .spec.containers}}{{printf &#34;%s\n&#34; .image}}{{end}}{{end}}&#39;</span>
 istio/examples-bookinfo-details-v1:1.5.0
 istio/examples-bookinfo-productpage-v1:1.5.0
 istio/examples-bookinfo-ratings-v1:1.5.0
 
-# 条件判断
-# 列出所有不可调度节点的节点名与 IP
-kubectl get no -o go-template='{{range .items}}{{if .spec.unschedulable}}{{.metadata.name}} {{.spec.externalID}}{{&quot;\n&quot;}}{{end}}{{end}}'
+<span style="color:#75715e"># 条件判断</span>
+<span style="color:#75715e"># 列出所有不可调度节点的节点名与 IP</span>
+kubectl get no -o go-template<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;{{range .items}}{{if .spec.unschedulable}}{{.metadata.name}} {{.spec.externalID}}{{&#34;\n&#34;}}{{end}}{{end}}&#39;</span>
 
 
-# jsonpath
+<span style="color:#75715e"># jsonpath</span>
 
-# 查询pod的启动时间
-kubectl -n kube-system get pods -o=jsonpath='{range .items[*]}{.metadata.name}{&quot;\t&quot;}{.status.startTime}{&quot;\n&quot;}{end}'
+<span style="color:#75715e"># 查询pod的启动时间</span>
+kubectl -n kube-system get pods -o<span style="color:#f92672">=</span>jsonpath<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;{range .items[*]}{.metadata.name}{&#34;\t&#34;}{.status.startTime}{&#34;\n&#34;}{end}&#39;</span>
 coredns-667f964f9b-fs6kl	2019-12-25T02:54:20Z
 coredns-667f964f9b-rlsr5	2019-12-25T02:54:20Z
 etcd-ubuntu-bionic	2019-12-25T02:53:19Z
@@ -162,110 +159,95 @@ kube-controller-manager-ubuntu-bionic	2019-12-28T06:25:43Z
 kube-flannel-ds-amd64-jk586	2019-12-25T02:54:09Z
 kube-proxy-vsjmv	2019-12-25T02:53:48Z
 kube-scheduler-ubuntu-bionic	2019-12-28T06:25:43Z
-</code></pre>
-
-<p>jsonpath查询表</p>
-
+</code></pre></div><p>jsonpath查询表</p>
 <table>
 <thead>
 <tr>
-<th align="left">Function</th>
-<th align="left">Description</th>
-<th align="left">Example</th>
-<th align="left">Result</th>
+<th style="text-align:left">Function</th>
+<th style="text-align:left">Description</th>
+<th style="text-align:left">Example</th>
+<th style="text-align:left">Result</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
-<td align="left"><code>text</code></td>
-<td align="left">the plain text</td>
-<td align="left"><code>kind is {.kind}</code></td>
-<td align="left"><code>kind is List</code></td>
+<td style="text-align:left"><code>text</code></td>
+<td style="text-align:left">the plain text</td>
+<td style="text-align:left"><code>kind is {.kind}</code></td>
+<td style="text-align:left"><code>kind is List</code></td>
 </tr>
-
 <tr>
-<td align="left"><code>@</code></td>
-<td align="left">the current object</td>
-<td align="left"><code>{@}</code></td>
-<td align="left">the same as input</td>
+<td style="text-align:left"><code>@</code></td>
+<td style="text-align:left">the current object</td>
+<td style="text-align:left"><code>{@}</code></td>
+<td style="text-align:left">the same as input</td>
 </tr>
-
 <tr>
-<td align="left"><code>.</code> or <code>[]</code></td>
-<td align="left">child operator</td>
-<td align="left"><code>{.kind}</code>, <code>{['kind']}</code> or <code>{['name\.type']}</code></td>
-<td align="left"><code>List</code></td>
+<td style="text-align:left"><code>.</code> or <code>[]</code></td>
+<td style="text-align:left">child operator</td>
+<td style="text-align:left"><code>{.kind}</code>, <code>{['kind']}</code> or <code>{['name\.type']}</code></td>
+<td style="text-align:left"><code>List</code></td>
 </tr>
-
 <tr>
-<td align="left"><code>..</code></td>
-<td align="left">recursive descent</td>
-<td align="left"><code>{..name}</code></td>
-<td align="left"><code>127.0.0.1 127.0.0.2 myself e2e</code></td>
+<td style="text-align:left"><code>..</code></td>
+<td style="text-align:left">recursive descent</td>
+<td style="text-align:left"><code>{..name}</code></td>
+<td style="text-align:left"><code>127.0.0.1 127.0.0.2 myself e2e</code></td>
 </tr>
-
 <tr>
-<td align="left"><code>*</code></td>
-<td align="left">wildcard. Get all objects</td>
-<td align="left"><code>{.items[*].metadata.name}</code></td>
-<td align="left"><code>[127.0.0.1 127.0.0.2]</code></td>
+<td style="text-align:left"><code>*</code></td>
+<td style="text-align:left">wildcard. Get all objects</td>
+<td style="text-align:left"><code>{.items[*].metadata.name}</code></td>
+<td style="text-align:left"><code>[127.0.0.1 127.0.0.2]</code></td>
 </tr>
-
 <tr>
-<td align="left"><code>[start🔚step]</code></td>
-<td align="left">subscript operator</td>
-<td align="left"><code>{.users[0].name}</code></td>
-<td align="left"><code>myself</code></td>
+<td style="text-align:left"><code>[start🔚step]</code></td>
+<td style="text-align:left">subscript operator</td>
+<td style="text-align:left"><code>{.users[0].name}</code></td>
+<td style="text-align:left"><code>myself</code></td>
 </tr>
-
 <tr>
-<td align="left"><code>[,]</code></td>
-<td align="left">union operator</td>
-<td align="left"><code>{.items[*]['metadata.name', 'status.capacity']}</code></td>
-<td align="left"><code>127.0.0.1 127.0.0.2 map[cpu:4] map[cpu:8]</code></td>
+<td style="text-align:left"><code>[,]</code></td>
+<td style="text-align:left">union operator</td>
+<td style="text-align:left"><code>{.items[*]['metadata.name', 'status.capacity']}</code></td>
+<td style="text-align:left"><code>127.0.0.1 127.0.0.2 map[cpu:4] map[cpu:8]</code></td>
 </tr>
-
 <tr>
-<td align="left"><code>?()</code></td>
-<td align="left">filter</td>
-<td align="left"><code>{.users[?(@.name==&quot;e2e&quot;)].user.password}</code></td>
-<td align="left"><code>secret</code></td>
+<td style="text-align:left"><code>?()</code></td>
+<td style="text-align:left">filter</td>
+<td style="text-align:left"><code>{.users[?(@.name==&quot;e2e&quot;)].user.password}</code></td>
+<td style="text-align:left"><code>secret</code></td>
 </tr>
-
 <tr>
-<td align="left"><code>range</code>, <code>end</code></td>
-<td align="left">iterate list</td>
-<td align="left"><code>{range .items[*]}[{.metadata.name}, {.status.capacity}] {end}</code></td>
-<td align="left"><code>[127.0.0.1, map[cpu:4]] [127.0.0.2, map[cpu:8]]</code></td>
+<td style="text-align:left"><code>range</code>, <code>end</code></td>
+<td style="text-align:left">iterate list</td>
+<td style="text-align:left"><code>{range .items[*]}[{.metadata.name}, {.status.capacity}] {end}</code></td>
+<td style="text-align:left"><code>[127.0.0.1, map[cpu:4]] [127.0.0.2, map[cpu:8]]</code></td>
 </tr>
-
 <tr>
-<td align="left"><code>''</code></td>
-<td align="left">quote interpreted string</td>
-<td align="left"><code>{range .items[*]}{.metadata.name}{'\t'}{end}</code></td>
-<td align="left"><code>127.0.0.1 127.0.0.2</code></td>
+<td style="text-align:left"><code>''</code></td>
+<td style="text-align:left">quote interpreted string</td>
+<td style="text-align:left"><code>{range .items[*]}{.metadata.name}{'\t'}{end}</code></td>
+<td style="text-align:left"><code>127.0.0.1 127.0.0.2</code></td>
 </tr>
 </tbody>
 </table>
-
 <h3 id="补丁类">补丁类</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e">#Patch 把SVC改为NodePort类型</span>
+kubectl -n istio-system patch svc $SVC  -p  <span style="color:#e6db74">&#39;{&#34;spec&#34;:{&#34;type&#34;:&#34;NodePort&#34;}}&#39;</span>
 
-<pre><code class="language-bash">#Patch 把SVC改为NodePort类型
-kubectl -n istio-system patch svc $SVC  -p  '{&quot;spec&quot;:{&quot;type&quot;:&quot;NodePort&quot;}}'
 
-
-    command: ['sh', '-c', 'echo Hello Kubernetes! &amp;&amp; sleep 3600']
+    command: <span style="color:#f92672">[</span><span style="color:#e6db74">&#39;sh&#39;</span>, <span style="color:#e6db74">&#39;-c&#39;</span>, <span style="color:#e6db74">&#39;echo Hello Kubernetes! &amp;&amp; sleep 3600&#39;</span><span style="color:#f92672">]</span>
     args:
     - /bin/sh
     - -c
     - touch /tmp/healthy; sleep 30; rm -rf /tmp/healthy; sleep 60;
 
-# 为Pod template 加上新label 打patch
-kubectl patch deployment simple --type=json -p='[{&quot;op&quot;: &quot;add&quot;, &quot;path&quot;: &quot;/spec/template/metadata/labels/this&quot;, &quot;value&quot;: &quot;that&quot;}]'
-kubectl patch deployment myDeployment --patch '{&quot;spec&quot;: {&quot;template&quot;: {&quot;metadata&quot;: {&quot;labels&quot;: {&quot;myLabelKey&quot;: &quot;myLabelValue&quot;}}}}}'
+<span style="color:#75715e"># 为Pod template 加上新label 打patch</span>
+kubectl patch deployment simple --type<span style="color:#f92672">=</span>json -p<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;[{&#34;op&#34;: &#34;add&#34;, &#34;path&#34;: &#34;/spec/template/metadata/labels/this&#34;, &#34;value&#34;: &#34;that&#34;}]&#39;</span>
+kubectl patch deployment myDeployment --patch <span style="color:#e6db74">&#39;{&#34;spec&#34;: {&#34;template&#34;: {&#34;metadata&#34;: {&#34;labels&#34;: {&#34;myLabelKey&#34;: &#34;myLabelValue&#34;}}}}}&#39;</span>
 
-# 打pacth 使用文件
+<span style="color:#75715e"># 打pacth 使用文件</span>
 spec:
   template:
     spec:
@@ -276,58 +258,54 @@ spec:
         - name: key
           value: value
 
-# 修改po的container的镜像
-kubectl patch deployment patch-demo --patch '{&quot;spec&quot;: {&quot;template&quot;: {&quot;spec&quot;: {&quot;containers&quot;: [{&quot;name&quot;: &quot;patch-demo-ctr-2&quot;,&quot;image&quot;: &quot;redis&quot;}]}}}}'
+<span style="color:#75715e"># 修改po的container的镜像</span>
+kubectl patch deployment patch-demo --patch <span style="color:#e6db74">&#39;{&#34;spec&#34;: {&#34;template&#34;: {&#34;spec&#34;: {&#34;containers&#34;: [{&#34;name&#34;: &#34;patch-demo-ctr-2&#34;,&#34;image&#34;: &#34;redis&#34;}]}}}}&#39;</span>
 
-# 使 node 不可调度 当然cordon 也是可以的 
-kubectl patch node ${NAME}  -p &quot;{\&quot;spec\&quot;:{\&quot;unschedulable\&quot;:false}}&quot;
+<span style="color:#75715e"># 使 node 不可调度 当然cordon 也是可以的 </span>
+kubectl patch node <span style="color:#e6db74">${</span>NAME<span style="color:#e6db74">}</span>  -p <span style="color:#e6db74">&#34;{\&#34;spec\&#34;:{\&#34;unschedulable\&#34;:false}}&#34;</span>
 
-# 官方的示例
+<span style="color:#75715e"># 官方的示例</span>
 
 Examples:
-  # Partially update a node using a strategic merge patch. Specify the patch as JSON.
-  kubectl patch node k8s-node-1 -p '{&quot;spec&quot;:{&quot;unschedulable&quot;:true}}'
+  <span style="color:#75715e"># Partially update a node using a strategic merge patch. Specify the patch as JSON.</span>
+  kubectl patch node k8s-node-1 -p <span style="color:#e6db74">&#39;{&#34;spec&#34;:{&#34;unschedulable&#34;:true}}&#39;</span>
 
-  # Partially update a node using a strategic merge patch. Specify the patch as YAML.
-  kubectl patch node k8s-node-1 -p $'spec:\n unschedulable: true'
+  <span style="color:#75715e"># Partially update a node using a strategic merge patch. Specify the patch as YAML.</span>
+  kubectl patch node k8s-node-1 -p <span style="color:#e6db74">$&#39;spec:\n unschedulable: true&#39;</span>
 
-  # Partially update a node identified by the type and name specified in &quot;node.json&quot; using strategic merge patch.
-  kubectl patch -f node.json -p '{&quot;spec&quot;:{&quot;unschedulable&quot;:true}}'
+  <span style="color:#75715e"># Partially update a node identified by the type and name specified in &#34;node.json&#34; using strategic merge patch.</span>
+  kubectl patch -f node.json -p <span style="color:#e6db74">&#39;{&#34;spec&#34;:{&#34;unschedulable&#34;:true}}&#39;</span>
 
-  # Update a container's image; spec.containers[*].name is required because it's a merge key.
-  kubectl patch pod valid-pod -p '{&quot;spec&quot;:{&quot;containers&quot;:[{&quot;name&quot;:&quot;kubernetes-serve-hostname&quot;,&quot;image&quot;:&quot;new image&quot;}]}}'
+  <span style="color:#75715e"># Update a container&#39;s image; spec.containers[*].name is required because it&#39;s a merge key.</span>
+  kubectl patch pod valid-pod -p <span style="color:#e6db74">&#39;{&#34;spec&#34;:{&#34;containers&#34;:[{&#34;name&#34;:&#34;kubernetes-serve-hostname&#34;,&#34;image&#34;:&#34;new image&#34;}]}}&#39;</span>
 
-  # Update a container's image using a json patch with positional arrays.
-  kubectl patch pod valid-pod --type='json' -p='[{&quot;op&quot;: &quot;replace&quot;, &quot;path&quot;: &quot;/spec/containers/0/image&quot;, &quot;value&quot;:&quot;new
-image&quot;}]'
+  <span style="color:#75715e"># Update a container&#39;s image using a json patch with positional arrays.</span>
+  kubectl patch pod valid-pod --type<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;json&#39;</span> -p<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;[{&#34;op&#34;: &#34;replace&#34;, &#34;path&#34;: &#34;/spec/containers/0/image&#34;, &#34;value&#34;:&#34;new
+</span><span style="color:#e6db74">image&#34;}]&#39;</span>
 
-</code></pre>
+</code></pre></div><h3 id="快捷键">快捷键</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># 运行一个deployment</span>
+kubectl run nginx --image<span style="color:#f92672">=</span>nginx:alpine --replicas<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span> --port<span style="color:#f92672">=</span><span style="color:#ae81ff">80</span>
 
-<h3 id="快捷键">快捷键</h3>
+<span style="color:#75715e"># 删除非running Pod</span>
+kubectl get pods --all-namespaces -ojson | jq -r <span style="color:#e6db74">&#39;.items[] | select(.status.reason!=null) | select(.status.reason | contains(&#34;Evicted&#34;)) | .metadata.name + &#34; &#34; + .metadata.namespace&#39;</span> | xargs -n2 -l bash -c <span style="color:#e6db74">&#39;kubectl delete pods $0 --namespace=$1&#39;</span>
 
-<pre><code class="language-bash"># 运行一个deployment
-kubectl run nginx --image=nginx:alpine --replicas=1 --port=80
+<span style="color:#75715e"># 正则匹配某个pod</span>
+kubectl logs -n kube-system <span style="color:#66d9ef">$(</span>kubectl get po -n kube-system | egrep -o alb-ingress<span style="color:#f92672">[</span>a-zA-Z0-9-<span style="color:#f92672">]</span>+<span style="color:#66d9ef">)</span>
 
-# 删除非running Pod
-kubectl get pods --all-namespaces -ojson | jq -r '.items[] | select(.status.reason!=null) | select(.status.reason | contains(&quot;Evicted&quot;)) | .metadata.name + &quot; &quot; + .metadata.namespace' | xargs -n2 -l bash -c 'kubectl delete pods $0 --namespace=$1'
-
-# 正则匹配某个pod
-kubectl logs -n kube-system $(kubectl get po -n kube-system | egrep -o alb-ingress[a-zA-Z0-9-]+)
-
-# 修改po的container的镜像 set image 方式
-kubectl set image deploy -l run=nginx nginx=vsxen/k8s
+<span style="color:#75715e"># 修改po的container的镜像 set image 方式</span>
+kubectl set image deploy -l run<span style="color:#f92672">=</span>nginx nginx<span style="color:#f92672">=</span>vsxen/k8s
 deployment.extensions/nginx image updated
 
 kubectl get rs
 NAME               DESIRED   CURRENT   READY     AGE
-nginx-5dbb4c75cd   1         1         1         7m
-nginx-7444d44744   1         1         0         47s
+nginx-5dbb4c75cd   <span style="color:#ae81ff">1</span>         <span style="color:#ae81ff">1</span>         <span style="color:#ae81ff">1</span>         7m
+nginx-7444d44744   <span style="color:#ae81ff">1</span>         <span style="color:#ae81ff">1</span>         <span style="color:#ae81ff">0</span>         47s
 
   externalTrafficPolicy: Cluster
   externalIPs:
   - 10.0.0.52
-</code></pre>
-</div>
+</code></pre></div></div>
         <div class="post_footer">
           
           <div class="meta">

@@ -122,14 +122,9 @@
           <h2><a href='/2019/05/25/k8s-apiserver-webhook/'>k8s APIServer 动态准入控制器</a></h2>
           <span class="date">2019.05.25</span>
         </div>
-        <div class="post_content markdown">
-
-<p>当你在k8s集群中一个不存在的namespace中创建一个pod，会返回一个namespace not found类似的错误，你有想过这个是哪个组件完成的吗？对就是admission plugin。</p>
-
+        <div class="post_content markdown"><p>当你在k8s集群中一个不存在的namespace中创建一个pod，会返回一个namespace not found类似的错误，你有想过这个是哪个组件完成的吗？对就是admission plugin。</p>
 <h2 id="从控制器说起">从控制器说起</h2>
-
 <p>什么是准入插件，在APIServer中有这样一个参数<code>--enable-admission-plugins</code>，用于对创建的对象的合理性进行验证和二次修改。可选的参数如下所示：</p>
-
 <ul>
 <li>AlwaysAdmit, # 一直允许</li>
 <li>AlwaysDeny, # 一直禁止</li>
@@ -163,46 +158,29 @@
 <li>TaintNodesByCondition,</li>
 <li>ValidatingAdmissionWebhook.</li>
 </ul>
-
 <p>Webhokk控制器主要作用在授权和认证之后，持久化到etcd之前。本文主要介绍的是MutatingAdmissionWebhook和ValidatingAdmissionWebhook，如下图所示：
-<img src="../images/admission-controller-phases.png" alt="" /></p>
-
+<img src="../images/admission-controller-phases.png" alt=""></p>
 <h2 id="作用">作用</h2>
-
 <h3 id="安全">安全</h3>
-
 <p>可以通过在整个命名空间或集群中强制使用合理的安全基准来提高安全性。 内置的PodSecurityPolicy控制器可能是最突出的例子; 例如，它可以用于禁止容器以root身份运行，或者确保容器的根文件系统始终以只读方式挂载。 可通过基于webhook的自定义准入控制器实现的其他用例包括：
 拒绝不符合安全标准的deployment，例如使用privileged标志的容器可以规避许多安全检查。 基于webhook的准入控制器可以减轻此风险，该准入控制器拒绝此类部署（验证）或覆盖privileged标志，将其设置为false 。</p>
-
 <h3 id="治理">治理</h3>
-
 <p>控制器可以强制遵守某些做法，例如具有良好的标签，注释，资源限制或其他设置。 一些常见的场景包括：
 对不同对象强制执行标签验证，以确保将正确的标签用于各种对象，例如分配给团队或项目的每个对象，或指定应用程序标签的每个部署。
 自动向对象添加注释，例如为“dev”部署资源分配正确的成本中心。</p>
-
 <h3 id="配置管理">配置管理</h3>
-
 <p>验证群集中运行的对象的配置，并防止任何明显的错误配置命中群集。 可用于检测和修复没有语义标签的部署图像，例如：
 自动添加资源限制或验证资源限制，
 确保合理的标签被添加到pod，或
 确保生产部署中使用的图像引用不使用latest标记或带有-dev后缀的标记。</p>
-
 <h3 id="示例">示例</h3>
-
 <p><a href="https://github.com/stackrox/admission-controller-webhook-demo">https://github.com/stackrox/admission-controller-webhook-demo</a></p>
-
 <h2 id="ref">Ref</h2>
-
 <p>A Guide to Kubernetes Admission Controllers</p>
-
 <p><a href="https://kubernetes.io/blog/2019/03/21/a-guide-to-kubernetes-admission-controllers/">https://kubernetes.io/blog/2019/03/21/a-guide-to-kubernetes-admission-controllers/</a></p>
-
 <p>Kubernetes 中如何保证优雅地停止 Pod</p>
-
 <p><a href="https://pingcap.com/blog-cn/tidb-opeartor-webhook/">https://pingcap.com/blog-cn/tidb-opeartor-webhook/</a></p>
-
 <p>深度剖析Kubernetes动态准入控制之Initializers</p>
-
 <p><a href="https://my.oschina.net/jxcdwangtao/blog/1591099">https://my.oschina.net/jxcdwangtao/blog/1591099</a></p>
 </div>
         <div class="post_footer">
