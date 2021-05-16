@@ -248,7 +248,7 @@ yum --enablerepo<span style="color:#f92672">=</span>elrepo-kernel -y swap kernel
 </code></pre></div><h3 id="更改grub">更改Grub</h3>
 <p>安装新内核之后默认其实还是从旧内核启动，所以这一步也是很重要的。可以编辑<code>/etc/default/grub</code>，加入一下配置并保存。</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">GRUB_DEFAULT<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>
-<span style="color:#75715e"># 保存配置</span>
+<span style="color:#75715e"># 这一步没有测试，仅作备忘</span>
 grub2-mkconfig -o /boot/grub2/grub.cfg
 
 grub2-set-default <span style="color:#ae81ff">0</span>
@@ -280,7 +280,17 @@ CONFIG_INSTRUCTION_DECODER<span style="color:#f92672">=</span>y
 <blockquote>
 <p>rpmbuild -bb &ndash;target=uname -m kernel.spec命令，就会开始构建</p>
 </blockquote>
-<p>除此以外4.x版本的内核推荐使用gcc9作为编译工具链，不出问题的话就会得到你需要的rpm文件</p>
+<p>除此以外4.x版本的内核推荐使用gcc9作为编译工具链，不出问题的话就会得到你需要的rpm文件。</p>
+<h3 id="测试内核">测试内核</h3>
+<p>这里就要用到qemu，神器！！！可以在虚拟机上运行，甚至可以模拟arm，一般来说需要自己打包rootfs，或者是用busybox，我这里偷懒，直接使用Ubuntu的。https://cloud-images.ubuntu.com/</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo qemu-system-x86_64 <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>-m 2G -smp <span style="color:#ae81ff">2</span> <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>-hda qemu-image.img  <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>-kernel linux-5.4-rc4/arch/x86/boot/bzImage <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>-append <span style="color:#e6db74">&#34;debug root=/dev/sda  console=ttyS0&#34;</span> <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>-nographic 
+<span style="color:#75715e"># 支持kvm的话加上 -enable-kvm \</span>
+</code></pre></div><p>但是可惜的是无法启动，各种panic，或者就是文件系统挂载出问题，心一横直接安装在vm上面，结果根本没有问题</p>
 <h3 id="ref">Ref</h3>
 <p>Kernel</p>
 <p><a href="http://elrepo.org/tiki/tiki-index.php">http://elrepo.org/tiki/tiki-index.php</a></p>
