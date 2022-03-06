@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="Zeuk" />
+	
+	
+	
+	<title>fluent 云原生的下的日志收集工具 ｜ Code Life</title>
+	
+    
+    
+    <meta name="description" content="Fluentd 是另一个 Ruby 语言编写的日志收集系统。和 Logstash 不同的是，Fluentd 是基于 MRI 实现的，并不是利用多线程，而是利用事件驱动。单个日志处理的流程如下，当然也可以多个日志流一同处理。 这里穿插一下Docker 的日志" />
+    
+
+    
+    
+    <meta name="keywords" content="Hugo, theme, zozo" />
+    
+
+	
+    
+    <link rel="shortcut icon" href="https://vsxen.github.io/images/favicon.ico" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="https://vsxen.github.iocss/normalize.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.0/animate.min.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://vsxen.github.io/css/zozo.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://vsxen.github.io/css/highlight.css" />
+
+    
+    
+</head>
+
+<body>
+    <div class="main animate__animated animate__fadeInDown">
+        <div class="nav_container animated fadeInDown">
+    <div class="site_nav" id="site_nav">
+        <ul>
+            
+            <li>
+                <a href="/">首页</a>
+            </li>
+            
+            <li>
+                <a href="/posts/">归档</a>
+            </li>
+            
+            <li>
+                <a href="/tags/">标签</a>
+            </li>
+            
+            <li>
+                <a href="/about/">关于</a>
+            </li>
+            
+        </ul>
+    </div>
+    <div class="menu_icon">
+        <a id="menu_icon"><i class="ri-menu-line"></i></a>
+    </div>
+</div>
+        <div class="header animated fadeInDown">
+    <div class="site_title_container">
+        <div class="site_title">
+            <h1>
+                <a href="https://vsxen.github.io">
+                    <span>Code Life</span>
+                </a>
+            </h1>
+        </div>
+        <div class="description">
+            <p class="sub_title">the site subtitle</p>
+            <div class="my_socials">
+                
+                
+                <a href="%20" title="facebook" target="_blank"><i class="ri-facebook-fill"></i></a>
+                
+                
+                
+                <a href="%20" title="github" target="_blank"><i class="ri-github-fill"></i></a>
+                
+                
+                
+                <a href="%20" title="instagram" target="_blank"><i class="ri-instagram-fill"></i></a>
+                
+                
+                
+                <a href="%20" title="twitter" target="_blank"><i class="ri-twitter-fill"></i></a>
+                
+                
+                
+                <a href="%20" title="weibo" target="_blank"><i class="ri-weibo-fill"></i></a>
+                
+                
+                <a href="https://vsxen.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i
+                        class="ri-rss-fill"></i></a>
+            </div>
+        </div>
+    </div>
+</div>
+        <div class="content">
+            <div class="post_page">
+                <div class="post animate__animated animate__fadeInDown">
+                    <div class="post_title post_detail_title">
+                        <h2><a href='/posts/fluentd/'>fluent 云原生的下的日志收集工具</a></h2>
+                        <span class="date">2018.09.25</span>
+                    </div>
+                    <div class="post_content markdown"><p>Fluentd 是另一个 Ruby 语言编写的日志收集系统。和 Logstash 不同的是，Fluentd 是基于 MRI 实现的，并不是利用多线程，而是利用事件驱动。单个日志处理的流程如下，当然也可以多个日志流一同处理。</p>
+<p><img src="../images/fluentd.jpg" alt=""></p>
+<p>这里穿插一下Docker 的日志格式，默认的是json-file，分为以下三个字段，当然也有别的driver，但是会导致docker logs不能使用，也就没有尝试。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">  <span style="color:#e6db74">&#34;log&#34;</span><span style="color:#960050;background-color:#1e0010">:</span> <span style="color:#e6db74">&#34;10.244.0.1 - - [21/Dec/2018:13:06:52 +0000] \&#34;GET / HTTP/1.1\&#34; 200,&#34;</span>
+  <span style="color:#e6db74">&#34;stream&#34;</span><span style="color:#960050;background-color:#1e0010">:</span> <span style="color:#e6db74">&#34;stdout&#34;</span><span style="color:#960050;background-color:#1e0010">,</span>
+  <span style="color:#e6db74">&#34;time&#34;</span><span style="color:#960050;background-color:#1e0010">:</span> <span style="color:#e6db74">&#34;2018-12-21T13:06:52.182042579Z&#34;</span>
+<span style="color:#960050;background-color:#1e0010">}</span>
+</code></pre></div><h2 id="配置">配置</h2>
+<p>fluentd配置主要由以下5部分组成</p>
+<ul>
+<li>source：确定输入源</li>
+<li>match： 确定输出目的地</li>
+<li>filter：确定 event 处理流</li>
+<li>system：设置系统范围的配置</li>
+<li>label：将内部路由的输出和过滤器分组</li>
+<li>@include：包括其它文件</li>
+</ul>
+<p>下面以k8s项目日志收集配置为实例，介绍一下相关配置。</p>
+<h4 id="数据源">数据源</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;source&gt;</span>
+  @id fluentd-containers.log
+  @type tail
+  path /var/log/containers/demo.log
+  pos_file /var/log/es-containers.log.pos
+  tag raw.kubernetes.*
+  read_from_head true
+  <span style="color:#f92672">&lt;parse&gt;</span>
+    @type multi_format
+    <span style="color:#f92672">&lt;pattern&gt;</span>
+      format json
+      time_key time
+      time_format %Y-%m-%dT%H:%M:%S.%NZ
+    <span style="color:#f92672">&lt;/pattern&gt;</span>
+    <span style="color:#f92672">&lt;pattern&gt;</span>
+      format /^(?<span style="color:#f92672">&lt;time&gt;</span>.+) (?<span style="color:#f92672">&lt;stream&gt;</span>stdout|stderr) [^ ]* (?<span style="color:#f92672">&lt;log&gt;</span>.*)$/
+      time_format %Y-%m-%dT%H:%M:%S.%N%:z
+    <span style="color:#f92672">&lt;/pattern&gt;</span>
+  <span style="color:#f92672">&lt;/parse&gt;</span>
+<span style="color:#f92672">&lt;/source&gt;</span>
+</code></pre></div><h4 id="下一步解析json">下一步解析json</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;match</span> <span style="color:#960050;background-color:#1e0010">raw.kubernetes.**</span><span style="color:#f92672">&gt;</span>
+  @id raw.kubernetes
+  @type detect_exceptions
+  remove_tag_prefix raw
+  message log
+  stream stream
+  multiline_flush_interval 5
+  max_bytes 500000
+  max_lines 1000
+<span style="color:#f92672">&lt;/match&gt;</span>
+
+# 加上kubernetes的metadata信息
+<span style="color:#f92672">&lt;filter</span> <span style="color:#960050;background-color:#1e0010">kubernetes.**</span><span style="color:#f92672">&gt;</span>
+  @type kubernetes_metadata
+  verify_ssl false
+<span style="color:#f92672">&lt;/filter&gt;</span>
+
+# 再次使用match 配置输出方向
+
+<span style="color:#f92672">&lt;match</span> <span style="color:#960050;background-color:#1e0010">**</span><span style="color:#f92672">&gt;</span>
+  @id elasticsearch
+  @type elasticsearch
+  @log_level info
+  type_name fluentd
+  include_tag_key true
+  host 118.178.178.140
+  port 9200
+  logstash_format true
+  <span style="color:#f92672">&lt;buffer&gt;</span>
+  @type file
+  path /var/log/fluentd-buffers/kubernetes.system.buffer
+  flush_mode interval
+  retry_type exponential_backoff
+  flush_thread_count 2
+  flush_interval 5s
+  retry_forever
+  retry_max_interval 30
+  chunk_limit_size 2M
+  queue_limit_length 8
+  overflow_action block
+  <span style="color:#f92672">&lt;/buffer&gt;</span>
+<span style="color:#f92672">&lt;/match&gt;</span>
+</code></pre></div><p>fluent解析之后的格式会带上pod的相关信息，之后发到ES，下面是ES中对应的一条数据：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+  <span style="color:#f92672">&#34;_index&#34;</span>: <span style="color:#e6db74">&#34;logstash-2018.12.21&#34;</span>,
+  <span style="color:#f92672">&#34;_type&#34;</span>: <span style="color:#e6db74">&#34;fluentd&#34;</span>,
+  <span style="color:#f92672">&#34;_id&#34;</span>: <span style="color:#e6db74">&#34;WnlC0WcBd0poFKe5TXTB&#34;</span>,
+  <span style="color:#f92672">&#34;_version&#34;</span>: <span style="color:#ae81ff">1</span>,
+  <span style="color:#f92672">&#34;_score&#34;</span>: <span style="color:#ae81ff">1</span>,
+  <span style="color:#f92672">&#34;_source&#34;</span>: {
+    <span style="color:#f92672">&#34;log&#34;</span>: <span style="color:#e6db74">&#34;10.244.0.1 - - [21/Dec/2018:11:35:20 +0000] GET / HTTP/1.1&#34;</span>,
+    <span style="color:#f92672">&#34;stream&#34;</span>: <span style="color:#e6db74">&#34;stdout&#34;</span>,
+    <span style="color:#f92672">&#34;docker&#34;</span>: {
+      <span style="color:#f92672">&#34;container_id&#34;</span>: <span style="color:#e6db74">&#34;873ddbe58783f2e733e19a3b53e453&#34;</span>
+    },
+    <span style="color:#f92672">&#34;kubernetes&#34;</span>: {
+      <span style="color:#f92672">&#34;container_name&#34;</span>: <span style="color:#e6db74">&#34;nginx&#34;</span>,
+      <span style="color:#f92672">&#34;namespace_name&#34;</span>: <span style="color:#e6db74">&#34;default&#34;</span>,
+      <span style="color:#f92672">&#34;pod_name&#34;</span>: <span style="color:#e6db74">&#34;nginx-6665cb456b-hslrv&#34;</span>,
+      <span style="color:#f92672">&#34;pod_id&#34;</span>: <span style="color:#e6db74">&#34;3027acd2-0514-11e9-891e-00163e0d0afe&#34;</span>,
+      <span style="color:#f92672">&#34;labels&#34;</span>: {
+        <span style="color:#f92672">&#34;pod-template-hash&#34;</span>: <span style="color:#e6db74">&#34;6665cb456b&#34;</span>,
+        <span style="color:#f92672">&#34;run&#34;</span>: <span style="color:#e6db74">&#34;nginx&#34;</span>
+      },
+      <span style="color:#f92672">&#34;host&#34;</span>: <span style="color:#e6db74">&#34;prod-consul-2&#34;</span>,
+      <span style="color:#f92672">&#34;master_url&#34;</span>: <span style="color:#e6db74">&#34;https://10.96.0.1:443/api&#34;</span>,
+      <span style="color:#f92672">&#34;namespace_id&#34;</span>: <span style="color:#e6db74">&#34;0753cc1f-0513-11e9-891e-00163e0d0afe&#34;</span>
+    },
+    <span style="color:#f92672">&#34;@timestamp&#34;</span>: <span style="color:#e6db74">&#34;2018-12-21T11:35:20.417931350+00:00&#34;</span>,
+    <span style="color:#f92672">&#34;tag&#34;</span>: <span style="color:#e6db74">&#34;kubernetes.var.log.containers.nginx-6665cb456b-hb19a3b53e453.log&#34;</span>
+  }
+}
+</code></pre></div><h2 id="其他">其他</h2>
+<p>fluent的缺点？</p>
+<ul>
+<li>ruby也有全局锁的东西（GIL），所以在多核机器上只能利用一个CPU，所以规模大了之后可能会成为瓶颈，另外可以参考Ref#1。</li>
+<li>当你修改一个规则的时候，需要重新部署，而且不能区分应用，这种方式其实并不是很适合k8s，banzaicloud开源了一个logoperator，定义了新的CRD，可以基于label的方式来采集日志，还是可以的。https://github.com/banzaicloud/logging-operator</li>
+<li>采集容器内非标准输出的日志，阿里云有一个log-pilot可以根据ENV的方式来采集绝对路径下的日志，但是有一些问题，不过可以参考下。https://github.com/AliyunContainerService/log-pilot/</li>
+</ul>
+<p>不断产生日志的脚本，或许有更好的方式？</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#66d9ef">while</span> true; <span style="color:#66d9ef">do</span> echo <span style="color:#e6db74">&#39;{&#34;log&#34;:&#34;2019-01-29T10:35:27,234+08:00 [main] INFO &#34;,&#34;stream&#34;:&#34;stderr&#34;,&#34;time&#34;:&#34;2019-01-12T03:36:43.390762996Z&#34;}&#39;</span> &gt;&gt; /var/log/containers/demo.log <span style="color:#f92672">&amp;&amp;</span> sleep 1;<span style="color:#66d9ef">done</span>
+</code></pre></div><h2 id="ref">Ref</h2>
+<p>Fluentd语法速记</p>
+<p><a href="https://lintingbin2009.github.io/2018/05/01/fluentd%E8%AF%AD%E6%B3%95%E9%80%9F%E8%AE%B0/">https://lintingbin2009.github.io/2018/05/01/fluentd%E8%AF%AD%E6%B3%95%E9%80%9F%E8%AE%B0/</a></p>
+</div>
+                    <div class="post_footer">
+                        
+                        <div class="meta">
+                            <div class="info">
+                                <span class="field tags">
+                                    <i class="ri-stack-line"></i>
+                                    
+                                    <a href="https://vsxen.github.io/tags/efk/">efk</a>
+                                    
+                                </span>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                
+                <div class="doc_comments"></div>
+                
+            </div>
+        </div>
+    </div>
+    <a id="back_to_top" href="#" class="back_to_top"><i class="ri-arrow-up-s-line"></i></a>
+    <footer class="footer">
+    <div class="powered_by">
+        <a href="https://varkai.com">Designed by VarKai,</a>
+        <a href="http://www.gohugo.io/">Proudly published with Hugo</a>
+    </div>
+
+    <div class="footer_slogan">
+        <span>我的精神家园</span>
+    </div>
+</footer>
+    <script src="https://vsxen.github.io/js/jquery-3.5.1.min.js"></script>
+<link href="https://vsxen.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://vsxen.github.io/js/fancybox.min.js"></script>
+<script src="https://vsxen.github.io/js/zozo.js"></script>
+
+
+<script type="text/javascript" async
+    src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+        MathJax.Hub.Config({
+            tex2jax: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\[\[', '\]\]']],
+                processEscapes: true,
+                processEnvironments: true,
+                skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+                TeX: {
+                    equationNumbers: { autoNumber: "AMS" },
+                    extensions: ["AMSmath.js", "AMSsymbols.js"]
+                }
+            }
+        });
+
+        MathJax.Hub.Queue(function () {
+            
+            
+            
+            var all = MathJax.Hub.getAllJax(), i;
+            for (i = 0; i < all.length; i += 1) {
+                all[i].SourceElement().parentNode.className += ' has-jax';
+            }
+        });
+    </script>
+
+<style>
+    code.has-jax {
+        font: inherit;
+        font-size: 100%;
+        background: inherit;
+        border: inherit;
+        color: #515151;
+    }
+</style>
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-81855844-3', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+</body>
+
+</html>

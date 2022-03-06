@@ -9,19 +9,19 @@
     <lastBuildDate>Tue, 25 Feb 2020 09:04:20 +0800</lastBuildDate><atom:link href="https://vsxen.github.io/tags/network/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>从Nat到TCP_TW</title>
-      <link>https://vsxen.github.io/2020/02/25/tcp_nat/</link>
+      <link>https://vsxen.github.io/posts/tcp_nat/</link>
       <pubDate>Tue, 25 Feb 2020 09:04:20 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/2020/02/25/tcp_nat/</guid>
+      <guid>https://vsxen.github.io/posts/tcp_nat/</guid>
       <description>看到这个标题，你可能会感到疑惑这两个有什么关系呢？一个是IP转换一个是TCP，似乎关系不大？接下来听我慢慢介绍。 NAT 在IPV4的时代，IP可以分为两种，公网和局域网。当你在局域网时想要访问外面的内容就要</description>
     </item>
     
     <item>
       <title>Kubernetes 中的网络结构</title>
-      <link>https://vsxen.github.io/2019/02/12/kubernetes-network-flannel/</link>
+      <link>https://vsxen.github.io/posts/kubernetes-network-flannel/</link>
       <pubDate>Tue, 12 Feb 2019 22:31:20 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/2019/02/12/kubernetes-network-flannel/</guid>
+      <guid>https://vsxen.github.io/posts/kubernetes-network-flannel/</guid>
       <description>Kubernetes 采用的是基于扁平地址空间的网络模型，集群中的每个 Pod 都有自己的 IP 地址，Pod 之间不需要配置 NAT 就能直接通信。另外，同一个 Pod 中的容器共享 Pod 的 IP，能够通过 localhost 通信。 IP-per-Pod，每个 Pod 都拥有一个独立</description>
     </item>
     

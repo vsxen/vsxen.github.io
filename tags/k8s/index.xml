@@ -9,163 +9,163 @@
     <lastBuildDate>Sat, 20 Jun 2020 12:44:22 +0800</lastBuildDate><atom:link href="https://vsxen.github.io/tags/k8s/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>自己动手实现一个kubectl exec</title>
-      <link>https://vsxen.github.io/2020/06/20/kubectl-exec/</link>
+      <link>https://vsxen.github.io/posts/kubectl-exec/</link>
       <pubDate>Sat, 20 Jun 2020 12:44:22 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/2020/06/20/kubectl-exec/</guid>
+      <guid>https://vsxen.github.io/posts/kubectl-exec/</guid>
       <description>在日常工作中kubectl exec 可以说是非常高频使用的，如果你想自己了解相关原理，不妨自己动手写一个。 知识储备： websocket 阮一峰这篇《WebSocket 教程- 阮一峰的网络日志》写的比较详进。 kubectl exec 原理 https://itnext.io/how-it-works-kubectl-exec-e31325daa910 https://erkanerol.github.io/post/how-kubectl-exec-works/ 如果你英文</description>
     </item>
     
     <item>
       <title>Containerd gvisor &amp; k8s</title>
-      <link>https://vsxen.github.io/2019/11/25/containerd-gvisor/</link>
+      <link>https://vsxen.github.io/posts/containerd-gvisor/</link>
       <pubDate>Mon, 25 Nov 2019 12:31:20 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/2019/11/25/containerd-gvisor/</guid>
+      <guid>https://vsxen.github.io/posts/containerd-gvisor/</guid>
       <description>本文主要讨论如何在containerd中使用gvisor作为runtime，以及如何对接k8s。 安装containerd 这个就不用多说了，直接apt install containerd 即可，会安装一下几个可执行文件，如下所示 /usr/bin/containerd 守护进</description>
     </item>
     
     <item>
       <title>kubectl 常用快捷键</title>
-      <link>https://vsxen.github.io/2019/09/20/kubectl/</link>
+      <link>https://vsxen.github.io/posts/kubectl/</link>
       <pubDate>Fri, 20 Sep 2019 22:31:20 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/2019/09/20/kubectl/</guid>
+      <guid>https://vsxen.github.io/posts/kubectl/</guid>
       <description>查询类 # custom-columns # 比如 查看role=sre 标签pod镜像，当然也可以用go的自定义输出 kubectl -n kube-system get po -l tier=control-plane -o custom-columns=NAME:.metadata.name,image:.spec.containers[0].image NAME image etcd-ubuntu-bionic gcr.azk8s.cn/google_containers/etcd:3.3.15-0 kube-apiserver-ubuntu-bionic gcr.azk8s.cn/google_containers/kube-apiserver:v1.16.2 kube-controller-manager-ubuntu-bionic gcr.azk8s.cn/google_containers/kube-controller-manager:v1.16.2 kube-scheduler-ubuntu-bionic gcr.azk8s.cn/google_containers/kube-scheduler:v1.16.2 # go-template # range 嵌套 # 列出所有容器使用的镜像名 kubectl get pods -o go-template --template=&amp;#39;{{range .items}}{{range .spec.containers}}{{printf &amp;#34;%s\n&amp;#34; .image}}{{end}}{{end}}&amp;#39; istio/examples-bookinfo-details-v1:1.5.0 istio/examples-bookinfo-productpage-v1:1.5.0 istio/examples-bookinfo-ratings-v1:1.5.0 # 条件判断 # 列出所</description>
     </item>
     
     <item>
       <title>Etcd 使用入门</title>
-      <link>https://vsxen.github.io/2019/06/15/get-start-etcd/</link>
+      <link>https://vsxen.github.io/posts/get-start-etcd/</link>
       <pubDate>Sat, 15 Jun 2019 12:31:20 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/2019/06/15/get-start-etcd/</guid>
+      <guid>https://vsxen.github.io/posts/get-start-etcd/</guid>
       <description>etcd是coreos根据Raft一致性算法用go实现的分布式KV数据库，作为k8s数据唯一存储的地方，etcd具有高性能的读写以及watch性能，也可以用在服务注册，配置中心等。官方Doc https://github.com/etcd-io/etcd/blob/master/Documentation 入门 初识</description>
     </item>
     
     <item>
       <title>k8s APIServer 动态准入控制器</title>
-      <link>https://vsxen.github.io/2019/05/25/k8s-apiserver-webhook/</link>
+      <link>https://vsxen.github.io/posts/k8s-apiserver-webhook/</link>
       <pubDate>Sat, 25 May 2019 22:31:20 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/2019/05/25/k8s-apiserver-webhook/</guid>
+      <guid>https://vsxen.github.io/posts/k8s-apiserver-webhook/</guid>
       <description>当你在k8s集群中一个不存在的namespace中创建一个pod，会返回一个namespace not found类似的错误，你有想过这个是哪个组件完成的吗？对就是admission plugin。 从控制器说起</description>
     </item>
     
     <item>
       <title>使用kubeadm初始化集群</title>
-      <link>https://vsxen.github.io/2019/05/17/create-cluster-use-kubeadm/</link>
+      <link>https://vsxen.github.io/posts/create-cluster-use-kubeadm/</link>
       <pubDate>Fri, 17 May 2019 22:31:20 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/2019/05/17/create-cluster-use-kubeadm/</guid>
+      <guid>https://vsxen.github.io/posts/create-cluster-use-kubeadm/</guid>
       <description>很久之前就写过这篇笔记，一直没发出来，虽说这样的文章差不多已经烂大街了，还是可以看一下的。 ⎈⎈ apt install -y bash-completion yum install -y bash-completion echo &amp;#34;source &amp;lt;(kubectl completion bash)&amp;#34; &amp;gt;&amp;gt; ~/.bashrc echo &amp;#34;source &amp;lt;(kubeadm completion bash)&amp;#34; &amp;gt;&amp;gt; ~/.bashrc source ~/.bashrc modprobe ip_vs &amp;amp;&amp;amp; modprobe ip_vs_rr &amp;amp;&amp;amp; modprobe ip_vs_wrr &amp;amp;&amp;amp; modprobe ip_vs_sh rm -rf /var/lib/cni/ rm -rf /var/lib/kubelet/* rm -rf /etc/cni/ ip link del cni0 &amp;amp;&amp;amp; ip link del flannel.1</description>
     </item>
     
     <item>
       <title>Kubernetes中的存储</title>
-      <link>https://vsxen.github.io/2019/05/12/storage-in-kubernets/</link>
+      <link>https://vsxen.github.io/posts/storage-in-kubernets/</link>
       <pubDate>Sun, 12 May 2019 22:31:20 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/2019/05/12/storage-in-kubernets/</guid>
+      <guid>https://vsxen.github.io/posts/storage-in-kubernets/</guid>
       <description>概念 PersistentVolume PersistentVolume（持久卷，简称PV）是集群内，由管理员提供的网络存储的一部分。就像集群中的节点一样，PV也是集群中的一种资源。它也像Volume一样，是一种volume插件，但是</description>
     </item>
     
     <item>
       <title>在aws上使用kops部署k8s集群</title>
-      <link>https://vsxen.github.io/2019/05/12/use-kops-in-aws/</link>
+      <link>https://vsxen.github.io/posts/use-kops-in-aws/</link>
       <pubDate>Sun, 12 May 2019 22:31:20 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/2019/05/12/use-kops-in-aws/</guid>
+      <guid>https://vsxen.github.io/posts/use-kops-in-aws/</guid>
       <description>简介：Kubernetes Operations (kops) - Production Grade K8s Installation, Upgrades, and Management kops宣称已经达到生产级别，准备试一下kops，观察其运行控制平面的方式。官方的文档如下： https://github.com/kubernetes/kops/blob/master/docs/aws.md 安装 当然kops也是用golang写的，所以你只要下载预编译</description>
     </item>
     
     <item>
       <title>CoreDNS-基于Caddy的DNS Server</title>
-      <link>https://vsxen.github.io/2019/04/25/coredns/</link>
+      <link>https://vsxen.github.io/posts/coredns/</link>
       <pubDate>Thu, 25 Apr 2019 22:31:20 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/2019/04/25/coredns/</guid>
+      <guid>https://vsxen.github.io/posts/coredns/</guid>
       <description>CoreDNS利用作为Web服务器Caddy的一部分而开发的服务器框架。该框架具有非常灵活，可扩展的模型，用于通过各种中间件组件传递请求。这些中间件组件根据请求提供不同的操作，例如记录，重定向，修改或</description>
     </item>
     
     <item>
       <title>k8s 的实时日志 Events</title>
-      <link>https://vsxen.github.io/2019/04/16/k8s-event-explorer/</link>
+      <link>https://vsxen.github.io/posts/k8s-event-explorer/</link>
       <pubDate>Tue, 16 Apr 2019 09:43:24 +0000</pubDate>
       
-      <guid>https://vsxen.github.io/2019/04/16/k8s-event-explorer/</guid>
+      <guid>https://vsxen.github.io/posts/k8s-event-explorer/</guid>
       <description>Event 什么是k8s的Events？比如你启动了一个Deployment，k8s的各大组件就开始依次忙碌起来，最终完成Pod的创建，从声明一个Deployment开始，到Pod启动完成，会生成一些列Even</description>
     </item>
     
     <item>
       <title>k8s 七层访问入口 Ingress</title>
-      <link>https://vsxen.github.io/2019/03/12/k8s-ingress-useage/</link>
+      <link>https://vsxen.github.io/posts/k8s-ingress-useage/</link>
       <pubDate>Tue, 12 Mar 2019 22:31:20 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/2019/03/12/k8s-ingress-useage/</guid>
+      <guid>https://vsxen.github.io/posts/k8s-ingress-useage/</guid>
       <description>k8s初期的时候，只有Service作为四层负载均衡，后来才推出了专门用作七层的负载均衡&amp;ndash;Ingress。第一批实现Ingress Controller的就是traefik以及Nginx In</description>
     </item>
     
     <item>
       <title>Kubernetes 中的网络结构</title>
-      <link>https://vsxen.github.io/2019/02/12/kubernetes-network-flannel/</link>
+      <link>https://vsxen.github.io/posts/kubernetes-network-flannel/</link>
       <pubDate>Tue, 12 Feb 2019 22:31:20 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/2019/02/12/kubernetes-network-flannel/</guid>
+      <guid>https://vsxen.github.io/posts/kubernetes-network-flannel/</guid>
       <description>Kubernetes 采用的是基于扁平地址空间的网络模型，集群中的每个 Pod 都有自己的 IP 地址，Pod 之间不需要配置 NAT 就能直接通信。另外，同一个 Pod 中的容器共享 Pod 的 IP，能够通过 localhost 通信。 IP-per-Pod，每个 Pod 都拥有一个独立</description>
     </item>
     
     <item>
       <title>k8s 集群监控 --  Prometheus Operator</title>
-      <link>https://vsxen.github.io/2019/01/22/promthus-operator/</link>
+      <link>https://vsxen.github.io/posts/promthus-operator/</link>
       <pubDate>Tue, 22 Jan 2019 22:31:20 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/2019/01/22/promthus-operator/</guid>
+      <guid>https://vsxen.github.io/posts/promthus-operator/</guid>
       <description>对于任何系统来说，监控都是不可或缺的东西，系统现在是什么样，与一周前相比是否需要调整资源等都需要一个监控系统来参考。对于k8s来说常用的开源监控方案也就是下面几种： heaspter+InfluxDB (已被弃用) Prometheus Open falcon Telegraf+InfluxDB 而且k8s所需</description>
     </item>
     
     <item>
       <title>一个完整的Pod 描述应该是什么样的？</title>
-      <link>https://vsxen.github.io/2018/12/25/k8s-pod-full-yaml/</link>
+      <link>https://vsxen.github.io/posts/k8s-pod-full-yaml/</link>
       <pubDate>Tue, 25 Dec 2018 22:31:20 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/2018/12/25/k8s-pod-full-yaml/</guid>
+      <guid>https://vsxen.github.io/posts/k8s-pod-full-yaml/</guid>
       <description>Pod作为k8s工作负载的基本单位,不论是Deployment还是job等等需要计算资源的控制器，都需要定义将被创建的pod模板，所以熟悉pod的所有字段还是很有必要的。今天就用Deployment作</description>
     </item>
     
     <item>
       <title>Kubernetes 中的资源管理和优先级</title>
-      <link>https://vsxen.github.io/2018/10/09/k8s-resource-qos/</link>
+      <link>https://vsxen.github.io/posts/k8s-resource-qos/</link>
       <pubDate>Tue, 09 Oct 2018 22:31:20 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/2018/10/09/k8s-resource-qos/</guid>
+      <guid>https://vsxen.github.io/posts/k8s-resource-qos/</guid>
       <description>Kubernetes 是怎么定义资源的呢？ ​ 在 kubernetes 中，任何可以被申请、分配，最终被使用的对象，都是 kubernetes 中的资源，比如 CPU、内存。而且针对每一种被 kubernetes 所管理的资源，都会被赋予一个【资源类型名】，这些名字都是符合 RFC 1123 规则的，比如</description>
     </item>
     
     <item>
       <title>Kubernetes 中的弹性伸缩 Autoscaler</title>
-      <link>https://vsxen.github.io/2018/09/25/cluster-autoscaler/</link>
+      <link>https://vsxen.github.io/posts/cluster-autoscaler/</link>
       <pubDate>Tue, 25 Sep 2018 12:31:20 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/2018/09/25/cluster-autoscaler/</guid>
+      <guid>https://vsxen.github.io/posts/cluster-autoscaler/</guid>
       <description>弹性伸缩是一个比较吸引人的话题，类似与云计算中所提倡的按需付费，合理使用可以减少所需计算资源，降低相关的服务器成本。对于k8s来说目前一共有两种弹性伸缩： Cluster 即自动增加删除节点 Pod 分为水平和垂直两种，水平</description>
     </item>
     
     <item>
       <title>terraform provider Kubernetes 入门</title>
-      <link>https://vsxen.github.io/2018/09/17/terraform/</link>
+      <link>https://vsxen.github.io/posts/terraform/</link>
       <pubDate>Mon, 17 Sep 2018 11:31:20 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/2018/09/17/terraform/</guid>
+      <guid>https://vsxen.github.io/posts/terraform/</guid>
       <description>下载 初始化 terraform 扩展主要靠的就是provider，所以在使用之前需要准备好或者下载对应的provider。至于你需要什么provider，需要在main.tf指定，如下所示。 如果可以联网的话，貌似会从fa</description>
     </item>
     
     <item>
       <title>Kubernetes 认证与授权</title>
-      <link>https://vsxen.github.io/2018/06/15/kubernetes-auth-rbac/</link>
+      <link>https://vsxen.github.io/posts/kubernetes-auth-rbac/</link>
       <pubDate>Fri, 15 Jun 2018 22:31:20 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/2018/06/15/kubernetes-auth-rbac/</guid>
+      <guid>https://vsxen.github.io/posts/kubernetes-auth-rbac/</guid>
       <description>对于一个系统来说，认证和授权不可或缺的部分，最常见的方式要数账号密码，管理员和普通用户这种认证方式，也就是常说的ABAC。但是每次修改权限都需要重启，或者修改记录，会有些不方便，于是基于角色的访问控制</description>
     </item>
     

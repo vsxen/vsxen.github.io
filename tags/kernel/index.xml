@@ -9,10 +9,10 @@
     <lastBuildDate>Sun, 25 Aug 2019 12:24:20 +0800</lastBuildDate><atom:link href="https://vsxen.github.io/tags/kernel/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>procfs 与 Linux 系统监控</title>
-      <link>https://vsxen.github.io/2019/08/25/monitor-procfs/</link>
+      <link>https://vsxen.github.io/posts/monitor-procfs/</link>
       <pubDate>Sun, 25 Aug 2019 12:24:20 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/2019/08/25/monitor-procfs/</guid>
+      <guid>https://vsxen.github.io/posts/monitor-procfs/</guid>
       <description>Unix系推崇一个观点，Everything is a file 。对于一些系统以及进程信息，kernel会以文件系统的系统挂载在proc和sys目录，也就是常说的procfs，sysfs虚拟文件系统。包括CPU，内</description>
     </item>
     

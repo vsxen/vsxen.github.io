@@ -9,10 +9,10 @@
     <lastBuildDate>Sat, 15 Jun 2019 12:31:20 +0800</lastBuildDate><atom:link href="https://vsxen.github.io/tags/etcd/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Etcd 使用入门</title>
-      <link>https://vsxen.github.io/2019/06/15/get-start-etcd/</link>
+      <link>https://vsxen.github.io/posts/get-start-etcd/</link>
       <pubDate>Sat, 15 Jun 2019 12:31:20 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/2019/06/15/get-start-etcd/</guid>
+      <guid>https://vsxen.github.io/posts/get-start-etcd/</guid>
       <description>etcd是coreos根据Raft一致性算法用go实现的分布式KV数据库，作为k8s数据唯一存储的地方，etcd具有高性能的读写以及watch性能，也可以用在服务注册，配置中心等。官方Doc https://github.com/etcd-io/etcd/blob/master/Documentation 入门 初识</description>
     </item>
     

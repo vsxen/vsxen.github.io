@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="Zeuk" />
+	
+	
+	
+	<title>Kubernetes 认证与授权 ｜ Code Life</title>
+	
+    
+    
+    <meta name="description" content="对于一个系统来说，认证和授权不可或缺的部分，最常见的方式要数账号密码，管理员和普通用户这种认证方式，也就是常说的ABAC。但是每次修改权限都需要重启，或者修改记录，会有些不方便，于是基于角色的访问控制" />
+    
+
+    
+    
+    <meta name="keywords" content="Hugo, theme, zozo" />
+    
+
+	
+    
+    <link rel="shortcut icon" href="https://vsxen.github.io/images/favicon.ico" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="https://vsxen.github.iocss/normalize.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.0/animate.min.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://vsxen.github.io/css/zozo.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://vsxen.github.io/css/highlight.css" />
+
+    
+    
+</head>
+
+<body>
+    <div class="main animate__animated animate__fadeInDown">
+        <div class="nav_container animated fadeInDown">
+    <div class="site_nav" id="site_nav">
+        <ul>
+            
+            <li>
+                <a href="/">首页</a>
+            </li>
+            
+            <li>
+                <a href="/posts/">归档</a>
+            </li>
+            
+            <li>
+                <a href="/tags/">标签</a>
+            </li>
+            
+            <li>
+                <a href="/about/">关于</a>
+            </li>
+            
+        </ul>
+    </div>
+    <div class="menu_icon">
+        <a id="menu_icon"><i class="ri-menu-line"></i></a>
+    </div>
+</div>
+        <div class="header animated fadeInDown">
+    <div class="site_title_container">
+        <div class="site_title">
+            <h1>
+                <a href="https://vsxen.github.io">
+                    <span>Code Life</span>
+                </a>
+            </h1>
+        </div>
+        <div class="description">
+            <p class="sub_title">the site subtitle</p>
+            <div class="my_socials">
+                
+                
+                <a href="%20" title="facebook" target="_blank"><i class="ri-facebook-fill"></i></a>
+                
+                
+                
+                <a href="%20" title="github" target="_blank"><i class="ri-github-fill"></i></a>
+                
+                
+                
+                <a href="%20" title="instagram" target="_blank"><i class="ri-instagram-fill"></i></a>
+                
+                
+                
+                <a href="%20" title="twitter" target="_blank"><i class="ri-twitter-fill"></i></a>
+                
+                
+                
+                <a href="%20" title="weibo" target="_blank"><i class="ri-weibo-fill"></i></a>
+                
+                
+                <a href="https://vsxen.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i
+                        class="ri-rss-fill"></i></a>
+            </div>
+        </div>
+    </div>
+</div>
+        <div class="content">
+            <div class="post_page">
+                <div class="post animate__animated animate__fadeInDown">
+                    <div class="post_title post_detail_title">
+                        <h2><a href='/posts/kubernetes-auth-rbac/'>Kubernetes 认证与授权</a></h2>
+                        <span class="date">2018.06.15</span>
+                    </div>
+                    <div class="post_content markdown"><p>对于一个系统来说，认证和授权不可或缺的部分，最常见的方式要数账号密码，管理员和普通用户这种认证方式，也就是常说的ABAC。但是每次修改权限都需要重启，或者修改记录，会有些不方便，于是基于角色的访问控制&ndash;RBAC就出现了，同时k8s分离了认证，授权和准入的过程，方便第三方开发相关插件。</p>
+<p>下图大致描述了k8s认证的流程图，描述了一个请求在经过APIServer的时候都经历了哪些鉴权的过程。如下图所示：需要访问API的有人类，也就是Ops，通过kubectl以及Kubeconfig配置文件和API-Server交互。还有就是Pod，也就是应用，对API资源进行CURD。然后依次经过了身份认证(authentication)、授权(authorization)和准入控制（admission control）。下面就来详细介绍下认证和授权</p>
+<p><img src="../images/rbac01.jpg" alt=""></p>
+<h2 id="认证">认证</h2>
+<ul>
+<li>Authentication：即身份验证，这个环节它面对的输入是整个http request，它负责对来自client的请求进行身份校验，支持的方法包括：
+<ul>
+<li>client证书验证（https双向验证）</li>
+<li>basic auth</li>
+<li>普通token</li>
+<li>jwt token(用于serviceaccount)</li>
+</ul>
+</li>
+</ul>
+<p>APIServer启动时，可以指定一种Authentication方法，也可以指定多种方法。如果指定了多种方法，那么APIServer将会逐个使用这些方法对客户端请求进行验证，只要请求数据通过其中一种方法的验证，APIServer就会认为Authentication成功；在较新版本kubeadm引导启动的k8s集群的apiserver初始配置中，默认支持client证书验证和serviceaccount两种身份验证方式。在这个环节，apiserver会通过client证书或http header中的字段(比如serviceaccount的jwt token)来识别出请求的“用户身份”，包括”user”、”group”等，这些信息将在后面的authorization环节用到。</p>
+<h3 id="client-证书">Client 证书</h3>
+<p>首先我们看一下kubectl的默认配置文件~/.kube/config</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+<span style="color:#f92672">clusters</span>:
+- <span style="color:#f92672">cluster</span>:
+    <span style="color:#f92672">certificate-authority-data</span>: <span style="color:#ae81ff">REDACTED</span>
+    <span style="color:#f92672">server</span>: <span style="color:#ae81ff">https://172.16.66.101:6443</span>
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">kubernetes</span>
+<span style="color:#f92672">contexts</span>:
+- <span style="color:#f92672">context</span>:
+    <span style="color:#f92672">cluster</span>: <span style="color:#ae81ff">kubernetes</span>
+    <span style="color:#f92672">user</span>: <span style="color:#ae81ff">kubernetes-admin</span>
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">kubernetes-admin@kubernetes</span>
+<span style="color:#f92672">current-context</span>: <span style="color:#ae81ff">kubernetes-admin@kubernetes</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Config</span>
+<span style="color:#f92672">preferences</span>: {}
+<span style="color:#f92672">users</span>:
+- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">kubernetes-admin</span>
+  <span style="color:#f92672">user</span>:
+    <span style="color:#f92672">client-certificate-data</span>: <span style="color:#ae81ff">REDACTED</span>
+    <span style="color:#f92672">client-key-data</span>: <span style="color:#ae81ff">REDACTED</span>
+</code></pre></div><p>这有两个重要的信息 client-certificate-data, client-key-data,首先把data提取出来</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># 生成client-certificate-data</span>
+grep <span style="color:#e6db74">&#39;client-certificate-data&#39;</span> ~/.kube/config | head -n <span style="color:#ae81ff">1</span> | awk <span style="color:#e6db74">&#39;{print $2}&#39;</span> | base64 -d &gt;&gt; kubecfg.crt
+
+<span style="color:#75715e"># 生成client-key-data</span>
+grep <span style="color:#e6db74">&#39;client-key-data&#39;</span> ~/.kube/config | head -n <span style="color:#ae81ff">1</span> | awk <span style="color:#e6db74">&#39;{print $2}&#39;</span> | base64 -d &gt;&gt; kubecfg.key
+
+openssl x509 -noout -text -in kubecfg.crt
+Certificate:
+    Data:
+        Version: <span style="color:#ae81ff">3</span> <span style="color:#f92672">(</span>0x2<span style="color:#f92672">)</span>
+        Serial Number: <span style="color:#ae81ff">6675913985209031083</span> <span style="color:#f92672">(</span>0x5ca59c66277259ab<span style="color:#f92672">)</span>
+    Signature Algorithm: sha256WithRSAEncryption
+        Issuer: CN<span style="color:#f92672">=</span>kubernetes
+        Validity
+            Not Before: Apr <span style="color:#ae81ff">13</span> 10:22:37 <span style="color:#ae81ff">2019</span> GMT
+            Not After : Apr <span style="color:#ae81ff">12</span> 10:22:38 <span style="color:#ae81ff">2020</span> GMT
+        Subject: O<span style="color:#f92672">=</span>system:masters, CN<span style="color:#f92672">=</span>kubernetes-admin <span style="color:#75715e">#此证书是签发给system:masters的，</span>
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+                Public-Key: <span style="color:#f92672">(</span><span style="color:#ae81ff">2048</span> bit<span style="color:#f92672">)</span>
+                Modulus:
+                    .....
+                Exponent: <span style="color:#ae81ff">65537</span> <span style="color:#f92672">(</span>0x10001<span style="color:#f92672">)</span>
+        X509v3 extensions:
+            X509v3 Key Usage: critical
+                Digital Signature, Key Encipherment
+            X509v3 Extended Key Usage: 
+                TLS Web Client Authentication <span style="color:#75715e"># 此证书可以作为TLS的客户端证书</span>
+    Signature Algorithm: sha256WithRSAEncryption
+</code></pre></div><p>为什么是这个用户呢？在集群中可以看到这样一条记录，k8s默认把system:masters用户绑定上了clsuter-admin的角色，也就是整个集群的管理员，所以当我们有了这个客户端证书之后，就可以管理集群的任何资源。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl -n kube-system describe clusterrolebindings cluster-admin
+
+Name:         cluster-admin
+Labels:       kubernetes.io/bootstrapping<span style="color:#f92672">=</span>rbac-defaults
+Annotations:  rbac.authorization.kubernetes.io/autoupdate<span style="color:#f92672">=</span>true
+Role:
+  Kind:  ClusterRole
+  Name:  cluster-admin
+Subjects:
+  Kind   Name            Namespace
+</code></pre></div><p>下面我们来手动访问下API Server：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">MASTER<span style="color:#f92672">=</span>192.168.1.1
+<span style="color:#75715e"># 因为是自签名证书 用-k 忽略证书校验 </span>
+<span style="color:#75715e"># 默认的request是system:anonymous用户 没有权限访问</span>
+curl -k  https://$MASTER:6443/api
+<span style="color:#f92672">{</span>
+  <span style="color:#e6db74">&#34;kind&#34;</span>: <span style="color:#e6db74">&#34;Status&#34;</span>,
+  <span style="color:#e6db74">&#34;apiVersion&#34;</span>: <span style="color:#e6db74">&#34;v1&#34;</span>,
+  <span style="color:#e6db74">&#34;metadata&#34;</span>: <span style="color:#f92672">{</span>
+
+  <span style="color:#f92672">}</span>,
+  <span style="color:#e6db74">&#34;status&#34;</span>: <span style="color:#e6db74">&#34;Failure&#34;</span>,
+  <span style="color:#e6db74">&#34;message&#34;</span>: <span style="color:#e6db74">&#34;forbidden: User \&#34;system:anonymous\&#34; cannot get path \&#34;/api\&#34;&#34;</span>,
+  <span style="color:#e6db74">&#34;reason&#34;</span>: <span style="color:#e6db74">&#34;Forbidden&#34;</span>,
+  <span style="color:#e6db74">&#34;details&#34;</span>: <span style="color:#f92672">{</span>
+
+  <span style="color:#f92672">}</span>,
+  <span style="color:#e6db74">&#34;code&#34;</span>: <span style="color:#ae81ff">403</span>
+<span style="color:#f92672">}</span>
+<span style="color:#75715e"># 使用客户端证书进行认证</span>
+curl -v --cacert /etc/kubernetes/pki/ca.crt  --key ./kubecfg.key --cert ./kubecfg.crt https://$MASTER:6443/api
+<span style="color:#75715e"># 同理访问kubelet的metrics接口</span>
+curl -k  --cacert /etc/kubernetes/pki/ca.crt --cert /etc/kubernetes/pki/apiserver-kubelet-client.crt --key /etc/kubernetes/pki/apiserver-kubelet-client.key https://127.0.0.1:10250/metrics
+
+<span style="color:#75715e"># 也可以生成另一类p12证书</span>
+openssl pkcs12 -export -clcerts -inkey kubecfg.key -in kubecfg.crt -out kubecfg.p12 -name <span style="color:#e6db74">&#34;kubernetes-client&#34;</span>
+</code></pre></div><h3 id="basic-auth">Basic Auth</h3>
+<p>API有一个启动参数&ndash;basic-auth-file，可以指定一个csv格式的文件作为Basic Auth</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">cat &lt;&lt;EOF &gt; basicauth.csv</span>
+<span style="color:#ae81ff">admin,admin,1,&#34;demo&#34;</span>
+<span style="color:#ae81ff">EOF</span>
+
+<span style="color:#ae81ff">cat &lt;&lt;EOF &gt; kubectl apply -f -</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ClusterRole</span>
+<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">rbac.authorization.k8s.io/v1</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">ui-admin</span>
+<span style="color:#f92672">rules</span>:
+- <span style="color:#f92672">apiGroups</span>:
+  - <span style="color:#e6db74">&#34;&#34;</span>
+  <span style="color:#f92672">resources</span>:
+  - <span style="color:#ae81ff">services</span>
+  - <span style="color:#ae81ff">services/proxy</span>
+  <span style="color:#f92672">verbs</span>:
+  - <span style="color:#e6db74">&#39;*&#39;</span>
+---
+<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">rbac.authorization.k8s.io/v1</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">RoleBinding</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">ui-admin-binding</span>
+  <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">kube-system</span>
+<span style="color:#f92672">roleRef</span>:
+  <span style="color:#f92672">apiGroup</span>: <span style="color:#ae81ff">rbac.authorization.k8s.io</span>
+  <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ClusterRole</span>
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">ui-admin</span>
+<span style="color:#f92672">subjects</span>:
+- <span style="color:#f92672">apiGroup</span>: <span style="color:#ae81ff">rbac.authorization.k8s.io</span>
+  <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">User</span>
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">admin</span>
+<span style="color:#ae81ff">EOF  </span>
+</code></pre></div><h3 id="service-account">Service Account</h3>
+<p>当创建一个Service Account会生成一个token，通过<code>kubectl -n kube-system describe secrets  ${Service account}</code>可以看到一个以<code>eyJhbGciOiJSUzI1NiIsImtpZCI6IiJ9</code>开头的Token。可以在jwt.io上面解码一下，得到的结果如下所示：APIServer也就是通过这些字段进行鉴权的。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">{</span>
+  <span style="color:#e6db74">&#34;iss&#34;</span>: <span style="color:#e6db74">&#34;kubernetes/serviceaccount&#34;</span>,
+  <span style="color:#e6db74">&#34;kubernetes.io/serviceaccount/namespace&#34;</span>: <span style="color:#e6db74">&#34;default&#34;</span>,
+  <span style="color:#e6db74">&#34;kubernetes.io/serviceaccount/secret.name&#34;</span>: <span style="color:#e6db74">&#34;default-token-ph2f5&#34;</span>,
+  <span style="color:#e6db74">&#34;kubernetes.io/serviceaccount/service-account.name&#34;</span>: <span style="color:#e6db74">&#34;default&#34;</span>,
+  <span style="color:#e6db74">&#34;kubernetes.io/serviceaccount/service-account.uid&#34;</span>: <span style="color:#e6db74">&#34;7ce56043-7dcc-11e9-9925-00163e132347&#34;</span>,
+  <span style="color:#e6db74">&#34;sub&#34;</span>: <span style="color:#e6db74">&#34;system:serviceaccount:default:default&#34;</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># 手动使用Token认证一下</span>
+TOKEN<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>kubectl describe secret <span style="color:#66d9ef">$(</span>kubectl get secrets | grep default | cut -f1 -d <span style="color:#e6db74">&#39; &#39;</span><span style="color:#66d9ef">)</span> | grep -E <span style="color:#e6db74">&#39;^token&#39;</span> | cut -f2 -d<span style="color:#e6db74">&#39;:&#39;</span> | tr -d <span style="color:#e6db74">&#39;\t&#39;</span><span style="color:#66d9ef">)</span>
+MASTER<span style="color:#f92672">=</span>10.96.0.1
+TOKEN<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>cat /var/run/secrets/kubernetes.io/serviceaccount/token<span style="color:#66d9ef">)</span>
+curl -k -H <span style="color:#e6db74">&#34;Authorization: Bearer </span>$TOKEN<span style="color:#e6db74">&#34;</span> https://$MASTER:6443/api
+</code></pre></div><h2 id="授权">授权</h2>
+<p>Authorization：授权。这个环节面对的输入是http request context中的各种属性，包括：user、group、request path（比如：/api/v1、/healthz、/version等）、request verb(比如：get、list、create等)。APIServer会将这些属性值与事先配置好的访问策略(access policy）相比较。APIServer支持多种authorization mode，包括Node、RBAC、Webhook等。</p>
+<p>APIServer启动时，可以指定一种authorization mode，也可以指定多种authorization mode，如果是后者，只要Request通过了其中一种mode的授权，那么该环节的最终结果就是授权成功。在较新版本kubeadm引导启动的k8s集群的apiserver初始配置中，authorization-mode的默认配置是”Node,RBAC”。Node授权器主要用于各个node上的kubelet访问apiserver时使用的，其他一般均由RBAC授权器来授权。</p>
+<h2 id="rbac实战">RBAC实战</h2>
+<p>k8s 大约有以下几种角色</p>
+<ul>
+<li>role 和 clusterrole 规定了权限的内容，也就是某个人或者角色能干什么</li>
+<li>Service account 也就是具体的角色或者账户</li>
+<li>rolebinding 和 clusterrolebinding 就是将两者结合在一起，规定什么人有什么样的权限</li>
+</ul>
+<p>下面我们来看一下例子</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
+<span style="color:#75715e"># ------------------- ClusterRole ------------------- #</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ClusterRole</span>
+<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">rbac.authorization.k8s.io/v1beta1</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">traefik-ingress-controller</span>
+<span style="color:#f92672">rules</span>:
+  - <span style="color:#f92672">apiGroups</span>:
+      - <span style="color:#e6db74">&#34;&#34;</span>
+    <span style="color:#f92672">resources</span>:
+      - <span style="color:#ae81ff">services</span>
+      - <span style="color:#ae81ff">endpoints</span>
+      - <span style="color:#ae81ff">secrets</span>
+    <span style="color:#f92672">verbs</span>:
+      - <span style="color:#ae81ff">get</span>
+      - <span style="color:#ae81ff">list</span>
+      - <span style="color:#ae81ff">watch</span>
+  - <span style="color:#f92672">apiGroups</span>:
+      - <span style="color:#ae81ff">extensions</span>
+    <span style="color:#f92672">resources</span>:
+      - <span style="color:#ae81ff">ingresses</span>
+    <span style="color:#f92672">verbs</span>:
+      - <span style="color:#ae81ff">get</span>
+      - <span style="color:#ae81ff">list</span>
+      - <span style="color:#ae81ff">watch</span>
+---
+<span style="color:#75715e"># ------------------- ClusterRoleBinding ------------------- #</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ClusterRoleBinding</span>
+<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">rbac.authorization.k8s.io/v1beta1</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">traefik-ingress-controller</span>
+<span style="color:#f92672">roleRef</span>:
+  <span style="color:#f92672">apiGroup</span>: <span style="color:#ae81ff">rbac.authorization.k8s.io</span>
+  <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ClusterRole</span>
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">traefik-ingress-controller</span>
+<span style="color:#f92672">subjects</span>:
+- <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ServiceAccount</span>
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">traefik-ingress-controller</span>
+  <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">kube-system</span>
+---
+<span style="color:#75715e"># ------------------- ServiceAccount ------------------- #</span>
+---
+<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ServiceAccount</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">traefik-ingress-controller</span>
+  <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">kube-system</span>
+</code></pre></div><h2 id="ref">Ref</h2>
+<p>Kubernetes集群的安全配置</p>
+<p><a href="https://tonybai.com/2016/11/25/the-security-settings-for-kubernetes-cluster/">https://tonybai.com/2016/11/25/the-security-settings-for-kubernetes-cluster/</a></p>
+<p>Kubernetes RBAC 详解
+<a href="https://blog.qikqiak.com/post/use-rbac-in-k8s/">https://blog.qikqiak.com/post/use-rbac-in-k8s/</a></p>
+<p>使用 RBAC 控制 kubectl 权限</p>
+<p><a href="https://mritd.me/2018/03/20/use-rbac-to-control-kubectl-permissions/">https://mritd.me/2018/03/20/use-rbac-to-control-kubectl-permissions/</a></p>
+</div>
+                    <div class="post_footer">
+                        
+                        <div class="meta">
+                            <div class="info">
+                                <span class="field tags">
+                                    <i class="ri-stack-line"></i>
+                                    
+                                    <a href="https://vsxen.github.io/tags/k8s/">k8s</a>
+                                    
+                                </span>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                
+                <div class="doc_comments"></div>
+                
+            </div>
+        </div>
+    </div>
+    <a id="back_to_top" href="#" class="back_to_top"><i class="ri-arrow-up-s-line"></i></a>
+    <footer class="footer">
+    <div class="powered_by">
+        <a href="https://varkai.com">Designed by VarKai,</a>
+        <a href="http://www.gohugo.io/">Proudly published with Hugo</a>
+    </div>
+
+    <div class="footer_slogan">
+        <span>我的精神家园</span>
+    </div>
+</footer>
+    <script src="https://vsxen.github.io/js/jquery-3.5.1.min.js"></script>
+<link href="https://vsxen.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://vsxen.github.io/js/fancybox.min.js"></script>
+<script src="https://vsxen.github.io/js/zozo.js"></script>
+
+
+<script type="text/javascript" async
+    src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+        MathJax.Hub.Config({
+            tex2jax: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\[\[', '\]\]']],
+                processEscapes: true,
+                processEnvironments: true,
+                skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+                TeX: {
+                    equationNumbers: { autoNumber: "AMS" },
+                    extensions: ["AMSmath.js", "AMSsymbols.js"]
+                }
+            }
+        });
+
+        MathJax.Hub.Queue(function () {
+            
+            
+            
+            var all = MathJax.Hub.getAllJax(), i;
+            for (i = 0; i < all.length; i += 1) {
+                all[i].SourceElement().parentNode.className += ' has-jax';
+            }
+        });
+    </script>
+
+<style>
+    code.has-jax {
+        font: inherit;
+        font-size: 100%;
+        background: inherit;
+        border: inherit;
+        color: #515151;
+    }
+</style>
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-81855844-3', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+</body>
+
+</html>

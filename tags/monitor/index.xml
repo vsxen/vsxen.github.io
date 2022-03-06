@@ -9,19 +9,19 @@
     <lastBuildDate>Tue, 16 Apr 2019 09:43:24 +0000</lastBuildDate><atom:link href="https://vsxen.github.io/tags/monitor/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>k8s 的实时日志 Events</title>
-      <link>https://vsxen.github.io/2019/04/16/k8s-event-explorer/</link>
+      <link>https://vsxen.github.io/posts/k8s-event-explorer/</link>
       <pubDate>Tue, 16 Apr 2019 09:43:24 +0000</pubDate>
       
-      <guid>https://vsxen.github.io/2019/04/16/k8s-event-explorer/</guid>
+      <guid>https://vsxen.github.io/posts/k8s-event-explorer/</guid>
       <description>Event 什么是k8s的Events？比如你启动了一个Deployment，k8s的各大组件就开始依次忙碌起来，最终完成Pod的创建，从声明一个Deployment开始，到Pod启动完成，会生成一些列Even</description>
     </item>
     
     <item>
       <title>新式监控系统 — prometheus</title>
-      <link>https://vsxen.github.io/2018/09/14/promethus/</link>
+      <link>https://vsxen.github.io/posts/promethus/</link>
       <pubDate>Fri, 14 Sep 2018 22:31:20 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/2018/09/14/promethus/</guid>
+      <guid>https://vsxen.github.io/posts/promethus/</guid>
       <description>Prometheus 是一套开源的系统监控报警框架。它启发于 Google 的 borgmon 监控系统，由工作在 SoundCloud 的 google 前员工在 2012 年创建，作为社区开源项目进行开发，并于 2015 年正式发布。2016 年，Prometheus 正式加入 Cloud Native Computing Foundation，</description>
     </item>
     

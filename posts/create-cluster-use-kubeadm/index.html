@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="Zeuk" />
+	
+	
+	
+	<title>使用kubeadm初始化集群 ｜ Code Life</title>
+	
+    
+    
+    <meta name="description" content="很久之前就写过这篇笔记，一直没发出来，虽说这样的文章差不多已经烂大街了，还是可以看一下的。 ⎈⎈ apt install -y bash-completion yum install -y bash-completion echo &amp;#34;source &amp;lt;(kubectl completion bash)&amp;#34; &amp;gt;&amp;gt; ~/.bashrc echo &amp;#34;source &amp;lt;(kubeadm completion bash)&amp;#34; &amp;gt;&amp;gt; ~/.bashrc source ~/.bashrc modprobe ip_vs &amp;amp;&amp;amp; modprobe ip_vs_rr &amp;amp;&amp;amp; modprobe ip_vs_wrr &amp;amp;&amp;amp; modprobe ip_vs_sh rm -rf /var/lib/cni/ rm -rf /var/lib/kubelet/* rm -rf /etc/cni/ ip link del cni0 &amp;amp;&amp;amp; ip link del flannel.1" />
+    
+
+    
+    
+    <meta name="keywords" content="Hugo, theme, zozo" />
+    
+
+	
+    
+    <link rel="shortcut icon" href="https://vsxen.github.io/images/favicon.ico" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="https://vsxen.github.iocss/normalize.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.0/animate.min.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://vsxen.github.io/css/zozo.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://vsxen.github.io/css/highlight.css" />
+
+    
+    
+</head>
+
+<body>
+    <div class="main animate__animated animate__fadeInDown">
+        <div class="nav_container animated fadeInDown">
+    <div class="site_nav" id="site_nav">
+        <ul>
+            
+            <li>
+                <a href="/">首页</a>
+            </li>
+            
+            <li>
+                <a href="/posts/">归档</a>
+            </li>
+            
+            <li>
+                <a href="/tags/">标签</a>
+            </li>
+            
+            <li>
+                <a href="/about/">关于</a>
+            </li>
+            
+        </ul>
+    </div>
+    <div class="menu_icon">
+        <a id="menu_icon"><i class="ri-menu-line"></i></a>
+    </div>
+</div>
+        <div class="header animated fadeInDown">
+    <div class="site_title_container">
+        <div class="site_title">
+            <h1>
+                <a href="https://vsxen.github.io">
+                    <span>Code Life</span>
+                </a>
+            </h1>
+        </div>
+        <div class="description">
+            <p class="sub_title">the site subtitle</p>
+            <div class="my_socials">
+                
+                
+                <a href="%20" title="facebook" target="_blank"><i class="ri-facebook-fill"></i></a>
+                
+                
+                
+                <a href="%20" title="github" target="_blank"><i class="ri-github-fill"></i></a>
+                
+                
+                
+                <a href="%20" title="instagram" target="_blank"><i class="ri-instagram-fill"></i></a>
+                
+                
+                
+                <a href="%20" title="twitter" target="_blank"><i class="ri-twitter-fill"></i></a>
+                
+                
+                
+                <a href="%20" title="weibo" target="_blank"><i class="ri-weibo-fill"></i></a>
+                
+                
+                <a href="https://vsxen.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i
+                        class="ri-rss-fill"></i></a>
+            </div>
+        </div>
+    </div>
+</div>
+        <div class="content">
+            <div class="post_page">
+                <div class="post animate__animated animate__fadeInDown">
+                    <div class="post_title post_detail_title">
+                        <h2><a href='/posts/create-cluster-use-kubeadm/'>使用kubeadm初始化集群</a></h2>
+                        <span class="date">2019.05.17</span>
+                    </div>
+                    <div class="post_content markdown"><p>很久之前就写过这篇笔记，一直没发出来，虽说这样的文章差不多已经烂大街了，还是可以看一下的。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">⎈⎈
+apt install -y bash-completion
+yum install -y bash-completion 
+echo <span style="color:#e6db74">&#34;source &lt;(kubectl completion bash)&#34;</span> &gt;&gt; ~/.bashrc
+echo <span style="color:#e6db74">&#34;source &lt;(kubeadm completion bash)&#34;</span> &gt;&gt; ~/.bashrc
+source ~/.bashrc
+modprobe ip_vs <span style="color:#f92672">&amp;&amp;</span> modprobe ip_vs_rr <span style="color:#f92672">&amp;&amp;</span> modprobe ip_vs_wrr <span style="color:#f92672">&amp;&amp;</span> modprobe ip_vs_sh
+rm -rf /var/lib/cni/
+rm -rf /var/lib/kubelet/*
+rm -rf /etc/cni/
+ip link del cni0 <span style="color:#f92672">&amp;&amp;</span> ip link del flannel.1 <span style="color:#f92672">&amp;&amp;</span> ip link del kube-ipvs0
+net.ipv6.conf.all.disable_ipv6 <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
+awk <span style="color:#e6db74">&#39;$2 ~ path {print $2}&#39;</span> path<span style="color:#f92672">=</span>/var/lib/kubelet /proc/mounts | xargs -r umount
+kubeadm init --kubernetes-version 1.11.1 --pod-network-cidr<span style="color:#f92672">=</span>10.244.0.0/16
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/v0.10.0/Documentation/kube-flannel.yml
+kubectl taint nodes --all node-role.kubernetes.io/master-
+kubectl run nginx --image<span style="color:#f92672">=</span>nginx:alpine --port<span style="color:#f92672">=</span><span style="color:#ae81ff">80</span> --replicas <span style="color:#ae81ff">1</span>
+kubectl expose deployment nginx --type<span style="color:#f92672">=</span>NodePort
+kubectl run curl --image<span style="color:#f92672">=</span>vsxen/k8s --port<span style="color:#f92672">=</span><span style="color:#ae81ff">5201</span> -i --tty
+</code></pre></div><h2 id="tldr">TL.DR</h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e">#!/bin/bash
+</span><span style="color:#75715e"></span>set -x
+set -e
+
+curl -fsSL https://get.docker.com | bash -s docker --mirror Aliyun
+cat &gt; /etc/docker/daemon.json <span style="color:#e6db74">&lt;&lt; EOF
+</span><span style="color:#e6db74">{
+</span><span style="color:#e6db74">  &#34;registry-mirrors&#34;: [&#34;https://docker.mirrors.ustc.edu.cn&#34;, &#34;https://2h3po24q.mirror.aliyuncs.com&#34;],
+</span><span style="color:#e6db74">  &#34;max-concurrent-downloads&#34;: 10
+</span><span style="color:#e6db74">  &#34;exec-opts&#34;: [&#34;native.cgroupdriver=systemd&#34;],
+</span><span style="color:#e6db74">    &#34;log-driver&#34;: &#34;json-file&#34;,
+</span><span style="color:#e6db74">    &#34;log-opts&#34;: {
+</span><span style="color:#e6db74">        &#34;max-size&#34;: &#34;100m&#34;,
+</span><span style="color:#e6db74">        &#34;max-file&#34;: &#34;10&#34;
+</span><span style="color:#e6db74">    }
+</span><span style="color:#e6db74">}
+</span><span style="color:#e6db74">EOF</span>
+systemctl restart docker 
+
+cat <span style="color:#e6db74">&lt;&lt;EOF &gt;  /etc/sysctl.d/k8s.conf
+</span><span style="color:#e6db74">net.bridge.bridge-nf-call-ip6tables = 1
+</span><span style="color:#e6db74">net.bridge.bridge-nf-call-iptables = 1
+</span><span style="color:#e6db74">EOF</span>
+sysctl --system
+
+cat <span style="color:#e6db74">&lt;&lt;EOF &gt; /etc/yum.repos.d/kubernetes.repo
+</span><span style="color:#e6db74">[kubernetes]
+</span><span style="color:#e6db74">name=Kubernetes
+</span><span style="color:#e6db74">baseurl=http://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64
+</span><span style="color:#e6db74">enabled=1
+</span><span style="color:#e6db74">gpgcheck=0
+</span><span style="color:#e6db74">repo_gpgcheck=0
+</span><span style="color:#e6db74">gpgkey=http://mirrors.aliyun.com/kubernetes/yum/doc/yum-key.gpg
+</span><span style="color:#e6db74">        http://mirrors.aliyun.com/kubernetes/yum/doc/rpm-package-key.gpg
+</span><span style="color:#e6db74">EOF</span>
+yum install -y kubelet-1.11.1-0 kubeadm-1.11.1-0 kubectl-1.11.1-0 cri-tools-1.11.1-0
+
+apt-get update <span style="color:#f92672">&amp;&amp;</span> apt-get install -y apt-transport-https
+curl https://mirrors.aliyun.com/kubernetes/apt/doc/apt-key.gpg | apt-key add - 
+cat <span style="color:#e6db74">&lt;&lt;EOF &gt;/etc/apt/sources.list.d/kubernetes.list
+</span><span style="color:#e6db74">deb https://mirrors.aliyun.com/kubernetes/apt/ kubernetes-xenial main
+</span><span style="color:#e6db74">EOF</span>
+apt-get update
+apt install kubeadm<span style="color:#f92672">=</span>1.11.1-00 kubelet<span style="color:#f92672">=</span>1.11.1-00 kubernetes-cni<span style="color:#f92672">=</span>0.6.0-00 cri-tools<span style="color:#f92672">=</span>1.11.1-00
+
+KUBE_VERSION<span style="color:#f92672">=</span>v1.14.1
+KUBE_PAUSE_VERSION<span style="color:#f92672">=</span>3.1
+ETCD_VERSION<span style="color:#f92672">=</span>3.3.10
+DNS_VERSION<span style="color:#f92672">=</span>1.3.1
+GCR_URL<span style="color:#f92672">=</span>k8s.gcr.io
+HUB_URL<span style="color:#f92672">=</span>mirrorgooglecontainers
+images<span style="color:#f92672">=(</span>kube-proxy:<span style="color:#e6db74">${</span>KUBE_VERSION<span style="color:#e6db74">}</span>
+kube-scheduler:<span style="color:#e6db74">${</span>KUBE_VERSION<span style="color:#e6db74">}</span>
+kube-controller-manager:<span style="color:#e6db74">${</span>KUBE_VERSION<span style="color:#e6db74">}</span>
+kube-apiserver:<span style="color:#e6db74">${</span>KUBE_VERSION<span style="color:#e6db74">}</span>
+pause:<span style="color:#e6db74">${</span>KUBE_PAUSE_VERSION<span style="color:#e6db74">}</span>
+etcd:<span style="color:#e6db74">${</span>ETCD_VERSION<span style="color:#e6db74">}</span><span style="color:#f92672">)</span>
+
+<span style="color:#66d9ef">for</span> imageName in <span style="color:#e6db74">${</span>images[@]<span style="color:#e6db74">}</span> ; <span style="color:#66d9ef">do</span>
+docker pull $HUB_URL/$imageName
+docker tag $HUB_URL/$imageName $GCR_URL/$imageName
+docker rmi $HUB_URL/$imageName
+<span style="color:#66d9ef">done</span>
+docker pull coredns/coredns:<span style="color:#e6db74">${</span>DNS_VERSION<span style="color:#e6db74">}</span>
+docker tag coredns/coredns:<span style="color:#e6db74">${</span>DNS_VERSION<span style="color:#e6db74">}</span> $GCR_URL/coredns:<span style="color:#e6db74">${</span>DNS_VERSION<span style="color:#e6db74">}</span>
+docker rmi coredns/coredns:<span style="color:#e6db74">${</span>DNS_VERSION<span style="color:#e6db74">}</span>
+
+docker pull jmgao1983/flannel:v0.10.0-amd64
+docker tag jmgao1983/flannel:v0.10.0-amd64 quay.io/coreos/flannel:v0.10.0-amd64 
+docker rmi jmgao1983/flannel:v0.10.0-amd64
+
+systemctl enable docker.service
+kubeadm init --kubernetes-version 1.11.1 --pod-network-cidr<span style="color:#f92672">=</span>10.244.0.0/16 --apiserver-advertise-address
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/v0.10.0/Documentation/kube-flannel.yml
+</code></pre></div><h2 id="一步一步装">一步一步装</h2>
+<h3 id="安装-docker">安装 Docker</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">apt-get update
+apt-get install -y apt-transport-https ca-certificates curl software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+add-apt-repository <span style="color:#e6db74">&#34;deb https://download.docker.com/linux/</span><span style="color:#66d9ef">$(</span>. /etc/os-release; echo <span style="color:#e6db74">&#34;</span>$ID<span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">)</span><span style="color:#e6db74"> </span><span style="color:#66d9ef">$(</span>lsb_release -cs<span style="color:#66d9ef">)</span><span style="color:#e6db74"> stable&#34;</span>
+apt-get update <span style="color:#f92672">&amp;&amp;</span> apt-get install -y docker-ce<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>apt-cache madison docker-ce | grep 17.03 | head -1 | awk <span style="color:#e6db74">&#39;{print $3}&#39;</span><span style="color:#66d9ef">)</span>
+
+yum install -y yum-utils device-mapper-persistent-data lvm2
+yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
+yum list docker-ce.x86_64  --showduplicates |sort -r
+</code></pre></div><p>设置Docker代理</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">SSIP<span style="color:#f92672">=</span>192.168.12.100
+sudo mkdir -p /etc/systemd/system/docker.service.d
+cat &gt; /etc/systemd/system/docker.service.d/http-proxy.conf <span style="color:#e6db74">&lt;&lt;EOF
+</span><span style="color:#e6db74">[Service]
+</span><span style="color:#e6db74">Environment=&#34;HTTP_PROXY=$SSIP:1080/&#34;
+</span><span style="color:#e6db74">EOF</span>
+cat &gt; /etc/docker/daemon.json <span style="color:#e6db74">&lt;&lt; EOF
+</span><span style="color:#e6db74">{
+</span><span style="color:#e6db74">  &#34;registry-mirrors&#34;: [&#34;https://docker.mirrors.ustc.edu.cn&#34;, &#34;https://2h3po24q.mirror.aliyuncs.com&#34;],
+</span><span style="color:#e6db74">  &#34;max-concurrent-downloads&#34;: 10
+</span><span style="color:#e6db74">}
+</span><span style="color:#e6db74">EOF</span>
+systemctl daemon-reload <span style="color:#f92672">&amp;&amp;</span> systemctl restart docker
+</code></pre></div><h3 id="安装kubeadm">安装kubeadm</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">apt-get update <span style="color:#f92672">&amp;&amp;</span> apt-get install -y apt-transport-https curl
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+<span style="color:#75715e"># 使用代理</span>
+sudo vi /etc/apt/apt.conf.d/proxy.conf
+Acquire::https::Proxy <span style="color:#e6db74">&#34;http://192.168.12.100:1080&#34;</span>;
+Acquire::https::Proxy <span style="color:#e6db74">&#34;http://user:password@proxy.server:port/&#34;</span>;
+SSIP<span style="color:#f92672">=</span>192.168.12.102
+curl --socks5 $SSIP:1080 -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+export http_proxy<span style="color:#f92672">=</span>socks5://$SSIP:1080 
+<span style="color:#75715e">#后续apt会自动读取env，不需要设置代理</span>
+cat <span style="color:#e6db74">&lt;&lt;EOF &gt;/etc/apt/sources.list.d/kubernetes.list
+</span><span style="color:#e6db74">deb http://apt.kubernetes.io/ kubernetes-xenial main
+</span><span style="color:#e6db74">EOF</span>
+apt-get update
+apt-get install -y kubelet kubeadm kubectl
+
+yum list kubeadm --showduplicates
+yum install -y kubelet-1.10.7-0 kubeadm-1.10.7-0 kubectl-1.10.7-0 cri-tools-1.10.7-0
+</code></pre></div><p>kubeadm 为kubelet新增的启动参数</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cat /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+<span style="color:#75715e"># Note: This dropin only works with kubeadm and kubelet v1.11+</span>
+<span style="color:#f92672">[</span>Service<span style="color:#f92672">]</span>
+Environment<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;KUBELET_KUBECONFIG_ARGS=--bootstrap-kubeconfig=/etc/kubernetes/bootstrap-kubelet.conf --kubeconfig=/etc/kubernetes/kubelet.conf&#34;</span>
+Environment<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;KUBELET_CONFIG_ARGS=--config=/var/lib/kubelet/config.yaml&#34;</span>
+<span style="color:#75715e"># This is a file that &#34;kubeadm init&#34; and &#34;kubeadm join&#34; generates at runtime, populating the KUBELET_KUBEADM_ARGS variable dynamically</span>
+EnvironmentFile<span style="color:#f92672">=</span>-/var/lib/kubelet/kubeadm-flags.env
+<span style="color:#75715e"># This is a file that the user can use for overrides of the kubelet args as a last resort. Preferably, the user should use</span>
+<span style="color:#75715e"># the .NodeRegistration.KubeletExtraArgs object in the configuration files instead. KUBELET_EXTRA_ARGS should be sourced from this file.</span>
+EnvironmentFile<span style="color:#f92672">=</span>-/etc/default/kubelet
+ExecStart<span style="color:#f92672">=</span>
+ExecStart<span style="color:#f92672">=</span>/usr/bin/kubelet $KUBELET_KUBECONFIG_ARGS $KUBELET_CONFIG_ARGS $KUBELET_KUBEADM_ARGS $KUBELET_EXTRA_ARGS
+</code></pre></div><h3 id="准备工作">准备工作</h3>
+<p>关闭swap和防火墙，不关闭会报错[ERROR Swap]: running with swap on is not supported. Please disable swap。
+<code>swapoff -a</code>
+如果之前设置了代理，现在要取消掉<code>unset http_proxy</code>，否则报错</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">Jul <span style="color:#ae81ff">26</span> 09:52:34 ubuntu kubelet<span style="color:#f92672">[</span>3336<span style="color:#f92672">]</span>: E0726 09:52:34.391184    <span style="color:#ae81ff">3336</span> reflector.go:205<span style="color:#f92672">]</span> k8s.io/kubernetes/pkg/kubelet/kubelet.go:455: Failed to list *v1.Service: Get https://192.168.200.140:6443/api/v1/services?limit<span style="color:#f92672">=</span>500&amp;resourceVersion<span style="color:#f92672">=</span>0: net/http: TLS handshake timeout
+Jul <span style="color:#ae81ff">26</span> 09:52:34 ubuntu kubelet<span style="color:#f92672">[</span>3336<span style="color:#f92672">]</span>: E0726 09:52:34.400787    <span style="color:#ae81ff">3336</span> reflector.go:205<span style="color:#f92672">]</span> k8s.io/kubernetes/pkg/kubelet/config/apiserver.go:47: Failed to list *v1.Pod: Get https://192.168.200.140:6443/api/v1/pods?fieldSelector<span style="color:#f92672">=</span>spec.nodeName%3Dubuntu&amp;limit<span style="color:#f92672">=</span>500&amp;resourceVersion<span style="color:#f92672">=</span>0: net/http: TLS handshake timeout
+Jul <span style="color:#ae81ff">26</span> 09:52:34 ubuntu kubelet<span style="color:#f92672">[</span>3336<span style="color:#f92672">]</span>: E0726 09:52:34.403551    <span style="color:#ae81ff">3336</span> reflector.go:205<span style="color:#f92672">]</span> k8s.io/kubernetes/pkg/kubelet/kubelet.go:464: Failed to list *v1.Node: Get https://192.168.200.140:6443/api/v1/nodes?fieldSelector<span style="color:#f92672">=</span>metadata.name%3Dubuntu&amp;limit<span style="color:#f92672">=</span>500&amp;resourceVersion<span style="color:#f92672">=</span>0: net/http: TLS handshake timeout
+Jul <span style="color:#ae81ff">26</span> 09:52:35 ubuntu kubelet<span style="color:#f92672">[</span>3336<span style="color:#f92672">]</span>: W0726 09:52:35.846994    <span style="color:#ae81ff">3336</span> cni.go:172<span style="color:#f92672">]</span> Unable to update cni config: No networks found in /etc/cni/net.d
+Jul <span style="color:#ae81ff">26</span> 09:52:35 ubuntu kubelet<span style="color:#f92672">[</span>3336<span style="color:#f92672">]</span>: E0726 09:52:35.847929    <span style="color:#ae81ff">3336</span> kubelet.go:2110<span style="color:#f92672">]</span> Container runtime network not ready: NetworkReady<span style="color:#f92672">=</span>false reason:NetworkPluginNotReady message:docker: network plugin is not ready: cni config uninitialized
+Jul <span style="color:#ae81ff">26</span> 09:52:37 ubuntu kubelet<span style="color:#f92672">[</span>3336<span style="color:#f92672">]</span>: E0726 09:52:37.408007    <span style="color:#ae81ff">3336</span> kubelet_node_status.go:103<span style="color:#f92672">]</span> Unable to register node <span style="color:#e6db74">&#34;ubuntu&#34;</span> with API server: Post https://192.168.200.140:6443/api/v1/nodes: net/http: TLS handshake timeout
+</code></pre></div><h3 id="初始化静态pod">初始化静态pod</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># 这里使用flannel预先规定的CIDR</span>
+kubeadm init --kubernetes-version 1.11.0 --pod-network-cidr<span style="color:#f92672">=</span>10.244.0.0/16
+You can now join any number of machines by running the following on each node
+as root:
+kubeadm join 192.168.200.140:6443 --token e12o5m.ablnnhbsojrl1g5t --discovery-token-ca-cert-hash sha256:ad11adbac1f2a9f963c4bb8c88dcf6dfa4c330ad79bef59cae7613388cfe6413
+</code></pre></div><h3 id="生成的文件">生成的文件</h3>
+<pre><code>├── admin.conf
+├── controller-manager.conf
+├── kubelet.conf
+├── manifests
+│   ├── etcd.yaml
+│   ├── kube-apiserver.yaml
+│   ├── kube-controller-manager.yaml
+│   └── kube-scheduler.yaml
+├── pki
+│   ├── apiserver.crt
+│   ├── apiserver-etcd-client.crt
+│   ├── apiserver-etcd-client.key
+│   ├── apiserver.key
+│   ├── apiserver-kubelet-client.crt
+│   ├── apiserver-kubelet-client.key
+│   ├── ca.crt
+│   ├── ca.key
+│   ├── etcd
+│   │   ├── ca.crt
+│   │   ├── ca.key
+│   │   ├── healthcheck-client.crt
+│   │   ├── healthcheck-client.key
+│   │   ├── peer.crt
+│   │   ├── peer.key
+│   │   ├── server.crt
+│   │   └── server.key
+│   ├── front-proxy-ca.crt
+│   ├── front-proxy-ca.key
+│   ├── front-proxy-client.crt
+│   ├── front-proxy-client.key
+│   ├── sa.key
+│   └── sa.pub
+└── scheduler.conf
+</code></pre><h3 id="组件的启动参数">组件的启动参数</h3>
+<h4 id="manifestsetcdyaml">manifests/etcd.yaml</h4>
+<pre><code>    - etcd
+    - --advertise-client-urls=https://127.0.0.1:2379
+    - --cert-file=/etc/kubernetes/pki/etcd/server.crt
+    - --client-cert-auth=true
+    - --data-dir=/var/lib/etcd
+    - --initial-advertise-peer-urls=https://127.0.0.1:2380
+    - --initial-cluster=ubuntu=https://127.0.0.1:2380
+    - --key-file=/etc/kubernetes/pki/etcd/server.key
+    - --listen-client-urls=https://127.0.0.1:2379
+    - --listen-peer-urls=https://127.0.0.1:2380
+    - --name=ubuntu
+    - --peer-cert-file=/etc/kubernetes/pki/etcd/peer.crt
+    - --peer-client-cert-auth=true
+    - --peer-key-file=/etc/kubernetes/pki/etcd/peer.key
+    - --peer-trusted-ca-file=/etc/kubernetes/pki/etcd/ca.crt
+    - --snapshot-count=10000
+    - --trusted-ca-file=/etc/kubernetes/pki/etcd/ca.crt
+    image: k8s.gcr.io/etcd-amd64:3.2.18
+</code></pre><h4 id="manifestskube-apiserver">manifests/kube-apiserver</h4>
+<pre><code>spec:
+  containers:
+  - command:
+    - kube-apiserver
+    - --authorization-mode=Node,RBAC
+    - --advertise-address=192.168.200.140
+    - --allow-privileged=true
+    - --client-ca-file=/etc/kubernetes/pki/ca.crt
+    - --disable-admission-plugins=PersistentVolumeLabel
+    - --enable-admission-plugins=NodeRestriction
+    - --enable-bootstrap-token-auth=true
+    - --etcd-cafile=/etc/kubernetes/pki/etcd/ca.crt
+    - --etcd-certfile=/etc/kubernetes/pki/apiserver-etcd-client.crt
+    - --etcd-keyfile=/etc/kubernetes/pki/apiserver-etcd-client.key
+    - --etcd-servers=https://127.0.0.1:2379
+    - --insecure-port=0
+    - --kubelet-client-certificate=/etc/kubernetes/pki/apiserver-kubelet-client.crt
+    - --kubelet-client-key=/etc/kubernetes/pki/apiserver-kubelet-client.key
+    - --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname
+    - --proxy-client-cert-file=/etc/kubernetes/pki/front-proxy-client.crt
+    - --proxy-client-key-file=/etc/kubernetes/pki/front-proxy-client.key
+    - --requestheader-allowed-names=front-proxy-client
+    - --requestheader-client-ca-file=/etc/kubernetes/pki/front-proxy-ca.crt
+    - --requestheader-extra-headers-prefix=X-Remote-Extra-
+    - --requestheader-group-headers=X-Remote-Group
+    - --requestheader-username-headers=X-Remote-User
+    - --secure-port=6443
+    - --service-account-key-file=/etc/kubernetes/pki/sa.pub
+    - --service-cluster-ip-range=10.96.0.0/12
+    - --tls-cert-file=/etc/kubernetes/pki/apiserver.crt
+    - --tls-private-key-file=/etc/kubernetes/pki/apiserver.key
+    image: k8s.gcr.io/kube-apiserver-amd64:v1.11.0
+</code></pre><h4 id="kube-controller-manager">kube-controller-manager</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">spec:
+  containers:
+  - command:
+    - kube-controller-manager
+    - --address<span style="color:#f92672">=</span>127.0.0.1
+    - --allocate-node-cidrs<span style="color:#f92672">=</span>true
+    - --cluster-cidr<span style="color:#f92672">=</span>10.244.0.0/16
+    - --cluster-signing-cert-file<span style="color:#f92672">=</span>/etc/kubernetes/pki/ca.crt
+    - --cluster-signing-key-file<span style="color:#f92672">=</span>/etc/kubernetes/pki/ca.key
+    - --controllers<span style="color:#f92672">=</span>*,bootstrapsigner,tokencleaner
+    - --kubeconfig<span style="color:#f92672">=</span>/etc/kubernetes/controller-manager.conf
+    - --leader-elect<span style="color:#f92672">=</span>true
+    - --node-cidr-mask-size<span style="color:#f92672">=</span><span style="color:#ae81ff">24</span>
+    - --root-ca-file<span style="color:#f92672">=</span>/etc/kubernetes/pki/ca.crt
+    - --service-account-private-key-file<span style="color:#f92672">=</span>/etc/kubernetes/pki/sa.key
+    - --use-service-account-credentials<span style="color:#f92672">=</span>true
+    image: k8s.gcr.io/kube-controller-manager-amd64:v1.11.0
+</code></pre></div><h4 id="manifestskube-scheduler">manifests/kube-scheduler.</h4>
+<pre><code>spec:
+  containers:
+  - command:
+    - kube-scheduler
+    - --address=127.0.0.1
+    - --kubeconfig=/etc/kubernetes/scheduler.conf
+    - --leader-elect=true
+    image: k8s.gcr.io/kube-scheduler-amd64:v1.11.0
+</code></pre><h4 id="查看状态">查看状态</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl -n kube-system get po -o wide
+NAME                             READY     STATUS    RESTARTS   AGE       IP                NODE
+coredns-78fcdf6894-495rm         0/1       Pending   <span style="color:#ae81ff">0</span>          15m       &lt;none&gt;            &lt;none&gt;
+coredns-78fcdf6894-qvfvf         0/1       Pending   <span style="color:#ae81ff">0</span>          15m       &lt;none&gt;            &lt;none&gt;
+etcd-ubuntu                      1/1       Running   <span style="color:#ae81ff">0</span>          15m       192.168.200.140   ubuntu
+kube-apiserver-ubuntu            1/1       Running   <span style="color:#ae81ff">0</span>          14m       192.168.200.140   ubuntu
+kube-controller-manager-ubuntu   1/1       Running   <span style="color:#ae81ff">0</span>          14m       192.168.200.140   ubuntu
+kube-proxy-csr55                 1/1       Running   <span style="color:#ae81ff">0</span>          15m       192.168.200.140   ubuntu
+kube-scheduler-ubuntu            1/1       Running   <span style="color:#ae81ff">0</span>          14m       192.168.200.140   ubuntu
+</code></pre></div><h2 id="自定义配置">自定义配置</h2>
+<p>应该仅适用于1.14版本</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">kubeadm.k8s.io/v1beta1</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">InitConfiguration</span>
+<span style="color:#f92672">bootstrapTokens</span>:
+- <span style="color:#f92672">groups</span>:
+  - <span style="color:#ae81ff">system:bootstrappers:kubeadm:default-node-token</span>
+  <span style="color:#75715e">#token: abcdef.0123456789abcdef</span>
+  <span style="color:#f92672">ttl</span>: <span style="color:#ae81ff">24h0m0s</span>
+  <span style="color:#f92672">usages</span>:
+  - <span style="color:#ae81ff">signing</span>
+  - <span style="color:#ae81ff">authentication</span>
+<span style="color:#f92672">nodeRegistration</span>:
+  <span style="color:#f92672">criSocket</span>: <span style="color:#ae81ff">/var/run/dockershim.sock</span>
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">east1-monitor1</span>
+  <span style="color:#f92672">taints</span>:
+  - <span style="color:#f92672">effect</span>: <span style="color:#ae81ff">NoSchedule</span>
+    <span style="color:#f92672">key</span>: <span style="color:#ae81ff">node-role.kubernetes.io/master</span>
+---
+<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">kubeadm.k8s.io/v1beta1</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ClusterConfiguration</span>
+<span style="color:#f92672">apiServer</span>:
+  <span style="color:#f92672">timeoutForControlPlane</span>: <span style="color:#ae81ff">4m0s</span>
+  <span style="color:#f92672">extraArgs</span>:
+    <span style="color:#f92672">audit-log-maxbackup</span>: <span style="color:#e6db74">&#34;10&#34;</span>
+    <span style="color:#f92672">audit-log-maxsize</span>: <span style="color:#e6db74">&#34;100&#34;</span>
+    <span style="color:#f92672">audit-log-path</span>: <span style="color:#e6db74">&#34;/var/log/kubernetes/kubernetes.audit&#34;</span>
+    <span style="color:#f92672">audit-log-maxage</span>: <span style="color:#e6db74">&#34;7&#34;</span>
+    <span style="color:#f92672">audit-policy-file</span>: <span style="color:#e6db74">&#34;/etc/kubernetes/audit.yml&#34;</span>
+  <span style="color:#f92672">extraVolumes</span>:
+  - <span style="color:#f92672">name</span>: <span style="color:#e6db74">&#34;audit&#34;</span>
+    <span style="color:#f92672">hostPath</span>: <span style="color:#e6db74">&#34;/etc/kubernetes/audit.yml&#34;</span>
+    <span style="color:#f92672">mountPath</span>: <span style="color:#e6db74">&#34;/etc/kubernetes/audit.yml&#34;</span>
+    <span style="color:#f92672">writable</span>: <span style="color:#66d9ef">true</span>
+    <span style="color:#f92672">pathType</span>: <span style="color:#ae81ff">File</span>
+  - <span style="color:#f92672">name</span>: <span style="color:#e6db74">&#34;log&#34;</span>
+    <span style="color:#f92672">hostPath</span>: <span style="color:#e6db74">&#34;/var/log/kubernetes&#34;</span>
+    <span style="color:#f92672">mountPath</span>: <span style="color:#e6db74">&#34;/var/log/kubernetes&#34;</span>
+    <span style="color:#f92672">writable</span>: <span style="color:#66d9ef">true</span>
+    <span style="color:#f92672">pathType</span>: <span style="color:#ae81ff">Directory</span>
+<span style="color:#f92672">certificatesDir</span>: <span style="color:#ae81ff">/etc/kubernetes/pki</span>
+<span style="color:#f92672">clusterName</span>: <span style="color:#ae81ff">kubernetes</span>
+<span style="color:#f92672">controlPlaneEndpoint</span>: <span style="color:#e6db74">&#34;&#34;</span>
+<span style="color:#f92672">imageRepository</span>: <span style="color:#ae81ff">k8s.gcr.io</span>
+<span style="color:#f92672">kubernetesVersion</span>: <span style="color:#ae81ff">v1.14.0</span>
+<span style="color:#f92672">controllerManager</span>: {}
+<span style="color:#f92672">scheduler</span>: {}
+<span style="color:#f92672">dns</span>:
+  <span style="color:#f92672">type</span>: <span style="color:#ae81ff">CoreDNS</span>
+<span style="color:#f92672">etcd</span>:
+  <span style="color:#f92672">local</span>:
+    <span style="color:#f92672">dataDir</span>: <span style="color:#ae81ff">/var/lib/etcd</span>
+<span style="color:#f92672">networking</span>:
+  <span style="color:#f92672">dnsDomain</span>: <span style="color:#ae81ff">cluster.local</span>
+  <span style="color:#f92672">podSubnet</span>: <span style="color:#e6db74">&#34;10.244.0.0/16&#34;</span>
+  <span style="color:#f92672">serviceSubnet</span>: <span style="color:#ae81ff">10.96.0.0</span><span style="color:#ae81ff">/12</span>
+---
+<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">kubeproxy.config.k8s.io/v1alpha1</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">KubeProxyConfiguration</span>
+<span style="color:#f92672">ipvs</span>:
+ <span style="color:#f92672">excludeCIDRs</span>: <span style="color:#66d9ef">null</span>
+ <span style="color:#f92672">minSyncPeriod</span>: <span style="color:#ae81ff">1s</span>
+ <span style="color:#f92672">scheduler</span>: <span style="color:#e6db74">&#34;rr&#34;</span>
+ <span style="color:#f92672">syncPeriod</span>: <span style="color:#ae81ff">30s</span>
+<span style="color:#f92672">mode</span>: <span style="color:#ae81ff">ipvs</span>
+</code></pre></div><p>不得不说，kubeadm大大的降低了初始化k8s集群的难度，接下来我尝试从初始化输出的日志中探究kubeadn到底替我们做了哪些事情。</p>
+<h2 id="master">Master</h2>
+<p>安装前检查，检查包括IP，路由，端口，命令，镜像，然后生成证书和对应的static pod，等待pod启动并初始化，这一步信息比较多就不放了。然后把kubeadm的应答config放到了k8s的configmap之中，上传kubelet的配置，方便节点在加入的时候配置信息。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">I0403 11:30:25.053837   <span style="color:#ae81ff">25657</span> uploadconfig.go:109<span style="color:#f92672">][</span>upload-config<span style="color:#f92672">]</span> Uploading the kubeadm ClusterConfiguration to a ConfigMap
+<span style="color:#f92672">[</span>upload-config<span style="color:#f92672">]</span> storing the configuration used in ConfigMap <span style="color:#e6db74">&#34;kubeadm-config&#34;</span> in the <span style="color:#e6db74">&#34;kube-system&#34;</span> Namespace
+I0403 11:30:25.056662   <span style="color:#ae81ff">25657</span> round_trippers.go:438<span style="color:#f92672">]</span> GET https://192.168.1.11:6443/api/v1/namespaces/kube-system/configmaps/kubeadm-config <span style="color:#ae81ff">404</span> Not Found in <span style="color:#ae81ff">1</span> milliseconds
+I0403 11:30:25.061844   <span style="color:#ae81ff">25657</span> round_trippers.go:438<span style="color:#f92672">]</span> POST https://192.168.1.11:6443/api/v1/namespaces/kube-system/configmaps <span style="color:#ae81ff">201</span> Created in <span style="color:#ae81ff">4</span> milliseconds
+
+I0403 11:30:25.070763   <span style="color:#ae81ff">25657</span> uploadconfig.go:123<span style="color:#f92672">]</span> <span style="color:#f92672">[</span>upload-config<span style="color:#f92672">]</span> Uploading the kubelet component config to a ConfigMap
+<span style="color:#f92672">[</span>kubelet<span style="color:#f92672">]</span> Creating a ConfigMap <span style="color:#e6db74">&#34;kubelet-config-1.13&#34;</span> in namespace kube-system with the configuration <span style="color:#66d9ef">for</span> the kubelets in the cluster
+I0403 11:30:25.074150   <span style="color:#ae81ff">25657</span> round_trippers.go:438<span style="color:#f92672">]</span> POST https://192.168.1.11:6443/api/v1/namespaces/kube-system/configmaps <span style="color:#ae81ff">201</span> Created in <span style="color:#ae81ff">2</span> milliseconds
+</code></pre></div><p>创建 kubeadm:nodes-kubeadm-config Role，赋予了system:nodes system:bootstrappers:kubeadm:default-node-token 读取kubeadmconfig的权限，对于前者，在加入的时候第一步就是读取kubeadm的配置。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e"># I0403 11:30:25.065774   25657 round_trippers.go:438] POST https://192.168.1.11:6443/apis/rbac.authorization.k8s.io/v1/namespaces/kube-system/roles 201 Created in 3 milliseconds</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Role</span>
+<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">rbac.authorization.k8s.io/v1</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">kubeadm:nodes-kubeadm-config</span>
+  <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">kube-system</span>
+<span style="color:#f92672">rules</span>:
+- <span style="color:#f92672">verbs</span>:
+  - <span style="color:#ae81ff">get</span>
+  <span style="color:#f92672">apiGroups</span>:
+  - <span style="color:#e6db74">&#39;&#39;</span>
+  <span style="color:#f92672">resources</span>:
+  - <span style="color:#ae81ff">configmaps</span>
+  <span style="color:#f92672">resourceNames</span>:
+  - <span style="color:#ae81ff">kubeadm-config</span>
+<span style="color:#75715e"># I0403 11:30:25.069802   25657 round_trippers.go:438] POST https://192.168.1.11:6443/apis/rbac.authorization.k8s.io/v1/namespaces/kube-system/rolebindings 201 Created in 3 milliseconds  </span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">RoleBinding</span>
+<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">rbac.authorization.k8s.io/v1</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">kubeadm:nodes-kubeadm-config</span>
+  <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">kube-system</span>
+<span style="color:#f92672">subjects</span>:
+- <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Group</span>
+  <span style="color:#f92672">apiGroup</span>: <span style="color:#ae81ff">rbac.authorization.k8s.io</span>
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">system:bootstrappers:kubeadm:default-node-token</span>
+- <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Group</span>
+  <span style="color:#f92672">apiGroup</span>: <span style="color:#ae81ff">rbac.authorization.k8s.io</span>
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">system:nodes</span>
+<span style="color:#f92672">roleRef</span>:
+  <span style="color:#f92672">apiGroup</span>: <span style="color:#ae81ff">rbac.authorization.k8s.io</span>
+  <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Role</span>
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">kubeadm:nodes-kubeadm-config</span>
+</code></pre></div><p>添加 kubeadm:kubelet-config-1.14 role，赋予了system:nodes 和 system:bootstrappers:kubeadm:default-node-token 读取kubeadmconfig的权限，允许其读取kubelet 的配置。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e"># I0403 11:30:25.077100   25657 round_trippers.go:438] POST https://192.168.1.11:6443/apis/rbac.authorization.k8s.io/v1/namespaces/kube-system/roles 201 Created in 2 milliseconds</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Role</span>
+<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">rbac.authorization.k8s.io/v1</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">kubeadm:kubelet-config-1.14</span>
+  <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">kube-system</span>
+<span style="color:#f92672">rules</span>:
+- <span style="color:#f92672">verbs</span>:
+  - <span style="color:#ae81ff">get</span>
+  <span style="color:#f92672">apiGroups</span>:
+  - <span style="color:#e6db74">&#39;&#39;</span>
+  <span style="color:#f92672">resources</span>:
+  - <span style="color:#ae81ff">configmaps</span>
+  <span style="color:#f92672">resourceNames</span>:
+  - <span style="color:#ae81ff">kubelet-config-1.14</span>
+---
+<span style="color:#75715e"># I0403 11:30:25.079638   25657 round_trippers.go:438] POST https://192.168.1.11:6443/apis/rbac.authorization.k8s.io/v1/namespaces/kube-system/rolebindings 201 Created in 2 milliseconds</span>
+---
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">RoleBinding</span>
+<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">rbac.authorization.k8s.io/v1</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">kubeadm:kubelet-config-1.14</span>
+  <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">kube-system</span>
+<span style="color:#f92672">subjects</span>:
+- <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Group</span>
+  <span style="color:#f92672">apiGroup</span>: <span style="color:#ae81ff">rbac.authorization.k8s.io</span>
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">system:nodes</span>
+- <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Group</span>
+  <span style="color:#f92672">apiGroup</span>: <span style="color:#ae81ff">rbac.authorization.k8s.io</span>
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">system:bootstrappers:kubeadm:default-node-token</span>
+<span style="color:#f92672">roleRef</span>:
+  <span style="color:#f92672">apiGroup</span>: <span style="color:#ae81ff">rbac.authorization.k8s.io</span>
+  <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Role</span>
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">kubeadm:kubelet-config-1.14</span>
+</code></pre></div><p>注册节点，并禁止调度到此节点。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">I0403 11:30:25.079743   <span style="color:#ae81ff">25657</span> uploadconfig.go:128<span style="color:#f92672">][</span>upload-config<span style="color:#f92672">]</span> Preserving the CRISocket information <span style="color:#66d9ef">for</span> the control-plane node
+I0403 11:30:25.079755   <span style="color:#ae81ff">25657</span> patchnode.go:30<span style="color:#f92672">]</span> <span style="color:#f92672">[</span>patchnode<span style="color:#f92672">]</span> Uploading the CRI Socket information <span style="color:#e6db74">&#34;/var/run/dockershim.sock&#34;</span> to the Node API object <span style="color:#e6db74">&#34;east1-monitor1&#34;</span> as an annotation
+I0403 11:30:25.582567   <span style="color:#ae81ff">25657</span> round_trippers.go:438<span style="color:#f92672">]</span> GET https://192.168.1.11:6443/api/v1/nodes/east1-monitor1 <span style="color:#ae81ff">200</span> OK in <span style="color:#ae81ff">2</span> milliseconds
+I0403 11:30:25.590791   <span style="color:#ae81ff">25657</span> round_trippers.go:438<span style="color:#f92672">]</span> PATCH https://192.168.1.11:6443/api/v1/nodes/east1-monitor1 <span style="color:#ae81ff">200</span> OK in <span style="color:#ae81ff">4</span> milliseconds
+<span style="color:#f92672">[</span>upload-certs<span style="color:#f92672">]</span> Skipping phase. Please see --experimental-upload-certs
+<span style="color:#f92672">[</span>mark-control-plane<span style="color:#f92672">]</span> Marking the node east1-monitor1 as control-plane by adding the label <span style="color:#e6db74">&#34;node-role.kubernetes.io/master=&#39;&#39;&#34;</span>
+<span style="color:#f92672">[</span>mark-control-plane<span style="color:#f92672">]</span> Marking the node east1-monitor1 as control-plane by adding the taints <span style="color:#f92672">[</span>node-role.kubernetes.io/master:NoSchedule<span style="color:#f92672">]</span>
+I0403 11:30:26.093669   <span style="color:#ae81ff">25657</span> round_trippers.go:438<span style="color:#f92672">]</span> GET https://192.168.1.11:6443/api/v1/nodes/east1-monitor1 <span style="color:#ae81ff">200</span> OK in <span style="color:#ae81ff">2</span> milliseconds
+I0403 11:30:26.100968   <span style="color:#ae81ff">25657</span> round_trippers.go:438<span style="color:#f92672">]</span> PATCH https://192.168.1.11:6443/api/v1/nodes/east1-monitor1 <span style="color:#ae81ff">200</span> OK in <span style="color:#ae81ff">4</span> milliseconds
+</code></pre></div><p>创建bootstrap token，存到k8s中，允许system:bootstrappers:kubeadm:default-node-token</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e">#[bootstrap-token] Using token: cr3n6a.5ndgdhxeyinfq7i0</span>
+<span style="color:#75715e">#[bootstrap-token] Configuring bootstrap tokens, cluster-info ConfigMap, RBAC Roles</span>
+<span style="color:#75715e">#I0403 11:30:26.103085   25657 round_trippers.go:438] GET https://192.168.1.11:6443/api/v1/namespaces/kube-system/secrets/bootstrap-token-cr3n6a 404 Not Found in 1 milliseconds</span>
+<span style="color:#75715e">#I0403 11:30:26.106375   25657 round_trippers.go:438] POST https://192.168.1.11:6443/api/v1/namespaces/kube-system/secrets 201 Created in 2 milliseconds</span>
+---
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Secret</span>
+<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">bootstrap-token-o6k5na</span>
+  <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">kube-system</span>
+  <span style="color:#f92672">creationTimestamp</span>: 
+<span style="color:#f92672">data</span>:
+  <span style="color:#f92672">auth-extra-groups</span>: <span style="color:#ae81ff">c3lzdGVtOmJvb3RzdHJhcHBlcnM6a3ViZWFkbTpkZWZhdWx0LW5vZGUtdG9rZW4=</span>
+  <span style="color:#f92672">description</span>: <span style="color:#ae81ff">VGhlIGRlZmF1bHQgYm9vdHN0cmFwIHRva2VuIGdlbmVyYXRlZCBieSAna3ViZWFkbSBpbml0Jy4=</span>
+  <span style="color:#f92672">expiration</span>: <span style="color:#ae81ff">MjAxOS0wNC0wOVQxOTozNjoyMCswODowMA==</span>
+  <span style="color:#f92672">token-id</span>: <span style="color:#ae81ff">bzZrNW5h</span>
+  <span style="color:#f92672">token-secret</span>: <span style="color:#ae81ff">ZzQzd3A1dHkzajJ5ZWxmMA==</span>
+  <span style="color:#f92672">usage-bootstrap-authentication</span>: <span style="color:#ae81ff">dHJ1ZQ==</span>
+  <span style="color:#f92672">usage-bootstrap-signing</span>: <span style="color:#ae81ff">dHJ1ZQ==</span>
+<span style="color:#f92672">type</span>: <span style="color:#ae81ff">bootstrap.kubernetes.io/token</span>
+<span style="color:#75715e"># [bootstrap-token] configured RBAC rules to allow Node Bootstrap tokens to post CSRs in order for nodes to get long term certificate credentials</span>
+<span style="color:#75715e">#I0403 11:30:26.110092   25657 round_trippers.go:438] POST https://192.168.1.11:6443/apis/rbac.authorization.k8s.io/v1/clusterrolebindings 201 Created in 2 milliseconds</span>
+---
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ClusterRoleBinding</span>
+<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">rbac.authorization.k8s.io/v1</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">kubeadm:kubelet-bootstrap</span>
+<span style="color:#f92672">subjects</span>:
+- <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Group</span>
+  <span style="color:#f92672">apiGroup</span>: <span style="color:#ae81ff">rbac.authorization.k8s.io</span>
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">system:bootstrappers:kubeadm:default-node-token</span>
+<span style="color:#f92672">roleRef</span>:
+  <span style="color:#f92672">apiGroup</span>: <span style="color:#ae81ff">rbac.authorization.k8s.io</span>
+  <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ClusterRole</span>
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">system:node-bootstrapper</span>
+<span style="color:#75715e">#  有对 certificatesigningrequests.certificates.k8s.io[create get list watch] 的权限 </span>
+<span style="color:#75715e">#[bootstrap-token] configured RBAC rules to allow certificate rotation for all node client certificates in the cluster</span>
+<span style="color:#75715e">#I0403 11:30:26.115312   25657 round_trippers.go:438] POST https://192.168.1.11:6443/apis/rbac.authorization.k8s.io/v1/clusterrolebindings 201 Created in 2 milliseconds</span>
+---
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ClusterRoleBinding</span>
+<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">rbac.authorization.k8s.io/v1</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">kubeadm:node-autoapprove-certificate-rotation</span>
+  <span style="color:#f92672">creationTimestamp</span>: 
+<span style="color:#f92672">subjects</span>:
+- <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Group</span>
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">system:nodes</span>
+<span style="color:#f92672">roleRef</span>:
+  <span style="color:#f92672">apiGroup</span>: <span style="color:#ae81ff">rbac.authorization.k8s.io</span>
+  <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ClusterRole</span>
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">system:certificates.k8s.io:certificatesigningrequests:selfnodeclient</span>
+</code></pre></div><p>生成kubectl cluster-info 所需要的信息，并存储到configmap之中，同时在node加入的时候需要读取这里的CA信息。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e"># [bootstrap-token] creating the &#34;cluster-info&#34; ConfigMap in the &#34;kube-public&#34; namespace</span>
+<span style="color:#75715e">#I0403 11:30:26.115417   25657 clusterinfo.go:46][bootstrap-token] loading admin kubeconfig</span>
+---
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ConfigMap</span>
+<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">cluster-info</span>
+  <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">kube-public</span>
+  <span style="color:#f92672">creationTimestamp</span>: 
+<span style="color:#f92672">data</span>:
+  <span style="color:#f92672">kubeconfig</span>: |<span style="color:#e6db74">
+</span><span style="color:#e6db74">    apiVersion: v1
+</span><span style="color:#e6db74">    clusters:
+</span><span style="color:#e6db74">    - cluster:
+</span><span style="color:#e6db74">        certificate-authority-data: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUN5RENDQWJDZ0F3SUJBZ0lCQURBTkJna3Foa2lHOXcwQkFRc0ZBREFWTVJNd0VRWURWUVFERXdwcmRXSmwKY201bGRHVnpNQjRYRFRFNU1EUXdPREV4TXpVMU5Gb1hEVEk1TURRd05URXhNelUxTkZvd0ZURVRNQkVHQTFVRQpBeE1LYTNWaVpYSnVaWFJsY3pDQ0FTSXdEUVlKS29aSWh2Y05BUUVCQlFBRGdnRVBBRENDQVFvQ2dnRUJBTm1XClJhWWN1Z0F1VzlKV2NHVGpkOW12RkZnU1NWOGo3N2NoSzY0eEIyWEN0MzVwMkpSOEUzWkVBekdvZjNaUDRmcFYKVUVadWRCU3p6c25ZMGdUQ1QwL2F6SzI1ME1nLzZ4TmFmYXdJbytXSUNDS2NYYkRlbGRxS3FQbEorenNCekd4eQpnd2kwOTlzQXhPK0dzOVVTQndHNm1hcThZMjVvNlE5SER3RjlTdTRSdDlDaHpMNWRSL0ZHNXduY1VNWGxUK2kzCnVsbldOVWVxV3VGKzh4WGJsQ291b2NtUFZnc292cnZka1prVE5GbVFoVjhnYW9TR3I1eVNLNEpVelVFMXNrck8KbTBLbXIxZTQvQ05obEI2dmZjNEJ0S2JscFp6UzEzU1FBMktwK2I2ek9zVEhkc0ZWS1hQMlI4eFpXTHh1Q2ZMRApEQXorRmhpa0VqMWJsNU1YYmUwQ0F3RUFBYU1qTUNFd0RnWURWUjBQQVFIL0JBUURBZ0trTUE4R0ExVWRFd0VCCi93UUZNQU1CQWY4d0RRWUpLb1pJaHZjTkFRRUxCUUFEZ2dFQkFBTjF5cGJIYmRjVjZQWjBjL3ViOUg1a0JxK3AKSkJ6Wk40R2lmMHV5U2daM3RXUENiMVlqSjA5K3B1LzQ4ZE1zWHppdnFkNTVqaHFyM04yZ0RvOWE4Z2N2WXowMwp0RG1oR1kzTXgvbHBMcGhjMUZqMmdyanQ3WldHNzYzd2hsNkhkcFRuRVh1enhRT20ya1c3K210ZEFsRUZxaUtpCnRzdll4cDlmTHRyUkhwRGhZT1g4NUFzbFA4VGMvNXY4c0RFd2UzbGNBbndmQXBScGZCdWJ2cjVYN0tWTk9ZMnAKOGFnMTErL0hrUHIvSHJKTWlhcmVYeUdhL2Jac1lMTW8zUGdsZnJJOG1rNE5pZkc3bm9UbzN5b1k5RTBHWWI5UQpwTTl2bU8zbHkwMkxBV1pBSkJGMXVwVVJrWnhZZ3VEc1MwNms4c0tGRWptSWZXZjVxRnU4ZzRLS084Yz0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
+</span><span style="color:#e6db74">        server: https://192.168.0.1:6443
+</span><span style="color:#e6db74">      name: &#34;&#34;
+</span><span style="color:#e6db74">    contexts: []
+</span><span style="color:#e6db74">    current-context: &#34;&#34;
+</span><span style="color:#e6db74">    kind: Config
+</span><span style="color:#e6db74">    preferences: {}
+</span><span style="color:#e6db74">    users: []</span>    
+</code></pre></div><p>这一步主要是允许匿名用户访问上一步创建的CA的信息，然后就加入集群的时候使用。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e"># I0403 11:30:26.116136   25657 loader.go:359] Config loaded from file /etc/kubernetes/admin.conf</span>
+<span style="color:#75715e"># I0403 11:30:26.116148   25657 clusterinfo.go:54] [bootstrap-token] copying the cluster from admin.conf to the bootstrap kubeconfig</span>
+<span style="color:#75715e"># I0403 11:30:26.116599   25657 clusterinfo.go:66][bootstrap-token] creating/updating ConfigMap in kube-public namespace</span>
+<span style="color:#75715e"># I0403 11:30:26.118774   25657 round_trippers.go:438] POST https://192.168.1.11:6443/api/v1/namespaces/kube-public/configmaps 201 Created in 2 milliseconds</span>
+<span style="color:#75715e"># I0403 11:30:26.118929   25657 clusterinfo.go:80] creating the RBAC rules for exposing the cluster-info ConfigMap in the kube-public namespace</span>
+<span style="color:#75715e"># I0403 11:30:26.124005   25657 round_trippers.go:438] POST https://192.168.1.11:6443/apis/rbac.authorization.k8s.io/v1/namespaces/kube-public/roles 201 Created in 4 milliseconds</span>
+---
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Role</span>
+<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">rbac.authorization.k8s.io/v1</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">kubeadm:bootstrap-signer-clusterinfo</span>
+  <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">kube-public</span>
+  <span style="color:#f92672">selfLink</span>: <span style="color:#e6db74">&#34;/apis/rbac.authorization.k8s.io/v1/namespaces/kube-public/roles/kubeadm%3Abootstrap-signer-clusterinfo&#34;</span>
+  <span style="color:#f92672">uid</span>: <span style="color:#ae81ff">8770d896-59f2-11e9-9389-00163e132347</span>
+  <span style="color:#f92672">resourceVersion</span>: <span style="color:#e6db74">&#39;199&#39;</span>
+  <span style="color:#f92672">creationTimestamp</span>: <span style="color:#e6db74">&#39;2019-04-08T11:36:20Z&#39;</span>
+<span style="color:#f92672">rules</span>:
+- <span style="color:#f92672">verbs</span>:
+  - <span style="color:#ae81ff">get</span>
+  <span style="color:#f92672">apiGroups</span>:
+  - <span style="color:#e6db74">&#39;&#39;</span>
+  <span style="color:#f92672">resources</span>:
+  - <span style="color:#ae81ff">configmaps</span>
+  <span style="color:#f92672">resourceNames</span>:
+  - <span style="color:#ae81ff">cluster-info</span>
+<span style="color:#75715e">#I0403 11:30:26.127798   25657 round_trippers.go:438] POST https://192.168.1.11:6443/apis/rbac.authorization.k8s.io/v1/namespaces/kube-public/rolebindings 201 Created in 3 milliseconds</span>
+---
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">RoleBinding</span>
+<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">rbac.authorization.k8s.io/v1</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">kubeadm:bootstrap-signer-clusterinfo</span>
+  <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">kube-public</span>
+  <span style="color:#f92672">selfLink</span>: <span style="color:#e6db74">&#34;/apis/rbac.authorization.k8s.io/v1/namespaces/kube-public/rolebindings/kubeadm%3Abootstrap-signer-clusterinfo&#34;</span>
+  <span style="color:#f92672">uid</span>: <span style="color:#ae81ff">87713973</span>-<span style="color:#ae81ff">59f2-11e9-9389-00163e132347</span>
+  <span style="color:#f92672">resourceVersion</span>: <span style="color:#e6db74">&#39;200&#39;</span>
+  <span style="color:#f92672">creationTimestamp</span>: <span style="color:#e6db74">&#39;2019-04-08T11:36:20Z&#39;</span>
+<span style="color:#f92672">subjects</span>:
+- <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">User</span>
+  <span style="color:#f92672">apiGroup</span>: <span style="color:#ae81ff">rbac.authorization.k8s.io</span>
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">system:anonymous</span>
+<span style="color:#f92672">roleRef</span>:
+  <span style="color:#f92672">apiGroup</span>: <span style="color:#ae81ff">rbac.authorization.k8s.io</span>
+  <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Role</span>
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">kubeadm:bootstrap-signer-clusterinfo</span>
+</code></pre></div><p>初始化Kube-proxy和Coredns</p>
+<p>这个就不多说了，差不多都是sa，svc，deployment，role，rolebinding 五大件，然后就输出了相关信息。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">Your Kubernetes control-plane has initialized successfully!
+
+To start using your cluster, you need to run the following as a regular user:
+
+  mkdir -p $HOME/.kube
+  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+  sudo chown <span style="color:#66d9ef">$(</span>id -u<span style="color:#66d9ef">)</span>:<span style="color:#66d9ef">$(</span>id -g<span style="color:#66d9ef">)</span> $HOME/.kube/config
+
+You should now deploy a pod network to the cluster.
+Run <span style="color:#e6db74">&#34;kubectl apply -f [podnetwork].yaml&#34;</span> with one of the options listed at:
+  https://kubernetes.io/docs/concepts/cluster-administration/addons/
+
+Then you can join any number of worker nodes by running the following on each as root:
+
+kubeadm join 192.168.1.11:6443 --token cr3n6a.5ndgdhxeyinfq7i0 <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>    --discovery-token-ca-cert-hash sha256:3484008720a27ba243c825114b9a2373fb1d307d42818d23989b84ca698e7514
+</code></pre></div><h2 id="node">node</h2>
+<p>首先还是一大批检查，过检之后从cluster-info里面读取相应的证书信息；</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">I0402 23:30:52.707010    <span style="color:#ae81ff">2454</span> join.go:334<span style="color:#f92672">][</span>preflight<span style="color:#f92672">]</span> Fetching init configuration
+I0402 23:30:52.707019    <span style="color:#ae81ff">2454</span> join.go:603<span style="color:#f92672">]</span> <span style="color:#f92672">[</span>join<span style="color:#f92672">]</span> Discovering cluster-info
+<span style="color:#f92672">[</span>discovery<span style="color:#f92672">]</span> Trying to connect to API Server <span style="color:#e6db74">&#34;192.168.1.11:6443&#34;</span>
+<span style="color:#f92672">[</span>discovery<span style="color:#f92672">]</span> Created cluster-info discovery client, requesting info from <span style="color:#e6db74">&#34;https://192.168.1.11:6443&#34;</span>
+I0402 23:30:52.761085    <span style="color:#ae81ff">2454</span> round_trippers.go:438<span style="color:#f92672">]</span> GET https://192.168.1.11:6443/api/v1/namespaces/kube-public/configmaps/cluster-info <span style="color:#ae81ff">200</span> OK in <span style="color:#ae81ff">53</span> milliseconds
+<span style="color:#f92672">[</span>discovery<span style="color:#f92672">]</span> Requesting info from <span style="color:#e6db74">&#34;https://192.168.1.11:6443&#34;</span> again to validate TLS against the pinned public key
+I0402 23:30:52.853292    <span style="color:#ae81ff">2454</span> round_trippers.go:438<span style="color:#f92672">]</span> GET https://192.168.1.11:6443/api/v1/namespaces/kube-public/configmaps/cluster-info <span style="color:#ae81ff">200</span> OK in <span style="color:#ae81ff">60</span> milliseconds
+<span style="color:#f92672">[</span>discovery<span style="color:#f92672">]</span> Cluster info signature and contents are valid and TLS certificate validates against pinned roots, will use API Server <span style="color:#e6db74">&#34;192.168.1.11:6443&#34;</span>
+<span style="color:#f92672">[</span>discovery<span style="color:#f92672">]</span> Successfully established connection with API Server <span style="color:#e6db74">&#34;192.168.1.11:6443&#34;</span>
+I0402 23:30:52.854638    <span style="color:#ae81ff">2454</span> join.go:610<span style="color:#f92672">][</span>join<span style="color:#f92672">]</span> Retrieving KubeConfig objects
+
+</code></pre></div><p>接受相关配置信息，并写入本地，用token的参数创建bootstrap-kubeletconfig，重启kubelet读取相关配置。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">[</span>join<span style="color:#f92672">]</span> Reading configuration from the cluster...
+<span style="color:#f92672">[</span>join<span style="color:#f92672">]</span> FYI: You can look at this config file with <span style="color:#e6db74">&#39;kubectl -n kube-system get cm kubeadm-config -oyaml&#39;</span>
+I0402 23:30:52.868021    <span style="color:#ae81ff">2454</span> round_trippers.go:438<span style="color:#f92672">]</span> GET https://192.168.1.11:6443/api/v1/namespaces/kube-system/configmaps/kubeadm-config <span style="color:#ae81ff">200</span> OK in <span style="color:#ae81ff">12</span> milliseconds
+I0402 23:30:52.881050    <span style="color:#ae81ff">2454</span> round_trippers.go:438<span style="color:#f92672">]</span> GET https://192.168.1.11:6443/api/v1/namespaces/kube-system/configmaps/kubelet-config-1.13 <span style="color:#ae81ff">200</span> OK in <span style="color:#ae81ff">12</span> milliseconds
+I0402 23:30:52.895260    <span style="color:#ae81ff">2454</span> round_trippers.go:438<span style="color:#f92672">]</span> GET https://192.168.1.11:6443/api/v1/namespaces/kube-system/configmaps/kube-proxy <span style="color:#ae81ff">200</span> OK in <span style="color:#ae81ff">12</span> milliseconds
+I0402 23:30:52.897995    <span style="color:#ae81ff">2454</span> join.go:341<span style="color:#f92672">][</span>preflight<span style="color:#f92672">]</span> Running configuration dependant checks
+I0402 23:30:52.898098    <span style="color:#ae81ff">2454</span> join.go:478<span style="color:#f92672">]</span> <span style="color:#f92672">[</span>join<span style="color:#f92672">]</span> writing bootstrap kubelet config file at /etc/kubernetes/bootstrap-kubelet.conf
+I0402 23:30:52.979339    <span style="color:#ae81ff">2454</span> loader.go:359<span style="color:#f92672">]</span> Config loaded from file /etc/kubernetes/bootstrap-kubelet.conf
+I0402 23:30:52.979784    <span style="color:#ae81ff">2454</span> join.go:503<span style="color:#f92672">]</span> Stopping the kubelet
+<span style="color:#f92672">[</span>kubelet<span style="color:#f92672">]</span> Downloading configuration <span style="color:#66d9ef">for</span> the kubelet from the <span style="color:#e6db74">&#34;kubelet-config-1.13&#34;</span> ConfigMap in the kube-system namespace
+I0402 23:30:53.003579    <span style="color:#ae81ff">2454</span> round_trippers.go:438<span style="color:#f92672">]</span> GET https://192.168.1.11:6443/api/v1/namespaces/kube-system/configmaps/kubelet-config-1.13 <span style="color:#ae81ff">200</span> OK in <span style="color:#ae81ff">12</span> milliseconds
+<span style="color:#f92672">[</span>kubelet-start<span style="color:#f92672">]</span> Writing kubelet configuration to file <span style="color:#e6db74">&#34;/var/lib/kubelet/config.yaml&#34;</span>
+<span style="color:#f92672">[</span>kubelet-start<span style="color:#f92672">]</span> Writing kubelet environment file with flags to file <span style="color:#e6db74">&#34;/var/lib/kubelet/kubeadm-flags.env&#34;</span>
+I0402 23:30:53.064636    <span style="color:#ae81ff">2454</span> join.go:520<span style="color:#f92672">]</span> Starting the kubelet
+<span style="color:#f92672">[</span>kubelet-start<span style="color:#f92672">]</span> Activating the kubelet service
+
+</code></pre></div><p>等待API Server 统一CSR，然后把自己注册到节点之中。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">[</span>tlsbootstrap<span style="color:#f92672">]</span> Waiting <span style="color:#66d9ef">for</span> the kubelet to perform the TLS Bootstrap...
+I0402 23:30:54.229055    <span style="color:#ae81ff">2454</span> loader.go:359<span style="color:#f92672">]</span> Config loaded from file /etc/kubernetes/kubelet.conf
+I0402 23:30:54.266377    <span style="color:#ae81ff">2454</span> loader.go:359<span style="color:#f92672">]</span> Config loaded from file /etc/kubernetes/kubelet.conf
+I0402 23:30:54.267652    <span style="color:#ae81ff">2454</span> join.go:538<span style="color:#f92672">][</span>join<span style="color:#f92672">]</span> preserving the crisocket information <span style="color:#66d9ef">for</span> the node
+<span style="color:#f92672">[</span>patchnode<span style="color:#f92672">]</span> Uploading the CRI Socket information <span style="color:#e6db74">&#34;/var/run/dockershim.sock&#34;</span> to the Node API object <span style="color:#e6db74">&#34;thanos&#34;</span> as an annotation
+I0402 23:30:54.829059    <span style="color:#ae81ff">2454</span> round_trippers.go:438<span style="color:#f92672">]</span> GET https://192.168.1.11:6443/api/v1/nodes/thanos <span style="color:#ae81ff">200</span> OK in <span style="color:#ae81ff">60</span> milliseconds
+I0402 23:30:54.845547    <span style="color:#ae81ff">2454</span> round_trippers.go:438<span style="color:#f92672">]</span> PATCH https://192.168.1.11:6443/api/v1/nodes/thanos <span style="color:#ae81ff">200</span> OK in <span style="color:#ae81ff">13</span> milliseconds
+
+
+</code></pre></div><p>大功告成完成注册。</p>
+<pre><code>This node has joined the cluster:
+
+- Certificate signing request was sent to apiserver and a response was received.
+- The Kubelet was informed of the new secure connection details.
+
+Run 'kubectl get nodes' on the master to see this node join the cluster.
+
+</code></pre><h2 id="附录">附录</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">协议</th>
+<th style="text-align:left">方向</th>
+<th style="text-align:left">端口</th>
+<th style="text-align:left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">TCP</td>
+<td style="text-align:left">Inbound</td>
+<td style="text-align:left">16443*</td>
+<td style="text-align:left">Load balancer Kubernetes API server port</td>
+</tr>
+<tr>
+<td style="text-align:left">TCP</td>
+<td style="text-align:left">Inbound</td>
+<td style="text-align:left">6443*</td>
+<td style="text-align:left">Kubernetes API server</td>
+</tr>
+<tr>
+<td style="text-align:left">TCP</td>
+<td style="text-align:left">Inbound</td>
+<td style="text-align:left">4001</td>
+<td style="text-align:left">etcd listen client port</td>
+</tr>
+<tr>
+<td style="text-align:left">TCP</td>
+<td style="text-align:left">Inbound</td>
+<td style="text-align:left">2379-2380</td>
+<td style="text-align:left">etcd server client API</td>
+</tr>
+<tr>
+<td style="text-align:left">TCP</td>
+<td style="text-align:left">Inbound</td>
+<td style="text-align:left">10250</td>
+<td style="text-align:left">Kubelet API</td>
+</tr>
+<tr>
+<td style="text-align:left">TCP</td>
+<td style="text-align:left">Inbound</td>
+<td style="text-align:left">10251</td>
+<td style="text-align:left">kube-scheduler</td>
+</tr>
+<tr>
+<td style="text-align:left">TCP</td>
+<td style="text-align:left">Inbound</td>
+<td style="text-align:left">10252</td>
+<td style="text-align:left">kube-controller-manager</td>
+</tr>
+<tr>
+<td style="text-align:left">TCP</td>
+<td style="text-align:left">Inbound</td>
+<td style="text-align:left">10255</td>
+<td style="text-align:left">Read-only Kubelet API (Deprecated)</td>
+</tr>
+<tr>
+<td style="text-align:left">TCP</td>
+<td style="text-align:left">Inbound</td>
+<td style="text-align:left">30000-32767</td>
+<td style="text-align:left">NodePort Services</td>
+</tr>
+<tr>
+<td style="text-align:left">获取ca证书<code>sha256</code>编码hash值</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin 
+-outform der 2&gt;/dev/null | openssl dgst -sha256 -hex | sed <span style="color:#e6db74">&#39;s/^.* //&#39;</span>
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">root@master:/etc/kubernetes/pki# cat sa.pub
+-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAystBIninWaQADb12t7p9
++9PoSGwzhvfhX1Pd9STxI5TKk8bSw5+I5apZJEi2FdZer5O9EtrxgDoUp9IBijyy
+EgBbE+JwXd52IgKcSVkWaL8uACkqaxGAtUkxdofeVvp0PoK0sF+dmPDNLSGxH+MR
+fF5qCzS4L0UQhAa35M/CR75mDFnKLUIphBGE5F8d8RxrOZAOPrqqqgvci5/TJq5K
+jAwak2D1mzU7SJYedn0bvzwXPdXaiQjKHg1Fyi8Pw8utS6VEG2EZK1BKEXpkrz8n
+4TZqZ5OajDZg/SjU79QV9W4OsF+WoR3eOPyr3DeSGkPXtG00ifbSgpx7pjV7CVoM
+VQIDAQAB
+-----END PUBLIC KEY-----
+root@master:/etc/kubernetes/pki# openssl rsa -in ca.key -pubout
+writing RSA key
+-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0mst0xEryhOLsiIB6MTy
+yNjXKaFVFm8NafZUI+ZiRC7qFxsBsdT10OIKUIn5tFRUc7uxzcZzlRwJtwC7wrBe
+4Jy1uN7VPrg5hgk7aqqdwtUFDhUVGtQOalFvqkVdVrolYCb+kDghjFR4chBNRng1
+ldPuaGUCvyItltk8d5j68TDzf0V2LWDWdJnJ/k3GTK8PUlkYhrid8i5TyAmIO/A9
++rzQr8YCV1tnomodX88+jjjCZxXZ1np/dYtgo5XL7+zkWHucINbiVtG8sVI+sSkq
+5fp4f/C7zGv78ieeRCWUjskaH1QoBVWCNug/r1qFe/G8Je1JGE+bMC4+YcYksXuq
+WQIDAQAB
+-----END PUBLIC KEY-----
+</code></pre></div><h2 id="ref">Ref</h2>
+<p>使用kubeadm安装kubernetes1.7/1.8/1.9</p>
+<p><a href="https://blog.csdn.net/zhuchuangang/article/details/76572157">https://blog.csdn.net/zhuchuangang/article/details/76572157</a></p>
+<p>Aliyun Repo</p>
+<p><a href="https://www.jianshu.com/p/4b5f960a5bea">https://www.jianshu.com/p/4b5f960a5bea</a></p>
+<p>使用kubeadm搭建Kubernetes(1.10.2)集群（国内环境）</p>
+<p><a href="https://www.cnblogs.com/RainingNight/p/using-kubeadm-to-create-a-cluster.html">https://www.cnblogs.com/RainingNight/p/using-kubeadm-to-create-a-cluster.html</a></p>
+</div>
+                    <div class="post_footer">
+                        
+                        <div class="meta">
+                            <div class="info">
+                                <span class="field tags">
+                                    <i class="ri-stack-line"></i>
+                                    
+                                    <a href="https://vsxen.github.io/tags/k8s/">k8s</a>
+                                    
+                                </span>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                
+                <div class="doc_comments"></div>
+                
+            </div>
+        </div>
+    </div>
+    <a id="back_to_top" href="#" class="back_to_top"><i class="ri-arrow-up-s-line"></i></a>
+    <footer class="footer">
+    <div class="powered_by">
+        <a href="https://varkai.com">Designed by VarKai,</a>
+        <a href="http://www.gohugo.io/">Proudly published with Hugo</a>
+    </div>
+
+    <div class="footer_slogan">
+        <span>我的精神家园</span>
+    </div>
+</footer>
+    <script src="https://vsxen.github.io/js/jquery-3.5.1.min.js"></script>
+<link href="https://vsxen.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://vsxen.github.io/js/fancybox.min.js"></script>
+<script src="https://vsxen.github.io/js/zozo.js"></script>
+
+
+<script type="text/javascript" async
+    src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+        MathJax.Hub.Config({
+            tex2jax: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\[\[', '\]\]']],
+                processEscapes: true,
+                processEnvironments: true,
+                skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+                TeX: {
+                    equationNumbers: { autoNumber: "AMS" },
+                    extensions: ["AMSmath.js", "AMSsymbols.js"]
+                }
+            }
+        });
+
+        MathJax.Hub.Queue(function () {
+            
+            
+            
+            var all = MathJax.Hub.getAllJax(), i;
+            for (i = 0; i < all.length; i += 1) {
+                all[i].SourceElement().parentNode.className += ' has-jax';
+            }
+        });
+    </script>
+
+<style>
+    code.has-jax {
+        font: inherit;
+        font-size: 100%;
+        background: inherit;
+        border: inherit;
+        color: #515151;
+    }
+</style>
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-81855844-3', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+</body>
+
+</html>

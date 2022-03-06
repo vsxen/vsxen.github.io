@@ -9,10 +9,10 @@
     <lastBuildDate>Tue, 22 Jan 2019 22:31:20 +0800</lastBuildDate><atom:link href="https://vsxen.github.io/tags/prometheus/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>k8s 集群监控 --  Prometheus Operator</title>
-      <link>https://vsxen.github.io/2019/01/22/promthus-operator/</link>
+      <link>https://vsxen.github.io/posts/promthus-operator/</link>
       <pubDate>Tue, 22 Jan 2019 22:31:20 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/2019/01/22/promthus-operator/</guid>
+      <guid>https://vsxen.github.io/posts/promthus-operator/</guid>
       <description>对于任何系统来说，监控都是不可或缺的东西，系统现在是什么样，与一周前相比是否需要调整资源等都需要一个监控系统来参考。对于k8s来说常用的开源监控方案也就是下面几种： heaspter+InfluxDB (已被弃用) Prometheus Open falcon Telegraf+InfluxDB 而且k8s所需</description>
     </item>
     

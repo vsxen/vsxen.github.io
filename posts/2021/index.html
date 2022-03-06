@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="Zeuk" />
+	
+	
+	
+	<title>2021 ｜ Code Life</title>
+	
+    
+    
+    <meta name="description" content="​ 先说下CIS（Container Ingress Services）吧，也就是这个https://github.com/F5Networks/k8s-bigip-ctlr ，目的是为集群内的四层业务提供负载均衡，项目" />
+    
+
+    
+    
+    <meta name="keywords" content="Hugo, theme, zozo" />
+    
+
+	
+    
+    <link rel="shortcut icon" href="https://vsxen.github.io/images/favicon.ico" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="https://vsxen.github.iocss/normalize.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.0/animate.min.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://vsxen.github.io/css/zozo.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://vsxen.github.io/css/highlight.css" />
+
+    
+    
+</head>
+
+<body>
+    <div class="main animate__animated animate__fadeInDown">
+        <div class="nav_container animated fadeInDown">
+    <div class="site_nav" id="site_nav">
+        <ul>
+            
+            <li>
+                <a href="/">首页</a>
+            </li>
+            
+            <li>
+                <a href="/posts/">归档</a>
+            </li>
+            
+            <li>
+                <a href="/tags/">标签</a>
+            </li>
+            
+            <li>
+                <a href="/about/">关于</a>
+            </li>
+            
+        </ul>
+    </div>
+    <div class="menu_icon">
+        <a id="menu_icon"><i class="ri-menu-line"></i></a>
+    </div>
+</div>
+        <div class="header animated fadeInDown">
+    <div class="site_title_container">
+        <div class="site_title">
+            <h1>
+                <a href="https://vsxen.github.io">
+                    <span>Code Life</span>
+                </a>
+            </h1>
+        </div>
+        <div class="description">
+            <p class="sub_title">the site subtitle</p>
+            <div class="my_socials">
+                
+                
+                <a href="%20" title="facebook" target="_blank"><i class="ri-facebook-fill"></i></a>
+                
+                
+                
+                <a href="%20" title="github" target="_blank"><i class="ri-github-fill"></i></a>
+                
+                
+                
+                <a href="%20" title="instagram" target="_blank"><i class="ri-instagram-fill"></i></a>
+                
+                
+                
+                <a href="%20" title="twitter" target="_blank"><i class="ri-twitter-fill"></i></a>
+                
+                
+                
+                <a href="%20" title="weibo" target="_blank"><i class="ri-weibo-fill"></i></a>
+                
+                
+                <a href="https://vsxen.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i
+                        class="ri-rss-fill"></i></a>
+            </div>
+        </div>
+    </div>
+</div>
+        <div class="content">
+            <div class="post_page">
+                <div class="post animate__animated animate__fadeInDown">
+                    <div class="post_title post_detail_title">
+                        <h2><a href='/posts/2021/'>2021</a></h2>
+                        <span class="date">2022.03.06</span>
+                    </div>
+                    <div class="post_content markdown"><p>​	先说下CIS（Container Ingress Services）吧，也就是这个https://github.com/F5Networks/k8s-bigip-ctlr ，目的是为集群内的四层业务提供负载均衡，项目的初衷是为容器内的redis提供访问入口，毕竟pod的IP会变，之前是用Nginx ingress的四层stream做反向代理，那就要改configmap。（这里插一下redis在集群的模式是可以由一个入口进来，然后把流量转到 key 所在的 slot 所在的redis实例，也就是redis节点可以感知集群的其他节点。对于etcd？）由于各种原因开始测试这个CIS，网络那边还为此配置了 ECMP （https://en.wikipedia.org/wiki/Equal-cost_multi-path_routing），同时 ECMP 限制下一跳节点最多是16个，我们还为此搞出了Group到Namespace一对多的规划，每个Group计划流量大概40G吧😄。先说下这个CIS的奇葩之处吧，我们都知道根据Ingress的设计，最主要的是要找到Ingress对应的Service名字（名字在namespace级别是唯一的），根据名字来实现对应关系。但是CIS确是根据Service的label来关连的，而且CIS的对应关系是写在configmap里面，不支持多个configmap，也就是多个数组来表示不同的负载均衡。这里只是用ingress作为示例，表示我不是很赞同这个关系映射方式，因为你一个负载均衡的只需要知道Service名字，进而查出来bankend IP就好了，不应该在Service上面做事情。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e"># ingress 版 </span>
+<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">extensions/v1beta1</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Ingress</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">app</span>
+<span style="color:#f92672">spec</span>:
+  <span style="color:#f92672">rules</span>:
+  - <span style="color:#f92672">host</span>: <span style="color:#ae81ff">vsxen.github.io</span>
+    <span style="color:#f92672">http</span>:
+      <span style="color:#f92672">paths</span>:
+      - <span style="color:#f92672">backend</span>:
+          <span style="color:#f92672">serviceName</span>: <span style="color:#ae81ff">nginx</span>
+          <span style="color:#f92672">servicePort</span>: <span style="color:#ae81ff">80</span>
+---
+<span style="color:#75715e"># CIS版</span>
+<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Service</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">labels</span>:
+    <span style="color:#f92672">cis-app</span>: <span style="color:#e6db74">&#34;app&#34;</span>
+    <span style="color:#f92672">cis-port</span>: <span style="color:#e6db74">&#34;443&#34;</span>
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">app</span>
+<span style="color:#f92672">spec</span>:
+  <span style="color:#f92672">ports</span>:
+  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">https</span>
+    <span style="color:#f92672">port</span>: <span style="color:#ae81ff">443</span>
+    <span style="color:#f92672">protocol</span>: <span style="color:#ae81ff">TCP</span>
+    <span style="color:#f92672">targetPort</span>: <span style="color:#ae81ff">6443</span>
+</code></pre></div><p>​		当然对应私有云的环境，也有 <a href="https://github.com/metallb/metallb">https://github.com/metallb/metallb</a> 或者 青云的 <a href="https://github.com/openelb/openelb">https://github.com/openelb/openelb</a> 开源的解决档案，后者应该最近（12月26日）加入了cncf，这两种应该都是类似公有云，通过注解的方式来判断是否需要负载均衡，进而修改Service的Status字段，在我看来比较符合k8s的使用习惯，当然如果你使用calico的话，这里还有一个问题，一个节点上面只能和一个交换机建立一个连接，也就是会冲突，metallb也提供了一些方案。最后值得一提的Cilium也在1.10版本集成了metallb，也就是gobgp。最终这个项目还是不了了之了，愧对我之前说要在年后（3月）完成的承诺，也失去了这一次写代码的机会。我是计划使用go template的方式来渲染configmap的内容，嗯，也让我觉得很丑。</p>
+<p>​		对于calico我也曾想试图学习一下网络，学习一下bgp，什么CLOS、VRF、大二层之类的，最终却都是纸上谈兵。不过还是研究了一下cni相关的流程（以下图表是用mermaid绘制），后来发现calico在Cisco的帮助下，支持了DPDK，也安装尝新了一下，更多的资源可以看这里。（https://www.yuque.com/wei.luo）</p>
+<p><img src="content/assets/image-20211226180705656.png" alt="image-20211226180705656"></p>
+<p>​		之后就是测试了containerd以及kata相关，一方面k8s官方宣布废弃docker，而且docker的守护进程和容器的生命周期强绑定（虽然可以配置live reload），于是就准备试试containerd。不过containerd就没有docker cli那么顺手，另外cadvisor对与containerd的监控指标有缺失，比如 <code>container_fs</code> 开头的所有指标（详见 <a href="https://cloud.google.com/kubernetes-engine/docs/concepts/using-containerd#known_issues">https://cloud.google.com/kubernetes-engine/docs/concepts/using-containerd#known_issues</a>）。这里插一下早期的 cadvisor 是通过读<code>/sys/fs/cgroup</code>下面的文件来监控容器的，后来看了下，metricsbeat也提到了这一点，Google Cloud也指出他们不受此影响，支持containerd 运行时监控。kata本来准备测试的2.x的版本，不过那时候才开始开发，安装之后报错了，就转向了1.12的版本，最大的好处是全都是静态编译，不会影响宿主机的环境，当然也没有做什么深入的测试，仅是配置了Runtime class，不幸的是对于aws开源的firecracker的测试没有成功。kata使用的vmlinux（kernel）是自定义的一个内核。</p>
+<p>​		另外一个值得分享的就是qemu，虽然我至今不能解释qemu和kvm之间的联系，但是我成功的在vm上面使用qemu-x86跑了一个虚拟机，即嵌套虚拟化（kata当前版本并不支持），当然性能差极了，也试着用libvirt这个工具创建虚拟机。还有一个比较乌龙的就是我发现启动的vm不能ping通，就认为网络有问题，结果是ping也是要有权限才可以ping的。</p>
+<p>​		接着就是粗略的看了下 Nginx Ingress 相关代码，主要是关于何时重载Nginx配置，是否对现有的连接产生影响，官方的文档这里有介绍 <a href="https://kubernetes.github.io/ingress-nginx/how-it-works/#avoiding-reloads">https://kubernetes.github.io/ingress-nginx/how-it-works/#avoiding-reloads</a> ，我发现的是这里https://github.com/kubernetes/ingress-nginx/blob/nginx-0.30.0/internal/ingress/controller/nginx.go#L865 ，所以可以说Nginx Ingress，在endpoint发生变化的时候，不会重载，在有新的Ingress或者证书之类配置才会重载（这里介绍相关平滑升级的原理）。</p>
+<p>​		然后就看了下kube-healthy，因为k8s作为一个Paas平台，不像虚拟机那样，和应用有着很紧密的联系，比如CoreDNS挂了，或者是容器运行时出问题，CNI出问题等等，都会导致应用收到影响，而kube-healthy就是通过定时创建容器，或者探测DNS是否能正常响应，来实现动态的探测集群。另一方面，我想的是在集群中部署一个最简单的nginx，来确保Ingress进来的流量路径是没有问题的。但是根据阿里云某位大佬分享的文章  <a href="http://www.calmkart.com/?p=561">http://www.calmkart.com/?p=561</a>  kube-healthy 也存在一定的问题，比如说结果的上报是依赖于IP，就遇到过flannel网络下，服务端收到的请求来源 IP 非 Pod IP，而是所在节点 flannel.1 的 IP，应该是MASQ的问题，不过没时间深入研究，直接重置了flannel，（这里也有写 <a href="https://github.com/opsnull/kubernetes-troubleshooting-book">https://github.com/opsnull/kubernetes-troubleshooting-book</a>）。当我在写本文的时候发现了一个新的项目，https://github.com/erda-project/kubeprober/blob/master/README_CN.md，看样子也是类似的功能。除此之外官方还有一个npd的项目，通过读取docker和kernel的日志，记录到event中。</p>
+<p>​		之后又测试了某厂商的一个流量分析的工具，这个主要是对TCP重传、丢包等网络层的监控。之前也试过elastic开源的packetbeat，更注重的是对常用的中间件的协议解析，比如MySQL、Redis等。</p>
+<p>​		然而k8s发布版本的脚本未曾停下，新版本已经发到1.22了，刚好有团队说想用istio那一套，就趁着这个机会一块测试下，同时prometheus的新版本也在ui加上了tsdb status，发现几个id都属于高基准数据，然后就优化了下。同时测试的还有Redhat 8，但是还是支持iptables，而且默认也不是cgroup v2。</p>
+<p>​		中间还出过几次物理机宕机的故障，挂有nas的容器，运行一段时间之后所在的物理机就直接重启，问了下nas的服务端，反馈是没有问题，而且登录远控也没有硬件故障，这时就要用到kdump了，可以把重启前的现场dump下来。最终也只是把这个几个nas应用迁移到专用的虚拟机上了事，虽然他们和物理机是同一个内核版本。之后还有一个比较奇怪的问题，就是有个机器用ssh key有时候能登上，有时候又报的是key认证失败，但是节点都是能ping通的，于是就找同网段的机器进行ping，最后经过抓包发现是mac地址居然不同，原来是IP被复用了。</p>
+<p>​		接着说一下遇到docker的bug吧，systemd-logind报错</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">Jan <span style="color:#ae81ff">30</span> 23:10:01systemd-logind: Failed to start session scope session-31688.scope: The maximum number of pending replies per connection has been reached
+</code></pre></div><p><a href="https://github.com/lnykryn/systemd-rhel/issues/266">https://github.com/lnykryn/systemd-rhel/issues/266</a> ，需要执行systemdctl daemon-reload 命令。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">dockerd<span style="color:#f92672">[</span>9951<span style="color:#f92672">]</span>: time<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;2018-03-12T13:02:44+09:00&#34;</span> level<span style="color:#f92672">=</span>info msg<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;shim reaped&#34;</span> id<span style="color:#f92672">=</span>f24980703b5d13089200d6bd84bf4c8648a9d4216633e5da8ecd237f0ff6e0bb module<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;containerd/tasks&#34;</span>
+</code></pre></div><p>这个还没有找到根因</p>
+<p><a href="https://github.com/containerd/containerd/issues/4547">https://github.com/containerd/containerd/issues/4547</a></p>
+<p>一个容器oom之后，containerd收到大量的oom消息，这个也没有找到根因，不过两个都和oom有关</p>
+</div>
+                    <div class="post_footer">
+                        
+                    </div>
+                </div>
+                
+                
+                <div class="doc_comments"></div>
+                
+            </div>
+        </div>
+    </div>
+    <a id="back_to_top" href="#" class="back_to_top"><i class="ri-arrow-up-s-line"></i></a>
+    <footer class="footer">
+    <div class="powered_by">
+        <a href="https://varkai.com">Designed by VarKai,</a>
+        <a href="http://www.gohugo.io/">Proudly published with Hugo</a>
+    </div>
+
+    <div class="footer_slogan">
+        <span>我的精神家园</span>
+    </div>
+</footer>
+    <script src="https://vsxen.github.io/js/jquery-3.5.1.min.js"></script>
+<link href="https://vsxen.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://vsxen.github.io/js/fancybox.min.js"></script>
+<script src="https://vsxen.github.io/js/zozo.js"></script>
+
+
+<script type="text/javascript" async
+    src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+        MathJax.Hub.Config({
+            tex2jax: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\[\[', '\]\]']],
+                processEscapes: true,
+                processEnvironments: true,
+                skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+                TeX: {
+                    equationNumbers: { autoNumber: "AMS" },
+                    extensions: ["AMSmath.js", "AMSsymbols.js"]
+                }
+            }
+        });
+
+        MathJax.Hub.Queue(function () {
+            
+            
+            
+            var all = MathJax.Hub.getAllJax(), i;
+            for (i = 0; i < all.length; i += 1) {
+                all[i].SourceElement().parentNode.className += ' has-jax';
+            }
+        });
+    </script>
+
+<style>
+    code.has-jax {
+        font: inherit;
+        font-size: 100%;
+        background: inherit;
+        border: inherit;
+        color: #515151;
+    }
+</style>
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-81855844-3', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+</body>
+
+</html>

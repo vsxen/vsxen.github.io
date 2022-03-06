@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="Zeuk" />
+	
+	
+	
+	<title>Kubernetes中的存储 ｜ Code Life</title>
+	
+    
+    
+    <meta name="description" content="概念 PersistentVolume PersistentVolume（持久卷，简称PV）是集群内，由管理员提供的网络存储的一部分。就像集群中的节点一样，PV也是集群中的一种资源。它也像Volume一样，是一种volume插件，但是" />
+    
+
+    
+    
+    <meta name="keywords" content="Hugo, theme, zozo" />
+    
+
+	
+    
+    <link rel="shortcut icon" href="https://vsxen.github.io/images/favicon.ico" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="https://vsxen.github.iocss/normalize.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.0/animate.min.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://vsxen.github.io/css/zozo.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://vsxen.github.io/css/highlight.css" />
+
+    
+    
+</head>
+
+<body>
+    <div class="main animate__animated animate__fadeInDown">
+        <div class="nav_container animated fadeInDown">
+    <div class="site_nav" id="site_nav">
+        <ul>
+            
+            <li>
+                <a href="/">首页</a>
+            </li>
+            
+            <li>
+                <a href="/posts/">归档</a>
+            </li>
+            
+            <li>
+                <a href="/tags/">标签</a>
+            </li>
+            
+            <li>
+                <a href="/about/">关于</a>
+            </li>
+            
+        </ul>
+    </div>
+    <div class="menu_icon">
+        <a id="menu_icon"><i class="ri-menu-line"></i></a>
+    </div>
+</div>
+        <div class="header animated fadeInDown">
+    <div class="site_title_container">
+        <div class="site_title">
+            <h1>
+                <a href="https://vsxen.github.io">
+                    <span>Code Life</span>
+                </a>
+            </h1>
+        </div>
+        <div class="description">
+            <p class="sub_title">the site subtitle</p>
+            <div class="my_socials">
+                
+                
+                <a href="%20" title="facebook" target="_blank"><i class="ri-facebook-fill"></i></a>
+                
+                
+                
+                <a href="%20" title="github" target="_blank"><i class="ri-github-fill"></i></a>
+                
+                
+                
+                <a href="%20" title="instagram" target="_blank"><i class="ri-instagram-fill"></i></a>
+                
+                
+                
+                <a href="%20" title="twitter" target="_blank"><i class="ri-twitter-fill"></i></a>
+                
+                
+                
+                <a href="%20" title="weibo" target="_blank"><i class="ri-weibo-fill"></i></a>
+                
+                
+                <a href="https://vsxen.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i
+                        class="ri-rss-fill"></i></a>
+            </div>
+        </div>
+    </div>
+</div>
+        <div class="content">
+            <div class="post_page">
+                <div class="post animate__animated animate__fadeInDown">
+                    <div class="post_title post_detail_title">
+                        <h2><a href='/posts/storage-in-kubernets/'>Kubernetes中的存储</a></h2>
+                        <span class="date">2019.05.12</span>
+                    </div>
+                    <div class="post_content markdown"><h2 id="概念">概念</h2>
+<h3 id="persistentvolume">PersistentVolume</h3>
+<p><code>PersistentVolume</code>（持久卷，简称PV）是集群内，由管理员提供的网络存储的一部分。就像集群中的节点一样，PV也是集群中的一种资源。它也像Volume一样，是一种volume插件，但是它的生命周期却是和使用它的Pod相互独立的。PV这个API对象，捕获了诸如NFS、ISCSI、或其他云存储系统的实现细节。
+<a href="https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistent-volumes">https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistent-volumes</a></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e"># kubectl explain pv.spec</span>
+<span style="color:#75715e"># KIND:     PersistentVolume</span>
+<span style="color:#75715e"># VERSION:  v1</span>
+<span style="color:#75715e"># spec</span>
+<span style="color:#75715e">#    accessModes  &lt;[]string&gt;</span>
+<span style="color:#75715e">#    capacity     &lt;map[string]string&gt;</span>
+<span style="color:#75715e">#    mountOptions &lt;[]string&gt; 部分支持，比如NFS</span>
+<span style="color:#75715e">#    persistentVolumeReclaimPolicy        &lt;string&gt;</span>
+<span style="color:#75715e">#    storageClassName     &lt;string&gt;</span>
+<span style="color:#75715e">#    volumeMode   &lt;string&gt;</span>
+<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">PersistentVolume</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">block-pv</span>
+<span style="color:#f92672">spec</span>:
+  <span style="color:#f92672">accessModes</span>:
+    - <span style="color:#ae81ff">ReadWriteOnce</span>
+  <span style="color:#f92672">capacity</span>:
+    <span style="color:#f92672">storage</span>: <span style="color:#ae81ff">10Gi</span>
+  <span style="color:#f92672">persistentVolumeReclaimPolicy</span>: <span style="color:#ae81ff">Retain  </span>
+  <span style="color:#ae81ff">storageClassName： aliclood-nas</span>
+  <span style="color:#f92672">volumeMode</span>: <span style="color:#ae81ff">Block</span>
+</code></pre></div><h3 id="persistentvolumeclaim">PersistentVolumeClaim</h3>
+<p><code>PersistentVolumeClaim</code>（持久卷声明，简称PVC）是用户的一种存储请求。它和Pod类似，Pod消耗Node资源，而PVC消耗PV资源。Pod能够请求特定的资源（如CPU和内存）。PVC能够请求指定的大小和访问的模式（可以被映射为一次读写或者多次只读）。
+PVC允许用户消耗抽象的存储资源，用户也经常需要各种属性（如性能）的PV。集群管理员需要提供各种各样、不同大小、不同访问模式的PV，而不用向用户暴露这些volume如何实现的细节。因为这种需求，就催生出一种<code>StorageClass</code>资源。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">  <span style="color:#75715e">#  accessModes          &lt;[]string&gt;</span>
+  <span style="color:#75715e">#  storageClassName     &lt;string&gt;</span>
+  <span style="color:#75715e">#  volumeMode           &lt;string&gt;</span>
+  <span style="color:#75715e">#  volumeName           &lt;string&gt;</span>
+  <span style="color:#75715e">#  resources            &lt;Object&gt;</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">PersistentVolumeClaim</span>
+<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">myclaim</span>
+<span style="color:#f92672">spec</span>:
+  <span style="color:#f92672">accessModes</span>:
+    - <span style="color:#ae81ff">ReadWriteOnce</span>
+  <span style="color:#f92672">storageClassName</span>: <span style="color:#ae81ff">slow</span>
+  <span style="color:#f92672">volumeMode</span>: <span style="color:#ae81ff">Filesystem</span>
+  <span style="color:#f92672">resources</span>:
+    <span style="color:#f92672">requests</span>:
+      <span style="color:#f92672">storage</span>: <span style="color:#ae81ff">8Gi</span>
+</code></pre></div><h3 id="storageclass">StorageClass</h3>
+<p><code>StorageClass</code>提供了一种方式，使得管理员能够描述他提供的存储的等级。集群管理员可以将不同的等级映射到不同的服务等级、不同的后端策略。
+<a href="https://kubernetes.io/docs/concepts/storage/storage-classes/">https://kubernetes.io/docs/concepts/storage/storage-classes/</a></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">  <span style="color:#75715e">#  mountOptions &lt;[]string&gt;</span>
+  <span style="color:#75715e">#  parameters   &lt;map[string]string&gt;</span>
+  <span style="color:#75715e">#  provisioner  &lt;string&gt; -required-</span>
+  <span style="color:#75715e">#  reclaimPolicy        &lt;string&gt;</span>
+  <span style="color:#75715e">#  volumeBindingMode    &lt;string&gt;</span>
+<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">storage.k8s.io/v1</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">StorageClass</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">alicloud-nas</span>
+<span style="color:#f92672">mountOptions</span>:
+- <span style="color:#ae81ff">vers=4.0</span>
+<span style="color:#f92672">provisioner</span>: <span style="color:#ae81ff">alicloud/nas</span>
+<span style="color:#f92672">reclaimPolicy</span>: <span style="color:#ae81ff">Retain</span>
+</code></pre></div><h2 id="实例">实例</h2>
+<h4 id="local--storage">Local  Storage</h4>
+<p>首先要创建StorageClass。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">cat &lt;&lt;EOF | kubectl apply -f -</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">StorageClass</span>
+<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">storage.k8s.io/v1</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">local-storage</span>
+<span style="color:#f92672">provisioner</span>: <span style="color:#ae81ff">kubernetes.io/no-provisioner</span>
+<span style="color:#f92672">volumeBindingMode</span>: <span style="color:#ae81ff">WaitForFirstConsumer</span>
+<span style="color:#ae81ff">EOF</span>
+
+<span style="color:#ae81ff">kubectl get sc</span>
+<span style="color:#ae81ff">NAME            PROVISIONER                    AGE</span>
+<span style="color:#ae81ff">local-storage   kubernetes.io/no-provisioner   3s</span>
+</code></pre></div><h5 id="创建pv">创建PV</h5>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">cat &lt;&lt;EOF | kubectl apply -f -</span>
+<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">PersistentVolume</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">example-local-pv</span>
+<span style="color:#f92672">spec</span>:
+  <span style="color:#f92672">capacity</span>:
+    <span style="color:#f92672">storage</span>: <span style="color:#ae81ff">1Gi</span>
+  <span style="color:#f92672">accessModes</span>:
+  - <span style="color:#ae81ff">ReadWriteOnce</span>
+  <span style="color:#f92672">persistentVolumeReclaimPolicy</span>: <span style="color:#ae81ff">Retain</span>
+  <span style="color:#f92672">storageClassName</span>: <span style="color:#ae81ff">local-storage</span>
+  <span style="color:#f92672">local</span>:
+    <span style="color:#f92672">path</span>: <span style="color:#ae81ff">/mnt/</span>
+  <span style="color:#f92672">nodeAffinity</span>:
+    <span style="color:#f92672">required</span>:
+      <span style="color:#f92672">nodeSelectorTerms</span>:
+      - <span style="color:#f92672">matchExpressions</span>:
+        - <span style="color:#f92672">key</span>: <span style="color:#ae81ff">kubernetes.io/hostname</span>
+          <span style="color:#f92672">operator</span>: <span style="color:#ae81ff">In</span>
+          <span style="color:#f92672">values</span>:
+          - <span style="color:#ae81ff">master1</span>
+<span style="color:#ae81ff">EOF</span>
+
+<span style="color:#ae81ff">kubectl get pv</span>
+<span style="color:#ae81ff">NAME               CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS     CLAIM                         STORAGECLASS    REASON    AGE</span>
+<span style="color:#ae81ff">example-local-pv   1Gi        RWO            Retain           Available             local-storage             3s</span>
+</code></pre></div><p>如果hostname没有指定，则会报错。<code>The PersistentVolume &quot;example-local-pv&quot; is invalid: metadata.annotations: Required value: Local volume requires node affinity</code></p>
+<h5 id="创建pvc">创建PVC</h5>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">cat &lt;&lt;EOF | kubectl apply -f -</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">PersistentVolumeClaim</span>
+<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">example-local-claim</span>
+<span style="color:#f92672">spec</span>:
+  <span style="color:#f92672">accessModes</span>:
+  - <span style="color:#ae81ff">ReadWriteOnce</span>
+  <span style="color:#f92672">resources</span>:
+    <span style="color:#f92672">requests</span>:
+      <span style="color:#f92672">storage</span>: <span style="color:#ae81ff">1Gi</span>
+  <span style="color:#f92672">storageClassName</span>: <span style="color:#ae81ff">local-storage</span>
+<span style="color:#ae81ff">EOF</span>
+</code></pre></div><h5 id="使用pvc">使用PVC</h5>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">cat &lt;&lt;EOF | kubectl apply -f -</span>
+<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">extensions/v1beta1</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Deployment</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">nginx</span>
+<span style="color:#f92672">spec</span>:
+  <span style="color:#f92672">replicas</span>: <span style="color:#ae81ff">1</span>
+  <span style="color:#f92672">template</span>:
+    <span style="color:#f92672">metadata</span>:
+      <span style="color:#f92672">labels</span>:
+        <span style="color:#f92672">run</span>: <span style="color:#ae81ff">nginx</span>
+    <span style="color:#f92672">spec</span>:
+      <span style="color:#f92672">containers</span>:
+      - <span style="color:#f92672">name</span>:  <span style="color:#ae81ff">nginx</span>
+        <span style="color:#f92672">image</span>: <span style="color:#ae81ff">nginx:alpine</span>
+        <span style="color:#f92672">volumeMounts</span>:
+        - <span style="color:#f92672">mountPath</span>: <span style="color:#e6db74">&#34;/var/www/html&#34;</span>
+          <span style="color:#f92672">name</span>: <span style="color:#ae81ff">mypd</span>
+      <span style="color:#f92672">volumes</span>:
+      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">mypd</span>
+        <span style="color:#f92672">persistentVolumeClaim</span>:
+          <span style="color:#f92672">claimName</span>: <span style="color:#ae81ff">example-local-claim</span>
+<span style="color:#ae81ff">EOF</span>
+</code></pre></div><h4 id="nas">NAS</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">storage.k8s.io/v1</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">StorageClass</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">alicloud-nas</span>
+<span style="color:#f92672">mountOptions</span>:
+- <span style="color:#ae81ff">vers=4.0</span>
+<span style="color:#f92672">provisioner</span>: <span style="color:#ae81ff">alicloud/nas</span>
+<span style="color:#f92672">reclaimPolicy</span>: <span style="color:#ae81ff">Retain</span>
+---
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Deployment</span>
+<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">extensions/v1beta1</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">alicloud-nas-controller</span>
+  <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">kube-system</span>
+<span style="color:#f92672">spec</span>:
+  <span style="color:#f92672">replicas</span>: <span style="color:#ae81ff">1</span>
+  <span style="color:#f92672">strategy</span>:
+    <span style="color:#f92672">type</span>: <span style="color:#ae81ff">Recreate</span>
+  <span style="color:#f92672">template</span>:
+    <span style="color:#f92672">metadata</span>:
+      <span style="color:#f92672">labels</span>:
+        <span style="color:#f92672">app</span>: <span style="color:#ae81ff">alicloud-nas-controller</span>
+    <span style="color:#f92672">spec</span>:
+      <span style="color:#f92672">tolerations</span>:
+      - <span style="color:#f92672">effect</span>: <span style="color:#ae81ff">NoSchedule</span>
+        <span style="color:#f92672">operator</span>: <span style="color:#ae81ff">Exists</span>
+        <span style="color:#f92672">key</span>: <span style="color:#ae81ff">node-role.kubernetes.io/master</span>
+      - <span style="color:#f92672">effect</span>: <span style="color:#ae81ff">NoSchedule</span>
+        <span style="color:#f92672">operator</span>: <span style="color:#ae81ff">Exists</span>
+        <span style="color:#f92672">key</span>: <span style="color:#ae81ff">node.cloudprovider.kubernetes.io/uninitialized</span>
+      <span style="color:#f92672">nodeSelector</span>:
+        <span style="color:#f92672">node-role.kubernetes.io/master</span>: <span style="color:#e6db74">&#34;&#34;</span>
+      <span style="color:#f92672">serviceAccount</span>: <span style="color:#ae81ff">admin</span>
+      <span style="color:#f92672">containers</span>:
+        - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">alicloud-nas-controller</span>
+          <span style="color:#f92672">image</span>: <span style="color:#ae81ff">registry.cn-hangzhou.aliyuncs.com/acs/alicloud-nas-controller:v3.1.0-k8s1.11</span>
+          <span style="color:#f92672">volumeMounts</span>:
+          - <span style="color:#f92672">mountPath</span>: <span style="color:#ae81ff">/persistentvolumes</span>
+            <span style="color:#f92672">name</span>: <span style="color:#ae81ff">nfs-client-root</span>
+          <span style="color:#f92672">env</span>:
+            - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">PROVISIONER_NAME</span>
+              <span style="color:#f92672">value</span>: <span style="color:#ae81ff">alicloud/nas</span>
+            - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">NFS_SERVER</span>
+              <span style="color:#f92672">value</span>: <span style="color:#ae81ff">xxx.cn-hangzhou.nas.aliyuncs.com</span>
+            - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">NFS_PATH</span>
+              <span style="color:#f92672">value</span>: <span style="color:#ae81ff">/</span>
+      <span style="color:#f92672">volumes</span>:
+      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">nfs-client-root</span>
+        <span style="color:#f92672">flexVolume</span>:
+          <span style="color:#f92672">driver</span>: <span style="color:#ae81ff">alicloud/nas</span>
+          <span style="color:#f92672">options</span>:
+            <span style="color:#f92672">path</span>: <span style="color:#ae81ff">/</span>
+            <span style="color:#f92672">server</span>: <span style="color:#ae81ff">0cd8b4a576-mmi32.cn-hangzhou.nas.aliyuncs.com</span>
+            <span style="color:#f92672">vers</span>: <span style="color:#e6db74">&#34;4.0&#34;</span>
+</code></pre></div><h5 id="使用volumetemplate">使用VolumeTemplate</h5>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">apps/v1beta1</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">StatefulSet</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">web</span>
+<span style="color:#f92672">spec</span>:
+  <span style="color:#f92672">serviceName</span>: <span style="color:#e6db74">&#34;nginx&#34;</span>
+  <span style="color:#f92672">replicas</span>: <span style="color:#ae81ff">2</span>
+  <span style="color:#f92672">template</span>:
+    <span style="color:#f92672">metadata</span>:
+      <span style="color:#f92672">labels</span>:
+        <span style="color:#f92672">app</span>: <span style="color:#ae81ff">nginx</span>
+    <span style="color:#f92672">spec</span>:
+      <span style="color:#f92672">containers</span>:
+      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">nginx</span>
+        <span style="color:#f92672">image</span>: <span style="color:#ae81ff">nginx:alpine</span>
+        <span style="color:#f92672">volumeMounts</span>:
+        - <span style="color:#f92672">mountPath</span>: <span style="color:#e6db74">&#34;/usr/share/nginx/html/&#34;</span>
+          <span style="color:#f92672">name</span>: <span style="color:#ae81ff">html</span>
+  <span style="color:#f92672">volumeClaimTemplates</span>:
+  - <span style="color:#f92672">metadata</span>:
+      <span style="color:#f92672">name</span>: <span style="color:#ae81ff">html</span>
+    <span style="color:#f92672">spec</span>:
+      <span style="color:#f92672">accessModes</span>:
+        - <span style="color:#ae81ff">ReadWriteOnce</span>
+      <span style="color:#f92672">storageClassName</span>: <span style="color:#ae81ff">alicloud-nas</span>
+      <span style="color:#f92672">resources</span>:
+        <span style="color:#f92672">requests</span>:
+          <span style="color:#f92672">storage</span>: <span style="color:#ae81ff">2Gi</span>
+ 
+<span style="color:#75715e"># web-html-0   Bound     pvc-487   2Gi        RWO            alicloud-nas   1h</span>
+<span style="color:#75715e"># web-html-1   Bound     pvc-60a   2Gi        RWO            alicloud-nas   1h</span>
+</code></pre></div><h2 id="ref">Ref</h2>
+<p>Kubernetes存储之Persistent Volumes简介</p>
+<p><a href="https://blog.csdn.net/styshoo/article/details/72235208">https://blog.csdn.net/styshoo/article/details/72235208</a></p>
+<p>Local Persistent Volumes for Kubernetes Goes Beta</p>
+<p><a href="https://kubernetes.io/blog/2018/04/13/local-persistent-volumes-beta/">https://kubernetes.io/blog/2018/04/13/local-persistent-volumes-beta/</a></p>
+<p>使用阿里云 NAS</p>
+<p><a href="https://www.alibabacloud.com/help/zh/doc-detail/88940.htm">https://www.alibabacloud.com/help/zh/doc-detail/88940.htm</a></p>
+</div>
+                    <div class="post_footer">
+                        
+                        <div class="meta">
+                            <div class="info">
+                                <span class="field tags">
+                                    <i class="ri-stack-line"></i>
+                                    
+                                    <a href="https://vsxen.github.io/tags/k8s/">k8s</a>
+                                    
+                                    <a href="https://vsxen.github.io/tags/storage/">storage</a>
+                                    
+                                </span>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                
+                <div class="doc_comments"></div>
+                
+            </div>
+        </div>
+    </div>
+    <a id="back_to_top" href="#" class="back_to_top"><i class="ri-arrow-up-s-line"></i></a>
+    <footer class="footer">
+    <div class="powered_by">
+        <a href="https://varkai.com">Designed by VarKai,</a>
+        <a href="http://www.gohugo.io/">Proudly published with Hugo</a>
+    </div>
+
+    <div class="footer_slogan">
+        <span>我的精神家园</span>
+    </div>
+</footer>
+    <script src="https://vsxen.github.io/js/jquery-3.5.1.min.js"></script>
+<link href="https://vsxen.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://vsxen.github.io/js/fancybox.min.js"></script>
+<script src="https://vsxen.github.io/js/zozo.js"></script>
+
+
+<script type="text/javascript" async
+    src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+        MathJax.Hub.Config({
+            tex2jax: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\[\[', '\]\]']],
+                processEscapes: true,
+                processEnvironments: true,
+                skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+                TeX: {
+                    equationNumbers: { autoNumber: "AMS" },
+                    extensions: ["AMSmath.js", "AMSsymbols.js"]
+                }
+            }
+        });
+
+        MathJax.Hub.Queue(function () {
+            
+            
+            
+            var all = MathJax.Hub.getAllJax(), i;
+            for (i = 0; i < all.length; i += 1) {
+                all[i].SourceElement().parentNode.className += ' has-jax';
+            }
+        });
+    </script>
+
+<style>
+    code.has-jax {
+        font: inherit;
+        font-size: 100%;
+        background: inherit;
+        border: inherit;
+        color: #515151;
+    }
+</style>
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-81855844-3', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+</body>
+
+</html>
