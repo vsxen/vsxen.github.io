@@ -1,108 +1,109 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Tags on Code Life</title>
-    <link>https://vsxen.github.io/tags/</link>
-    <description>Recent content in Tags on Code Life</description>
+    <title>Tags on Cactus theme example</title>
+    <link>https://example.com/tags/</link>
+    <description>Recent content in Tags on Cactus theme example</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-cn</language>
-    <lastBuildDate>Sun, 07 Mar 2021 09:10:53 +0800</lastBuildDate><atom:link href="https://vsxen.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <language>en-us</language>
+    <copyright>You</copyright>
+    <lastBuildDate>Sun, 07 Mar 2021 09:10:53 +0800</lastBuildDate><atom:link href="https://example.com/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Linux</title>
-      <link>https://vsxen.github.io/tags/linux/</link>
+      <link>https://example.com/tags/linux/</link>
       <pubDate>Sun, 07 Mar 2021 09:10:53 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/tags/linux/</guid>
+      <guid>https://example.com/tags/linux/</guid>
       <description></description>
     </item>
     
     <item>
       <title>k8s</title>
-      <link>https://vsxen.github.io/tags/k8s/</link>
+      <link>https://example.com/tags/k8s/</link>
       <pubDate>Sat, 20 Jun 2020 12:44:22 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/tags/k8s/</guid>
+      <guid>https://example.com/tags/k8s/</guid>
       <description></description>
     </item>
     
     <item>
       <title>network</title>
-      <link>https://vsxen.github.io/tags/network/</link>
+      <link>https://example.com/tags/network/</link>
       <pubDate>Tue, 25 Feb 2020 09:04:20 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/tags/network/</guid>
+      <guid>https://example.com/tags/network/</guid>
       <description></description>
     </item>
     
     <item>
       <title>kernel</title>
-      <link>https://vsxen.github.io/tags/kernel/</link>
+      <link>https://example.com/tags/kernel/</link>
       <pubDate>Sun, 25 Aug 2019 12:24:20 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/tags/kernel/</guid>
+      <guid>https://example.com/tags/kernel/</guid>
       <description></description>
     </item>
     
     <item>
       <title>etcd</title>
-      <link>https://vsxen.github.io/tags/etcd/</link>
+      <link>https://example.com/tags/etcd/</link>
       <pubDate>Sat, 15 Jun 2019 12:31:20 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/tags/etcd/</guid>
+      <guid>https://example.com/tags/etcd/</guid>
       <description></description>
     </item>
     
     <item>
       <title>aws</title>
-      <link>https://vsxen.github.io/tags/aws/</link>
+      <link>https://example.com/tags/aws/</link>
       <pubDate>Sun, 12 May 2019 22:31:20 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/tags/aws/</guid>
+      <guid>https://example.com/tags/aws/</guid>
       <description></description>
     </item>
     
     <item>
       <title>storage</title>
-      <link>https://vsxen.github.io/tags/storage/</link>
+      <link>https://example.com/tags/storage/</link>
       <pubDate>Sun, 12 May 2019 22:31:20 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/tags/storage/</guid>
+      <guid>https://example.com/tags/storage/</guid>
       <description></description>
     </item>
     
     <item>
       <title>dns</title>
-      <link>https://vsxen.github.io/tags/dns/</link>
+      <link>https://example.com/tags/dns/</link>
       <pubDate>Thu, 25 Apr 2019 22:31:20 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/tags/dns/</guid>
+      <guid>https://example.com/tags/dns/</guid>
       <description></description>
     </item>
     
     <item>
       <title>monitor</title>
-      <link>https://vsxen.github.io/tags/monitor/</link>
+      <link>https://example.com/tags/monitor/</link>
       <pubDate>Tue, 16 Apr 2019 09:43:24 +0000</pubDate>
       
-      <guid>https://vsxen.github.io/tags/monitor/</guid>
+      <guid>https://example.com/tags/monitor/</guid>
       <description></description>
     </item>
     
     <item>
       <title>prometheus</title>
-      <link>https://vsxen.github.io/tags/prometheus/</link>
+      <link>https://example.com/tags/prometheus/</link>
       <pubDate>Tue, 22 Jan 2019 22:31:20 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/tags/prometheus/</guid>
+      <guid>https://example.com/tags/prometheus/</guid>
       <description></description>
     </item>
     
     <item>
       <title>efk</title>
-      <link>https://vsxen.github.io/tags/efk/</link>
+      <link>https://example.com/tags/efk/</link>
       <pubDate>Tue, 25 Sep 2018 12:31:20 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/tags/efk/</guid>
+      <guid>https://example.com/tags/efk/</guid>
       <description></description>
     </item>
     

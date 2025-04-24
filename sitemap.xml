@@ -3,212 +3,212 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://vsxen.github.io/posts/2021/</loc>
+    <loc>https://example.com/posts/2021/</loc>
     <lastmod>2022-03-06T18:34:11+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://vsxen.github.io/</loc>
+    <loc>https://example.com/</loc>
     <lastmod>2022-03-06T18:34:11+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://vsxen.github.io/posts/</loc>
+    <loc>https://example.com/posts/</loc>
     <lastmod>2022-03-06T18:34:11+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://vsxen.github.io/tags/linux/</loc>
+    <loc>https://example.com/tags/linux/</loc>
     <lastmod>2021-03-07T09:10:53+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://vsxen.github.io/tags/</loc>
+    <loc>https://example.com/tags/</loc>
     <lastmod>2021-03-07T09:10:53+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://vsxen.github.io/posts/uprade-kernel/</loc>
+    <loc>https://example.com/posts/uprade-kernel/</loc>
     <lastmod>2021-03-07T09:10:53+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://vsxen.github.io/posts/2020/</loc>
+    <loc>https://example.com/posts/2020/</loc>
     <lastmod>2020-12-27T18:48:15+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://vsxen.github.io/tags/k8s/</loc>
+    <loc>https://example.com/tags/k8s/</loc>
     <lastmod>2020-06-20T12:44:22+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://vsxen.github.io/posts/kubectl-exec/</loc>
+    <loc>https://example.com/posts/kubectl-exec/</loc>
     <lastmod>2020-06-20T12:44:22+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://vsxen.github.io/tags/network/</loc>
+    <loc>https://example.com/tags/network/</loc>
     <lastmod>2020-02-25T09:04:20+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://vsxen.github.io/posts/tcp_nat/</loc>
+    <loc>https://example.com/posts/tcp_nat/</loc>
     <lastmod>2020-02-25T09:04:20+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://vsxen.github.io/posts/containerd-gvisor/</loc>
+    <loc>https://example.com/posts/containerd-gvisor/</loc>
     <lastmod>2019-11-25T12:31:20+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://vsxen.github.io/posts/k8s-cluster-update/</loc>
+    <loc>https://example.com/posts/k8s-cluster-update/</loc>
     <lastmod>2019-10-22T21:17:05+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://vsxen.github.io/posts/kubectl/</loc>
+    <loc>https://example.com/posts/kubectl/</loc>
     <lastmod>2019-09-20T22:31:20+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://vsxen.github.io/tags/kernel/</loc>
+    <loc>https://example.com/tags/kernel/</loc>
     <lastmod>2019-08-25T12:24:20+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://vsxen.github.io/posts/monitor-procfs/</loc>
+    <loc>https://example.com/posts/monitor-procfs/</loc>
     <lastmod>2019-08-25T12:24:20+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://vsxen.github.io/tags/etcd/</loc>
+    <loc>https://example.com/tags/etcd/</loc>
     <lastmod>2019-06-15T12:31:20+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://vsxen.github.io/posts/get-start-etcd/</loc>
+    <loc>https://example.com/posts/get-start-etcd/</loc>
     <lastmod>2019-06-15T12:31:20+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://vsxen.github.io/posts/k8s-apiserver-webhook/</loc>
+    <loc>https://example.com/posts/k8s-apiserver-webhook/</loc>
     <lastmod>2019-05-25T22:31:20+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://vsxen.github.io/posts/create-cluster-use-kubeadm/</loc>
+    <loc>https://example.com/posts/create-cluster-use-kubeadm/</loc>
     <lastmod>2019-05-17T22:31:20+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://vsxen.github.io/tags/aws/</loc>
+    <loc>https://example.com/tags/aws/</loc>
     <lastmod>2019-05-12T22:31:20+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://vsxen.github.io/posts/storage-in-kubernets/</loc>
+    <loc>https://example.com/posts/storage-in-kubernets/</loc>
     <lastmod>2019-05-12T22:31:20+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://vsxen.github.io/tags/storage/</loc>
+    <loc>https://example.com/tags/storage/</loc>
     <lastmod>2019-05-12T22:31:20+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://vsxen.github.io/posts/use-kops-in-aws/</loc>
+    <loc>https://example.com/posts/use-kops-in-aws/</loc>
     <lastmod>2019-05-12T22:31:20+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://vsxen.github.io/posts/coredns/</loc>
+    <loc>https://example.com/posts/coredns/</loc>
     <lastmod>2019-04-25T22:31:20+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://vsxen.github.io/tags/dns/</loc>
+    <loc>https://example.com/tags/dns/</loc>
     <lastmod>2019-04-25T22:31:20+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://vsxen.github.io/posts/k8s-event-explorer/</loc>
+    <loc>https://example.com/posts/k8s-event-explorer/</loc>
     <lastmod>2019-04-16T09:43:24+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://vsxen.github.io/tags/monitor/</loc>
+    <loc>https://example.com/tags/monitor/</loc>
     <lastmod>2019-04-16T09:43:24+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://vsxen.github.io/posts/k8s-ingress-useage/</loc>
+    <loc>https://example.com/posts/k8s-ingress-useage/</loc>
     <lastmod>2019-03-12T22:31:20+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://vsxen.github.io/posts/kubernetes-network-flannel/</loc>
+    <loc>https://example.com/posts/kubernetes-network-flannel/</loc>
     <lastmod>2019-02-12T22:31:20+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://vsxen.github.io/posts/promthus-operator/</loc>
+    <loc>https://example.com/posts/promthus-operator/</loc>
     <lastmod>2019-01-22T22:31:20+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://vsxen.github.io/tags/prometheus/</loc>
+    <loc>https://example.com/tags/prometheus/</loc>
     <lastmod>2019-01-22T22:31:20+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://vsxen.github.io/about/</loc>
+    <loc>https://example.com/about/</loc>
     <lastmod>2018-12-29T20:24:28+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://vsxen.github.io/posts/k8s-pod-full-yaml/</loc>
+    <loc>https://example.com/posts/k8s-pod-full-yaml/</loc>
     <lastmod>2018-12-25T22:31:20+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://vsxen.github.io/posts/k8s-resource-qos/</loc>
+    <loc>https://example.com/posts/k8s-resource-qos/</loc>
     <lastmod>2018-10-09T22:31:20+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://vsxen.github.io/tags/efk/</loc>
+    <loc>https://example.com/tags/efk/</loc>
     <lastmod>2018-09-25T12:31:20+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://vsxen.github.io/posts/fluentd/</loc>
+    <loc>https://example.com/posts/fluentd/</loc>
     <lastmod>2018-09-25T12:31:20+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://vsxen.github.io/posts/cluster-autoscaler/</loc>
+    <loc>https://example.com/posts/cluster-autoscaler/</loc>
     <lastmod>2018-09-25T12:31:20+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://vsxen.github.io/posts/terraform/</loc>
+    <loc>https://example.com/posts/terraform/</loc>
     <lastmod>2018-09-17T11:31:20+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://vsxen.github.io/posts/promethus/</loc>
+    <loc>https://example.com/posts/promethus/</loc>
     <lastmod>2018-09-14T22:31:20+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://vsxen.github.io/posts/kubernetes-auth-rbac/</loc>
+    <loc>https://example.com/posts/kubernetes-auth-rbac/</loc>
     <lastmod>2018-06-15T22:31:20+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://vsxen.github.io/categories/</loc>
+    <loc>https://example.com/categories/</loc>
   </url>
   
 </urlset>

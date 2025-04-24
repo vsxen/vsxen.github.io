@@ -1,28 +1,38 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>monitor on Code Life</title>
-    <link>https://vsxen.github.io/tags/monitor/</link>
-    <description>Recent content in monitor on Code Life</description>
+    <title>monitor on Cactus theme example</title>
+    <link>https://example.com/tags/monitor/</link>
+    <description>Recent content in monitor on Cactus theme example</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-cn</language>
-    <lastBuildDate>Tue, 16 Apr 2019 09:43:24 +0000</lastBuildDate><atom:link href="https://vsxen.github.io/tags/monitor/index.xml" rel="self" type="application/rss+xml" />
+    <language>en-us</language>
+    <copyright>You</copyright>
+    <lastBuildDate>Tue, 16 Apr 2019 09:43:24 +0000</lastBuildDate><atom:link href="https://example.com/tags/monitor/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>k8s 的实时日志 Events</title>
-      <link>https://vsxen.github.io/posts/k8s-event-explorer/</link>
+      <link>https://example.com/posts/k8s-event-explorer/</link>
       <pubDate>Tue, 16 Apr 2019 09:43:24 +0000</pubDate>
       
-      <guid>https://vsxen.github.io/posts/k8s-event-explorer/</guid>
-      <description>Event 什么是k8s的Events？比如你启动了一个Deployment，k8s的各大组件就开始依次忙碌起来，最终完成Pod的创建，从声明一个Deployment开始，到Pod启动完成，会生成一些列Even</description>
+      <guid>https://example.com/posts/k8s-event-explorer/</guid>
+      <description>Event 什么是k8s的Events？比如你启动了一个Deployment，k8s的各大组件就开始依次忙碌起来，最终完成Pod的创建，从声明一个Deployment开始，到Pod启动完成，会生成一些列Events，用来告知用户现在的状态。event就是用来回答一些问题，比如为什么pod没有启动，因为没有配置私有仓库的认证，为什么pod会被Kill，因为是超过limit的限制。具体如下所示：
+1kubectl get ev 2LAST SEEN TYPE REASON OBJECT MESSAGE 33s Normal Scheduled pod/nginx-698898f666-smg7t Successfully assigned default/nginx-698898f666-smg7t to east1-monitor1 43s Normal Pulled pod/nginx-698898f666-smg7t Container image &amp;#34;nginx:alpine&amp;#34; already present on machine 53s Normal Created pod/nginx-698898f666-smg7t Created container nginx 63s Normal Started pod/nginx-698898f666-smg7t Started container nginx 73s Normal SuccessfulCreate replicaset/nginx-698898f666 Created pod: nginx-698898f666-smg7t 83s Normal ScalingReplicaSet deployment/nginx Scaled up replica set nginx-698898f666 to 1 这些信息会被存储在Etcd中，默认的保存时间为1小时。
+1/registry/events/default/nginx-698898f666-smg7t.1593fd25ca0c7e00 2/registry/events/default/nginx-698898f666-smg7t.1593fd25f1ff3cca 3/registry/events/default/nginx-698898f666-smg7t.1593fd25f4066f9f 4/registry/events/default/nginx-698898f666-smg7t.1593fd25fd741cf6 5/registry/events/default/nginx-698898f666.1593fd25c9abf7dc 6/registry/events/default/nginx.1593fd25c9217fce 找到一条Event，可以看到完整的信息如下，值得关注的地方有involvedObject的name和source的host等等。</description>
     </item>
     
     <item>
       <title>新式监控系统 — prometheus</title>
-      <link>https://vsxen.github.io/posts/promethus/</link>
+      <link>https://example.com/posts/promethus/</link>
       <pubDate>Fri, 14 Sep 2018 22:31:20 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/posts/promethus/</guid>
-      <description>Prometheus 是一套开源的系统监控报警框架。它启发于 Google 的 borgmon 监控系统，由工作在 SoundCloud 的 google 前员工在 2012 年创建，作为社区开源项目进行开发，并于 2015 年正式发布。2016 年，Prometheus 正式加入 Cloud Native Computing Foundation，</description>
+      <guid>https://example.com/posts/promethus/</guid>
+      <description>Prometheus 是一套开源的系统监控报警框架。它启发于 Google 的 borgmon 监控系统，由工作在 SoundCloud 的 google 前员工在 2012 年创建，作为社区开源项目进行开发，并于 2015 年正式发布。2016 年，Prometheus 正式加入 Cloud Native Computing Foundation，成为受欢迎度仅次于 Kubernetes 的项目。
+Prometheus简介 作为新一代的监控框架，Prometheus 具有以下特点：
+  强大的多维度数据模型：
+ 时间序列数据通过 metric 名和键值对来区分。 所有的 metrics 都可以设置任意的多维标签。 数据模型更随意，不需要刻意设置为以点分隔的字符串。 可以对数据模型进行聚合，切割和切片操作。 支持双精度浮点类型，标签可以设为全 unicode。    灵活而强大的查询语句（PromQL）：在同一个查询语句，可以对多个 metrics 进行乘法、加法、连接、取分数位等操作。
+  易于管理： Prometheus server 是一个单独的二进制文件，可直接在本地工作，不依赖于分布式存储。
+  高效：平均每个采样点仅占 3.5 bytes，且一个 Prometheus server 可以处理数百万的 metrics。
+  使用 pull 模式采集时间序列数据，这样不仅有利于本机测试而且可以避免有问题的服务器推送坏的 metrics。
+  可以采用 push gateway 的方式把时间序列数据推送至 Prometheus server 端。</description>
     </item>
     
   </channel>

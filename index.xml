@@ -1,253 +1,369 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Code Life</title>
-    <link>https://vsxen.github.io/</link>
-    <description>Recent content on Code Life</description>
+    <title>Cactus theme example</title>
+    <link>https://example.com/</link>
+    <description>Recent content on Cactus theme example</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-cn</language>
-    <lastBuildDate>Sun, 06 Mar 2022 18:34:11 +0800</lastBuildDate><atom:link href="https://vsxen.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <language>en-us</language>
+    <copyright>You</copyright>
+    <lastBuildDate>Sun, 06 Mar 2022 18:34:11 +0800</lastBuildDate><atom:link href="https://example.com/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>2021</title>
-      <link>https://vsxen.github.io/posts/2021/</link>
+      <link>https://example.com/posts/2021/</link>
       <pubDate>Sun, 06 Mar 2022 18:34:11 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/posts/2021/</guid>
-      <description>​ 先说下CIS（Container Ingress Services）吧，也就是这个https://github.com/F5Networks/k8s-bigip-ctlr ，目的是为集群内的四层业务提供负载均衡，项目</description>
+      <guid>https://example.com/posts/2021/</guid>
+      <description>​	先说下CIS（Container Ingress Services）吧，也就是这个(https://github.com/F5Networks/k8s-bigip-ctlr) ，目的是为集群内的四层业务提供负载均衡，项目的初衷是为容器内的redis提供访问入口，毕竟pod的IP会变，之前是用Nginx ingress的四层stream做反向代理，那就要改configmap。（这里插一下redis在集群的模式是可以由一个入口进来，然后把流量转到 key 所在的 slot 所在的redis实例，也就是redis节点可以感知集群的其他节点。对于etcd？）由于各种原因开始测试这个CIS，网络那边还为此配置了 ECMP （https://en.wikipedia.org/wiki/Equal-cost_multi-path_routing），同时 ECMP 限制下一跳节点最多是16个，我们还为此搞出了Group到Namespace一对多的规划，每个Group计划流量大概40G吧😄。先说下这个CIS的奇葩之处吧，我们都知道根据Ingress的设计，最主要的是要找到Ingress对应的Service名字（名字在namespace级别是唯一的），根据名字来实现对应关系。但是CIS确是根据Service的label来关连的，而且CIS的对应关系是写在configmap里面，不支持多个configmap，也就是多个数组来表示不同的负载均衡。这里只是用ingress作为示例，表示我不是很赞同这个关系映射方式，因为你一个负载均衡的只需要知道Service名字，进而查出来bankend IP就好了，不应该在Service上面做事情。
+1# ingress 版  2apiVersion: extensions/v1beta1 3kind: Ingress 4metadata: 5 name: app 6spec: 7 rules: 8 - host: vsxen.github.io 9 http: 10 paths: 11 - backend: 12 serviceName: nginx 13 servicePort: 80 14--- 15# CIS版 16apiVersion: v1 17kind: Service 18metadata: 19 labels: 20 cis-app: &amp;#34;app&amp;#34; 21 cis-port: &amp;#34;443&amp;#34; 22 name: app 23spec: 24 ports: 25 - name: https 26 port: 443 27 protocol: TCP 28 targetPort: 6443 ​	当然对应私有云的环境，也有 https://github.</description>
     </item>
     
     <item>
       <title>如何为CentOS7升级4.x内核</title>
-      <link>https://vsxen.github.io/posts/uprade-kernel/</link>
+      <link>https://example.com/posts/uprade-kernel/</link>
       <pubDate>Sun, 07 Mar 2021 09:10:53 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/posts/uprade-kernel/</guid>
-      <description>默认的CentOS 7 使用的是 3.x版本的内核，比如 7.3使用的是3.10.0-957.5.1.el7.x86_64，大版本号也就是3.10.0，后面的957也就是不断的维护的小版本，如果你不升级的话，</description>
+      <guid>https://example.com/posts/uprade-kernel/</guid>
+      <description>默认的CentOS 7 使用的是 3.x版本的内核，比如 7.3使用的是3.10.0-957.5.1.el7.x86_64，大版本号也就是3.10.0，后面的957也就是不断的维护的小版本，如果你不升级的话，仅仅是update的话，只会增加最后的小版本号。但是当我们想使用高版本内核才支持的特性的时候，就需要升级。打开https://www.kernel.org/ 你会发现有下面几个版本：那怎么才能找到需要的版本的包呢？
+   mainline: 5.13-rc1 2021-05-09     stable: 5.12.4 2021-05-14   stable: 5.11.21 2021-05-14   longterm: 5.10.37 2021-05-14   longterm: 5.4.119 2021-05-14   longterm: 4.19.190 2021-05-07   longterm: 4.14.232 2021-04-28   longterm: 4.9.268 2021-04-28   longterm: 4.4.268 2021-04-28   linux-next: next-20210514 2021-05-14    首先我们来看下最小化系统默认安装了哪些kernel相关的包：
+1# rpm -qa |grep kernel 2kernel-3.10.0-957.5.1.el7.x86_64 3kernel-tools-3.10.0-957.5.1.el7.x86_64 4kernel-headers-3.</description>
     </item>
     
     <item>
       <title>2020</title>
-      <link>https://vsxen.github.io/posts/2020/</link>
+      <link>https://example.com/posts/2020/</link>
       <pubDate>Sun, 27 Dec 2020 18:48:15 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/posts/2020/</guid>
-      <description>嗯，2020年就要过去了，距离我上次写博客居然都有半年了，果然是忙了很多，亦或是自己在找借口？，我呢也只想写一下有深度的东西，又需要更多的时间。 惯例先记一下流水账，2月一直都在家里，比较差的信号加上自</description>
+      <guid>https://example.com/posts/2020/</guid>
+      <description>嗯，2020年就要过去了，距离我上次写博客居然都有半年了，果然是忙了很多，亦或是自己在找借口？，我呢也只想写一下有深度的东西，又需要更多的时间。
+惯例先记一下流水账，2月一直都在家里，比较差的信号加上自身的自制力也不强，其实花在工作的时间不长。大概03上旬的时候去的公司吧，然后就开始居家隔离（笑。4月的时候开启了招聘旺季，我也面了几个，也算是我做的比较后悔的地方，不要招一个技术不行而且无法沟通的人。五一的时候也没回去，就在附近转了一圈，手机也在那个时候进水了，原来现代技术在水火面前不值一提，另外大家如果是进水机器一般都可以放弃了，修好之后也可能有暗病，当然也取决于师傅的手艺。6月的时候搬家，终于我又达到了步行上班的水平，随之到来的是房租增长。接下来就重点讲讲做过的东西吧：
+首先是vGPU相关的，为了更好的性能，我们找了几块网卡搭建RDMA的环境，用的应该是这块卡，https://www.mellanox.com/products/ethernet-adapters/connectx-4-en ，当然不是原厂的，问题就出在这个OEM版本的设备上，我一直在用官方的驱动，因为我对这一块也不是很熟，到现在也不能准备的解释什么是ROCE以及纯IB网，更坑的代码在调用网卡的时候写死了一部分参数，导致在宿主上用ibwrite和ibread都是成功的，但是在容器中一直失败，报ibv_create_qp failed to create a queue pair (qp)的错误，最后甚至怀疑到了操作系统上（而且我们都升级了内核），然后在github上面找了一个示例看能不能跑起来 https://github.com/jcxue/RDMA-Tutorial，当然也需要修改一部分，最后终于发现是写死设备号的问题。邮件列表也翻过 https://www.spinics.net/lists/linux-rdma/msg81222.html 。
+接着是harbor，在镜像存储这一块，其实选择这一个&amp;hellip;官方的registry只有cli，quay开源的时候太晚，而且安装也有些复杂？harbor在可观测性上真是辣鸡，首先镜像同步没有进度条，如果遇到一个特别大的项目，或者特别多的tag，那你就自求多福吧。当你想看看谁用了空间最多，貌似没有，虽然现在可以设置存储配置。官方的registry虽然提供了metrics，但是harbor默认没有暴露出来，这里也有携程大佬的文章可以参考一下http://arthurchiao.art/blog/monitoring-hub/ 。UI更是可怕，翻页翻到手酸。2.x之前的版本没有在线GC，这就意味着你要清理镜像的时候必须先停掉！！！https://github.com/c4po/harbor_exporter
+紧接着我们就测试了Calico的集群，和官方文档上面不同的是，我们使用了外部的gobgp作为RR节点与集群连接。说一下遇到的问题的吧，首先calico并不支持固定IP，calico仅可以分配一个IP给workload，当你在滚动更新、多副本的时候就几乎不能用了，这里也有分析 https://www.ichenfu.com/2019/09/21/calico-ip-allocation-problems/，其次是IPPool不能扩充，IP Block的生命周期和节点其实是强相关的，这边文章也有分析，最后他们是用了一个CRD完成了ippool的扩充 https://mp.weixin.qq.com/s/FF8c7g8iOTX-e-efrSo5dA。https://shimo.im/docs/tXck8cGKxKWKctp8
+然后是cilium的网络方案，这个就属于很硬核的，对内核要求再4.X，一些特性还要再4.18以上，在1.6之后的版本提供了网络流的可视化支持，有空再细讲。
+安全相关，k8s官方提供了psp这个对象来限制用户容器的一些行为，禁止挂载hostpath、selinux、capabilities等，主要是当你在容器里面使用root用户挂载上宿主机的文件之后，你会发现可以使用rm -rf 了，这就需要CI流程的配合了。除此之外sysdig开源了falco https://falco.org/，采用内核模块加ebpf的方式，加上自定义规则，可以控制容器的行为，所以和psp的功能有重复。
+除了进程的一些限制之外，资源的限制也是很重要的，尤其是磁盘和内存，当然这些都可以通过request和limit来设置，对容器磁盘的限制主要是针对可写层以及挂载这两种，这个kubelet和CRI配合。除此之外还有一下策略相关的安全，比如不设置limit不让部署，这就要用到OPA了（同类中个人觉得比较完善），可以把规则作为CRD来使用。
+接着我们升级了集群，从1.14升级到1.16，然后jenkins插件就出了问题，https://github.com/fabric8io/kubernetes-client/pull/1669，是少了一个http header，最好把集群的event都整合到了一起，并用kibana画了一个dashboard。</description>
     </item>
     
     <item>
       <title>自己动手实现一个kubectl exec</title>
-      <link>https://vsxen.github.io/posts/kubectl-exec/</link>
+      <link>https://example.com/posts/kubectl-exec/</link>
       <pubDate>Sat, 20 Jun 2020 12:44:22 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/posts/kubectl-exec/</guid>
-      <description>在日常工作中kubectl exec 可以说是非常高频使用的，如果你想自己了解相关原理，不妨自己动手写一个。 知识储备： websocket 阮一峰这篇《WebSocket 教程- 阮一峰的网络日志》写的比较详进。 kubectl exec 原理 https://itnext.io/how-it-works-kubectl-exec-e31325daa910 https://erkanerol.github.io/post/how-kubectl-exec-works/ 如果你英文</description>
+      <guid>https://example.com/posts/kubectl-exec/</guid>
+      <description>在日常工作中kubectl exec 可以说是非常高频使用的，如果你想自己了解相关原理，不妨自己动手写一个。
+知识储备：
+  websocket 阮一峰这篇《WebSocket 教程- 阮一峰的网络日志》写的比较详进。
+  kubectl exec 原理
+https://itnext.io/how-it-works-kubectl-exec-e31325daa910
+https://erkanerol.github.io/post/how-kubectl-exec-works/
+如果你英文阅读能还可以，这两篇文章从原理方面介绍了exec是如何工作的。
+  了解了以上知识之后，接下来我们就开始动手吧。
+首先来初始化一下项目，这里使用go mod作为依赖管理工具。k8s的client-go对机器版本是有要求的，所以在初始化的时候最好去官方那边找一下可用的版本。如果遇到mod/k8s.io/client-go@v10.0.0+incompatible/kubernetes/scheme/register.go:22:2: unknown import path &amp;quot;k8s.io/api/admissionregistration /v1alpha1&amp;quot;: cannot find module providing package k8s.io/api/admissionregistration/v1alpha1
+这种报错，可以尝试强制指定版本，这个也是从kubebuilder那里学到的。
+1go mod init k8sdemo 2 3module k8sdemo 4 5go 1.13 6 7require ( 8 github.com/gorilla/websocket v1.4.2 9 golang.org/x/crypto v0.0.0-20190820162420-60c769a6c586 10 k8s.io/api v0.17.2 11 k8s.io/apimachinery v0.17.2 12 k8s.io/client-go v0.17.2 13) client-go的example目录也有相关对象的CURD示例，我们可以先从这里入手，先熟悉相关操作，可以看到首先从kuebconfig读取配置，然后初始化各种client的一个集合，最后创建了一个deployment实例。
+1	config, err := clientcmd.BuildConfigFromFlags(&amp;#34;&amp;#34;, *kubeconfig) 2	if err !</description>
     </item>
     
     <item>
       <title>从Nat到TCP_TW</title>
-      <link>https://vsxen.github.io/posts/tcp_nat/</link>
+      <link>https://example.com/posts/tcp_nat/</link>
       <pubDate>Tue, 25 Feb 2020 09:04:20 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/posts/tcp_nat/</guid>
-      <description>看到这个标题，你可能会感到疑惑这两个有什么关系呢？一个是IP转换一个是TCP，似乎关系不大？接下来听我慢慢介绍。 NAT 在IPV4的时代，IP可以分为两种，公网和局域网。当你在局域网时想要访问外面的内容就要</description>
+      <guid>https://example.com/posts/tcp_nat/</guid>
+      <description>看到这个标题，你可能会感到疑惑这两个有什么关系呢？一个是IP转换一个是TCP，似乎关系不大？接下来听我慢慢介绍。
+NAT 在IPV4的时代，IP可以分为两种，公网和局域网。当你在局域网时想要访问外面的内容就要经过Nat，即网络地址转换也就是把局域网的IP转换为公网，发送和接收请求。其中
+ SNat 原地址转换 Source nat，也就是在发送请求的时候，我们的路由器把类似192.168.1.2转换为我们拨号上网的公网IP， DNat也就是目的地址转换，也就是在收到接收到请求的时候，把上面的公网IP转换为192.168.1.2的局域网IP。  也就是说其实我们无时无刻都在使用着Nat，这是客户端。对于服务端呢？也会用到Nat。典型的场景比如负载均衡。比如说我们请求的淘宝首页，淘宝的服务器肯定不止一台，淘宝可能也是通过负载均衡以及Nat来把请求分发到后端。
+1dig A taobao.com +short 2140.205.220.96 3140.205.94.189 TCP 为什么会注意到这点呢？其实主要是因为部署在容器内的服务在连接MySQL的时候经常会报错比如：
+1pymysql.err.OperationalError: (2003, &amp;#34;Can&amp;#39;t connect to MySQL server on &amp;#39;xxxx (timed out)&amp;#34;) 2Error Code: 2013. Lost connection to MySQL server during query 主要的原因就是因为开发TCP timewait的复用。这里引用下别人的文章：
+11. 同时开启tcp_timestamp和tcp_tw_recycle会启用TCP/IP协议栈的per-host的PAWS机制 22. 经过同一NAT转换后的来自不同真实client的数据流，在服务端看来是于同一host打交道 33. 虽然经过同一NAT转化，但由于不同真实client会携带各自的timestamp值 4因而无法保证整过NAT转化后的数据包携带的timestamp值严格递增 54. 当服务器的per-host PAWS机制被触发后，会丢弃timestamp值不符合递增条件的数据包 先说结论
+ 开启tcp_timestamp，但不要开tcp_tw_recycle
+ TCP的三次握手这些就不多说了，下面就根据流程图以及Linux kernel相关TCP参数补充一下细节。
+1客户端 服务端 2 + + 3 | | 4 | | Listen 监听端口 5 | | 6 | | 7+------------------------------------------------------------------+ 8发送SYN,(SYN_SEND) | | 9 | | 10 | | 回复SYN+ACK，到SYN_RCVD 11 | | 12 回复ACK | | 13 | | 14+------------------------------------------------------------------+ 建立连接 15 建立链接 | | 建立链接 16 双方开始传输数据 | | 双方开始传输数据 17 | | 18 GET / HTTP1.</description>
     </item>
     
     <item>
       <title>Containerd gvisor &amp; k8s</title>
-      <link>https://vsxen.github.io/posts/containerd-gvisor/</link>
+      <link>https://example.com/posts/containerd-gvisor/</link>
       <pubDate>Mon, 25 Nov 2019 12:31:20 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/posts/containerd-gvisor/</guid>
-      <description>本文主要讨论如何在containerd中使用gvisor作为runtime，以及如何对接k8s。 安装containerd 这个就不用多说了，直接apt install containerd 即可，会安装一下几个可执行文件，如下所示 /usr/bin/containerd 守护进</description>
+      <guid>https://example.com/posts/containerd-gvisor/</guid>
+      <description>本文主要讨论如何在containerd中使用gvisor作为runtime，以及如何对接k8s。
+安装containerd 这个就不用多说了，直接apt install containerd 即可，会安装一下几个可执行文件，如下所示
+1/usr/bin/containerd 守护进程 2/usr/bin/containerd-shim 应该是负责处理容器内stdout &amp;amp; stderr 3/usr/bin/containerd-shim-runc-v1 应该是负责启动容器内的pid 1 4/usr/bin/containerd-stress 压力测试工具 5/usr/bin/ctr cli工具  吐槽一下 ctr可能没有docker的cli那么好用
+ 接下来我们来运行一个容器测试一下containerd：
+ 因为containerd默认的pause容器使用的是gcr.k8s.io/pause，如果网络有问题的话，就需要提前导入，或者在修改默认配置。 还要提醒一下，containerd有namespace的区别，默认是在default下面，这里不是k8s的namespace 。 除此之外还要配置CNI以供容器启动分配网络，可以使用下面的配置：  1mkdir -p /etc/cni/net.d 2cat &amp;gt;&amp;#39;/etc/cni/net.d&amp;#39;/10-containerd-net.conflist &amp;lt;&amp;lt;EOF 3{ 4 &amp;#34;cniVersion&amp;#34;: &amp;#34;0.3.1&amp;#34;, 5 &amp;#34;name&amp;#34;: &amp;#34;containerd-net&amp;#34;, 6 &amp;#34;plugins&amp;#34;: [ 7 { 8 &amp;#34;type&amp;#34;: &amp;#34;bridge&amp;#34;, 9 &amp;#34;bridge&amp;#34;: &amp;#34;cni1&amp;#34;, 10 &amp;#34;isGateway&amp;#34;: true, 11 &amp;#34;ipMasq&amp;#34;: true, 12 &amp;#34;promiscMode&amp;#34;: true, 13 &amp;#34;ipam&amp;#34;: { 14 &amp;#34;type&amp;#34;: &amp;#34;host-local&amp;#34;, 15 &amp;#34;subnet&amp;#34;: &amp;#34;10.</description>
     </item>
     
     <item>
       <title>K8s 集群升级</title>
-      <link>https://vsxen.github.io/posts/k8s-cluster-update/</link>
+      <link>https://example.com/posts/k8s-cluster-update/</link>
       <pubDate>Tue, 22 Oct 2019 21:17:05 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/posts/k8s-cluster-update/</guid>
-      <description>目前k8s差不多三个月就会有一个大版本，差不多半年不更新的话就追不上官方的步伐了，同时还会有一些重大0day的CVE被发现，所以适当的升级集群也是有必要的。本文试尝讨论一种可以把影响降到最低甚至zer</description>
+      <guid>https://example.com/posts/k8s-cluster-update/</guid>
+      <description>目前k8s差不多三个月就会有一个大版本，差不多半年不更新的话就追不上官方的步伐了，同时还会有一些重大0day的CVE被发现，所以适当的升级集群也是有必要的。本文试尝讨论一种可以把影响降到最低甚至zero down time的升级方式。另外本文主要讨论kubeadm搭建的集群，在原基群中升级。
+何时升级 k8s遵守语义化版本的规定，比如x.y.z中，最后的小版本可以随意升级，当发现有新的CVE之后，可以通过升级小版本来快速修复，当然如果在VPC或者内网之内，就不用太担心了。
+当y需要升级的时候，官方不建议跨两个版本号升级，虽然代码中有兼容的方式，这时候通过kubeadm upgrade的命令也是可以升级的，需要注意的是检测更新的时候需要科学上网，doc见 https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/。
+升级准备 备份数据，这个应该在平时就做好，etcd的数据全量备份，数据目录也应该备份，集群中应用对应的yaml文件，甚至是pvc中的数据，当然这个要根据实际情况进行备份。
+然后阅读相关release node，重点关注其中几部分： Known Issues，Action Requireed，Deprecations and removals。社区会将一些变化highlight到这里，阅读这些变化可以明确自己需要采取哪些行动。有哪些参数变化，哪些feature发生更改。比如1.13到1.14 Node Lease的feature就默认打开了。见 https://github.com/kubernetes/kubernetes/pull/72096
+升级流程，按照我的经验，升级步骤应该是etcd master node addons，node组件可以与master组件最多延迟两个小版本(minor version)，但是不能比master组件新，因为可能会有新的字段，所以master版本应该高一点。
+etcd需要注意的是，要保证集群的可用性必须要有(n+1)/2个可用节点，这时候才能进行读写操作，否则etcd就会拒绝写入。
+除此以外 https://www.cnblogs.com/gaorong/p/11266629.html 这篇文章提到应该暂时停掉KCM，避免pod漂移或者副本发送变化，仔细想来也是很有必要的，不过这样降低了集群的可用时间，也就是升级的时候不能进行其他操作，当然可用性和一致性也是需要做一个选择。
+升级测试，自己搭建一个旧的集群，然后按照步骤升级，看看是否有一些意料之外的问题出现。
+Ref kubernetes集群升级的正确姿势
+https://www.cnblogs.com/gaorong/p/11266629.html</description>
     </item>
     
     <item>
       <title>kubectl 常用快捷键</title>
-      <link>https://vsxen.github.io/posts/kubectl/</link>
+      <link>https://example.com/posts/kubectl/</link>
       <pubDate>Fri, 20 Sep 2019 22:31:20 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/posts/kubectl/</guid>
-      <description>查询类 # custom-columns # 比如 查看role=sre 标签pod镜像，当然也可以用go的自定义输出 kubectl -n kube-system get po -l tier=control-plane -o custom-columns=NAME:.metadata.name,image:.spec.containers[0].image NAME image etcd-ubuntu-bionic gcr.azk8s.cn/google_containers/etcd:3.3.15-0 kube-apiserver-ubuntu-bionic gcr.azk8s.cn/google_containers/kube-apiserver:v1.16.2 kube-controller-manager-ubuntu-bionic gcr.azk8s.cn/google_containers/kube-controller-manager:v1.16.2 kube-scheduler-ubuntu-bionic gcr.azk8s.cn/google_containers/kube-scheduler:v1.16.2 # go-template # range 嵌套 # 列出所有容器使用的镜像名 kubectl get pods -o go-template --template=&amp;#39;{{range .items}}{{range .spec.containers}}{{printf &amp;#34;%s\n&amp;#34; .image}}{{end}}{{end}}&amp;#39; istio/examples-bookinfo-details-v1:1.5.0 istio/examples-bookinfo-productpage-v1:1.5.0 istio/examples-bookinfo-ratings-v1:1.5.0 # 条件判断 # 列出所</description>
+      <guid>https://example.com/posts/kubectl/</guid>
+      <description>查询类 1# custom-columns 2 3# 比如 查看role=sre 标签pod镜像，当然也可以用go的自定义输出 4kubectl -n kube-system get po -l tier=control-plane -o custom-columns=NAME:.metadata.name,image:.spec.containers[0].image 5NAME image 6etcd-ubuntu-bionic gcr.azk8s.cn/google_containers/etcd:3.3.15-0 7kube-apiserver-ubuntu-bionic gcr.azk8s.cn/google_containers/kube-apiserver:v1.16.2 8kube-controller-manager-ubuntu-bionic gcr.azk8s.cn/google_containers/kube-controller-manager:v1.16.2 9kube-scheduler-ubuntu-bionic gcr.azk8s.cn/google_containers/kube-scheduler:v1.16.2 10 11# go-template  12 13# range 嵌套 14# 列出所有容器使用的镜像名 15kubectl get pods -o go-template --template=&amp;#39;{{range .items}}{{range .spec.containers}}{{printf &amp;#34;%s\n&amp;#34; .image}}{{end}}{{end}}&amp;#39; 16istio/examples-bookinfo-details-v1:1.5.0 17istio/examples-bookinfo-productpage-v1:1.5.0 18istio/examples-bookinfo-ratings-v1:1.5.0 19 20# 条件判断 21# 列出所有不可调度节点的节点名与 IP 22kubectl get no -o go-template=&amp;#39;{{range .items}}{{if .spec.unschedulable}}{{.metadata.name}} {{.spec.externalID}}{{&amp;#34;\n&amp;#34;}}{{end}}{{end}}&amp;#39; 23 24 25# jsonpath 26 27# 查询pod的启动时间 28kubectl -n kube-system get pods -o=jsonpath=&amp;#39;{range .</description>
     </item>
     
     <item>
       <title>procfs 与 Linux 系统监控</title>
-      <link>https://vsxen.github.io/posts/monitor-procfs/</link>
+      <link>https://example.com/posts/monitor-procfs/</link>
       <pubDate>Sun, 25 Aug 2019 12:24:20 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/posts/monitor-procfs/</guid>
-      <description>Unix系推崇一个观点，Everything is a file 。对于一些系统以及进程信息，kernel会以文件系统的系统挂载在proc和sys目录，也就是常说的procfs，sysfs虚拟文件系统。包括CPU，内</description>
+      <guid>https://example.com/posts/monitor-procfs/</guid>
+      <description>Unix系推崇一个观点，Everything is a file 。对于一些系统以及进程信息，kernel会以文件系统的系统挂载在proc和sys目录，也就是常说的procfs，sysfs虚拟文件系统。包括CPU，内存和硬盘等信息。当然对于系统监控来说，这也是重要的数据源。
+proc的目录看起来是下面这样的，那些数字都是进程的PID，其他的是一些系统系，比如cpuinfo记录者硬件的CPU信息：
+接下来我们看一下进程PID里面的信息，记录者此进程的启动命令，参数等信息。
+1ls /proc/ 21 1170 1345 19 2116 304 382 406 787 942 consoles interrupts kpageflags pagetypeinfo sysrq-trigger 310 12 14 1911 22 305 383 408 8 955 cpuinfo iomem loadavg partitions sysvipc 41022 1205 15 1922 24 31 384 41 824 96 crypto ioports locks sched_debug thread-self 5105 1215 16 1928 25 32 387 42 85 967 devices irq mdstat schedstat timer_list 61059 1216 174 2 257 33 389 422 86 979 diskstats kallsyms meminfo scsi tty 711 122 175 20 26 34 398 462 87 994 dma kcore misc self uptime 81122 1243 176 2098 26150 35 4 555 88 acpi driver key-users modules slabinfo version 91134 1269 177 21 27 36 40 556 89 buddyinfo execdomains keys mounts softirqs version_signature 101147 1289 18 2100 28 37 400 6 9 bus fb kmsg mpt stat vmallocinfo 111152 13 183 2114 29 379 402 639 90 cgroups filesystems kpagecgroup mtrr swaps vmstat 121166 1340 186 2115 30 381 404 7 908 cmdline fs kpagecount net sys zoneinfo 13 14 15ls /proc/1/ 16attr cmdline environ io mem ns pagemap sched smaps_rollup syscall wchan 17autogroup comm exe limits mountinfo numa_maps patch_state schedstat stack task 18auxv coredump_filter fd loginuid mounts oom_adj personality sessionid stat timers 19cgroup cpuset fdinfo map_files mountstats oom_score projid_map setgroups statm timerslack_ns 20clear_refs cwd gid_map maps net oom_score_adj root smaps status uid_map sysfs主要记录的系统的设备信息，如果是一个docker0的虚拟网卡：</description>
     </item>
     
     <item>
       <title>Etcd 使用入门</title>
-      <link>https://vsxen.github.io/posts/get-start-etcd/</link>
+      <link>https://example.com/posts/get-start-etcd/</link>
       <pubDate>Sat, 15 Jun 2019 12:31:20 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/posts/get-start-etcd/</guid>
-      <description>etcd是coreos根据Raft一致性算法用go实现的分布式KV数据库，作为k8s数据唯一存储的地方，etcd具有高性能的读写以及watch性能，也可以用在服务注册，配置中心等。官方Doc https://github.com/etcd-io/etcd/blob/master/Documentation 入门 初识</description>
+      <guid>https://example.com/posts/get-start-etcd/</guid>
+      <description>etcd是coreos根据Raft一致性算法用go实现的分布式KV数据库，作为k8s数据唯一存储的地方，etcd具有高性能的读写以及watch性能，也可以用在服务注册，配置中心等。官方Doc https://github.com/etcd-io/etcd/blob/master/Documentation
+入门 初识单节点 etcd使用了两个端口 2379 grpc 以及2380 http，现在最新的API版本是v3，之前的v2性能有一定问题，建议直接用v3的API。配置etcd可以通过环境变量或者命令行参数。Etcd会有一些默认参数，但是bind的地址都是127.0.0.1
+1docker run -d --name etcd k8s.gcr.io/etcd:3.3.10 etcd 2# etcdmain 32019-06-25 06:26:30.323960 I | etcdmain: etcd Version: 3.3.10 42019-06-25 06:26:30.324127 I | etcdmain: Git SHA: 27fc7e2 52019-06-25 06:26:30.324138 I | etcdmain: Go Version: go1.10.4 62019-06-25 06:26:30.324153 I | etcdmain: Go OS/Arch: linux/amd64 72019-06-25 06:26:30.324162 I | etcdmain: setting maximum number of CPUs to 2, total number of available CPUs is 2 82019-06-25 06:26:30.</description>
     </item>
     
     <item>
       <title>k8s APIServer 动态准入控制器</title>
-      <link>https://vsxen.github.io/posts/k8s-apiserver-webhook/</link>
+      <link>https://example.com/posts/k8s-apiserver-webhook/</link>
       <pubDate>Sat, 25 May 2019 22:31:20 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/posts/k8s-apiserver-webhook/</guid>
-      <description>当你在k8s集群中一个不存在的namespace中创建一个pod，会返回一个namespace not found类似的错误，你有想过这个是哪个组件完成的吗？对就是admission plugin。 从控制器说起</description>
+      <guid>https://example.com/posts/k8s-apiserver-webhook/</guid>
+      <description>当你在k8s集群中一个不存在的namespace中创建一个pod，会返回一个namespace not found类似的错误，你有想过这个是哪个组件完成的吗？对就是admission plugin。
+从控制器说起 什么是准入插件，在APIServer中有这样一个参数--enable-admission-plugins，用于对创建的对象的合理性进行验证和二次修改。可选的参数如下所示：
+ AlwaysAdmit, # 一直允许 AlwaysDeny, # 一直禁止 AlwaysPullImages, # 在启动容器之前总是去下载镜像，相当于每当容器启动前做一次用于是否有权使用该容器镜像的检查 DefaultStorageClass, # 默认的sc DefaultTolerationSeconds, DenyEscalatingExec, # 拒绝exec和attach命令到有升级特权的Pod的终端用户访问。如果集中包含升级特权的容器，而要限制终端用户在这些容器中执行命令的能力，推荐使用此插件 DenyExecOnPrivileged, EventRateLimit, # event 限流 ExtendedResourceToleration, ImagePolicyWebhook, LimitPodHardAntiAffinityTopology, LimitRanger, # 默认资源限额，用于Pod和容器上的配额管理，它会观察进入的请求，确保Pod和容器上的配额不会超标。准入控制器LimitRanger和资源对象LimitRange一起实现资源限制管理 MutatingAdmissionWebhook, # 授权后的webhook NamespaceAutoProvision, NamespaceExists,# 命名空间是否存在 NamespaceLifecycle, # 当一个请求是在一个不存在的namespace下创建资源对象时，该请求会被拒绝。当删除一个namespace时，将会删除该namespace下的所有资源对象 NodeRestriction, OwnerReferencesPermissionEnforcement, PersistentVolumeClaimResize, # PVC 扩容 PersistentVolumeLabel, # PVC标签 PodNodeSelector,# pod 节点选择器 PodPreset, # 向namespace注入变量和存储 PodSecurityPolicy, # pod安全策略 PodTolerationRestriction, Priority, # 调度策略？ ResourceQuota, # 用于namespace上的配额管理，它会观察进入的请求，确保在namespace上的配额不超标。推荐将这个插件放到准入控制器列表的最后一个。ResourceQuota准入控制器既可以限制某个namespace中创建资源的数量，又可以限制某个namespace中被Pod请求的资源总量。ResourceQuota准入控制器和ResourceQuota资源对象一起可以实现资源配额管理 SecurityContextDeny, # 将Pod定义中定义了的SecurityContext选项全部失效。SecurityContext包含在容器中定义了操作系统级别的安全选型如fsGroup，selinux等选项 ServiceAccount, #这个插件实现了serviceAccounts等等自动化，如果使用ServiceAccount对象，强烈推荐使用这个插件 StorageObjectInUseProtection, TaintNodesByCondition, ValidatingAdmissionWebhook.</description>
     </item>
     
     <item>
       <title>使用kubeadm初始化集群</title>
-      <link>https://vsxen.github.io/posts/create-cluster-use-kubeadm/</link>
+      <link>https://example.com/posts/create-cluster-use-kubeadm/</link>
       <pubDate>Fri, 17 May 2019 22:31:20 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/posts/create-cluster-use-kubeadm/</guid>
-      <description>很久之前就写过这篇笔记，一直没发出来，虽说这样的文章差不多已经烂大街了，还是可以看一下的。 ⎈⎈ apt install -y bash-completion yum install -y bash-completion echo &amp;#34;source &amp;lt;(kubectl completion bash)&amp;#34; &amp;gt;&amp;gt; ~/.bashrc echo &amp;#34;source &amp;lt;(kubeadm completion bash)&amp;#34; &amp;gt;&amp;gt; ~/.bashrc source ~/.bashrc modprobe ip_vs &amp;amp;&amp;amp; modprobe ip_vs_rr &amp;amp;&amp;amp; modprobe ip_vs_wrr &amp;amp;&amp;amp; modprobe ip_vs_sh rm -rf /var/lib/cni/ rm -rf /var/lib/kubelet/* rm -rf /etc/cni/ ip link del cni0 &amp;amp;&amp;amp; ip link del flannel.1</description>
+      <guid>https://example.com/posts/create-cluster-use-kubeadm/</guid>
+      <description>很久之前就写过这篇笔记，一直没发出来，虽说这样的文章差不多已经烂大街了，还是可以看一下的。
+1⎈⎈ 2apt install -y bash-completion 3yum install -y bash-completion 4echo &amp;#34;source &amp;lt;(kubectl completion bash)&amp;#34; &amp;gt;&amp;gt; ~/.bashrc 5echo &amp;#34;source &amp;lt;(kubeadm completion bash)&amp;#34; &amp;gt;&amp;gt; ~/.bashrc 6source ~/.bashrc 7modprobe ip_vs &amp;amp;&amp;amp; modprobe ip_vs_rr &amp;amp;&amp;amp; modprobe ip_vs_wrr &amp;amp;&amp;amp; modprobe ip_vs_sh 8rm -rf /var/lib/cni/ 9rm -rf /var/lib/kubelet/* 10rm -rf /etc/cni/ 11ip link del cni0 &amp;amp;&amp;amp; ip link del flannel.1 &amp;amp;&amp;amp; ip link del kube-ipvs0 12net.ipv6.conf.all.disable_ipv6 = 1 13awk &amp;#39;$2 ~ path {print $2}&amp;#39; path=/var/lib/kubelet /proc/mounts | xargs -r umount 14kubeadm init --kubernetes-version 1.</description>
     </item>
     
     <item>
       <title>Kubernetes中的存储</title>
-      <link>https://vsxen.github.io/posts/storage-in-kubernets/</link>
+      <link>https://example.com/posts/storage-in-kubernets/</link>
       <pubDate>Sun, 12 May 2019 22:31:20 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/posts/storage-in-kubernets/</guid>
-      <description>概念 PersistentVolume PersistentVolume（持久卷，简称PV）是集群内，由管理员提供的网络存储的一部分。就像集群中的节点一样，PV也是集群中的一种资源。它也像Volume一样，是一种volume插件，但是</description>
+      <guid>https://example.com/posts/storage-in-kubernets/</guid>
+      <description>概念 PersistentVolume PersistentVolume（持久卷，简称PV）是集群内，由管理员提供的网络存储的一部分。就像集群中的节点一样，PV也是集群中的一种资源。它也像Volume一样，是一种volume插件，但是它的生命周期却是和使用它的Pod相互独立的。PV这个API对象，捕获了诸如NFS、ISCSI、或其他云存储系统的实现细节。 https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistent-volumes
+1# kubectl explain pv.spec 2# KIND: PersistentVolume 3# VERSION: v1 4# spec 5# accessModes &amp;lt;[]string&amp;gt; 6# capacity &amp;lt;map[string]string&amp;gt; 7# mountOptions &amp;lt;[]string&amp;gt; 部分支持，比如NFS 8# persistentVolumeReclaimPolicy &amp;lt;string&amp;gt; 9# storageClassName &amp;lt;string&amp;gt; 10# volumeMode &amp;lt;string&amp;gt; 11apiVersion: v1 12kind: PersistentVolume 13metadata: 14 name: block-pv 15spec: 16 accessModes: 17 - ReadWriteOnce 18 capacity: 19 storage: 10Gi 20 persistentVolumeReclaimPolicy: Retain 21 storageClassName： aliclood-nas 22 volumeMode: Block PersistentVolumeClaim PersistentVolumeClaim（持久卷声明，简称PVC）是用户的一种存储请求。它和Pod类似，Pod消耗Node资源，而PVC消耗PV资源。Pod能够请求特定的资源（如CPU和内存）。PVC能够请求指定的大小和访问的模式（可以被映射为一次读写或者多次只读）。 PVC允许用户消耗抽象的存储资源，用户也经常需要各种属性（如性能）的PV。集群管理员需要提供各种各样、不同大小、不同访问模式的PV，而不用向用户暴露这些volume如何实现的细节。因为这种需求，就催生出一种StorageClass资源。
+1 # accessModes &amp;lt;[]string&amp;gt; 2 # storageClassName &amp;lt;string&amp;gt; 3 # volumeMode &amp;lt;string&amp;gt; 4 # volumeName &amp;lt;string&amp;gt; 5 # resources &amp;lt;Object&amp;gt; 6kind: PersistentVolumeClaim 7apiVersion: v1 8metadata: 9 name: myclaim 10spec: 11 accessModes: 12 - ReadWriteOnce 13 storageClassName: slow 14 volumeMode: Filesystem 15 resources: 16 requests: 17 storage: 8Gi StorageClass StorageClass提供了一种方式，使得管理员能够描述他提供的存储的等级。集群管理员可以将不同的等级映射到不同的服务等级、不同的后端策略。 https://kubernetes.</description>
     </item>
     
     <item>
       <title>在aws上使用kops部署k8s集群</title>
-      <link>https://vsxen.github.io/posts/use-kops-in-aws/</link>
+      <link>https://example.com/posts/use-kops-in-aws/</link>
       <pubDate>Sun, 12 May 2019 22:31:20 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/posts/use-kops-in-aws/</guid>
-      <description>简介：Kubernetes Operations (kops) - Production Grade K8s Installation, Upgrades, and Management kops宣称已经达到生产级别，准备试一下kops，观察其运行控制平面的方式。官方的文档如下： https://github.com/kubernetes/kops/blob/master/docs/aws.md 安装 当然kops也是用golang写的，所以你只要下载预编译</description>
+      <guid>https://example.com/posts/use-kops-in-aws/</guid>
+      <description>简介：Kubernetes Operations (kops) - Production Grade K8s Installation, Upgrades, and Management kops宣称已经达到生产级别，准备试一下kops，观察其运行控制平面的方式。官方的文档如下： https://github.com/kubernetes/kops/blob/master/docs/aws.md
+安装 当然kops也是用golang写的，所以你只要下载预编译的二进制文件即可。
+1# 指定版本 2https://github.com/kubernetes/kops/releases/download/1.10.0/kops-linux-amd64 3 4#最新版本 5wget -O kops https://github.com/kubernetes/kops/releases/download/$(curl -s https://api.github.com/repos/kubernetes/kops/releases/latest | grep tag_name | cut -d &amp;#39;&amp;#34;&amp;#39; -f 4)/kops-linux-amd64 6chmod +x ./kops 7sudo mv ./kops /usr/local/bin/ 8 9curl -LO https://storage.googleapis.com/kubernetes-release/release/1.10.0/bin/linux/amd64/kubectl 10 11wget -O kubectl https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl 12chmod +x ./kubectl 13sudo mv ./kubectl /usr/local/bin/kubectl 14 15#awscli是用Python写的，安装Python和pip后直接运行下面命令就可以了。 16pip install awscli 创建IAM kops 需要有以下四个权限，首先创建了kops的用户组，然后创建了kops用户
+ AmazonEC2FullAccess AmazonRoute53FullAccess AmazonS3FullAccess IAMFullAccess AmazonVPCFullAccess  1aws iam create-group --group-name kops 2 3aws iam attach-group-policy --policy-arn arn:aws:iam::aws:policy/AmazonEC2FullAccess --group-name kops 4aws iam attach-group-policy --policy-arn arn:aws:iam::aws:policy/AmazonRoute53FullAccess --group-name kops 5aws iam attach-group-policy --policy-arn arn:aws:iam::aws:policy/AmazonS3FullAccess --group-name kops 6aws iam attach-group-policy --policy-arn arn:aws:iam::aws:policy/IAMFullAccess --group-name kops 7aws iam attach-group-policy --policy-arn arn:aws:iam::aws:policy/AmazonVPCFullAccess --group-name kops 8 9aws iam create-user --user-name kops 10 11aws iam add-user-to-group --user-name kops --group-name kops 12 13aws iam create-access-key --user-name kops 14 15# configure the aws client to use your new IAM user 16aws configure # Use your new access and secret key here 17aws iam list-users # you should see a list of all your IAM users here 18 19# Because &amp;#34;aws configure&amp;#34; doesn&amp;#39;t export these vars for kops to use, we export them now 20export AWS_ACCESS_KEY_ID=$(aws configure get aws_access_key_id) 21export AWS_SECRET_ACCESS_KEY=$(aws configure get aws_secret_access_key) 创建S3 首先我创建了一个s3的存储，用于存放kops的配置文件，然后为这个存储桶加入了版本控制</description>
     </item>
     
     <item>
       <title>CoreDNS-基于Caddy的DNS Server</title>
-      <link>https://vsxen.github.io/posts/coredns/</link>
+      <link>https://example.com/posts/coredns/</link>
       <pubDate>Thu, 25 Apr 2019 22:31:20 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/posts/coredns/</guid>
-      <description>CoreDNS利用作为Web服务器Caddy的一部分而开发的服务器框架。该框架具有非常灵活，可扩展的模型，用于通过各种中间件组件传递请求。这些中间件组件根据请求提供不同的操作，例如记录，重定向，修改或</description>
+      <guid>https://example.com/posts/coredns/</guid>
+      <description>CoreDNS利用作为Web服务器Caddy的一部分而开发的服务器框架。该框架具有非常灵活，可扩展的模型，用于通过各种中间件组件传递请求。这些中间件组件根据请求提供不同的操作，例如记录，重定向，修改或维护。虽然它一开始作为Web服务器，但是Caddy并不是专门针对HTTP协议的，所以也是开发CoreDNS的理想框架。
+Install 如果使用Kubeadm初始化的集群，默认已经安装了CoreDNS。默认配置文件如下：
+1cat /etc/coredns/Corefile 2.:53 { 3 errors 4 health 5 kubernetes cluster.local in-addr.arpa ip6.arpa { 6 pods insecure 7 upstream 8 fallthrough in-addr.arpa ip6.arpa 9 } 10 prometheus :9153 11 proxy . /etc/resolv.conf 12 cache 30 13 reload 14 loadbalance 15} 9153/metrics 是默认的metrics端口 :8080/health 是健康检查的端口，除此之外需要注意的是添加了一个kernel capabilities，DNS策略是默认。只会对cluster.local进行解析，其他域名则是转发到上游DNS服务器。
+ securityContext: allowPrivilegeEscalation: false capabilities: add: - NET_BIND_SERVICE drop: - all CoreDNS相当于创建了一个Kubernetes中间件。该中间件使用Kubernetes API来满足针对特定Kubernetes pod或服务的DNS请求。而且由于Kube-DNS作为Kubernetes的另一项服务，kubelet和CoreDNS之间没有紧密的绑定。只需要将DNS服务的IP地址和域名传递给kubelet，而Kubernetes并不关心谁在实际处理该IP请求。和DNS相关的配都在kubelet上面，分别是：
+ &amp;ndash;cluster-dns &amp;ndash;cluster-domain  除此之外Pod的dnsPolicy 可选参数为&amp;rsquo;ClusterFirstWithHostNet&#39;, &amp;lsquo;ClusterFirst&amp;rsquo;, &amp;lsquo;Default&amp;rsquo; or &amp;lsquo;None&amp;rsquo;，而当Pod设置dnsPolicy为ClusterFirst时 ，即可在pod内生成以下/etc/resolv.</description>
     </item>
     
     <item>
       <title>k8s 的实时日志 Events</title>
-      <link>https://vsxen.github.io/posts/k8s-event-explorer/</link>
+      <link>https://example.com/posts/k8s-event-explorer/</link>
       <pubDate>Tue, 16 Apr 2019 09:43:24 +0000</pubDate>
       
-      <guid>https://vsxen.github.io/posts/k8s-event-explorer/</guid>
-      <description>Event 什么是k8s的Events？比如你启动了一个Deployment，k8s的各大组件就开始依次忙碌起来，最终完成Pod的创建，从声明一个Deployment开始，到Pod启动完成，会生成一些列Even</description>
+      <guid>https://example.com/posts/k8s-event-explorer/</guid>
+      <description>Event 什么是k8s的Events？比如你启动了一个Deployment，k8s的各大组件就开始依次忙碌起来，最终完成Pod的创建，从声明一个Deployment开始，到Pod启动完成，会生成一些列Events，用来告知用户现在的状态。event就是用来回答一些问题，比如为什么pod没有启动，因为没有配置私有仓库的认证，为什么pod会被Kill，因为是超过limit的限制。具体如下所示：
+1kubectl get ev 2LAST SEEN TYPE REASON OBJECT MESSAGE 33s Normal Scheduled pod/nginx-698898f666-smg7t Successfully assigned default/nginx-698898f666-smg7t to east1-monitor1 43s Normal Pulled pod/nginx-698898f666-smg7t Container image &amp;#34;nginx:alpine&amp;#34; already present on machine 53s Normal Created pod/nginx-698898f666-smg7t Created container nginx 63s Normal Started pod/nginx-698898f666-smg7t Started container nginx 73s Normal SuccessfulCreate replicaset/nginx-698898f666 Created pod: nginx-698898f666-smg7t 83s Normal ScalingReplicaSet deployment/nginx Scaled up replica set nginx-698898f666 to 1 这些信息会被存储在Etcd中，默认的保存时间为1小时。
+1/registry/events/default/nginx-698898f666-smg7t.1593fd25ca0c7e00 2/registry/events/default/nginx-698898f666-smg7t.1593fd25f1ff3cca 3/registry/events/default/nginx-698898f666-smg7t.1593fd25f4066f9f 4/registry/events/default/nginx-698898f666-smg7t.1593fd25fd741cf6 5/registry/events/default/nginx-698898f666.1593fd25c9abf7dc 6/registry/events/default/nginx.1593fd25c9217fce 找到一条Event，可以看到完整的信息如下，值得关注的地方有involvedObject的name和source的host等等。</description>
     </item>
     
     <item>
       <title>k8s 七层访问入口 Ingress</title>
-      <link>https://vsxen.github.io/posts/k8s-ingress-useage/</link>
+      <link>https://example.com/posts/k8s-ingress-useage/</link>
       <pubDate>Tue, 12 Mar 2019 22:31:20 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/posts/k8s-ingress-useage/</guid>
-      <description>k8s初期的时候，只有Service作为四层负载均衡，后来才推出了专门用作七层的负载均衡&amp;ndash;Ingress。第一批实现Ingress Controller的就是traefik以及Nginx In</description>
+      <guid>https://example.com/posts/k8s-ingress-useage/</guid>
+      <description>k8s初期的时候，只有Service作为四层负载均衡，后来才推出了专门用作七层的负载均衡&amp;ndash;Ingress。第一批实现Ingress Controller的就是traefik以及Nginx Ingress，后来随着Envory的出现，也逐渐涌现出了越来越多的Ingress Controller实现，比如：
+ https://github.com/heptio/contour https://github.com/datawire/ambassador https://github.com/istio/istio/  但是这些实现的原理说到底就是watch后端的Service，然后创建对于的访问规则。
+Install 以Nginx Ingress为例，由Go，Lua和C三种语言组成，Go负责与k8s API交互，下面简单介绍一些安装过程。
+1#首先安装控制器， 2kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/mandatory.yaml 3#然后创建Service 4kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/provider/baremetal/service-nodeport.yaml 以上是属于Bate-metal的配置，如果你是在Public CLoud可以替换为LoadBalancer。仔细观察一下第一个yaml文件，可以发现有些特殊的地方，如下所示，有一个特殊的annotations，看来和APIServer类似，支持多副本高可用。
+I0411 09:11:06.783582 7 leaderelection.go:227] successfully acquired lease ingress-nginx/ingress-controller-leader-nginx
+1kubectl -n ingress-nginx get cm ingress-controller-leader-nginx -oyaml 2apiVersion: v1 3kind: ConfigMap 4metadata: 5 annotations: 6 control-plane.alpha.kubernetes.io/leader: &amp;#39;{&amp;#34;holderIdentity&amp;#34;:&amp;#34;nginx-ingress-controller-85f9f75759-4wb8k&amp;#34;,&amp;#34;leaseDurationSeconds&amp;#34;:30,&amp;#34;acquireTime&amp;#34;:&amp;#34;2019-04-11T09:11:06Z&amp;#34;,&amp;#34;renewTime&amp;#34;:&amp;#34;2019-04-11T13:12:56Z&amp;#34;,&amp;#34;leaderTransitions&amp;#34;:0}&amp;#39; 7 creationTimestamp: &amp;#34;2019-04-11T09:11:06Z&amp;#34; 8 name: ingress-controller-leader-nginx 9 namespace: ingress-nginx 10 resourceVersion: &amp;#34;28998&amp;#34; 11 selfLink: /api/v1/namespaces/ingress-nginx/configmaps/ingress-controller-leader-nginx 12 uid: bd25d320-5c39-11e9-af65-00163e132347 因为Nginx原生支持四层负载均衡，所有Nginx Ingress也是支持四层的。</description>
     </item>
     
     <item>
       <title>Kubernetes 中的网络结构</title>
-      <link>https://vsxen.github.io/posts/kubernetes-network-flannel/</link>
+      <link>https://example.com/posts/kubernetes-network-flannel/</link>
       <pubDate>Tue, 12 Feb 2019 22:31:20 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/posts/kubernetes-network-flannel/</guid>
-      <description>Kubernetes 采用的是基于扁平地址空间的网络模型，集群中的每个 Pod 都有自己的 IP 地址，Pod 之间不需要配置 NAT 就能直接通信。另外，同一个 Pod 中的容器共享 Pod 的 IP，能够通过 localhost 通信。 IP-per-Pod，每个 Pod 都拥有一个独立</description>
+      <guid>https://example.com/posts/kubernetes-network-flannel/</guid>
+      <description>Kubernetes 采用的是基于扁平地址空间的网络模型，集群中的每个 Pod 都有自己的 IP 地址，Pod 之间不需要配置 NAT 就能直接通信。另外，同一个 Pod 中的容器共享 Pod 的 IP，能够通过 localhost 通信。
+  IP-per-Pod，每个 Pod 都拥有一个独立 IP 地址，Pod 内所有容器共享一个网络命名空间
+  集群内所有 Pod 都在一个直接连通的扁平网络中，可通过 IP 直接访问
+ 所有容器之间无需 NAT 就可以直接互相访问 所有 Node 和所有容器之间无需 NAT 就可以直接互相访问 容器自己看到的 IP 跟其他容器看到的一样    接下来我们来先介绍一下几个概念，
+ Service cluster IP 尽可在集群内部访问，外部请求需要通过 NodePort、LoadBalance 或者 Ingress 来访问 网络的命名空间：Linux在网络栈中引入网络命名空间，将独立的网络协议栈隔离到不同的命令空间中，彼此间无法通信；docker利用这一特性，实现不容器间的网络隔离。 Veth设备对：Veth设备对的引入是为了实现在不同网络命名空间的通信。 Iptables/Netfilter：Netfilter负责在内核中执行各种挂接的规则(过滤、修改、丢弃等)，运行在内核 模式中；Iptables模式是在用户模式下运行的进程，负责协助维护内核中Netfilter的各种规则表；通过二者的配合来实现整个Linux网络协议栈中灵活的数据包处理机制。 网桥：网桥是一个二层网络设备,通过网桥可以将linux支持的不同的端口连接起来,并实现类似交换机那样的多对多的通信。 路由：Linux系统包含一个完整的路由功能，当IP层在处理数据发送或转发的时候，会使用路由表来决定发往哪里  如今，Kubernetes改变了软件开发的完成方式。作为用于管理容器化工作负载和服务的便携式，可扩展的开源平台，该平台可促进声明式配置和自动化，Kubernetes已证明自己是管理复杂微服务的主导者。它的受欢迎程度源于Kubernetes满足以下需求的事实：企业希望增长和减少支付，DevOps需要一个稳定的平台，可以大规模运行应用程序，开发人员想要可靠且可复制的流程来编写，测试和调试代码。这是一篇很好的文章，可以了解有关Kubernetes演化和架构的更多信息。
+管理Kubernetes网络的重要领域之一是在内部和外部转发容器端口，以确保容器和Pod可以正确相互通信。为了管理此类通信，Kubernetes提供以下四种联网模型：
+ 容器到容器通信 点对点通讯 Pod到Service通讯 对外沟通  在本文中，我们通过向您展示Kubernetes网络中的Pod可以相互通信的方式，深入探讨Pod到Pod的通信。</description>
     </item>
     
     <item>
       <title>k8s 集群监控 --  Prometheus Operator</title>
-      <link>https://vsxen.github.io/posts/promthus-operator/</link>
+      <link>https://example.com/posts/promthus-operator/</link>
       <pubDate>Tue, 22 Jan 2019 22:31:20 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/posts/promthus-operator/</guid>
-      <description>对于任何系统来说，监控都是不可或缺的东西，系统现在是什么样，与一周前相比是否需要调整资源等都需要一个监控系统来参考。对于k8s来说常用的开源监控方案也就是下面几种： heaspter+InfluxDB (已被弃用) Prometheus Open falcon Telegraf+InfluxDB 而且k8s所需</description>
+      <guid>https://example.com/posts/promthus-operator/</guid>
+      <description>对于任何系统来说，监控都是不可或缺的东西，系统现在是什么样，与一周前相比是否需要调整资源等都需要一个监控系统来参考。对于k8s来说常用的开源监控方案也就是下面几种：
+ heaspter+InfluxDB (已被弃用) Prometheus Open falcon Telegraf+InfluxDB  而且k8s所需的监控项目是比较多的，如下表：(k8s 1.14.0)    监控组件 metric PATＨ     API Server 6443/metrics   Controller Ｍanager 10257/metrics   kube Scheduler 10259/metrics   Etcd 2379/metrics   Kubelet API 10252/metrics   Cadvisor 10250/metrics/cadvisor   Node 9100/metrics    因此想要全面的监控集群状态，我个人感觉Prometheus是比较合适的，但是当你修改依次规则就需要重启一次。而且云原生中比较推荐使用声明式代替命令式，于是Prometheus Operator就诞生了，整体结构如下图：
+Install 个人推荐的方式是从repo中apply一堆yaml，如果你擅长helm，也是可以的。
+1git clone https://github.com/coreos/prometheus-operator 2kubectl get crd 3NAME CREATED AT 4alertmanagers.monitoring.coreos.com 2018-09-12T02:13:19Z 5prometheuses.monitoring.coreos.com 2018-09-12T02:13:19Z 6prometheusrules.</description>
     </item>
     
     <item>
       <title>关于</title>
-      <link>https://vsxen.github.io/about/</link>
+      <link>https://example.com/about/</link>
       <pubDate>Sat, 29 Dec 2018 20:24:28 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/about/</guid>
+      <guid>https://example.com/about/</guid>
       <description>之前在用hexo，现在转了hugo，之前的文章很水很水，努力提高自己，希望是一个有深度的博客</description>
     </item>
     
     <item>
       <title>一个完整的Pod 描述应该是什么样的？</title>
-      <link>https://vsxen.github.io/posts/k8s-pod-full-yaml/</link>
+      <link>https://example.com/posts/k8s-pod-full-yaml/</link>
       <pubDate>Tue, 25 Dec 2018 22:31:20 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/posts/k8s-pod-full-yaml/</guid>
-      <description>Pod作为k8s工作负载的基本单位,不论是Deployment还是job等等需要计算资源的控制器，都需要定义将被创建的pod模板，所以熟悉pod的所有字段还是很有必要的。今天就用Deployment作</description>
+      <guid>https://example.com/posts/k8s-pod-full-yaml/</guid>
+      <description>Pod作为k8s工作负载的基本单位,不论是Deployment还是job等等需要计算资源的控制器，都需要定义将被创建的pod模板，所以熟悉pod的所有字段还是很有必要的。今天就用Deployment作为例子，看一下一个完整pod模板应该是什么样子的。
+Deployment大致可以分为五个字段，可以用kubectl explain deploy命令查看。前两个字段分别为apiverion和kind，就不用多说了，后三个字段是metadata，spec和k8s生成的status，容我慢慢讲来。
+三大描述 metadata 此部分主要定义了pod的属性信息，注解和标签，名字，归属信息，是被哪个控制器创建的，pod-template-hash是必定存在的标签，仔细看会发现和rs的名字后面是相同的。 示例：
+metadata: creationTimestamp: &amp;quot;2019-05-18T05:13:16Z&amp;quot; generateName: nginx-6c885545f8- labels: pod-template-hash: 6c885545f8 run: nginx name: nginx-6c885545f8-gl8gc namespace: default ownerReferences: - apiVersion: apps/v1 blockOwnerDeletion: true controller: true kind: ReplicaSet name: nginx-6c885545f8 uid: a4dfdd64-792b-11e9-8da2-00163e132347 resourceVersion: &amp;quot;1178868&amp;quot; selfLink: /api/v1/namespaces/default/pods/nginx-6c885545f8-gl8gc uid: a4e0e290-792b-11e9-8da2-00163e132347 spec 终于到了pod的描述部分，最主要的containers部分就是在这里定义的，也是一个object，我们知道pod内的containers存储和网络等资源是共享的，CPU和memory也是可以隔离的，默认挂载了一个volume，也就是serviceaccount用来在内部访问APIServer所用的token，CA信息。 按种类大致分为以下几种
+  调度相关
+ affinity 亲和性 分为nodeAffinity podAffinity podAntiAffinity三种 nodeName 节点名字 默认由调度器分配 nodeSelector 节点选择器 schedulerName 调度器名字 tolerations 容忍    生命周期
+ initContainers 初始化容器 containers 的 lifecycle 包括preStart和preStop脚本 restartPolicy 重启策略 Always, OnFailure,Never.</description>
     </item>
     
     <item>
       <title>Kubernetes 中的资源管理和优先级</title>
-      <link>https://vsxen.github.io/posts/k8s-resource-qos/</link>
+      <link>https://example.com/posts/k8s-resource-qos/</link>
       <pubDate>Tue, 09 Oct 2018 22:31:20 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/posts/k8s-resource-qos/</guid>
-      <description>Kubernetes 是怎么定义资源的呢？ ​ 在 kubernetes 中，任何可以被申请、分配，最终被使用的对象，都是 kubernetes 中的资源，比如 CPU、内存。而且针对每一种被 kubernetes 所管理的资源，都会被赋予一个【资源类型名】，这些名字都是符合 RFC 1123 规则的，比如</description>
+      <guid>https://example.com/posts/k8s-resource-qos/</guid>
+      <description>Kubernetes 是怎么定义资源的呢？
+​	在 kubernetes 中，任何可以被申请、分配，最终被使用的对象，都是 kubernetes 中的资源，比如 CPU、内存。而且针对每一种被 kubernetes 所管理的资源，都会被赋予一个【资源类型名】，这些名字都是符合 RFC 1123 规则的，比如 CPU，它对应的资源名全称为 kubernetes.io/cpu（在展示时一般直接简写为 cpu）；GPU 资源对应的资源名为 alpha.kubernetes.io/nvidia-gpu。
+​	除了名字以外，针对每一种资源还会对应有且仅有一种【基本单位】。这个基本单位一般是在 kubernetes 组件内部统一用来表示这种资源的数量的，比如 memory 的基本单位就是字节。但是为了方便开发者使用，在开发者通过 yaml 文件或者 kubectl 同 kubernetes 进行交互时仍可以使用多种可读性更好的资源单位，比如内存的 Gi。而当这些信息进入 kubernetes 内部后，还是会被显式的转换为最基本单位。
+​	所有的资源类型，又可以被划分为两大类：可压缩(compressible)和不可压缩(incompressible)的。其评判标准就在于：如果系统限制或者缩小容器对可压缩资源的使用的话，只会影响服务对外的服务性能，比如 CPU 就是一种非常典型的可压缩资源。对于不可压缩资源来说，资源的紧缺是有可能导致服务对外不可用的，比如内存就是一种非常典型的不可压缩资源。
+Kubernetes 中有哪几类资源呢？
+​	目前 kubernetes 默认带有两类基本资源CPU和Memory。其中 CPU，不管底层的机器是通过何种方式提供的（物理机 or 虚拟机），一个单位的 CPU 资源都会被标准化为一个标准的 &amp;ldquo;Kubernetes Compute Unit&amp;rdquo; ，大致和 x86 处理器的一个单个超线程核心是相同的。CPU 资源的基本单位是 millicores，因为 CPU 资源其实准确来讲，指的是 CPU 时间。所以它的基本单位为 millicores，1 个核等于 1000 millicores。也代表了 kubernetes 可以将单位 CPU 时间细分为 1000 份，分配给某个容器。内存memory 资源的基本单位比较好理解，就是字节。另外，kubernetes 针对用户的自定制需求，还为用户提供了 device plugin 机制，让用户可以将资源类型进一步扩充，比如现在比较常用的 nvidia gpu 资源。这个特性可以使用户能够在 kubernetes 中管理自己业务中特有的资源，并且无需修改 kubernetes 自身源码。而且 kubernetes 自身后续还会进一步支持更多非常通用的资源类型，比如网络带宽、存储空间、存储 iops 等等。所以如上，我们就回答了 kubernetes 是如何定义资源的问题。</description>
     </item>
     
     <item>
       <title>fluent 云原生的下的日志收集工具</title>
-      <link>https://vsxen.github.io/posts/fluentd/</link>
+      <link>https://example.com/posts/fluentd/</link>
       <pubDate>Tue, 25 Sep 2018 12:31:20 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/posts/fluentd/</guid>
-      <description>Fluentd 是另一个 Ruby 语言编写的日志收集系统。和 Logstash 不同的是，Fluentd 是基于 MRI 实现的，并不是利用多线程，而是利用事件驱动。单个日志处理的流程如下，当然也可以多个日志流一同处理。 这里穿插一下Docker 的日志</description>
+      <guid>https://example.com/posts/fluentd/</guid>
+      <description>Fluentd 是另一个 Ruby 语言编写的日志收集系统。和 Logstash 不同的是，Fluentd 是基于 MRI 实现的，并不是利用多线程，而是利用事件驱动。单个日志处理的流程如下，当然也可以多个日志流一同处理。
+这里穿插一下Docker 的日志格式，默认的是json-file，分为以下三个字段，当然也有别的driver，但是会导致docker logs不能使用，也就没有尝试。
+1 &amp;#34;log&amp;#34;: &amp;#34;10.244.0.1 - - [21/Dec/2018:13:06:52 +0000] \&amp;#34;GET / HTTP/1.1\&amp;#34; 200,&amp;#34; 2 &amp;#34;stream&amp;#34;: &amp;#34;stdout&amp;#34;, 3 &amp;#34;time&amp;#34;: &amp;#34;2018-12-21T13:06:52.182042579Z&amp;#34; 4} 配置 fluentd配置主要由以下5部分组成
+ source：确定输入源 match： 确定输出目的地 filter：确定 event 处理流 system：设置系统范围的配置 label：将内部路由的输出和过滤器分组 @include：包括其它文件  下面以k8s项目日志收集配置为实例，介绍一下相关配置。
+数据源 1&amp;lt;source&amp;gt; 2 @id fluentd-containers.log 3 @type tail 4 path /var/log/containers/demo.log 5 pos_file /var/log/es-containers.log.pos 6 tag raw.kubernetes.* 7 read_from_head true 8 &amp;lt;parse&amp;gt; 9 @type multi_format 10 &amp;lt;pattern&amp;gt; 11 format json 12 time_key time 13 time_format %Y-%m-%dT%H:%M:%S.</description>
     </item>
     
     <item>
       <title>Kubernetes 中的弹性伸缩 Autoscaler</title>
-      <link>https://vsxen.github.io/posts/cluster-autoscaler/</link>
+      <link>https://example.com/posts/cluster-autoscaler/</link>
       <pubDate>Tue, 25 Sep 2018 12:31:20 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/posts/cluster-autoscaler/</guid>
-      <description>弹性伸缩是一个比较吸引人的话题，类似与云计算中所提倡的按需付费，合理使用可以减少所需计算资源，降低相关的服务器成本。对于k8s来说目前一共有两种弹性伸缩： Cluster 即自动增加删除节点 Pod 分为水平和垂直两种，水平</description>
+      <guid>https://example.com/posts/cluster-autoscaler/</guid>
+      <description>弹性伸缩是一个比较吸引人的话题，类似与云计算中所提倡的按需付费，合理使用可以减少所需计算资源，降低相关的服务器成本。对于k8s来说目前一共有两种弹性伸缩：
+ Cluster 即自动增加删除节点 Pod 分为水平和垂直两种，水平伸缩在k8s里已经支持，垂直伸缩需要安装  相关repo https://github.com/kubernetes/autoscaler ，下面分别介绍下相关信息。
+Node Cluster-autoscaler ClusterScaler安装相对来说比较简单，和其他插件类似，定义好ServiceAccount，Deployment以及伸缩组等即可，但是比较强依靠公有云。目前支持的AliCloud，Azure，AWS，BaiduCloud等，注意需要配置Access Key以及根证书（访问API时需要）等信息。关键配置如下：
+1 - ./cluster-autoscaler 2 - --v=4 3 - --stderrthreshold=info 4 - --cloud-provider=aws 5 - --skip-nodes-with-local-storage=false 6 - --scale-down-delay-after-add=3m 7 - --nodes=1:5:nodes.demo.k8s.local 按照正常步骤，向集群添加节点一共需要三步：
+ 新开一台机器， 配置bootstap token等信息， 最后加入集群。  ClusterScaler相当于替我们做了这些工作，仔细阅读相关文档，可以看到阿里云依赖的是ESS，而kops下的aws依赖的是ASG（auto scaling group），通过自动伸缩组可以几乎无干预的完成扩容。
+这里穿插一个小知识，对于大多数公有云来说，都支持一个叫做cloud-init的东西，也叫做user data，也就是在机器初始化的时候执行的一段shell脚本，这也就是上面的第二步。
+那么它是如何判断集群需要扩容、缩容呢？我们先启动一个request为4C8G的nginx做测试，或者是5个1C2G的nginx，目的就是超过现有集群剩余的计算资源，正常情况下一定会有pod处于pending状态，这时候通过观察日志可以发现，ClusterScaler就会触发扩容节点。
+I0408 04:46:52.022024 1 scale_up.go:249] Pod default/demo-589b486fbb-r5fn4 is unschedulable I0408 04:46:52.022039 1 scale_up.go:249] Pod default/demo-589b486fbb-rzlpn is unschedulable 源码在https://github.com/kubernetes/autoscaler/blob/cluster-autoscaler-1.2.2/cluster-autoscaler/core/scale_up.go#L59
+Pod HPA 水平伸缩 现在官方支持的就是HorizontalPodAutoscaler，可以根据CPU和memory使用情况来判断伸缩，需要注意的是，伸缩的条件是CPU利用率超过多少就触发扩容，所以至少需要两个参数，pod现在的CPU，以及它request的CPU， 所以我们首先需要部署metric-server，用来获取pod的实时CPU使用情况。 https://github.</description>
     </item>
     
     <item>
       <title>terraform provider Kubernetes 入门</title>
-      <link>https://vsxen.github.io/posts/terraform/</link>
+      <link>https://example.com/posts/terraform/</link>
       <pubDate>Mon, 17 Sep 2018 11:31:20 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/posts/terraform/</guid>
-      <description>下载 初始化 terraform 扩展主要靠的就是provider，所以在使用之前需要准备好或者下载对应的provider。至于你需要什么provider，需要在main.tf指定，如下所示。 如果可以联网的话，貌似会从fa</description>
+      <guid>https://example.com/posts/terraform/</guid>
+      <description>下载
+初始化 terraform 扩展主要靠的就是provider，所以在使用之前需要准备好或者下载对应的provider。至于你需要什么provider，需要在main.tf指定，如下所示。
+如果可以联网的话，貌似会从fastly的CDN上下载，默认放在~/.terraform/plugins目录，离线安装或者自己build的话也可以放在对应的目录即可。
+terraform默认会读取kubeconfig的默认配置，有点绕口，也可以自己配置对应的证书或者basic auth，这一点可以去看官方文档，我配置的就是读取默认配置。然后就就可以初始化去下载k8s的provider了。
+1cat main.tf 2provider &amp;#34;kubernetes&amp;#34; {} 3# 初始化 4terraform init 5 6Initializing the backend... 7 8Initializing provider plugins... 9- Checking for available provider plugins... 10- Downloading plugin for provider &amp;#34;kubernetes&amp;#34; (hashicorp/kubernetes) 1.9.0... 11 12The following providers do not have any version constraints in configuration, 13so the latest version was installed. 14 15To prevent automatic upgrades to new major versions that may contain breaking 16changes, it is recommended to add version = &amp;#34;.</description>
     </item>
     
     <item>
       <title>新式监控系统 — prometheus</title>
-      <link>https://vsxen.github.io/posts/promethus/</link>
+      <link>https://example.com/posts/promethus/</link>
       <pubDate>Fri, 14 Sep 2018 22:31:20 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/posts/promethus/</guid>
-      <description>Prometheus 是一套开源的系统监控报警框架。它启发于 Google 的 borgmon 监控系统，由工作在 SoundCloud 的 google 前员工在 2012 年创建，作为社区开源项目进行开发，并于 2015 年正式发布。2016 年，Prometheus 正式加入 Cloud Native Computing Foundation，</description>
+      <guid>https://example.com/posts/promethus/</guid>
+      <description>Prometheus 是一套开源的系统监控报警框架。它启发于 Google 的 borgmon 监控系统，由工作在 SoundCloud 的 google 前员工在 2012 年创建，作为社区开源项目进行开发，并于 2015 年正式发布。2016 年，Prometheus 正式加入 Cloud Native Computing Foundation，成为受欢迎度仅次于 Kubernetes 的项目。
+Prometheus简介 作为新一代的监控框架，Prometheus 具有以下特点：
+  强大的多维度数据模型：
+ 时间序列数据通过 metric 名和键值对来区分。 所有的 metrics 都可以设置任意的多维标签。 数据模型更随意，不需要刻意设置为以点分隔的字符串。 可以对数据模型进行聚合，切割和切片操作。 支持双精度浮点类型，标签可以设为全 unicode。    灵活而强大的查询语句（PromQL）：在同一个查询语句，可以对多个 metrics 进行乘法、加法、连接、取分数位等操作。
+  易于管理： Prometheus server 是一个单独的二进制文件，可直接在本地工作，不依赖于分布式存储。
+  高效：平均每个采样点仅占 3.5 bytes，且一个 Prometheus server 可以处理数百万的 metrics。
+  使用 pull 模式采集时间序列数据，这样不仅有利于本机测试而且可以避免有问题的服务器推送坏的 metrics。
+  可以采用 push gateway 的方式把时间序列数据推送至 Prometheus server 端。</description>
     </item>
     
     <item>
       <title>Kubernetes 认证与授权</title>
-      <link>https://vsxen.github.io/posts/kubernetes-auth-rbac/</link>
+      <link>https://example.com/posts/kubernetes-auth-rbac/</link>
       <pubDate>Fri, 15 Jun 2018 22:31:20 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/posts/kubernetes-auth-rbac/</guid>
-      <description>对于一个系统来说，认证和授权不可或缺的部分，最常见的方式要数账号密码，管理员和普通用户这种认证方式，也就是常说的ABAC。但是每次修改权限都需要重启，或者修改记录，会有些不方便，于是基于角色的访问控制</description>
+      <guid>https://example.com/posts/kubernetes-auth-rbac/</guid>
+      <description>对于一个系统来说，认证和授权不可或缺的部分，最常见的方式要数账号密码，管理员和普通用户这种认证方式，也就是常说的ABAC。但是每次修改权限都需要重启，或者修改记录，会有些不方便，于是基于角色的访问控制&amp;ndash;RBAC就出现了，同时k8s分离了认证，授权和准入的过程，方便第三方开发相关插件。
+下图大致描述了k8s认证的流程图，描述了一个请求在经过APIServer的时候都经历了哪些鉴权的过程。如下图所示：需要访问API的有人类，也就是Ops，通过kubectl以及Kubeconfig配置文件和API-Server交互。还有就是Pod，也就是应用，对API资源进行CURD。然后依次经过了身份认证(authentication)、授权(authorization)和准入控制（admission control）。下面就来详细介绍下认证和授权
+认证  Authentication：即身份验证，这个环节它面对的输入是整个http request，它负责对来自client的请求进行身份校验，支持的方法包括：  client证书验证（https双向验证） basic auth 普通token jwt token(用于serviceaccount)    APIServer启动时，可以指定一种Authentication方法，也可以指定多种方法。如果指定了多种方法，那么APIServer将会逐个使用这些方法对客户端请求进行验证，只要请求数据通过其中一种方法的验证，APIServer就会认为Authentication成功；在较新版本kubeadm引导启动的k8s集群的apiserver初始配置中，默认支持client证书验证和serviceaccount两种身份验证方式。在这个环节，apiserver会通过client证书或http header中的字段(比如serviceaccount的jwt token)来识别出请求的“用户身份”，包括”user”、”group”等，这些信息将在后面的authorization环节用到。
+Client 证书 首先我们看一下kubectl的默认配置文件~/.kube/config
+1apiVersion: v1 2clusters: 3- cluster: 4 certificate-authority-data: REDACTED 5 server: https://172.16.66.101:6443 6 name: kubernetes 7contexts: 8- context: 9 cluster: kubernetes 10 user: kubernetes-admin 11 name: kubernetes-admin@kubernetes 12current-context: kubernetes-admin@kubernetes 13kind: Config 14preferences: {} 15users: 16- name: kubernetes-admin 17 user: 18 client-certificate-data: REDACTED 19 client-key-data: REDACTED 这有两个重要的信息 client-certificate-data, client-key-data,首先把data提取出来</description>
     </item>
     
   </channel>

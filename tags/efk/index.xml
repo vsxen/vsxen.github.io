@@ -1,19 +1,24 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>efk on Code Life</title>
-    <link>https://vsxen.github.io/tags/efk/</link>
-    <description>Recent content in efk on Code Life</description>
+    <title>efk on Cactus theme example</title>
+    <link>https://example.com/tags/efk/</link>
+    <description>Recent content in efk on Cactus theme example</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-cn</language>
-    <lastBuildDate>Tue, 25 Sep 2018 12:31:20 +0800</lastBuildDate><atom:link href="https://vsxen.github.io/tags/efk/index.xml" rel="self" type="application/rss+xml" />
+    <language>en-us</language>
+    <copyright>You</copyright>
+    <lastBuildDate>Tue, 25 Sep 2018 12:31:20 +0800</lastBuildDate><atom:link href="https://example.com/tags/efk/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>fluent 云原生的下的日志收集工具</title>
-      <link>https://vsxen.github.io/posts/fluentd/</link>
+      <link>https://example.com/posts/fluentd/</link>
       <pubDate>Tue, 25 Sep 2018 12:31:20 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/posts/fluentd/</guid>
-      <description>Fluentd 是另一个 Ruby 语言编写的日志收集系统。和 Logstash 不同的是，Fluentd 是基于 MRI 实现的，并不是利用多线程，而是利用事件驱动。单个日志处理的流程如下，当然也可以多个日志流一同处理。 这里穿插一下Docker 的日志</description>
+      <guid>https://example.com/posts/fluentd/</guid>
+      <description>Fluentd 是另一个 Ruby 语言编写的日志收集系统。和 Logstash 不同的是，Fluentd 是基于 MRI 实现的，并不是利用多线程，而是利用事件驱动。单个日志处理的流程如下，当然也可以多个日志流一同处理。
+这里穿插一下Docker 的日志格式，默认的是json-file，分为以下三个字段，当然也有别的driver，但是会导致docker logs不能使用，也就没有尝试。
+1 &amp;#34;log&amp;#34;: &amp;#34;10.244.0.1 - - [21/Dec/2018:13:06:52 +0000] \&amp;#34;GET / HTTP/1.1\&amp;#34; 200,&amp;#34; 2 &amp;#34;stream&amp;#34;: &amp;#34;stdout&amp;#34;, 3 &amp;#34;time&amp;#34;: &amp;#34;2018-12-21T13:06:52.182042579Z&amp;#34; 4} 配置 fluentd配置主要由以下5部分组成
+ source：确定输入源 match： 确定输出目的地 filter：确定 event 处理流 system：设置系统范围的配置 label：将内部路由的输出和过滤器分组 @include：包括其它文件  下面以k8s项目日志收集配置为实例，介绍一下相关配置。
+数据源 1&amp;lt;source&amp;gt; 2 @id fluentd-containers.log 3 @type tail 4 path /var/log/containers/demo.log 5 pos_file /var/log/es-containers.log.pos 6 tag raw.kubernetes.* 7 read_from_head true 8 &amp;lt;parse&amp;gt; 9 @type multi_format 10 &amp;lt;pattern&amp;gt; 11 format json 12 time_key time 13 time_format %Y-%m-%dT%H:%M:%S.</description>
     </item>
     
   </channel>

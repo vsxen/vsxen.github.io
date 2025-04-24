@@ -1,19 +1,22 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>etcd on Code Life</title>
-    <link>https://vsxen.github.io/tags/etcd/</link>
-    <description>Recent content in etcd on Code Life</description>
+    <title>etcd on Cactus theme example</title>
+    <link>https://example.com/tags/etcd/</link>
+    <description>Recent content in etcd on Cactus theme example</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-cn</language>
-    <lastBuildDate>Sat, 15 Jun 2019 12:31:20 +0800</lastBuildDate><atom:link href="https://vsxen.github.io/tags/etcd/index.xml" rel="self" type="application/rss+xml" />
+    <language>en-us</language>
+    <copyright>You</copyright>
+    <lastBuildDate>Sat, 15 Jun 2019 12:31:20 +0800</lastBuildDate><atom:link href="https://example.com/tags/etcd/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Etcd 使用入门</title>
-      <link>https://vsxen.github.io/posts/get-start-etcd/</link>
+      <link>https://example.com/posts/get-start-etcd/</link>
       <pubDate>Sat, 15 Jun 2019 12:31:20 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/posts/get-start-etcd/</guid>
-      <description>etcd是coreos根据Raft一致性算法用go实现的分布式KV数据库，作为k8s数据唯一存储的地方，etcd具有高性能的读写以及watch性能，也可以用在服务注册，配置中心等。官方Doc https://github.com/etcd-io/etcd/blob/master/Documentation 入门 初识</description>
+      <guid>https://example.com/posts/get-start-etcd/</guid>
+      <description>etcd是coreos根据Raft一致性算法用go实现的分布式KV数据库，作为k8s数据唯一存储的地方，etcd具有高性能的读写以及watch性能，也可以用在服务注册，配置中心等。官方Doc https://github.com/etcd-io/etcd/blob/master/Documentation
+入门 初识单节点 etcd使用了两个端口 2379 grpc 以及2380 http，现在最新的API版本是v3，之前的v2性能有一定问题，建议直接用v3的API。配置etcd可以通过环境变量或者命令行参数。Etcd会有一些默认参数，但是bind的地址都是127.0.0.1
+1docker run -d --name etcd k8s.gcr.io/etcd:3.3.10 etcd 2# etcdmain 32019-06-25 06:26:30.323960 I | etcdmain: etcd Version: 3.3.10 42019-06-25 06:26:30.324127 I | etcdmain: Git SHA: 27fc7e2 52019-06-25 06:26:30.324138 I | etcdmain: Go Version: go1.10.4 62019-06-25 06:26:30.324153 I | etcdmain: Go OS/Arch: linux/amd64 72019-06-25 06:26:30.324162 I | etcdmain: setting maximum number of CPUs to 2, total number of available CPUs is 2 82019-06-25 06:26:30.</description>
     </item>
     
   </channel>

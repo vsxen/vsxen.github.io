@@ -1,19 +1,22 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>storage on Code Life</title>
-    <link>https://vsxen.github.io/tags/storage/</link>
-    <description>Recent content in storage on Code Life</description>
+    <title>storage on Cactus theme example</title>
+    <link>https://example.com/tags/storage/</link>
+    <description>Recent content in storage on Cactus theme example</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-cn</language>
-    <lastBuildDate>Sun, 12 May 2019 22:31:20 +0800</lastBuildDate><atom:link href="https://vsxen.github.io/tags/storage/index.xml" rel="self" type="application/rss+xml" />
+    <language>en-us</language>
+    <copyright>You</copyright>
+    <lastBuildDate>Sun, 12 May 2019 22:31:20 +0800</lastBuildDate><atom:link href="https://example.com/tags/storage/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Kubernetes中的存储</title>
-      <link>https://vsxen.github.io/posts/storage-in-kubernets/</link>
+      <link>https://example.com/posts/storage-in-kubernets/</link>
       <pubDate>Sun, 12 May 2019 22:31:20 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/posts/storage-in-kubernets/</guid>
-      <description>概念 PersistentVolume PersistentVolume（持久卷，简称PV）是集群内，由管理员提供的网络存储的一部分。就像集群中的节点一样，PV也是集群中的一种资源。它也像Volume一样，是一种volume插件，但是</description>
+      <guid>https://example.com/posts/storage-in-kubernets/</guid>
+      <description>概念 PersistentVolume PersistentVolume（持久卷，简称PV）是集群内，由管理员提供的网络存储的一部分。就像集群中的节点一样，PV也是集群中的一种资源。它也像Volume一样，是一种volume插件，但是它的生命周期却是和使用它的Pod相互独立的。PV这个API对象，捕获了诸如NFS、ISCSI、或其他云存储系统的实现细节。 https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistent-volumes
+1# kubectl explain pv.spec 2# KIND: PersistentVolume 3# VERSION: v1 4# spec 5# accessModes &amp;lt;[]string&amp;gt; 6# capacity &amp;lt;map[string]string&amp;gt; 7# mountOptions &amp;lt;[]string&amp;gt; 部分支持，比如NFS 8# persistentVolumeReclaimPolicy &amp;lt;string&amp;gt; 9# storageClassName &amp;lt;string&amp;gt; 10# volumeMode &amp;lt;string&amp;gt; 11apiVersion: v1 12kind: PersistentVolume 13metadata: 14 name: block-pv 15spec: 16 accessModes: 17 - ReadWriteOnce 18 capacity: 19 storage: 10Gi 20 persistentVolumeReclaimPolicy: Retain 21 storageClassName： aliclood-nas 22 volumeMode: Block PersistentVolumeClaim PersistentVolumeClaim（持久卷声明，简称PVC）是用户的一种存储请求。它和Pod类似，Pod消耗Node资源，而PVC消耗PV资源。Pod能够请求特定的资源（如CPU和内存）。PVC能够请求指定的大小和访问的模式（可以被映射为一次读写或者多次只读）。 PVC允许用户消耗抽象的存储资源，用户也经常需要各种属性（如性能）的PV。集群管理员需要提供各种各样、不同大小、不同访问模式的PV，而不用向用户暴露这些volume如何实现的细节。因为这种需求，就催生出一种StorageClass资源。
+1 # accessModes &amp;lt;[]string&amp;gt; 2 # storageClassName &amp;lt;string&amp;gt; 3 # volumeMode &amp;lt;string&amp;gt; 4 # volumeName &amp;lt;string&amp;gt; 5 # resources &amp;lt;Object&amp;gt; 6kind: PersistentVolumeClaim 7apiVersion: v1 8metadata: 9 name: myclaim 10spec: 11 accessModes: 12 - ReadWriteOnce 13 storageClassName: slow 14 volumeMode: Filesystem 15 resources: 16 requests: 17 storage: 8Gi StorageClass StorageClass提供了一种方式，使得管理员能够描述他提供的存储的等级。集群管理员可以将不同的等级映射到不同的服务等级、不同的后端策略。 https://kubernetes.</description>
     </item>
     
   </channel>

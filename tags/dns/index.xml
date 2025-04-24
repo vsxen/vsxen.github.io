@@ -1,19 +1,24 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>dns on Code Life</title>
-    <link>https://vsxen.github.io/tags/dns/</link>
-    <description>Recent content in dns on Code Life</description>
+    <title>dns on Cactus theme example</title>
+    <link>https://example.com/tags/dns/</link>
+    <description>Recent content in dns on Cactus theme example</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-cn</language>
-    <lastBuildDate>Thu, 25 Apr 2019 22:31:20 +0800</lastBuildDate><atom:link href="https://vsxen.github.io/tags/dns/index.xml" rel="self" type="application/rss+xml" />
+    <language>en-us</language>
+    <copyright>You</copyright>
+    <lastBuildDate>Thu, 25 Apr 2019 22:31:20 +0800</lastBuildDate><atom:link href="https://example.com/tags/dns/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>CoreDNS-基于Caddy的DNS Server</title>
-      <link>https://vsxen.github.io/posts/coredns/</link>
+      <link>https://example.com/posts/coredns/</link>
       <pubDate>Thu, 25 Apr 2019 22:31:20 +0800</pubDate>
       
-      <guid>https://vsxen.github.io/posts/coredns/</guid>
-      <description>CoreDNS利用作为Web服务器Caddy的一部分而开发的服务器框架。该框架具有非常灵活，可扩展的模型，用于通过各种中间件组件传递请求。这些中间件组件根据请求提供不同的操作，例如记录，重定向，修改或</description>
+      <guid>https://example.com/posts/coredns/</guid>
+      <description>CoreDNS利用作为Web服务器Caddy的一部分而开发的服务器框架。该框架具有非常灵活，可扩展的模型，用于通过各种中间件组件传递请求。这些中间件组件根据请求提供不同的操作，例如记录，重定向，修改或维护。虽然它一开始作为Web服务器，但是Caddy并不是专门针对HTTP协议的，所以也是开发CoreDNS的理想框架。
+Install 如果使用Kubeadm初始化的集群，默认已经安装了CoreDNS。默认配置文件如下：
+1cat /etc/coredns/Corefile 2.:53 { 3 errors 4 health 5 kubernetes cluster.local in-addr.arpa ip6.arpa { 6 pods insecure 7 upstream 8 fallthrough in-addr.arpa ip6.arpa 9 } 10 prometheus :9153 11 proxy . /etc/resolv.conf 12 cache 30 13 reload 14 loadbalance 15} 9153/metrics 是默认的metrics端口 :8080/health 是健康检查的端口，除此之外需要注意的是添加了一个kernel capabilities，DNS策略是默认。只会对cluster.local进行解析，其他域名则是转发到上游DNS服务器。
+ securityContext: allowPrivilegeEscalation: false capabilities: add: - NET_BIND_SERVICE drop: - all CoreDNS相当于创建了一个Kubernetes中间件。该中间件使用Kubernetes API来满足针对特定Kubernetes pod或服务的DNS请求。而且由于Kube-DNS作为Kubernetes的另一项服务，kubelet和CoreDNS之间没有紧密的绑定。只需要将DNS服务的IP地址和域名传递给kubelet，而Kubernetes并不关心谁在实际处理该IP请求。和DNS相关的配都在kubelet上面，分别是：
+ &amp;ndash;cluster-dns &amp;ndash;cluster-domain  除此之外Pod的dnsPolicy 可选参数为&amp;rsquo;ClusterFirstWithHostNet&#39;, &amp;lsquo;ClusterFirst&amp;rsquo;, &amp;lsquo;Default&amp;rsquo; or &amp;lsquo;None&amp;rsquo;，而当Pod设置dnsPolicy为ClusterFirst时 ，即可在pod内生成以下/etc/resolv.</description>
     </item>
     
   </channel>

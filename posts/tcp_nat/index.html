@@ -1,114 +1,242 @@
 <!DOCTYPE html>
-<html lang="zh-cn" >
+<html lang="en-us">
 <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="author" content="Zeuk" />
-	
-	
-	
-	<title>从Nat到TCP_TW ｜ Code Life</title>
-	
-    
-    
-    <meta name="description" content="看到这个标题，你可能会感到疑惑这两个有什么关系呢？一个是IP转换一个是TCP，似乎关系不大？接下来听我慢慢介绍。 NAT 在IPV4的时代，IP可以分为两种，公网和局域网。当你在局域网时想要访问外面的内容就要" />
-    
+  <link rel="preload" href="/lib/font-awesome/webfonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="preload" href="/lib/font-awesome/webfonts/fa-regular-400.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="preload" href="/lib/font-awesome/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="preload" href="/lib/JetBrainsMono/web/woff2/JetBrainsMono-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <script type="text/javascript" src="https://latest.cactus.chat/cactus.js"></script>
+  <link rel="stylesheet" href="https://latest.cactus.chat/style.css" type="text/css">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title> 从Nat到TCP_TW | Cactus theme example</title>
+  <link rel = 'canonical' href = 'https://example.com/posts/tcp_nat/'>
+  <meta name="description" content="随便记录点东西">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="all,follow">
+  <meta name="googlebot" content="index,follow,snippet,archive">
+  <meta property="og:title" content="从Nat到TCP_TW" />
+<meta property="og:description" content="看到这个标题，你可能会感到疑惑这两个有什么关系呢？一个是IP转换一个是TCP，似乎关系不大？接下来听我慢慢介绍。
+NAT 在IPV4的时代，IP可以分为两种，公网和局域网。当你在局域网时想要访问外面的内容就要经过Nat，即网络地址转换也就是把局域网的IP转换为公网，发送和接收请求。其中
+ SNat 原地址转换 Source nat，也就是在发送请求的时候，我们的路由器把类似192.168.1.2转换为我们拨号上网的公网IP， DNat也就是目的地址转换，也就是在收到接收到请求的时候，把上面的公网IP转换为192.168.1.2的局域网IP。  也就是说其实我们无时无刻都在使用着Nat，这是客户端。对于服务端呢？也会用到Nat。典型的场景比如负载均衡。比如说我们请求的淘宝首页，淘宝的服务器肯定不止一台，淘宝可能也是通过负载均衡以及Nat来把请求分发到后端。
+1dig A taobao.com &#43;short 2140.205.220.96 3140.205.94.189 TCP 为什么会注意到这点呢？其实主要是因为部署在容器内的服务在连接MySQL的时候经常会报错比如：
+1pymysql.err.OperationalError: (2003, &#34;Can&#39;t connect to MySQL server on &#39;xxxx (timed out)&#34;) 2Error Code: 2013. Lost connection to MySQL server during query 主要的原因就是因为开发TCP timewait的复用。这里引用下别人的文章：
+11. 同时开启tcp_timestamp和tcp_tw_recycle会启用TCP/IP协议栈的per-host的PAWS机制 22. 经过同一NAT转换后的来自不同真实client的数据流，在服务端看来是于同一host打交道 33. 虽然经过同一NAT转化，但由于不同真实client会携带各自的timestamp值 4因而无法保证整过NAT转化后的数据包携带的timestamp值严格递增 54. 当服务器的per-host PAWS机制被触发后，会丢弃timestamp值不符合递增条件的数据包 先说结论
+ 开启tcp_timestamp，但不要开tcp_tw_recycle
+ TCP的三次握手这些就不多说了，下面就根据流程图以及Linux kernel相关TCP参数补充一下细节。
+1客户端 服务端 2 &#43; &#43; 3 | | 4 | | Listen 监听端口 5 | | 6 | | 7&#43;------------------------------------------------------------------&#43; 8发送SYN,(SYN_SEND) | | 9 | | 10 | | 回复SYN&#43;ACK，到SYN_RCVD 11 | | 12 回复ACK | | 13 | | 14&#43;------------------------------------------------------------------&#43; 建立连接 15 建立链接 | | 建立链接 16 双方开始传输数据 | | 双方开始传输数据 17 | | 18 GET / HTTP1." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://example.com/posts/tcp_nat/" />
+<meta property="article:published_time" content="2020-02-25T09:04:20+08:00" />
+<meta property="article:modified_time" content="2020-02-25T09:04:20+08:00" />
 
-    
-    
-    <meta name="keywords" content="Hugo, theme, zozo" />
-    
+  <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="从Nat到TCP_TW"/>
+<meta name="twitter:description" content="看到这个标题，你可能会感到疑惑这两个有什么关系呢？一个是IP转换一个是TCP，似乎关系不大？接下来听我慢慢介绍。
+NAT 在IPV4的时代，IP可以分为两种，公网和局域网。当你在局域网时想要访问外面的内容就要经过Nat，即网络地址转换也就是把局域网的IP转换为公网，发送和接收请求。其中
+ SNat 原地址转换 Source nat，也就是在发送请求的时候，我们的路由器把类似192.168.1.2转换为我们拨号上网的公网IP， DNat也就是目的地址转换，也就是在收到接收到请求的时候，把上面的公网IP转换为192.168.1.2的局域网IP。  也就是说其实我们无时无刻都在使用着Nat，这是客户端。对于服务端呢？也会用到Nat。典型的场景比如负载均衡。比如说我们请求的淘宝首页，淘宝的服务器肯定不止一台，淘宝可能也是通过负载均衡以及Nat来把请求分发到后端。
+1dig A taobao.com &#43;short 2140.205.220.96 3140.205.94.189 TCP 为什么会注意到这点呢？其实主要是因为部署在容器内的服务在连接MySQL的时候经常会报错比如：
+1pymysql.err.OperationalError: (2003, &#34;Can&#39;t connect to MySQL server on &#39;xxxx (timed out)&#34;) 2Error Code: 2013. Lost connection to MySQL server during query 主要的原因就是因为开发TCP timewait的复用。这里引用下别人的文章：
+11. 同时开启tcp_timestamp和tcp_tw_recycle会启用TCP/IP协议栈的per-host的PAWS机制 22. 经过同一NAT转换后的来自不同真实client的数据流，在服务端看来是于同一host打交道 33. 虽然经过同一NAT转化，但由于不同真实client会携带各自的timestamp值 4因而无法保证整过NAT转化后的数据包携带的timestamp值严格递增 54. 当服务器的per-host PAWS机制被触发后，会丢弃timestamp值不符合递增条件的数据包 先说结论
+ 开启tcp_timestamp，但不要开tcp_tw_recycle
+ TCP的三次握手这些就不多说了，下面就根据流程图以及Linux kernel相关TCP参数补充一下细节。
+1客户端 服务端 2 &#43; &#43; 3 | | 4 | | Listen 监听端口 5 | | 6 | | 7&#43;------------------------------------------------------------------&#43; 8发送SYN,(SYN_SEND) | | 9 | | 10 | | 回复SYN&#43;ACK，到SYN_RCVD 11 | | 12 回复ACK | | 13 | | 14&#43;------------------------------------------------------------------&#43; 建立连接 15 建立链接 | | 建立链接 16 双方开始传输数据 | | 双方开始传输数据 17 | | 18 GET / HTTP1."/>
 
-	
+  
+  
     
-    <link rel="shortcut icon" href="https://vsxen.github.io/images/favicon.ico" />
+  
+  
+  <link rel="stylesheet" href="https://example.com/css/styles.b7d947e05a1170a37e8b82db035a37baf568e98c7fcbe3f9dd31eac5e6a72150f9f731721fa60a1b3eed4c6a9db9c5a706d396767b698198aeea1614f88ce960.css" integrity="sha512-t9lH4FoRcKN&#43;i4LbA1o3uvVo6Yx/y&#43;P53THqxeanIVD59zFyH6YKGz7tTGqducWnBtOWdntpgZiu6hYU&#43;IzpYA=="> 
 
-    <link rel="stylesheet" type="text/css" media="screen" href="https://vsxen.github.iocss/normalize.css" />
-    <link rel="stylesheet" type="text/css" media="screen" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.0/animate.min.css" />
-    <link rel="stylesheet" type="text/css" media="screen" href="https://vsxen.github.io/css/zozo.css" />
-	<link rel="stylesheet" type="text/css" media="screen" href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" />
-    <link rel="stylesheet" type="text/css" media="screen" href="https://vsxen.github.io/css/highlight.css" />
+  
+  
+  
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  
 
-    
-    
+  
+<link rel="icon" type="image/png" href="https://example.com/images/favicon.ico" />
+
+  
+  
+  
+  
 </head>
 
-<body>
-    <div class="main animate__animated animate__fadeInDown">
-        <div class="nav_container animated fadeInDown">
-    <div class="site_nav" id="site_nav">
-        <ul>
-            
-            <li>
-                <a href="/">首页</a>
-            </li>
-            
-            <li>
-                <a href="/posts/">归档</a>
-            </li>
-            
-            <li>
-                <a href="/tags/">标签</a>
-            </li>
-            
-            <li>
-                <a href="/about/">关于</a>
-            </li>
-            
-        </ul>
+<body class="max-width mx-auto px3 ltr">
+  <div class="content index py4">
+
+  <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;" aria-label="Top of Page"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+        <li><a href="/">Home</a></li>
+         
+        <li><a href="/posts">Writings</a></li>
+         
+        <li><a href="/tags">Tags</a></li>
+         
+        <li><a href="/about">About</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li>
+          <a class="icon" href=" https://example.com/posts/containerd-gvisor/" aria-label="Previous">
+            <i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i>
+          </a>
+        </li>
+        
+        
+        <li>
+          <a class="icon" href="https://example.com/posts/kubectl-exec/" aria-label="Next">
+            <i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i>
+          </a>
+        </li>
+        
+        <li>
+          <a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" aria-label="Top of Page">
+            <i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i>
+          </a>
+        </li>
+        <li>
+          <a class="icon" href="#" aria-label="Share">
+            <i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i>
+          </a>
+        </li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      
+      <ul>
+  
+  
+    
+  
+  
+  <li>
+    <a class="icon" href="http://www.facebook.com/sharer.php?u=https%3a%2f%2fexample.com%2fposts%2ftcp_nat%2f" aria-label="Facebook">
+      <i class="fab fa-facebook " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://twitter.com/share?url=https%3a%2f%2fexample.com%2fposts%2ftcp_nat%2f&text=%e4%bb%8eNat%e5%88%b0TCP_TW" aria-label="Twitter">
+      <i class="fab fa-twitter " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.linkedin.com/shareArticle?url=https%3a%2f%2fexample.com%2fposts%2ftcp_nat%2f&title=%e4%bb%8eNat%e5%88%b0TCP_TW" aria-label="Linkedin">
+      <i class="fab fa-linkedin " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https%3a%2f%2fexample.com%2fposts%2ftcp_nat%2f&is_video=false&description=%e4%bb%8eNat%e5%88%b0TCP_TW" aria-label="Pinterest">
+      <i class="fab fa-pinterest " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="mailto:?subject=%e4%bb%8eNat%e5%88%b0TCP_TW&body=Check out this article: https%3a%2f%2fexample.com%2fposts%2ftcp_nat%2f" aria-label="Email">
+      <i class="fas fa-envelope " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://getpocket.com/save?url=https%3a%2f%2fexample.com%2fposts%2ftcp_nat%2f&title=%e4%bb%8eNat%e5%88%b0TCP_TW" aria-label="Pocket">
+      <i class="fab fa-get-pocket " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://reddit.com/submit?url=https%3a%2f%2fexample.com%2fposts%2ftcp_nat%2f&title=%e4%bb%8eNat%e5%88%b0TCP_TW" aria-label="reddit">
+      <i class="fab fa-reddit " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2fexample.com%2fposts%2ftcp_nat%2f&name=%e4%bb%8eNat%e5%88%b0TCP_TW&description=%e7%9c%8b%e5%88%b0%e8%bf%99%e4%b8%aa%e6%a0%87%e9%a2%98%ef%bc%8c%e4%bd%a0%e5%8f%af%e8%83%bd%e4%bc%9a%e6%84%9f%e5%88%b0%e7%96%91%e6%83%91%e8%bf%99%e4%b8%a4%e4%b8%aa%e6%9c%89%e4%bb%80%e4%b9%88%e5%85%b3%e7%b3%bb%e5%91%a2%ef%bc%9f%e4%b8%80%e4%b8%aa%e6%98%afIP%e8%bd%ac%e6%8d%a2%e4%b8%80%e4%b8%aa%e6%98%afTCP%ef%bc%8c%e4%bc%bc%e4%b9%8e%e5%85%b3%e7%b3%bb%e4%b8%8d%e5%a4%a7%ef%bc%9f%e6%8e%a5%e4%b8%8b%e6%9d%a5%e5%90%ac%e6%88%91%e6%85%a2%e6%85%a2%e4%bb%8b%e7%bb%8d%e3%80%82%0aNAT%20%e5%9c%a8IPV4%e7%9a%84%e6%97%b6%e4%bb%a3%ef%bc%8cIP%e5%8f%af%e4%bb%a5%e5%88%86%e4%b8%ba%e4%b8%a4%e7%a7%8d%ef%bc%8c%e5%85%ac%e7%bd%91%e5%92%8c%e5%b1%80%e5%9f%9f%e7%bd%91%e3%80%82%e5%bd%93%e4%bd%a0%e5%9c%a8%e5%b1%80%e5%9f%9f%e7%bd%91%e6%97%b6%e6%83%b3%e8%a6%81%e8%ae%bf%e9%97%ae%e5%a4%96%e9%9d%a2%e7%9a%84%e5%86%85%e5%ae%b9%e5%b0%b1%e8%a6%81%e7%bb%8f%e8%bf%87Nat%ef%bc%8c%e5%8d%b3%e7%bd%91%e7%bb%9c%e5%9c%b0%e5%9d%80%e8%bd%ac%e6%8d%a2%e4%b9%9f%e5%b0%b1%e6%98%af%e6%8a%8a%e5%b1%80%e5%9f%9f%e7%bd%91%e7%9a%84IP%e8%bd%ac%e6%8d%a2%e4%b8%ba%e5%85%ac%e7%bd%91%ef%bc%8c%e5%8f%91%e9%80%81%e5%92%8c%e6%8e%a5%e6%94%b6%e8%af%b7%e6%b1%82%e3%80%82%e5%85%b6%e4%b8%ad%0a%20SNat%20%e5%8e%9f%e5%9c%b0%e5%9d%80%e8%bd%ac%e6%8d%a2%20Source%20nat%ef%bc%8c%e4%b9%9f%e5%b0%b1%e6%98%af%e5%9c%a8%e5%8f%91%e9%80%81%e8%af%b7%e6%b1%82%e7%9a%84%e6%97%b6%e5%80%99%ef%bc%8c%e6%88%91%e4%bb%ac%e7%9a%84%e8%b7%af%e7%94%b1%e5%99%a8%e6%8a%8a%e7%b1%bb%e4%bc%bc192.168.1.2%e8%bd%ac%e6%8d%a2%e4%b8%ba%e6%88%91%e4%bb%ac%e6%8b%a8%e5%8f%b7%e4%b8%8a%e7%bd%91%e7%9a%84%e5%85%ac%e7%bd%91IP%ef%bc%8c%20DNat%e4%b9%9f%e5%b0%b1%e6%98%af%e7%9b%ae%e7%9a%84%e5%9c%b0%e5%9d%80%e8%bd%ac%e6%8d%a2%ef%bc%8c%e4%b9%9f%e5%b0%b1%e6%98%af%e5%9c%a8%e6%94%b6%e5%88%b0%e6%8e%a5%e6%94%b6%e5%88%b0%e8%af%b7%e6%b1%82%e7%9a%84%e6%97%b6%e5%80%99%ef%bc%8c%e6%8a%8a%e4%b8%8a%e9%9d%a2%e7%9a%84%e5%85%ac%e7%bd%91IP%e8%bd%ac%e6%8d%a2%e4%b8%ba192.168.1.2%e7%9a%84%e5%b1%80%e5%9f%9f%e7%bd%91IP%e3%80%82%20%20%e4%b9%9f%e5%b0%b1%e6%98%af%e8%af%b4%e5%85%b6%e5%ae%9e%e6%88%91%e4%bb%ac%e6%97%a0%e6%97%b6%e6%97%a0%e5%88%bb%e9%83%bd%e5%9c%a8%e4%bd%bf%e7%94%a8%e7%9d%80Nat%ef%bc%8c%e8%bf%99%e6%98%af%e5%ae%a2%e6%88%b7%e7%ab%af%e3%80%82%e5%af%b9%e4%ba%8e%e6%9c%8d%e5%8a%a1%e7%ab%af%e5%91%a2%ef%bc%9f%e4%b9%9f%e4%bc%9a%e7%94%a8%e5%88%b0Nat%e3%80%82%e5%85%b8%e5%9e%8b%e7%9a%84%e5%9c%ba%e6%99%af%e6%af%94%e5%a6%82%e8%b4%9f%e8%bd%bd%e5%9d%87%e8%a1%a1%e3%80%82%e6%af%94%e5%a6%82%e8%af%b4%e6%88%91%e4%bb%ac%e8%af%b7%e6%b1%82%e7%9a%84%e6%b7%98%e5%ae%9d%e9%a6%96%e9%a1%b5%ef%bc%8c%e6%b7%98%e5%ae%9d%e7%9a%84%e6%9c%8d%e5%8a%a1%e5%99%a8%e8%82%af%e5%ae%9a%e4%b8%8d%e6%ad%a2%e4%b8%80%e5%8f%b0%ef%bc%8c%e6%b7%98%e5%ae%9d%e5%8f%af%e8%83%bd%e4%b9%9f%e6%98%af%e9%80%9a%e8%bf%87%e8%b4%9f%e8%bd%bd%e5%9d%87%e8%a1%a1%e4%bb%a5%e5%8f%8aNat%e6%9d%a5%e6%8a%8a%e8%af%b7%e6%b1%82%e5%88%86%e5%8f%91%e5%88%b0%e5%90%8e%e7%ab%af%e3%80%82%0a1dig%20A%20taobao.com%20%2bshort%202140.205.220.96%203140.205.94.189%20TCP%20%e4%b8%ba%e4%bb%80%e4%b9%88%e4%bc%9a%e6%b3%a8%e6%84%8f%e5%88%b0%e8%bf%99%e7%82%b9%e5%91%a2%ef%bc%9f%e5%85%b6%e5%ae%9e%e4%b8%bb%e8%a6%81%e6%98%af%e5%9b%a0%e4%b8%ba%e9%83%a8%e7%bd%b2%e5%9c%a8%e5%ae%b9%e5%99%a8%e5%86%85%e7%9a%84%e6%9c%8d%e5%8a%a1%e5%9c%a8%e8%bf%9e%e6%8e%a5MySQL%e7%9a%84%e6%97%b6%e5%80%99%e7%bb%8f%e5%b8%b8%e4%bc%9a%e6%8a%a5%e9%94%99%e6%af%94%e5%a6%82%ef%bc%9a%0a1pymysql.err.OperationalError%3a%20%282003%2c%20%26%2334%3bCan%26%2339%3bt%20connect%20to%20MySQL%20server%20on%20%26%2339%3bxxxx%20%28timed%20out%29%26%2334%3b%29%202Error%20Code%3a%202013.%20Lost%20connection%20to%20MySQL%20server%20during%20query%20%e4%b8%bb%e8%a6%81%e7%9a%84%e5%8e%9f%e5%9b%a0%e5%b0%b1%e6%98%af%e5%9b%a0%e4%b8%ba%e5%bc%80%e5%8f%91TCP%20timewait%e7%9a%84%e5%a4%8d%e7%94%a8%e3%80%82%e8%bf%99%e9%87%8c%e5%bc%95%e7%94%a8%e4%b8%8b%e5%88%ab%e4%ba%ba%e7%9a%84%e6%96%87%e7%ab%a0%ef%bc%9a%0a11.%20%e5%90%8c%e6%97%b6%e5%bc%80%e5%90%aftcp_timestamp%e5%92%8ctcp_tw_recycle%e4%bc%9a%e5%90%af%e7%94%a8TCP%2fIP%e5%8d%8f%e8%ae%ae%e6%a0%88%e7%9a%84per-host%e7%9a%84PAWS%e6%9c%ba%e5%88%b6%2022.%20%e7%bb%8f%e8%bf%87%e5%90%8c%e4%b8%80NAT%e8%bd%ac%e6%8d%a2%e5%90%8e%e7%9a%84%e6%9d%a5%e8%87%aa%e4%b8%8d%e5%90%8c%e7%9c%9f%e5%ae%9eclient%e7%9a%84%e6%95%b0%e6%8d%ae%e6%b5%81%ef%bc%8c%e5%9c%a8%e6%9c%8d%e5%8a%a1%e7%ab%af%e7%9c%8b%e6%9d%a5%e6%98%af%e4%ba%8e%e5%90%8c%e4%b8%80host%e6%89%93%e4%ba%a4%e9%81%93%2033.%20%e8%99%bd%e7%84%b6%e7%bb%8f%e8%bf%87%e5%90%8c%e4%b8%80NAT%e8%bd%ac%e5%8c%96%ef%bc%8c%e4%bd%86%e7%94%b1%e4%ba%8e%e4%b8%8d%e5%90%8c%e7%9c%9f%e5%ae%9eclient%e4%bc%9a%e6%90%ba%e5%b8%a6%e5%90%84%e8%87%aa%e7%9a%84timestamp%e5%80%bc%204%e5%9b%a0%e8%80%8c%e6%97%a0%e6%b3%95%e4%bf%9d%e8%af%81%e6%95%b4%e8%bf%87NAT%e8%bd%ac%e5%8c%96%e5%90%8e%e7%9a%84%e6%95%b0%e6%8d%ae%e5%8c%85%e6%90%ba%e5%b8%a6%e7%9a%84timestamp%e5%80%bc%e4%b8%a5%e6%a0%bc%e9%80%92%e5%a2%9e%2054.%20%e5%bd%93%e6%9c%8d%e5%8a%a1%e5%99%a8%e7%9a%84per-host%20PAWS%e6%9c%ba%e5%88%b6%e8%a2%ab%e8%a7%a6%e5%8f%91%e5%90%8e%ef%bc%8c%e4%bc%9a%e4%b8%a2%e5%bc%83timestamp%e5%80%bc%e4%b8%8d%e7%ac%a6%e5%90%88%e9%80%92%e5%a2%9e%e6%9d%a1%e4%bb%b6%e7%9a%84%e6%95%b0%e6%8d%ae%e5%8c%85%20%e5%85%88%e8%af%b4%e7%bb%93%e8%ae%ba%0a%20%e5%bc%80%e5%90%aftcp_timestamp%ef%bc%8c%e4%bd%86%e4%b8%8d%e8%a6%81%e5%bc%80tcp_tw_recycle%0a%20TCP%e7%9a%84%e4%b8%89%e6%ac%a1%e6%8f%a1%e6%89%8b%e8%bf%99%e4%ba%9b%e5%b0%b1%e4%b8%8d%e5%a4%9a%e8%af%b4%e4%ba%86%ef%bc%8c%e4%b8%8b%e9%9d%a2%e5%b0%b1%e6%a0%b9%e6%8d%ae%e6%b5%81%e7%a8%8b%e5%9b%be%e4%bb%a5%e5%8f%8aLinux%20kernel%e7%9b%b8%e5%85%b3TCP%e5%8f%82%e6%95%b0%e8%a1%a5%e5%85%85%e4%b8%80%e4%b8%8b%e7%bb%86%e8%8a%82%e3%80%82%0a1%e5%ae%a2%e6%88%b7%e7%ab%af%20%e6%9c%8d%e5%8a%a1%e7%ab%af%202%20%2b%20%2b%203%20%7c%20%7c%204%20%7c%20%7c%20Listen%20%e7%9b%91%e5%90%ac%e7%ab%af%e5%8f%a3%205%20%7c%20%7c%206%20%7c%20%7c%207%2b------------------------------------------------------------------%2b%208%e5%8f%91%e9%80%81SYN%2c%28SYN_SEND%29%20%7c%20%7c%209%20%7c%20%7c%2010%20%7c%20%7c%20%e5%9b%9e%e5%a4%8dSYN%2bACK%ef%bc%8c%e5%88%b0SYN_RCVD%2011%20%7c%20%7c%2012%20%e5%9b%9e%e5%a4%8dACK%20%7c%20%7c%2013%20%7c%20%7c%2014%2b------------------------------------------------------------------%2b%20%e5%bb%ba%e7%ab%8b%e8%bf%9e%e6%8e%a5%2015%20%e5%bb%ba%e7%ab%8b%e9%93%be%e6%8e%a5%20%7c%20%7c%20%e5%bb%ba%e7%ab%8b%e9%93%be%e6%8e%a5%2016%20%e5%8f%8c%e6%96%b9%e5%bc%80%e5%a7%8b%e4%bc%a0%e8%be%93%e6%95%b0%e6%8d%ae%20%7c%20%7c%20%e5%8f%8c%e6%96%b9%e5%bc%80%e5%a7%8b%e4%bc%a0%e8%be%93%e6%95%b0%e6%8d%ae%2017%20%7c%20%7c%2018%20GET%20%2f%20HTTP1." aria-label="Tumblr">
+      <i class="fab fa-tumblr " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fexample.com%2fposts%2ftcp_nat%2f&t=%e4%bb%8eNat%e5%88%b0TCP_TW" aria-label="Hacker News">
+      <i class="fab fa-hacker-news " aria-hidden="true"></i>
+    </a>
+  </li>
+</ul>
+
     </div>
-    <div class="menu_icon">
-        <a id="menu_icon"><i class="ri-menu-line"></i></a>
+    
+    <div id="toc">
+      <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#nat">NAT</a></li>
+        <li><a href="#tcp">TCP</a></li>
+        <li><a href="#ref">Ref</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
     </div>
+    
+  </span>
 </div>
-        <div class="header animated fadeInDown">
-    <div class="site_title_container">
-        <div class="site_title">
-            <h1>
-                <a href="https://vsxen.github.io">
-                    <span>Code Life</span>
-                </a>
-            </h1>
+
+
+  <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+      <h1 class="posttitle" itemprop="name headline">
+        从Nat到TCP_TW
+      </h1>
+      <div class="meta">
+        
+        <div class="postdate">
+          
+          <time datetime="2020-02-25 09:04:20 &#43;0800 CST" itemprop="datePublished">2020-02-25</time>
+          
         </div>
-        <div class="description">
-            <p class="sub_title">the site subtitle</p>
-            <div class="my_socials">
-                
-                
-                <a href="%20" title="facebook" target="_blank"><i class="ri-facebook-fill"></i></a>
-                
-                
-                
-                <a href="%20" title="github" target="_blank"><i class="ri-github-fill"></i></a>
-                
-                
-                
-                <a href="%20" title="instagram" target="_blank"><i class="ri-instagram-fill"></i></a>
-                
-                
-                
-                <a href="%20" title="twitter" target="_blank"><i class="ri-twitter-fill"></i></a>
-                
-                
-                
-                <a href="%20" title="weibo" target="_blank"><i class="ri-weibo-fill"></i></a>
-                
-                
-                <a href="https://vsxen.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i
-                        class="ri-rss-fill"></i></a>
-            </div>
+        
+        
+        <div class="article-read-time">
+          <i class="far fa-clock"></i>
+          
+          6 minute read
         </div>
-    </div>
-</div>
-        <div class="content">
-            <div class="post_page">
-                <div class="post animate__animated animate__fadeInDown">
-                    <div class="post_title post_detail_title">
-                        <h2><a href='/posts/tcp_nat/'>从Nat到TCP_TW</a></h2>
-                        <span class="date">2020.02.25</span>
-                    </div>
-                    <div class="post_content markdown"><p>看到这个标题，你可能会感到疑惑这两个有什么关系呢？一个是IP转换一个是TCP，似乎关系不大？接下来听我慢慢介绍。</p>
+        
+        
+        
+        <div class="article-tag">
+            <i class="fas fa-tag"></i>
+            
+            
+            <a class="tag-link" href="/tags/network" rel="tag">network</a>
+            
+             ,  
+            <a class="tag-link" href="/tags/linux" rel="tag">Linux</a>
+            
+        </div>
+        
+      </div>
+    </header>
+
+  
+    
+    <div class="content" itemprop="articleBody">
+      <p>看到这个标题，你可能会感到疑惑这两个有什么关系呢？一个是IP转换一个是TCP，似乎关系不大？接下来听我慢慢介绍。</p>
 <h3 id="nat">NAT</h3>
 <p>在IPV4的时代，IP可以分为两种，公网和局域网。当你在局域网时想要访问外面的内容就要经过Nat，即网络地址转换也就是把局域网的IP转换为公网，发送和接收请求。其中</p>
 <ul>
@@ -116,247 +244,307 @@
 <li>DNat也就是目的地址转换，也就是在收到接收到请求的时候，把上面的公网IP转换为192.168.1.2的局域网IP。</li>
 </ul>
 <p>也就是说其实我们无时无刻都在使用着Nat，这是客户端。对于服务端呢？也会用到Nat。典型的场景比如负载均衡。比如说我们请求的淘宝首页，淘宝的服务器肯定不止一台，淘宝可能也是通过负载均衡以及Nat来把请求分发到后端。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">dig A taobao.com +short
-140.205.220.96
-140.205.94.189
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span>dig A taobao.com +short
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span>140.205.220.96
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span>140.205.94.189
 </code></pre></div><h3 id="tcp">TCP</h3>
 <p>为什么会注意到这点呢？其实主要是因为部署在容器内的服务在连接MySQL的时候经常会报错比如：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">pymysql.err.OperationalError: <span style="color:#f92672">(</span>2003, <span style="color:#e6db74">&#34;Can&#39;t connect to MySQL server on &#39;xxxx (timed out)&#34;</span><span style="color:#f92672">)</span>
-Error Code: 2013. Lost connection to MySQL server during query
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span>pymysql.err.OperationalError: <span style="color:#ff79c6">(</span>2003, <span style="color:#f1fa8c">&#34;Can&#39;t connect to MySQL server on &#39;xxxx (timed out)&#34;</span><span style="color:#ff79c6">)</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span>Error Code: 2013. Lost connection to MySQL server during query
 </code></pre></div><p>主要的原因就是因为开发TCP timewait的复用。这里引用下别人的文章：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">1. 同时开启tcp_timestamp和tcp_tw_recycle会启用TCP/IP协议栈的per-host的PAWS机制
-2. 经过同一NAT转换后的来自不同真实client的数据流，在服务端看来是于同一host打交道
-3. 虽然经过同一NAT转化，但由于不同真实client会携带各自的timestamp值
-因而无法保证整过NAT转化后的数据包携带的timestamp值严格递增
-4. 当服务器的per-host PAWS机制被触发后，会丢弃timestamp值不符合递增条件的数据包
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span>1. 同时开启tcp_timestamp和tcp_tw_recycle会启用TCP/IP协议栈的per-host的PAWS机制
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span>2. 经过同一NAT转换后的来自不同真实client的数据流，在服务端看来是于同一host打交道
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span>3. 虽然经过同一NAT转化，但由于不同真实client会携带各自的timestamp值
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4</span>因而无法保证整过NAT转化后的数据包携带的timestamp值严格递增
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5</span>4. 当服务器的per-host PAWS机制被触发后，会丢弃timestamp值不符合递增条件的数据包
 </code></pre></div><p>先说结论</p>
 <blockquote>
 <p>开启tcp_timestamp，但不要开tcp_tw_recycle</p>
 </blockquote>
 <p>TCP的三次握手这些就不多说了，下面就根据流程图以及Linux kernel相关TCP参数补充一下细节。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">客户端                                            服务端
-                  +                          +
-                  |                          |
-                  |                          |   Listen 监听端口
-                  |                          |
-                  |                          |
-+------------------------------------------------------------------+
-发送SYN,<span style="color:#f92672">(</span>SYN_SEND<span style="color:#f92672">)</span> |                          |
-                  |                          |   
-                  |                          |  回复SYN+ACK，到SYN_RCVD
-                  |                          |
- 回复ACK           |                          |
-                  |                          |
-+------------------------------------------------------------------+                                            建立连接
- 建立链接          |                          | 建立链接
- 双方开始传输数据   |                          | 双方开始传输数据
-                  |                          |  
-  GET / HTTP1.1   |                          |                  
-                  |                          |  
-                  |                          |   ESTABLISHED              
-+------------------------------------------------------------------+                                 
-发FIN <span style="color:#f92672">(</span>FIN_WAIT1<span style="color:#f92672">)</span> |                          | 
-                  |                          | 
-                  |                          | ACK
-                  |                          | <span style="color:#f92672">(</span>CLOSE_WAIT<span style="color:#f92672">)</span>
- <span style="color:#f92672">(</span>FIN_WAIT2<span style="color:#f92672">)</span>      |                          | 
-                  |                          | 发FIN+ACK
-                  |                          | <span style="color:#f92672">(</span>LAST_ACK<span style="color:#f92672">)</span>              
-                  |                          |
- 发ACK            |                          |
- <span style="color:#f92672">(</span>TIME_WAIT<span style="color:#f92672">)</span>      |                          | 
-                  |                          |      
- 2MSL之后CLOSED    |                          | CLOSED
-                  +                          +
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span>客户端                                            服务端
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span>                  +                          +
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span>                  |                          |
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span>                  |                          |   Listen 监听端口
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span>                  |                          |
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span>                  |                          |
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span>+------------------------------------------------------------------+
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span>发送SYN,<span style="color:#ff79c6">(</span>SYN_SEND<span style="color:#ff79c6">)</span> |                          |
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span>                  |                          |   
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span>                  |                          |  回复SYN+ACK，到SYN_RCVD
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span>                  |                          |
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span> 回复ACK           |                          |
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span>                  |                          |
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14</span>+------------------------------------------------------------------+                                            建立连接
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15</span> 建立链接          |                          | 建立链接
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16</span> 双方开始传输数据   |                          | 双方开始传输数据
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17</span>                  |                          |  
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18</span>  GET / HTTP1.1   |                          |                  
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19</span>                  |                          |  
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20</span>                  |                          |   ESTABLISHED              
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21</span>+------------------------------------------------------------------+                                 
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22</span>发FIN <span style="color:#ff79c6">(</span>FIN_WAIT1<span style="color:#ff79c6">)</span> |                          | 
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23</span>                  |                          | 
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24</span>                  |                          | ACK
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25</span>                  |                          | <span style="color:#ff79c6">(</span>CLOSE_WAIT<span style="color:#ff79c6">)</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26</span> <span style="color:#ff79c6">(</span>FIN_WAIT2<span style="color:#ff79c6">)</span>      |                          | 
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27</span>                  |                          | 发FIN+ACK
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28</span>                  |                          | <span style="color:#ff79c6">(</span>LAST_ACK<span style="color:#ff79c6">)</span>              
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29</span>                  |                          |
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30</span> 发ACK            |                          |
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31</span> <span style="color:#ff79c6">(</span>TIME_WAIT<span style="color:#ff79c6">)</span>      |                          | 
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32</span>                  |                          |      
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33</span> 2MSL之后CLOSED    |                          | CLOSED
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34</span>                  +                          +
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35</span>
 </code></pre></div><p>Kernel中关于TCP的可设置项目，这里我们可以看到time timeout的时间我们是不能设置的，只能设置tcp_fin_timeout默认值是60。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sysctl -a |grep tcp
-net.ipv4.tcp_abort_on_overflow <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
-net.ipv4.tcp_adv_win_scale <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
-net.ipv4.tcp_allowed_congestion_control <span style="color:#f92672">=</span> reno cubic
-net.ipv4.tcp_app_win <span style="color:#f92672">=</span> <span style="color:#ae81ff">31</span>
-net.ipv4.tcp_autocorking <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
-net.ipv4.tcp_available_congestion_control <span style="color:#f92672">=</span> reno cubic
-net.ipv4.tcp_available_ulp <span style="color:#f92672">=</span>
-net.ipv4.tcp_base_mss <span style="color:#f92672">=</span> <span style="color:#ae81ff">1024</span>
-net.ipv4.tcp_challenge_ack_limit <span style="color:#f92672">=</span> <span style="color:#ae81ff">1000</span>
-net.ipv4.tcp_congestion_control <span style="color:#f92672">=</span> cubic
-net.ipv4.tcp_dsack <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
-net.ipv4.tcp_early_demux <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
-net.ipv4.tcp_early_retrans <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span>
-net.ipv4.tcp_ecn <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>
-net.ipv4.tcp_ecn_fallback <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
-net.ipv4.tcp_fack <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
-net.ipv4.tcp_fastopen <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
-net.ipv4.tcp_fastopen_blackhole_timeout_sec <span style="color:#f92672">=</span> <span style="color:#ae81ff">3600</span>
-net.ipv4.tcp_fastopen_key <span style="color:#f92672">=</span> 00000000-00000000-00000000-00000000
-net.ipv4.tcp_fin_timeout <span style="color:#f92672">=</span> <span style="color:#ae81ff">60</span>
-net.ipv4.tcp_frto <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>
-net.ipv4.tcp_fwmark_accept <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
-net.ipv4.tcp_invalid_ratelimit <span style="color:#f92672">=</span> <span style="color:#ae81ff">500</span>
-net.ipv4.tcp_keepalive_intvl <span style="color:#f92672">=</span> <span style="color:#ae81ff">75</span>
-net.ipv4.tcp_keepalive_probes <span style="color:#f92672">=</span> <span style="color:#ae81ff">9</span>
-net.ipv4.tcp_keepalive_time <span style="color:#f92672">=</span> <span style="color:#ae81ff">7200</span>
-net.ipv4.tcp_l3mdev_accept <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
-net.ipv4.tcp_limit_output_bytes <span style="color:#f92672">=</span> <span style="color:#ae81ff">262144</span>
-net.ipv4.tcp_low_latency <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
-sysctl: reading key <span style="color:#e6db74">&#34;net.ipv6.conf.all.stable_secret&#34;</span>
-net.ipv4.tcp_max_orphans <span style="color:#f92672">=</span> <span style="color:#ae81ff">16384</span>
-net.ipv4.tcp_max_reordering <span style="color:#f92672">=</span> <span style="color:#ae81ff">300</span>
-net.ipv4.tcp_max_syn_backlog <span style="color:#f92672">=</span> <span style="color:#ae81ff">128</span>
-net.ipv4.tcp_max_tw_buckets <span style="color:#f92672">=</span> <span style="color:#ae81ff">16384</span>
-net.ipv4.tcp_mem <span style="color:#f92672">=</span> <span style="color:#ae81ff">45840</span>        <span style="color:#ae81ff">61122</span>   <span style="color:#ae81ff">91680</span>
-net.ipv4.tcp_min_rtt_wlen <span style="color:#f92672">=</span> <span style="color:#ae81ff">300</span>
-net.ipv4.tcp_min_snd_mss <span style="color:#f92672">=</span> <span style="color:#ae81ff">48</span>
-net.ipv4.tcp_min_tso_segs <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>
-net.ipv4.tcp_moderate_rcvbuf <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
-net.ipv4.tcp_mtu_probing <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
-net.ipv4.tcp_no_metrics_save <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
-net.ipv4.tcp_notsent_lowat <span style="color:#f92672">=</span> <span style="color:#ae81ff">4294967295</span>
-net.ipv4.tcp_orphan_retries <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
-net.ipv4.tcp_pacing_ca_ratio <span style="color:#f92672">=</span> <span style="color:#ae81ff">120</span>
-net.ipv4.tcp_pacing_ss_ratio <span style="color:#f92672">=</span> <span style="color:#ae81ff">200</span>
-net.ipv4.tcp_probe_interval <span style="color:#f92672">=</span> <span style="color:#ae81ff">600</span>
-net.ipv4.tcp_probe_threshold <span style="color:#f92672">=</span> <span style="color:#ae81ff">8</span>
-net.ipv4.tcp_recovery <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
-net.ipv4.tcp_reordering <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span>
-net.ipv4.tcp_retrans_collapse <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
-net.ipv4.tcp_retries1 <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span>
-net.ipv4.tcp_retries2 <span style="color:#f92672">=</span> <span style="color:#ae81ff">15</span>
-net.ipv4.tcp_rfc1337 <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
-net.ipv4.tcp_rmem <span style="color:#f92672">=</span> <span style="color:#ae81ff">4096</span>        <span style="color:#ae81ff">131072</span>  <span style="color:#ae81ff">6291456</span>
-net.ipv4.tcp_sack <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
-net.ipv4.tcp_slow_start_after_idle <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
-net.ipv4.tcp_stdurg <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
-net.ipv4.tcp_syn_retries <span style="color:#f92672">=</span> <span style="color:#ae81ff">6</span>
-net.ipv4.tcp_synack_retries <span style="color:#f92672">=</span> <span style="color:#ae81ff">5</span>
-net.ipv4.tcp_syncookies <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
-net.ipv4.tcp_thin_linear_timeouts <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
-net.ipv4.tcp_timestamps <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
-net.ipv4.tcp_tso_win_divisor <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span>
-net.ipv4.tcp_tw_reuse <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>
-net.ipv4.tcp_window_scaling <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
-net.ipv4.tcp_wmem <span style="color:#f92672">=</span> <span style="color:#ae81ff">4096</span>        <span style="color:#ae81ff">16384</span>   <span style="color:#ae81ff">4194304</span>
-net.ipv4.tcp_workaround_signed_windows <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
-sysctl: reading key <span style="color:#e6db74">&#34;net.ipv6.conf.default.stable_secret&#34;</span>
-sysctl: reading key <span style="color:#e6db74">&#34;net.ipv6.conf.docker0.stable_secret&#34;</span>
-sysctl: reading key <span style="color:#e6db74">&#34;net.ipv6.conf.docker_gwbridge.stable_secret&#34;</span>
-sysctl: reading key <span style="color:#e6db74">&#34;net.ipv6.conf.enp0s3.stable_secret&#34;</span>
-sysctl: reading key <span style="color:#e6db74">&#34;net.ipv6.conf.enp0s8.stable_secret&#34;</span>
-sysctl: reading key <span style="color:#e6db74">&#34;net.ipv6.conf.lo.stable_secret&#34;</span>
-sysctl: reading key <span style="color:#e6db74">&#34;net.ipv6.conf.veth2465cce.stable_secret&#34;</span>
-net.netfilter.nf_conntrack_tcp_be_liberal <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
-net.netfilter.nf_conntrack_tcp_loose <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
-net.netfilter.nf_conntrack_tcp_max_retrans <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span>
-net.netfilter.nf_conntrack_tcp_timeout_close <span style="color:#f92672">=</span> <span style="color:#ae81ff">10</span>
-net.netfilter.nf_conntrack_tcp_timeout_close_wait <span style="color:#f92672">=</span> <span style="color:#ae81ff">60</span>
-net.netfilter.nf_conntrack_tcp_timeout_established <span style="color:#f92672">=</span> <span style="color:#ae81ff">432000</span>
-net.netfilter.nf_conntrack_tcp_timeout_fin_wait <span style="color:#f92672">=</span> <span style="color:#ae81ff">120</span>
-net.netfilter.nf_conntrack_tcp_timeout_last_ack <span style="color:#f92672">=</span> <span style="color:#ae81ff">30</span>
-net.netfilter.nf_conntrack_tcp_timeout_max_retrans <span style="color:#f92672">=</span> <span style="color:#ae81ff">300</span>
-net.netfilter.nf_conntrack_tcp_timeout_syn_recv <span style="color:#f92672">=</span> <span style="color:#ae81ff">60</span>
-net.netfilter.nf_conntrack_tcp_timeout_syn_sent <span style="color:#f92672">=</span> <span style="color:#ae81ff">120</span>
-net.netfilter.nf_conntrack_tcp_timeout_time_wait <span style="color:#f92672">=</span> <span style="color:#ae81ff">120</span>
-net.netfilter.nf_conntrack_tcp_timeout_unacknowledged <span style="color:#f92672">=</span> <span style="color:#ae81ff">300</span>
-root@ubuntu-bionic:/home/vagrant# uname  -a
-Linux ubuntu-bionic 4.15.0-96-generic <span style="color:#75715e">#97-Ubuntu SMP Wed Apr 1 03:25:46 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux</span>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span>sysctl -a |grep tcp
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span>net.ipv4.tcp_abort_on_overflow <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span>net.ipv4.tcp_adv_win_scale <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">1</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span>net.ipv4.tcp_allowed_congestion_control <span style="color:#ff79c6">=</span> reno cubic
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span>net.ipv4.tcp_app_win <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">31</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span>net.ipv4.tcp_autocorking <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">1</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span>net.ipv4.tcp_available_congestion_control <span style="color:#ff79c6">=</span> reno cubic
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span>net.ipv4.tcp_available_ulp <span style="color:#ff79c6">=</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span>net.ipv4.tcp_base_mss <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">1024</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span>net.ipv4.tcp_challenge_ack_limit <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">1000</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span>net.ipv4.tcp_congestion_control <span style="color:#ff79c6">=</span> cubic
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span>net.ipv4.tcp_dsack <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">1</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span>net.ipv4.tcp_early_demux <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">1</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14</span>net.ipv4.tcp_early_retrans <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">3</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15</span>net.ipv4.tcp_ecn <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">2</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16</span>net.ipv4.tcp_ecn_fallback <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">1</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17</span>net.ipv4.tcp_fack <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18</span>net.ipv4.tcp_fastopen <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">1</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19</span>net.ipv4.tcp_fastopen_blackhole_timeout_sec <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">3600</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20</span>net.ipv4.tcp_fastopen_key <span style="color:#ff79c6">=</span> 00000000-00000000-00000000-00000000
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21</span>net.ipv4.tcp_fin_timeout <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">60</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22</span>net.ipv4.tcp_frto <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">2</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23</span>net.ipv4.tcp_fwmark_accept <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24</span>net.ipv4.tcp_invalid_ratelimit <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">500</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25</span>net.ipv4.tcp_keepalive_intvl <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">75</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26</span>net.ipv4.tcp_keepalive_probes <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">9</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27</span>net.ipv4.tcp_keepalive_time <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">7200</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28</span>net.ipv4.tcp_l3mdev_accept <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29</span>net.ipv4.tcp_limit_output_bytes <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">262144</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30</span>net.ipv4.tcp_low_latency <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31</span>sysctl: reading key <span style="color:#f1fa8c">&#34;net.ipv6.conf.all.stable_secret&#34;</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32</span>net.ipv4.tcp_max_orphans <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">16384</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33</span>net.ipv4.tcp_max_reordering <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">300</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34</span>net.ipv4.tcp_max_syn_backlog <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">128</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35</span>net.ipv4.tcp_max_tw_buckets <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">16384</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36</span>net.ipv4.tcp_mem <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">45840</span>        <span style="color:#bd93f9">61122</span>   <span style="color:#bd93f9">91680</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37</span>net.ipv4.tcp_min_rtt_wlen <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">300</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38</span>net.ipv4.tcp_min_snd_mss <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">48</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39</span>net.ipv4.tcp_min_tso_segs <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">2</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40</span>net.ipv4.tcp_moderate_rcvbuf <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">1</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41</span>net.ipv4.tcp_mtu_probing <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42</span>net.ipv4.tcp_no_metrics_save <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43</span>net.ipv4.tcp_notsent_lowat <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">4294967295</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44</span>net.ipv4.tcp_orphan_retries <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45</span>net.ipv4.tcp_pacing_ca_ratio <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">120</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46</span>net.ipv4.tcp_pacing_ss_ratio <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">200</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47</span>net.ipv4.tcp_probe_interval <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">600</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48</span>net.ipv4.tcp_probe_threshold <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">8</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49</span>net.ipv4.tcp_recovery <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">1</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">50</span>net.ipv4.tcp_reordering <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">3</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">51</span>net.ipv4.tcp_retrans_collapse <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">1</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">52</span>net.ipv4.tcp_retries1 <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">3</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">53</span>net.ipv4.tcp_retries2 <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">15</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">54</span>net.ipv4.tcp_rfc1337 <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">55</span>net.ipv4.tcp_rmem <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">4096</span>        <span style="color:#bd93f9">131072</span>  <span style="color:#bd93f9">6291456</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">56</span>net.ipv4.tcp_sack <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">1</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">57</span>net.ipv4.tcp_slow_start_after_idle <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">1</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">58</span>net.ipv4.tcp_stdurg <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">59</span>net.ipv4.tcp_syn_retries <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">6</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">60</span>net.ipv4.tcp_synack_retries <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">5</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">61</span>net.ipv4.tcp_syncookies <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">1</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">62</span>net.ipv4.tcp_thin_linear_timeouts <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">63</span>net.ipv4.tcp_timestamps <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">1</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">64</span>net.ipv4.tcp_tso_win_divisor <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">3</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">65</span>net.ipv4.tcp_tw_reuse <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">2</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">66</span>net.ipv4.tcp_window_scaling <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">1</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">67</span>net.ipv4.tcp_wmem <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">4096</span>        <span style="color:#bd93f9">16384</span>   <span style="color:#bd93f9">4194304</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">68</span>net.ipv4.tcp_workaround_signed_windows <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">69</span>sysctl: reading key <span style="color:#f1fa8c">&#34;net.ipv6.conf.default.stable_secret&#34;</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">70</span>sysctl: reading key <span style="color:#f1fa8c">&#34;net.ipv6.conf.docker0.stable_secret&#34;</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">71</span>sysctl: reading key <span style="color:#f1fa8c">&#34;net.ipv6.conf.docker_gwbridge.stable_secret&#34;</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">72</span>sysctl: reading key <span style="color:#f1fa8c">&#34;net.ipv6.conf.enp0s3.stable_secret&#34;</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">73</span>sysctl: reading key <span style="color:#f1fa8c">&#34;net.ipv6.conf.enp0s8.stable_secret&#34;</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">74</span>sysctl: reading key <span style="color:#f1fa8c">&#34;net.ipv6.conf.lo.stable_secret&#34;</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">75</span>sysctl: reading key <span style="color:#f1fa8c">&#34;net.ipv6.conf.veth2465cce.stable_secret&#34;</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">76</span>net.netfilter.nf_conntrack_tcp_be_liberal <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">77</span>net.netfilter.nf_conntrack_tcp_loose <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">1</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">78</span>net.netfilter.nf_conntrack_tcp_max_retrans <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">3</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">79</span>net.netfilter.nf_conntrack_tcp_timeout_close <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">10</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">80</span>net.netfilter.nf_conntrack_tcp_timeout_close_wait <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">60</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">81</span>net.netfilter.nf_conntrack_tcp_timeout_established <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">432000</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">82</span>net.netfilter.nf_conntrack_tcp_timeout_fin_wait <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">120</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">83</span>net.netfilter.nf_conntrack_tcp_timeout_last_ack <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">30</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">84</span>net.netfilter.nf_conntrack_tcp_timeout_max_retrans <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">300</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">85</span>net.netfilter.nf_conntrack_tcp_timeout_syn_recv <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">60</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">86</span>net.netfilter.nf_conntrack_tcp_timeout_syn_sent <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">120</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">87</span>net.netfilter.nf_conntrack_tcp_timeout_time_wait <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">120</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">88</span>net.netfilter.nf_conntrack_tcp_timeout_unacknowledged <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">300</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">89</span>root@ubuntu-bionic:/home/vagrant# uname  -a
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">90</span>Linux ubuntu-bionic 4.15.0-96-generic <span style="color:#6272a4">#97-Ubuntu SMP Wed Apr 1 03:25:46 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux</span>
 </code></pre></div><p><img src="../images/tcpdump.png" alt="tcp"></p>
 <h3 id="ref">Ref</h3>
 <p><a href="https://www.kernel.org/doc/Documentation/networking/ip-sysctl.txt">https://www.kernel.org/doc/Documentation/networking/ip-sysctl.txt</a></p>
 <p><a href="http://perthcharles.github.io/2015/08/27/timestamp-intro/">http://perthcharles.github.io/2015/08/27/timestamp-intro/</a></p>
 <p><a href="https://yuanrengu.com/2020/77eef79f.html">https://yuanrengu.com/2020/77eef79f.html</a></p>
+
+    </div>
+  </article>
+
+  
+  
+
+
+
+
+
+
+  <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/posts">Writings</a></li>
+         
+          <li><a href="/tags">Tags</a></li>
+         
+          <li><a href="/about">About</a></li>
+        
+      </ul>
+    </div>
+
+    
+    <div id="toc-footer" style="display: none">
+      <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#nat">NAT</a></li>
+        <li><a href="#tcp">TCP</a></li>
+        <li><a href="#ref">Ref</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+    </div>
+    
+
+    <div id="share-footer" style="display: none">
+      
+      <ul>
+  
+  
+    
+  
+  
+  <li>
+    <a class="icon" href="http://www.facebook.com/sharer.php?u=https%3a%2f%2fexample.com%2fposts%2ftcp_nat%2f" aria-label="Facebook">
+      <i class="fab fa-facebook fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://twitter.com/share?url=https%3a%2f%2fexample.com%2fposts%2ftcp_nat%2f&text=%e4%bb%8eNat%e5%88%b0TCP_TW" aria-label="Twitter">
+      <i class="fab fa-twitter fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.linkedin.com/shareArticle?url=https%3a%2f%2fexample.com%2fposts%2ftcp_nat%2f&title=%e4%bb%8eNat%e5%88%b0TCP_TW" aria-label="Linkedin">
+      <i class="fab fa-linkedin fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https%3a%2f%2fexample.com%2fposts%2ftcp_nat%2f&is_video=false&description=%e4%bb%8eNat%e5%88%b0TCP_TW" aria-label="Pinterest">
+      <i class="fab fa-pinterest fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="mailto:?subject=%e4%bb%8eNat%e5%88%b0TCP_TW&body=Check out this article: https%3a%2f%2fexample.com%2fposts%2ftcp_nat%2f" aria-label="Email">
+      <i class="fas fa-envelope fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://getpocket.com/save?url=https%3a%2f%2fexample.com%2fposts%2ftcp_nat%2f&title=%e4%bb%8eNat%e5%88%b0TCP_TW" aria-label="Pocket">
+      <i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://reddit.com/submit?url=https%3a%2f%2fexample.com%2fposts%2ftcp_nat%2f&title=%e4%bb%8eNat%e5%88%b0TCP_TW" aria-label="reddit">
+      <i class="fab fa-reddit fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2fexample.com%2fposts%2ftcp_nat%2f&name=%e4%bb%8eNat%e5%88%b0TCP_TW&description=%e7%9c%8b%e5%88%b0%e8%bf%99%e4%b8%aa%e6%a0%87%e9%a2%98%ef%bc%8c%e4%bd%a0%e5%8f%af%e8%83%bd%e4%bc%9a%e6%84%9f%e5%88%b0%e7%96%91%e6%83%91%e8%bf%99%e4%b8%a4%e4%b8%aa%e6%9c%89%e4%bb%80%e4%b9%88%e5%85%b3%e7%b3%bb%e5%91%a2%ef%bc%9f%e4%b8%80%e4%b8%aa%e6%98%afIP%e8%bd%ac%e6%8d%a2%e4%b8%80%e4%b8%aa%e6%98%afTCP%ef%bc%8c%e4%bc%bc%e4%b9%8e%e5%85%b3%e7%b3%bb%e4%b8%8d%e5%a4%a7%ef%bc%9f%e6%8e%a5%e4%b8%8b%e6%9d%a5%e5%90%ac%e6%88%91%e6%85%a2%e6%85%a2%e4%bb%8b%e7%bb%8d%e3%80%82%0aNAT%20%e5%9c%a8IPV4%e7%9a%84%e6%97%b6%e4%bb%a3%ef%bc%8cIP%e5%8f%af%e4%bb%a5%e5%88%86%e4%b8%ba%e4%b8%a4%e7%a7%8d%ef%bc%8c%e5%85%ac%e7%bd%91%e5%92%8c%e5%b1%80%e5%9f%9f%e7%bd%91%e3%80%82%e5%bd%93%e4%bd%a0%e5%9c%a8%e5%b1%80%e5%9f%9f%e7%bd%91%e6%97%b6%e6%83%b3%e8%a6%81%e8%ae%bf%e9%97%ae%e5%a4%96%e9%9d%a2%e7%9a%84%e5%86%85%e5%ae%b9%e5%b0%b1%e8%a6%81%e7%bb%8f%e8%bf%87Nat%ef%bc%8c%e5%8d%b3%e7%bd%91%e7%bb%9c%e5%9c%b0%e5%9d%80%e8%bd%ac%e6%8d%a2%e4%b9%9f%e5%b0%b1%e6%98%af%e6%8a%8a%e5%b1%80%e5%9f%9f%e7%bd%91%e7%9a%84IP%e8%bd%ac%e6%8d%a2%e4%b8%ba%e5%85%ac%e7%bd%91%ef%bc%8c%e5%8f%91%e9%80%81%e5%92%8c%e6%8e%a5%e6%94%b6%e8%af%b7%e6%b1%82%e3%80%82%e5%85%b6%e4%b8%ad%0a%20SNat%20%e5%8e%9f%e5%9c%b0%e5%9d%80%e8%bd%ac%e6%8d%a2%20Source%20nat%ef%bc%8c%e4%b9%9f%e5%b0%b1%e6%98%af%e5%9c%a8%e5%8f%91%e9%80%81%e8%af%b7%e6%b1%82%e7%9a%84%e6%97%b6%e5%80%99%ef%bc%8c%e6%88%91%e4%bb%ac%e7%9a%84%e8%b7%af%e7%94%b1%e5%99%a8%e6%8a%8a%e7%b1%bb%e4%bc%bc192.168.1.2%e8%bd%ac%e6%8d%a2%e4%b8%ba%e6%88%91%e4%bb%ac%e6%8b%a8%e5%8f%b7%e4%b8%8a%e7%bd%91%e7%9a%84%e5%85%ac%e7%bd%91IP%ef%bc%8c%20DNat%e4%b9%9f%e5%b0%b1%e6%98%af%e7%9b%ae%e7%9a%84%e5%9c%b0%e5%9d%80%e8%bd%ac%e6%8d%a2%ef%bc%8c%e4%b9%9f%e5%b0%b1%e6%98%af%e5%9c%a8%e6%94%b6%e5%88%b0%e6%8e%a5%e6%94%b6%e5%88%b0%e8%af%b7%e6%b1%82%e7%9a%84%e6%97%b6%e5%80%99%ef%bc%8c%e6%8a%8a%e4%b8%8a%e9%9d%a2%e7%9a%84%e5%85%ac%e7%bd%91IP%e8%bd%ac%e6%8d%a2%e4%b8%ba192.168.1.2%e7%9a%84%e5%b1%80%e5%9f%9f%e7%bd%91IP%e3%80%82%20%20%e4%b9%9f%e5%b0%b1%e6%98%af%e8%af%b4%e5%85%b6%e5%ae%9e%e6%88%91%e4%bb%ac%e6%97%a0%e6%97%b6%e6%97%a0%e5%88%bb%e9%83%bd%e5%9c%a8%e4%bd%bf%e7%94%a8%e7%9d%80Nat%ef%bc%8c%e8%bf%99%e6%98%af%e5%ae%a2%e6%88%b7%e7%ab%af%e3%80%82%e5%af%b9%e4%ba%8e%e6%9c%8d%e5%8a%a1%e7%ab%af%e5%91%a2%ef%bc%9f%e4%b9%9f%e4%bc%9a%e7%94%a8%e5%88%b0Nat%e3%80%82%e5%85%b8%e5%9e%8b%e7%9a%84%e5%9c%ba%e6%99%af%e6%af%94%e5%a6%82%e8%b4%9f%e8%bd%bd%e5%9d%87%e8%a1%a1%e3%80%82%e6%af%94%e5%a6%82%e8%af%b4%e6%88%91%e4%bb%ac%e8%af%b7%e6%b1%82%e7%9a%84%e6%b7%98%e5%ae%9d%e9%a6%96%e9%a1%b5%ef%bc%8c%e6%b7%98%e5%ae%9d%e7%9a%84%e6%9c%8d%e5%8a%a1%e5%99%a8%e8%82%af%e5%ae%9a%e4%b8%8d%e6%ad%a2%e4%b8%80%e5%8f%b0%ef%bc%8c%e6%b7%98%e5%ae%9d%e5%8f%af%e8%83%bd%e4%b9%9f%e6%98%af%e9%80%9a%e8%bf%87%e8%b4%9f%e8%bd%bd%e5%9d%87%e8%a1%a1%e4%bb%a5%e5%8f%8aNat%e6%9d%a5%e6%8a%8a%e8%af%b7%e6%b1%82%e5%88%86%e5%8f%91%e5%88%b0%e5%90%8e%e7%ab%af%e3%80%82%0a1dig%20A%20taobao.com%20%2bshort%202140.205.220.96%203140.205.94.189%20TCP%20%e4%b8%ba%e4%bb%80%e4%b9%88%e4%bc%9a%e6%b3%a8%e6%84%8f%e5%88%b0%e8%bf%99%e7%82%b9%e5%91%a2%ef%bc%9f%e5%85%b6%e5%ae%9e%e4%b8%bb%e8%a6%81%e6%98%af%e5%9b%a0%e4%b8%ba%e9%83%a8%e7%bd%b2%e5%9c%a8%e5%ae%b9%e5%99%a8%e5%86%85%e7%9a%84%e6%9c%8d%e5%8a%a1%e5%9c%a8%e8%bf%9e%e6%8e%a5MySQL%e7%9a%84%e6%97%b6%e5%80%99%e7%bb%8f%e5%b8%b8%e4%bc%9a%e6%8a%a5%e9%94%99%e6%af%94%e5%a6%82%ef%bc%9a%0a1pymysql.err.OperationalError%3a%20%282003%2c%20%26%2334%3bCan%26%2339%3bt%20connect%20to%20MySQL%20server%20on%20%26%2339%3bxxxx%20%28timed%20out%29%26%2334%3b%29%202Error%20Code%3a%202013.%20Lost%20connection%20to%20MySQL%20server%20during%20query%20%e4%b8%bb%e8%a6%81%e7%9a%84%e5%8e%9f%e5%9b%a0%e5%b0%b1%e6%98%af%e5%9b%a0%e4%b8%ba%e5%bc%80%e5%8f%91TCP%20timewait%e7%9a%84%e5%a4%8d%e7%94%a8%e3%80%82%e8%bf%99%e9%87%8c%e5%bc%95%e7%94%a8%e4%b8%8b%e5%88%ab%e4%ba%ba%e7%9a%84%e6%96%87%e7%ab%a0%ef%bc%9a%0a11.%20%e5%90%8c%e6%97%b6%e5%bc%80%e5%90%aftcp_timestamp%e5%92%8ctcp_tw_recycle%e4%bc%9a%e5%90%af%e7%94%a8TCP%2fIP%e5%8d%8f%e8%ae%ae%e6%a0%88%e7%9a%84per-host%e7%9a%84PAWS%e6%9c%ba%e5%88%b6%2022.%20%e7%bb%8f%e8%bf%87%e5%90%8c%e4%b8%80NAT%e8%bd%ac%e6%8d%a2%e5%90%8e%e7%9a%84%e6%9d%a5%e8%87%aa%e4%b8%8d%e5%90%8c%e7%9c%9f%e5%ae%9eclient%e7%9a%84%e6%95%b0%e6%8d%ae%e6%b5%81%ef%bc%8c%e5%9c%a8%e6%9c%8d%e5%8a%a1%e7%ab%af%e7%9c%8b%e6%9d%a5%e6%98%af%e4%ba%8e%e5%90%8c%e4%b8%80host%e6%89%93%e4%ba%a4%e9%81%93%2033.%20%e8%99%bd%e7%84%b6%e7%bb%8f%e8%bf%87%e5%90%8c%e4%b8%80NAT%e8%bd%ac%e5%8c%96%ef%bc%8c%e4%bd%86%e7%94%b1%e4%ba%8e%e4%b8%8d%e5%90%8c%e7%9c%9f%e5%ae%9eclient%e4%bc%9a%e6%90%ba%e5%b8%a6%e5%90%84%e8%87%aa%e7%9a%84timestamp%e5%80%bc%204%e5%9b%a0%e8%80%8c%e6%97%a0%e6%b3%95%e4%bf%9d%e8%af%81%e6%95%b4%e8%bf%87NAT%e8%bd%ac%e5%8c%96%e5%90%8e%e7%9a%84%e6%95%b0%e6%8d%ae%e5%8c%85%e6%90%ba%e5%b8%a6%e7%9a%84timestamp%e5%80%bc%e4%b8%a5%e6%a0%bc%e9%80%92%e5%a2%9e%2054.%20%e5%bd%93%e6%9c%8d%e5%8a%a1%e5%99%a8%e7%9a%84per-host%20PAWS%e6%9c%ba%e5%88%b6%e8%a2%ab%e8%a7%a6%e5%8f%91%e5%90%8e%ef%bc%8c%e4%bc%9a%e4%b8%a2%e5%bc%83timestamp%e5%80%bc%e4%b8%8d%e7%ac%a6%e5%90%88%e9%80%92%e5%a2%9e%e6%9d%a1%e4%bb%b6%e7%9a%84%e6%95%b0%e6%8d%ae%e5%8c%85%20%e5%85%88%e8%af%b4%e7%bb%93%e8%ae%ba%0a%20%e5%bc%80%e5%90%aftcp_timestamp%ef%bc%8c%e4%bd%86%e4%b8%8d%e8%a6%81%e5%bc%80tcp_tw_recycle%0a%20TCP%e7%9a%84%e4%b8%89%e6%ac%a1%e6%8f%a1%e6%89%8b%e8%bf%99%e4%ba%9b%e5%b0%b1%e4%b8%8d%e5%a4%9a%e8%af%b4%e4%ba%86%ef%bc%8c%e4%b8%8b%e9%9d%a2%e5%b0%b1%e6%a0%b9%e6%8d%ae%e6%b5%81%e7%a8%8b%e5%9b%be%e4%bb%a5%e5%8f%8aLinux%20kernel%e7%9b%b8%e5%85%b3TCP%e5%8f%82%e6%95%b0%e8%a1%a5%e5%85%85%e4%b8%80%e4%b8%8b%e7%bb%86%e8%8a%82%e3%80%82%0a1%e5%ae%a2%e6%88%b7%e7%ab%af%20%e6%9c%8d%e5%8a%a1%e7%ab%af%202%20%2b%20%2b%203%20%7c%20%7c%204%20%7c%20%7c%20Listen%20%e7%9b%91%e5%90%ac%e7%ab%af%e5%8f%a3%205%20%7c%20%7c%206%20%7c%20%7c%207%2b------------------------------------------------------------------%2b%208%e5%8f%91%e9%80%81SYN%2c%28SYN_SEND%29%20%7c%20%7c%209%20%7c%20%7c%2010%20%7c%20%7c%20%e5%9b%9e%e5%a4%8dSYN%2bACK%ef%bc%8c%e5%88%b0SYN_RCVD%2011%20%7c%20%7c%2012%20%e5%9b%9e%e5%a4%8dACK%20%7c%20%7c%2013%20%7c%20%7c%2014%2b------------------------------------------------------------------%2b%20%e5%bb%ba%e7%ab%8b%e8%bf%9e%e6%8e%a5%2015%20%e5%bb%ba%e7%ab%8b%e9%93%be%e6%8e%a5%20%7c%20%7c%20%e5%bb%ba%e7%ab%8b%e9%93%be%e6%8e%a5%2016%20%e5%8f%8c%e6%96%b9%e5%bc%80%e5%a7%8b%e4%bc%a0%e8%be%93%e6%95%b0%e6%8d%ae%20%7c%20%7c%20%e5%8f%8c%e6%96%b9%e5%bc%80%e5%a7%8b%e4%bc%a0%e8%be%93%e6%95%b0%e6%8d%ae%2017%20%7c%20%7c%2018%20GET%20%2f%20HTTP1." aria-label="Tumblr">
+      <i class="fab fa-tumblr fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fexample.com%2fposts%2ftcp_nat%2f&t=%e4%bb%8eNat%e5%88%b0TCP_TW" aria-label="Hacker News">
+      <i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      
+        <a id="menu-toggle" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;" aria-label="Menu">
+          <i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+        <a id="toc-toggle" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;" aria-label="TOC">
+          <i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share-toggle" class="icon" href="#" onclick="$('#share-footer').toggle();return false;" aria-label="Share">
+          <i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" aria-label="Top of Page">
+          <i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
 </div>
-                    <div class="post_footer">
-                        
-                        <div class="meta">
-                            <div class="info">
-                                <span class="field tags">
-                                    <i class="ri-stack-line"></i>
-                                    
-                                    <a href="https://vsxen.github.io/tags/network/">network</a>
-                                    
-                                    <a href="https://vsxen.github.io/tags/linux/">Linux</a>
-                                    
-                                </span>
-                            </div>
-                        </div>
-                        
-                    </div>
-                </div>
-                
-                
-                <div class="doc_comments"></div>
-                
-            </div>
-        </div>
-    </div>
-    <a id="back_to_top" href="#" class="back_to_top"><i class="ri-arrow-up-s-line"></i></a>
-    <footer class="footer">
-    <div class="powered_by">
-        <a href="https://varkai.com">Designed by VarKai,</a>
-        <a href="http://www.gohugo.io/">Proudly published with Hugo</a>
-    </div>
 
-    <div class="footer_slogan">
-        <span>我的精神家园</span>
-    </div>
+
+  <footer id="footer">
+  <div class="footer-left">
+    Copyright  &copy; 2025  You 
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+        <li><a href="/">Home</a></li>
+         
+        <li><a href="/posts">Writings</a></li>
+         
+        <li><a href="/tags">Tags</a></li>
+         
+        <li><a href="/about">About</a></li>
+        
+      </ul>
+    </nav>
+  </div>
 </footer>
-    <script src="https://vsxen.github.io/js/jquery-3.5.1.min.js"></script>
-<link href="https://vsxen.github.io/css/fancybox.min.css" rel="stylesheet">
-<script src="https://vsxen.github.io/js/fancybox.min.js"></script>
-<script src="https://vsxen.github.io/js/zozo.js"></script>
 
 
-<script type="text/javascript" async
-    src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-        MathJax.Hub.Config({
-            tex2jax: {
-                inlineMath: [['$', '$'], ['\\(', '\\)']],
-                displayMath: [['$$', '$$'], ['\[\[', '\]\]']],
-                processEscapes: true,
-                processEnvironments: true,
-                skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
-                TeX: {
-                    equationNumbers: { autoNumber: "AMS" },
-                    extensions: ["AMSmath.js", "AMSsymbols.js"]
-                }
-            }
-        });
-
-        MathJax.Hub.Queue(function () {
-            
-            
-            
-            var all = MathJax.Hub.getAllJax(), i;
-            for (i = 0; i < all.length; i += 1) {
-                all[i].SourceElement().parentNode.className += ' has-jax';
-            }
-        });
-    </script>
-
-<style>
-    code.has-jax {
-        font: inherit;
-        font-size: 100%;
-        background: inherit;
-        border: inherit;
-        color: #515151;
-    }
-</style>
-
-
-
-<script type="application/javascript">
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
-	ga('create', 'UA-81855844-3', 'auto');
-	
-	ga('send', 'pageview');
-}
-</script>
-<script async src='https://www.google-analytics.com/analytics.js'></script>
-
+  </div>
 </body>
+
+<link rel="stylesheet" href=/lib/font-awesome/css/all.min.css>
+<script src=/lib/jquery/jquery.min.js></script>
+<script src=/js/main.js></script>
+
+<script src=/js/code-copy.js></script>
+
+
+
 
 </html>
