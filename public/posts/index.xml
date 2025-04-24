@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Posts on PaperMod</title>
+    <link>http://localhost:1313/posts/</link>
+    <description>Recent content in Posts on PaperMod</description>
+    <image>
+      <title>PaperMod</title>
+      <url>http://localhost:1313/images/papermod-cover.png</url>
+      <link>http://localhost:1313/images/papermod-cover.png</link>
+    </image>
+    <generator>Hugo -- 0.146.7</generator>
+    <language>zh</language>
+    <copyright>PaperMod Contributors</copyright>
+    <lastBuildDate>Thu, 24 Apr 2025 22:39:57 +0800</lastBuildDate>
+    <atom:link href="http://localhost:1313/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Hello World</title>
+      <link>http://localhost:1313/posts/hello-world/</link>
+      <pubDate>Thu, 24 Apr 2025 22:39:57 +0800</pubDate>
+      <guid>http://localhost:1313/posts/hello-world/</guid>
+      <description>&lt;p&gt;Mac 上一直用的一台 G 口 Oracle 作为出口的代理来上网, 结果发现每次用 Oracle 的出口进行 pip 安装包时都特别慢, 速度大概 100KBps 不到, 换其他的出口就一点问题都没有, 之前尝试过换 DNS 也没啥用.&lt;/p&gt;
+&lt;p&gt;也测试过到 pypi.org 这个源的 ICMP, 也没发现什么问题.&lt;/p&gt;
+&lt;p&gt;结果今天仔细研究了一下, 发现 pip 的安装逻辑大概是这样的:&lt;/p&gt;
+&lt;p&gt;pip 首先访问 pypi.org 获取包的元数据
+然后会被重定向到 files.pythonhosted.org 这个 CDN 服务器下载实际的包文件
+files.pythonhosted.org 是 PyPI 的文件托管服务,用于存储和分发包文件
+然后我尝试在 oracle 机器上 ping 一下 pythonhosted.org, 结果发现 ipv6 居然没有 CDN, 延迟高达 160M
+Mac 上一直用的一台 G 口 Oracle 作为出口的代理来上网, 结果发现每次用 Oracle 的出口进行 pip 安装包时都特别慢, 速度大概 100KBps 不到, 换其他的出口就一点问题都没有, 之前尝试过换 DNS 也没啥用.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>
