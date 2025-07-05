@@ -1,4 +1,4 @@
-baseURL = "https://adityatelange.github.io/"
+baseURL = "https://vsxen.github.io/"
 title = "PaperMod"
 copyright = "© [PaperMod Contributors](https://github.com/adityatelange/hugo-PaperMod/graphs/contributors)"
 theme = [ "hugo-PaperMod" ]
