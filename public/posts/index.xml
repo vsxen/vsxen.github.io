@@ -12,21 +12,23 @@
     <generator>Hugo -- 0.146.7</generator>
     <language>zh</language>
     <copyright>PaperMod Contributors</copyright>
-    <lastBuildDate>Thu, 24 Apr 2025 22:39:57 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 29 Jun 2025 18:00:00 +0800</lastBuildDate>
     <atom:link href="http://localhost:1313/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Hello World</title>
-      <link>http://localhost:1313/posts/hello-world/</link>
-      <pubDate>Thu, 24 Apr 2025 22:39:57 +0800</pubDate>
-      <guid>http://localhost:1313/posts/hello-world/</guid>
-      <description>&lt;p&gt;Mac 上一直用的一台 G 口 Oracle 作为出口的代理来上网, 结果发现每次用 Oracle 的出口进行 pip 安装包时都特别慢, 速度大概 100KBps 不到, 换其他的出口就一点问题都没有, 之前尝试过换 DNS 也没啥用.&lt;/p&gt;
-&lt;p&gt;也测试过到 pypi.org 这个源的 ICMP, 也没发现什么问题.&lt;/p&gt;
-&lt;p&gt;结果今天仔细研究了一下, 发现 pip 的安装逻辑大概是这样的:&lt;/p&gt;
-&lt;p&gt;pip 首先访问 pypi.org 获取包的元数据
-然后会被重定向到 files.pythonhosted.org 这个 CDN 服务器下载实际的包文件
-files.pythonhosted.org 是 PyPI 的文件托管服务,用于存储和分发包文件
-然后我尝试在 oracle 机器上 ping 一下 pythonhosted.org, 结果发现 ipv6 居然没有 CDN, 延迟高达 160M
-Mac 上一直用的一台 G 口 Oracle 作为出口的代理来上网, 结果发现每次用 Oracle 的出口进行 pip 安装包时都特别慢, 速度大概 100KBps 不到, 换其他的出口就一点问题都没有, 之前尝试过换 DNS 也没啥用.&lt;/p&gt;</description>
+      <title>2025-06-29</title>
+      <link>http://localhost:1313/posts/2025-06-29/</link>
+      <pubDate>Sun, 29 Jun 2025 18:00:00 +0800</pubDate>
+      <guid>http://localhost:1313/posts/2025-06-29/</guid>
+      <description>&lt;p&gt;简单用了下claude artifact，效果如下：
+&lt;img loading=&#34;lazy&#34; src=&#34;../images/claude-artifact.png&#34;&gt;
+我是普通账号，上下文长度有点短，生成之后就不能做修改了，步骤分解第一次是自己生成，截图这次是手动补充的。
+后端接口接口不能直接发布，只能作为纯文本预览。&lt;/p&gt;
+&lt;p&gt;同样的提示词使用Gemini 2.5 pro效果就差了一些。
+&lt;img loading=&#34;lazy&#34; src=&#34;../images/aistduio-build.png&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://qwenlm.github.io/zh/blog/qwen-vlo/&#34;&gt;Qwen VLo: 从“看懂”世界到“描绘”世界&lt;/a&gt; ，以后会不会不需要PS软件了？&lt;/p&gt;
+&lt;p&gt;cline 可以从Gemini cli中调用2.5 pro的接口的，后续又去掉了，哈哈。&lt;/p&gt;
+&lt;h2 id=&#34;生活&#34;&gt;生活&lt;/h2&gt;
+&lt;p&gt;bilibili首页刷到了某豪车租赁的账号。&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>
