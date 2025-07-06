@@ -142,7 +142,7 @@
 
 <article class="post-entry"> 
   <header class="entry-header">
-    <h2 class="entry-hint-parent">Text-to-SQL
+    <h2 class="entry-hint-parent">Claude Code
       <span class="entry-hint" title="Draft">
         <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" fill="currentColor">
           <path
@@ -152,10 +152,73 @@
     </h2>
   </header>
   <div class="entry-content">
-    <p></p>
+    <p>想找一个AI Terminal，必须支持自定义API_BASE_URL，warp这个不行。
+Data Formulator MS的开源项目，利用AI做数据可视化。
+claude code发布了，和我之前思路类似，但是这个功能更丰富。
+查了下Gemini的API，主要是支持混合输出，当然也有兼容OPENAI的接口。
+通过硬件计数器，将性能提升3倍之旅
+DeepSeek 发布了R1的小版本更新0528
+</p>
   </div>
-  <footer class="entry-footer"><span title='2025-06-22 15:54:51 +0800 CST'>六月 22, 2025</span>&nbsp;·&nbsp;0 分钟&nbsp;·&nbsp;Theme PaperMod</footer>
-  <a class="entry-link" aria-label="post link to Text-to-SQL" href="http://localhost:1313/posts/2025-06-22/"></a>
+  <footer class="entry-footer"><span title='2025-06-01 16:35:57 +0800 CST'>六月 1, 2025</span>&nbsp;·&nbsp;1 分钟&nbsp;·&nbsp;Theme PaperMod</footer>
+  <a class="entry-link" aria-label="post link to Claude Code" href="http://localhost:1313/posts/2025-06-01/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Google I/O 2025 MS Build 2025
+      <span class="entry-hint" title="Draft">
+        <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" fill="currentColor">
+          <path
+            d="M160-410v-60h300v60H160Zm0-165v-60h470v60H160Zm0-165v-60h470v60H160Zm360 580v-123l221-220q9-9 20-13t22-4q12 0 23 4.5t20 13.5l37 37q9 9 13 20t4 22q0 11-4.5 22.5T862.09-380L643-160H520Zm300-263-37-37 37 37ZM580-220h38l121-122-18-19-19-18-122 121v38Zm141-141-19-18 37 37-18-19Z" />
+        </svg>
+      </span>
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>这周是Google I/O 2025，发布了很多东西，Jules这个后续测试了下，很慢一般般。
+微软 Build 2025：WSL 项目正式开源。
+看了deepflow的相关进展，支持了http2。
+github Trending 上面好多Agent的项目，没时间测试了。
+小红书mcp，根据小红书web的接口做的，前端有js加密，没想到直接用pyexecjs这种方式
+简单玩了下sora Engineering Everything with eBPF
+想试试发公众号了，看到了腾讯元器 和公众号打通了，但是没有坚持下来。
+https://nghiant3223.github.io/2025/04/15/go-scheduler.html
+</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-05-25 16:53:13 +0800 CST'>五月 25, 2025</span>&nbsp;·&nbsp;1 分钟&nbsp;·&nbsp;Theme PaperMod</footer>
+  <a class="entry-link" aria-label="post link to Google I/O 2025 MS Build 2025" href="http://localhost:1313/posts/2025-05-25/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">如何让LLM进入日产工作
+      <span class="entry-hint" title="Draft">
+        <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" fill="currentColor">
+          <path
+            d="M160-410v-60h300v60H160Zm0-165v-60h470v60H160Zm0-165v-60h470v60H160Zm360 580v-123l221-220q9-9 20-13t22-4q12 0 23 4.5t20 13.5l37 37q9 9 13 20t4 22q0 11-4.5 22.5T862.09-380L643-160H520Zm300-263-37-37 37 37ZM580-220h38l121-122-18-19-19-18-122 121v38Zm141-141-19-18 37 37-18-19Z" />
+        </svg>
+      </span>
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>偶然发现github的console 有120&#43;报错，怀疑是ublock的问题，怀疑是浏览器的问题，最后才发现是语雀浏览器插件导致的。
+Google launches Material 3 ，似乎已经没有之前那么惊艳了。
+看到open-telemetry准备支持arrow了，https://github.com/open-telemetry/otel-arrow 。 influxdb v3也正是这个发布了，告别了golang用rust重写，新的版本 。
+grafana 的dashbard 要是支持AI就好了，识别异常波动进行告警，找了一下发现了这个。
+Deepseek 发了一个硬件架构相关的论文， Scaling Challenges and Reflections on Hardware for AI Architectures。
+看了下几个ebpf项目的进展，好像已经被AI掩盖过去了。
+etcd 发布了3.6，也是好久没有更新了，还把etcdctl的部分操作拆除到etcdutl了，
+Kubernetes v1.33 Fixes a 10-Year-Old Image Pull Loophole，有点夸张，就是多租户用到了同一个镜像，调度到同一个节点，kubelet就不会去验证镜像有没有拉取的权限。
+在微软任职 18 年的资深 TypeScript 工程师被裁员。
+大模型(LLM)驱动的APP自动化时代，使用xpath定位页面元素恐成为历史 ，思路不错，我之前是想找一个从页面中提取文字，然后总结的工具，用视觉模型（OCR）也可以，但是我还是喜欢文本。
+https://engineering.fb.com/2024/08/05/data-center-engineering/roce-network-distributed-ai-training-at-scale/
+生活 准备安装充电桩了，先看下怎么不被坑==
+想起来之前看的一个博主，Koala 聊开源。
+</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-05-18 18:53:04 +0800 CST'>五月 18, 2025</span>&nbsp;·&nbsp;1 分钟&nbsp;·&nbsp;Theme PaperMod</footer>
+  <a class="entry-link" aria-label="post link to 如何让LLM进入日产工作" href="http://localhost:1313/posts/2025-05-18/"></a>
 </article>
 
 <article class="post-entry"> 
