@@ -1,31 +1,38 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
-    <title>Posts on PaperMod</title>
+    <title>Posts on Code Life</title>
     <link>http://localhost:1313/posts/</link>
-    <description>Recent content in Posts on PaperMod</description>
+    <description>Recent content in Posts on Code Life</description>
     <image>
-      <title>PaperMod</title>
+      <title>Code Life</title>
       <url>http://localhost:1313/images/papermod-cover.png</url>
       <link>http://localhost:1313/images/papermod-cover.png</link>
     </image>
     <generator>Hugo -- 0.146.7</generator>
     <language>zh</language>
     <copyright>PaperMod Contributors</copyright>
-    <lastBuildDate>Sat, 05 Jul 2025 15:55:48 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 06 Jul 2025 16:35:57 +0800</lastBuildDate>
     <atom:link href="http://localhost:1313/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>2025</title>
-      <link>http://localhost:1313/posts/2025/</link>
-      <pubDate>Sat, 05 Jul 2025 15:55:48 +0800</pubDate>
-      <guid>http://localhost:1313/posts/2025/</guid>
+      <title>2025 06 01</title>
+      <link>http://localhost:1313/posts/2025-06-01/</link>
+      <pubDate>Sun, 06 Jul 2025 16:35:57 +0800</pubDate>
+      <guid>http://localhost:1313/posts/2025-06-01/</guid>
       <description></description>
     </item>
     <item>
-      <title>2025</title>
-      <link>http://localhost:1313/posts/2025-06-22/</link>
-      <pubDate>Sat, 05 Jul 2025 15:54:51 +0800</pubDate>
-      <guid>http://localhost:1313/posts/2025-06-22/</guid>
+      <title>2025 06 08</title>
+      <link>http://localhost:1313/posts/2025-06-08/</link>
+      <pubDate>Sun, 06 Jul 2025 16:34:43 +0800</pubDate>
+      <guid>http://localhost:1313/posts/2025-06-08/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>2025 06 15</title>
+      <link>http://localhost:1313/posts/2025-06-15/</link>
+      <pubDate>Sun, 06 Jul 2025 16:34:33 +0800</pubDate>
+      <guid>http://localhost:1313/posts/2025-06-15/</guid>
       <description></description>
     </item>
     <item>
@@ -33,7 +40,11 @@
       <link>http://localhost:1313/posts/2025-07-05/</link>
       <pubDate>Sat, 05 Jul 2025 15:45:23 +0800</pubDate>
       <guid>http://localhost:1313/posts/2025-07-05/</guid>
-      <description>&lt;p&gt;k8s 中 prometheus的 token 是如何访问经过认证的kube-controller-manager的/metrics的？&lt;/p&gt;
+      <description>&lt;p&gt;体验过chatgpt，豆包，Qwen，和Gemini的深度研究之后，个人感觉Gemini是最好的。
+首先会生成研究方向，搜索关键字，然后可能是通过tool call的方式抓取相关内容，生成的结果可以用来创建到Web Page（可交互），Infographic，Quiz和音频。&lt;/p&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;../../images/deep-research.png&#34;&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;k8s 中 prometheus的 token 是如何访问经过认证的kube-controller-manager的/metrics的？&lt;/p&gt;
 &lt;p&gt;答案是：&lt;strong&gt;证书验证（TLS）和Token授权（RBAC）是两个独立但连续的步骤。&lt;code&gt;kube-controller-manager&lt;/code&gt;自己处理TLS握手，但会将授权决策委托&lt;/strong&gt;给&lt;code&gt;kube-apiserver&lt;/code&gt;。&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;
@@ -64,16 +75,20 @@
 &lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;这保证了整个集群的认证授权策略是统一和集中的，避免了每个组件各自为政带来的安全风险和管理复杂性。&lt;/p&gt;
+&lt;hr&gt;
 &lt;p&gt;k8s 为什么要设计service/proxy的子资源?&lt;/p&gt;
-&lt;p&gt;AI生成了4个理由，我觉得唯一有点说服力的也就第三条。
-3. 提供稳定的编程接口（Programmatic Access）
-通过提供一个标准的 RESTful API 端点（GET /api/v1/namespaces/{namespace}/services/{service-name}:{port-name}/proxy/{path}），Kubernetes 为自动化工具和自定义控制器（Controller）提供了一个与内部服务交互的稳定接口。&lt;/p&gt;
+&lt;p&gt;AI生成了4个理由，我觉得唯一有点说服力的也就第三条。&lt;/p&gt;
+&lt;ol start=&#34;3&#34;&gt;
+&lt;li&gt;提供稳定的编程接口（Programmatic Access）
+通过提供一个标准的 RESTful API 端点（GET /api/v1/namespaces/{namespace}/services/{service-name}:{port-name}/proxy/{path}），Kubernetes 为自动化工具和自定义控制器（Controller）提供了一个与内部服务交互的稳定接口。&lt;/li&gt;
+&lt;/ol&gt;
 &lt;p&gt;一个经典案例就是 Kubernetes 早期的监控组件 Heapster（现在已被 Metrics Server 取代），它就是通过 service/proxy 接口去轮询各个组件（如 Kubelet）的 metrics 端点来采集监控数据的。这使得集群扩展组件的开发变得更加简单和标准化。&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;精细化的权限控制（RBAC）&lt;/li&gt;
 &lt;li&gt;简化开发与调试工作&lt;/li&gt;
 &lt;li&gt;符合逻辑的 RESTful API 设计&lt;/li&gt;
-&lt;/ol&gt;</description>
+&lt;/ol&gt;
+&lt;p&gt;腾讯云的云开发&lt;/p&gt;</description>
     </item>
     <item>
       <title>Gemini-Cli</title>
@@ -88,23 +103,69 @@
 &lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;../../images/aistduio-build.png&#34;&gt;&lt;/p&gt;
 &lt;p&gt;&lt;a href=&#34;https://github.com/vllm-project/production-stack&#34;&gt;https://github.com/vllm-project/production-stack&lt;/a&gt; vllm官方的最佳实践&lt;/p&gt;
 &lt;p&gt;Gemini Cli 发布，可以免费用2.5 pro，超过以后会降到2.5 flash，还是比较良心的&lt;/p&gt;
-&lt;p&gt;TensorFlow 现在是不是比不上pytorch了？问了下AI&lt;/p&gt;
+&lt;p&gt;TensorFlow 现在是不是比不上pytorch了？&lt;/p&gt;
 &lt;p&gt;曾几何时，TensorFlow是深度学习框架领域无可争议的王者。然而，近年来，战局已悄然改变。来自学术界和产业界的多方证据表明，由Meta AI（原Facebook AI Research）主导开发的PyTorch，在用户青睐度、社区活跃度和学术研究应用等多个关键指标上，已经超越了Google支持的TensorFlow。虽然TensorFlow在特定的工业生产环境中仍占有一席之地，但“PyTorch后来居上”已成为业界的普遍共识。&lt;/p&gt;
 &lt;p&gt;学术界的压倒性优势与开发者的普遍偏爱
 目前，PyTorch在学术研究领域的主导地位尤为突出。根据PyTorch官方在2024年底发布的回顾报告，超过70%的AI研究论文实现采用了PyTorch。这一数据得到了各大顶级AI会议论文代码实现的印证，PyTorch的出现频率远高于TensorFlow。这种趋势的背后，是PyTorch以其简洁、灵活和“Pythonic”的编程风格赢得了广大学者和开发者的心。&lt;/p&gt;
-&lt;p&gt;与TensorFlow 1.x时代静态计算图带来的学习曲线陡峭和调试困难相比，PyTorch从诞生之初就采用了动态计算图（Eager Execution）的模式。这使得开发者可以像编写普通Python代码一样构建和调试神经网络，极大地提升了研发效率和实验的灵活性。尽管TensorFlow 2.x版本也引入了Eager Execution，并与高级API Keras深度整合，易用性得到显著改善，但在许多开发者看来，PyTorch的API设计更为纯粹和直观。&lt;/p&gt;
-&lt;p&gt;多项开发者调查和社区讨论也反映了这一趋势。在Stack Overflow等开发者社区中，关于PyTorch的讨论热度和问题数量持续攀升。开发者普遍认为，PyTorch更适合快速原型设计和前沿算法的探索。&lt;/p&gt;
 &lt;p&gt;工业界的版图变迁：从TensorFlow独大到两强并立
 传统上，TensorFlow凭借其强大的生态系统，如用于模型部署的TensorFlow Serving、用于移动和嵌入式设备的TensorFlow Lite（TFLite）以及端到端机器学习平台TFX，在工业界，特别是大规模生产部署方面，占据了绝对优势。许多大型科技公司，包括Google自身，其内部大量的AI应用和系统都深度绑定了TensorFlow。&lt;/p&gt;
 &lt;p&gt;然而，随着PyTorch的日渐成熟和其生态的不断完善，这一格局正在被打破。PyTorch在2.0版本后，通过引入torch.compile等功能，显著提升了训练性能，缩小了与TensorFlow在速度上的差距。同时，TorchServe等部署工具的推出，也补齐了其在生产环境中的短板。&lt;/p&gt;
 &lt;p&gt;更重要的是，随着大量在校期间习惯使用PyTorch的学生和研究人员进入工业界，企业的新项目越来越倾向于采用PyTorch。许多公司，特别是那些追求快速迭代和创新的AI初创企业，已将PyTorch作为首选框架。虽然让拥有庞大TensorFlow技术栈的公司进行“伤筋动骨”的迁移尚不现实，但在新项目的选择上，天平已明显倾斜。&lt;/p&gt;
 &lt;p&gt;Hugging Face生态的“风向标”意义
 作为全球最大的AI模型和数据集社区，Hugging Face上模型的框架分布是衡量框架流行度的重要“风向标”。尽管没有精确的官方统计数据持续发布，但社区的普遍观察和模型上传趋势显示，绝大多数最新的、SOTA（State-of-the-Art）的自然语言处理（NLP）模型，尤其是大语言模型（LLMs），都优先提供PyTorch版本。这得益于Hugging Face的Transformers库与PyTorch的无缝集成。开发者可以轻松地使用PyTorch对Hugging Face上的模型进行微调和再训练，这极大地促进了PyTorch在NLP领域的统治地位。&lt;/p&gt;
+&lt;p&gt;那什么又是 Pythonic 呢？&lt;/p&gt;
 &lt;p&gt;cline 可以从Gemini cli中调用2.5 pro的接口的，后续又去掉了，哈哈。&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;https://github.com/musistudio/claude-code-router&#34;&gt;https://github.com/musistudio/claude-code-router&lt;/a&gt; 想用claude code但是不想充钱，就可以用这个项目&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/musistudio/claude-code-router&#34;&gt;https://github.com/musistudio/claude-code-router&lt;/a&gt; 想用claude code但是没有合适的购买途径，就可以用这个项目。&lt;/p&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;特性&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;普通隧道代理 (Tunneling Proxy)&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;解密/拦截代理 (Intercepting Proxy)&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;能否看到明文&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;❌ &lt;strong&gt;不能&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;✅ &lt;strong&gt;可以&lt;/strong&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;工作模式&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;HTTP CONNECT&lt;/code&gt; 隧道模式&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;中间人攻击 (MITM) 模式&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;与服务器的连接&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;客户端与服务器端到端加密&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;代理分别与客户端和服务器建立加密连接&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;是否需要安装根证书&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;否&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;是 (关键步骤)&lt;/strong&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;主要用途&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;访问控制、IP 伪装、网络路由&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;网络调试、安全审计、数据修改&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;典型例子&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;多数商业 VPN 或普通网络代理&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;Mitmproxy, Burp Suite, Charles&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
 &lt;h2 id=&#34;生活&#34;&gt;生活&lt;/h2&gt;
-&lt;p&gt;bilibili首页刷到了某豪车租赁的账号。&lt;/p&gt;
-&lt;p&gt;为啥AMD突然就把英特尔干趴了？Intel的股价快到历史新低了。&lt;/p&gt;</description>
+&lt;p&gt;bilibili首页刷到了某豪车租赁的账号。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Text-to-SQL</title>
+      <link>http://localhost:1313/posts/2025-06-22/</link>
+      <pubDate>Sun, 22 Jun 2025 15:54:51 +0800</pubDate>
+      <guid>http://localhost:1313/posts/2025-06-22/</guid>
+      <description></description>
     </item>
   </channel>
 </rss>

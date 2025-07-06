@@ -1,26 +1,47 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
-    <title>PaperMod</title>
+    <title>Code Life</title>
     <link>http://localhost:1313/</link>
-    <description>Recent content on PaperMod</description>
+    <description>Recent content on Code Life</description>
     <image>
-      <title>PaperMod</title>
+      <title>Code Life</title>
       <url>http://localhost:1313/images/papermod-cover.png</url>
       <link>http://localhost:1313/images/papermod-cover.png</link>
     </image>
     <generator>Hugo -- 0.146.7</generator>
     <language>zh</language>
     <copyright>PaperMod Contributors</copyright>
-    <lastBuildDate>Sat, 05 Jul 2025 15:45:23 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 06 Jul 2025 16:35:57 +0800</lastBuildDate>
     <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>2025 06 01</title>
+      <link>http://localhost:1313/posts/2025-06-01/</link>
+      <pubDate>Sun, 06 Jul 2025 16:35:57 +0800</pubDate>
+      <guid>http://localhost:1313/posts/2025-06-01/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>2025 06 08</title>
+      <link>http://localhost:1313/posts/2025-06-08/</link>
+      <pubDate>Sun, 06 Jul 2025 16:34:43 +0800</pubDate>
+      <guid>http://localhost:1313/posts/2025-06-08/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>2025 06 15</title>
+      <link>http://localhost:1313/posts/2025-06-15/</link>
+      <pubDate>Sun, 06 Jul 2025 16:34:33 +0800</pubDate>
+      <guid>http://localhost:1313/posts/2025-06-15/</guid>
+      <description></description>
+    </item>
     <item>
       <title>Gemini Deep Research</title>
       <link>http://localhost:1313/posts/2025-07-05/</link>
       <pubDate>Sat, 05 Jul 2025 15:45:23 +0800</pubDate>
       <guid>http://localhost:1313/posts/2025-07-05/</guid>
       <description>&lt;p&gt;体验过chatgpt，豆包，Qwen，和Gemini的深度研究之后，个人感觉Gemini是最好的。
-首先会生成研究方向，搜索关键字，然后可能是通过tool call的方式抓取相关内容，最好生成的结果可以用来创建到Web Page（可交互），Infographic，Quiz和音频。&lt;/p&gt;
+首先会生成研究方向，搜索关键字，然后可能是通过tool call的方式抓取相关内容，生成的结果可以用来创建到Web Page（可交互），Infographic，Quiz和音频。&lt;/p&gt;
 &lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;../../images/deep-research.png&#34;&gt;&lt;/p&gt;
 &lt;hr&gt;
 &lt;p&gt;k8s 中 prometheus的 token 是如何访问经过认证的kube-controller-manager的/metrics的？&lt;/p&gt;
@@ -66,7 +87,8 @@
 &lt;li&gt;精细化的权限控制（RBAC）&lt;/li&gt;
 &lt;li&gt;简化开发与调试工作&lt;/li&gt;
 &lt;li&gt;符合逻辑的 RESTful API 设计&lt;/li&gt;
-&lt;/ol&gt;</description>
+&lt;/ol&gt;
+&lt;p&gt;腾讯云的云开发&lt;/p&gt;</description>
     </item>
     <item>
       <title>Gemini-Cli</title>
@@ -94,12 +116,52 @@
 &lt;p&gt;那什么又是 Pythonic 呢？&lt;/p&gt;
 &lt;p&gt;cline 可以从Gemini cli中调用2.5 pro的接口的，后续又去掉了，哈哈。&lt;/p&gt;
 &lt;p&gt;&lt;a href=&#34;https://github.com/musistudio/claude-code-router&#34;&gt;https://github.com/musistudio/claude-code-router&lt;/a&gt; 想用claude code但是没有合适的购买途径，就可以用这个项目。&lt;/p&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;特性&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;普通隧道代理 (Tunneling Proxy)&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;解密/拦截代理 (Intercepting Proxy)&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;能否看到明文&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;❌ &lt;strong&gt;不能&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;✅ &lt;strong&gt;可以&lt;/strong&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;工作模式&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;HTTP CONNECT&lt;/code&gt; 隧道模式&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;中间人攻击 (MITM) 模式&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;与服务器的连接&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;客户端与服务器端到端加密&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;代理分别与客户端和服务器建立加密连接&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;是否需要安装根证书&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;否&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;是 (关键步骤)&lt;/strong&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;主要用途&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;访问控制、IP 伪装、网络路由&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;网络调试、安全审计、数据修改&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;典型例子&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;多数商业 VPN 或普通网络代理&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;Mitmproxy, Burp Suite, Charles&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
 &lt;h2 id=&#34;生活&#34;&gt;生活&lt;/h2&gt;
-&lt;p&gt;bilibili首页刷到了某豪车租赁的账号。&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;https://www.bilibili.com/video/BV1R67GzsEQf/&#34;&gt;为啥AMD突然就把英特尔干趴了？&lt;/a&gt;Intel的股价快到历史新低了。&lt;/p&gt;</description>
+&lt;p&gt;bilibili首页刷到了某豪车租赁的账号。&lt;/p&gt;</description>
     </item>
     <item>
-      <title>2025</title>
+      <title>Text-to-SQL</title>
       <link>http://localhost:1313/posts/2025-06-22/</link>
       <pubDate>Sun, 22 Jun 2025 15:54:51 +0800</pubDate>
       <guid>http://localhost:1313/posts/2025-06-22/</guid>
