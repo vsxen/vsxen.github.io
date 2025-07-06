@@ -1,26 +1,73 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
-    <title>Posts on PaperMod</title>
+    <title>Posts on Code Life</title>
     <link>https://vsxen.github.io/posts/</link>
-    <description>Recent content in Posts on PaperMod</description>
+    <description>Recent content in Posts on Code Life</description>
     <image>
-      <title>PaperMod</title>
+      <title>Code Life</title>
       <url>https://vsxen.github.io/images/papermod-cover.png</url>
       <link>https://vsxen.github.io/images/papermod-cover.png</link>
     </image>
     <generator>Hugo -- 0.147.9</generator>
     <language>zh</language>
     <copyright>PaperMod Contributors</copyright>
-    <lastBuildDate>Sat, 05 Jul 2025 15:45:23 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 06 Jul 2025 16:53:13 +0800</lastBuildDate>
     <atom:link href="https://vsxen.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>2025 05 25</title>
+      <link>https://vsxen.github.io/posts/2025-05-25/</link>
+      <pubDate>Sun, 06 Jul 2025 16:53:13 +0800</pubDate>
+      <guid>https://vsxen.github.io/posts/2025-05-25/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>2025 05 18</title>
+      <link>https://vsxen.github.io/posts/2025-05-18/</link>
+      <pubDate>Sun, 06 Jul 2025 16:53:04 +0800</pubDate>
+      <guid>https://vsxen.github.io/posts/2025-05-18/</guid>
+      <description>&lt;p&gt;偶然发现github的console 有120+报错，怀疑是ublock的问题，怀疑是浏览器的问题，最后才发现是语雀浏览器插件导致的。&lt;/p&gt;
+&lt;p&gt;Google launches Material 3 ，似乎已经没有之前那么惊艳了。&lt;/p&gt;
+&lt;p&gt;看到open-telemetry准备支持arrow了，https://github.com/open-telemetry/otel-arrow 。
+influxdb v3也正是这个发布了，告别了golang用rust重写，&lt;a href=&#34;https://docs.influxdata.com/influxdb3/core/get-started/&#34;&gt;新的版本&lt;/a&gt; 。&lt;/p&gt;
+&lt;p&gt;grafana 的dashbard 要是支持AI就好了，视觉VL这种。https://github.com/grafana/grafana-llm-app。&lt;/p&gt;
+&lt;p&gt;Deepseek 发了一个硬件架构相关的论文， Scaling Challenges and Reflections on Hardware for AI Architectures &lt;a href=&#34;https://www.arxiv.org/pdf/2505.09343&#34;&gt;https://www.arxiv.org/pdf/2505.09343&lt;/a&gt; 。&lt;/p&gt;
+&lt;p&gt;看了下几个ebpf项目的进展，好像已经被AI掩盖过去了。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://etcd.io/blog/2025/announcing-etcd-3.6/&#34;&gt;etcd 发布了3.6&lt;/a&gt;，也是好久没有更新了，还把etcdctl的部分操作拆除到etcdutl了，&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://blog.abhimanyu-saharan.com/posts/kubernetes-v1-33-fixes-a-10-year-old-image-pull-loophole&#34;&gt;Kubernetes v1.33 Fixes a 10-Year-Old Image Pull Loophole&lt;/a&gt;，有点夸张，就是多租户用到了同一个镜像，调度到同一个节点，kubelet就不会去验证镜像有没有拉取的权限。&lt;/p&gt;
+&lt;p&gt;在微软任职 18 年的资深 TypeScript 工程师被裁员，https://www.oschina.net/news/350003/ms-lays-off-typescript-veteran-in-latest-job-cuts&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;http://hanzilu.com/wordpress/?p=429&#34;&gt;大模型(LLM)驱动的APP自动化时代，使用xpath定位页面元素恐成为历史 &lt;/a&gt;，思路不错，我之前是想找一个从页面中提取文字，然后总结的工具，用视觉模型（OCR）也可以，但是我还是喜欢文本。&lt;/p&gt;
+&lt;h2 id=&#34;生活&#34;&gt;生活&lt;/h2&gt;
+&lt;p&gt;准备安装充电桩了，先看下怎么不被坑==&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>2025 06 01</title>
+      <link>https://vsxen.github.io/posts/2025-06-01/</link>
+      <pubDate>Sun, 06 Jul 2025 16:35:57 +0800</pubDate>
+      <guid>https://vsxen.github.io/posts/2025-06-01/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>2025 06 08</title>
+      <link>https://vsxen.github.io/posts/2025-06-08/</link>
+      <pubDate>Sun, 06 Jul 2025 16:34:43 +0800</pubDate>
+      <guid>https://vsxen.github.io/posts/2025-06-08/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>2025 06 15</title>
+      <link>https://vsxen.github.io/posts/2025-06-15/</link>
+      <pubDate>Sun, 06 Jul 2025 16:34:33 +0800</pubDate>
+      <guid>https://vsxen.github.io/posts/2025-06-15/</guid>
+      <description></description>
+    </item>
     <item>
       <title>Gemini Deep Research</title>
       <link>https://vsxen.github.io/posts/2025-07-05/</link>
       <pubDate>Sat, 05 Jul 2025 15:45:23 +0800</pubDate>
       <guid>https://vsxen.github.io/posts/2025-07-05/</guid>
       <description>&lt;p&gt;体验过chatgpt，豆包，Qwen，和Gemini的深度研究之后，个人感觉Gemini是最好的。
-首先会生成研究方向，搜索关键字，然后可能是通过tool call的方式抓取相关内容，最好生成的结果可以用来创建到Web Page（可交互），Infographic，Quiz和音频。&lt;/p&gt;
+首先会生成研究方向，搜索关键字，然后可能是通过tool call的方式抓取相关内容，生成的结果可以用来创建到Web Page（可交互），Infographic，Quiz和音频。&lt;/p&gt;
 &lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;../../images/deep-research.png&#34;&gt;&lt;/p&gt;
 &lt;hr&gt;
 &lt;p&gt;k8s 中 prometheus的 token 是如何访问经过认证的kube-controller-manager的/metrics的？&lt;/p&gt;
@@ -66,7 +113,8 @@
 &lt;li&gt;精细化的权限控制（RBAC）&lt;/li&gt;
 &lt;li&gt;简化开发与调试工作&lt;/li&gt;
 &lt;li&gt;符合逻辑的 RESTful API 设计&lt;/li&gt;
-&lt;/ol&gt;</description>
+&lt;/ol&gt;
+&lt;p&gt;腾讯云的云开发&lt;/p&gt;</description>
     </item>
     <item>
       <title>Gemini-Cli</title>
@@ -94,12 +142,52 @@
 &lt;p&gt;那什么又是 Pythonic 呢？&lt;/p&gt;
 &lt;p&gt;cline 可以从Gemini cli中调用2.5 pro的接口的，后续又去掉了，哈哈。&lt;/p&gt;
 &lt;p&gt;&lt;a href=&#34;https://github.com/musistudio/claude-code-router&#34;&gt;https://github.com/musistudio/claude-code-router&lt;/a&gt; 想用claude code但是没有合适的购买途径，就可以用这个项目。&lt;/p&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;特性&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;普通隧道代理 (Tunneling Proxy)&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;解密/拦截代理 (Intercepting Proxy)&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;能否看到明文&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;❌ &lt;strong&gt;不能&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;✅ &lt;strong&gt;可以&lt;/strong&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;工作模式&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;HTTP CONNECT&lt;/code&gt; 隧道模式&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;中间人攻击 (MITM) 模式&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;与服务器的连接&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;客户端与服务器端到端加密&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;代理分别与客户端和服务器建立加密连接&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;是否需要安装根证书&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;否&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;是 (关键步骤)&lt;/strong&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;主要用途&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;访问控制、IP 伪装、网络路由&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;网络调试、安全审计、数据修改&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;典型例子&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;多数商业 VPN 或普通网络代理&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;Mitmproxy, Burp Suite, Charles&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
 &lt;h2 id=&#34;生活&#34;&gt;生活&lt;/h2&gt;
-&lt;p&gt;bilibili首页刷到了某豪车租赁的账号。&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;https://www.bilibili.com/video/BV1R67GzsEQf/&#34;&gt;为啥AMD突然就把英特尔干趴了？&lt;/a&gt;Intel的股价快到历史新低了。&lt;/p&gt;</description>
+&lt;p&gt;bilibili首页刷到了某豪车租赁的账号。&lt;/p&gt;</description>
     </item>
     <item>
-      <title>2025</title>
+      <title>Text-to-SQL</title>
       <link>https://vsxen.github.io/posts/2025-06-22/</link>
       <pubDate>Sun, 22 Jun 2025 15:54:51 +0800</pubDate>
       <guid>https://vsxen.github.io/posts/2025-06-22/</guid>
