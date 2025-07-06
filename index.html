@@ -155,7 +155,57 @@
 
 <article class="post-entry"> 
   <header class="entry-header">
-    <h2 class="entry-hint-parent">2025 05 25
+    <h2 class="entry-hint-parent">Gemini Deep Research
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>体验过chatgpt，豆包，Qwen，和Gemini的深度研究之后，个人感觉Gemini是最好的。 首先会生成研究方向，搜索关键字，然后可能是通过tool call的方式抓取相关内容，生成的结果可以用来创建到Web Page（可交互），Infographic，Quiz和音频。
+k8s 中 prometheus的 token 是如何访问经过认证的kube-controller-manager的/metrics的？
+答案是：证书验证（TLS）和Token授权（RBAC）是两个独立但连续的步骤。kube-controller-manager自己处理TLS握手，但会将授权决策委托给kube-apiserver。
+认证 (Authentication) - 使用 TokenReview：
+kube-controller-manager接收到Token后，它会创建一个TokenReview对象。这个对象包含了它从Prometheus收到的原始Token。 它向kube-apiserver的/apis/authentication.k8s.io/v1/tokenreviews端点发起一个请求，内容就是这个TokenReview对象。 kube-apiserver收到请求后，会验证这个Token的签名和有效性。如果Token有效，kube-apiserver会在TokenReview对象的状态（status）字段中填充该Token对应的用户信息（用户名、UID、所属组等），并返回给kube-controller-manager。 现在，kube-controller-manager知道了这个请求的发起者是谁（例如，system:serviceaccount:monitoring:prometheus-k8s）。 授权 (Authorization) - 使用 SubjectAccessReview：
+在知道了请求者的身份后，kube-controller-manager需要确认这个身份是否有权限执行请求的操作（即对/metrics路径进行GET操作）。 它会创建一个SubjectAccessReview对象。这个对象里包含了上一步获取到的用户信息以及本次请求试图执行的操作（verb: &#34;get&#34;, nonResourceURL: &#34;/metrics&#34;）。 它向kube-apiserver的/apis/authorization.k8s.io/v1/subjectaccessreviews端点发起请求。 kube-apiserver收到请求后，会查询集群中所有的RBAC规则（Role, ClusterRole, RoleBinding, ClusterRoleBinding），判断这个用户是否有权限执行该操作。 kube-apiserver将检查结果（允许或拒绝）填充到SubjectAccessReview对象的状态字段中，并返回给kube-controller-manager。 最终决策：
+kube-controller-manager收到SubjectAccessReview的响应后，如果结果是“允许”，它就会向Prometheus返回/metrics的数据。 如果结果是“拒绝”，它会向Prometheus返回403 Forbidden错误。 这保证了整个集群的认证授权策略是统一和集中的，避免了每个组件各自为政带来的安全风险和管理复杂性。
+k8s 为什么要设计service/proxy的子资源?
+AI生成了4个理由，我觉得唯一有点说服力的也就第三条。
+提供稳定的编程接口（Programmatic Access） 通过提供一个标准的 RESTful API 端点（GET /api/v1/namespaces/{namespace}/services/{service-name}:{port-name}/proxy/{path}），Kubernetes 为自动化工具和自定义控制器（Controller）提供了一个与内部服务交互的稳定接口。 一个经典案例就是 Kubernetes 早期的监控组件 Heapster（现在已被 Metrics Server 取代），它就是通过 service/proxy 接口去轮询各个组件（如 Kubelet）的 metrics 端点来采集监控数据的。这使得集群扩展组件的开发变得更加简单和标准化。
+精细化的权限控制（RBAC） 简化开发与调试工作 符合逻辑的 RESTful API 设计 腾讯云的云开发
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-07-05 15:45:23 +0800 +0800'>七月 5, 2025</span>&nbsp;·&nbsp;2 分钟&nbsp;·&nbsp;Theme PaperMod</footer>
+  <a class="entry-link" aria-label="post link to Gemini Deep Research" href="https://vsxen.github.io/posts/2025-07-05/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Gemini-Cli
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>简单用了下claude artifact，效果如下： 我是普通账号，上下文长度有点短，生成之后就不能做修改了，步骤分解第一次是自己生成，截图这次是手动补充的。 后端接口接口不能直接发布，只能作为纯文本预览。
+同样的提示词在aistduio上面用Gemini 2.5 pro效果就差了一些：
+https://github.com/vllm-project/production-stack vllm官方的最佳实践
+Gemini Cli 发布，可以免费用2.5 pro，超过以后会降到2.5 flash，还是比较良心的
+TensorFlow 现在是不是比不上pytorch了？
+曾几何时，TensorFlow是深度学习框架领域无可争议的王者。然而，近年来，战局已悄然改变。来自学术界和产业界的多方证据表明，由Meta AI（原Facebook AI Research）主导开发的PyTorch，在用户青睐度、社区活跃度和学术研究应用等多个关键指标上，已经超越了Google支持的TensorFlow。虽然TensorFlow在特定的工业生产环境中仍占有一席之地，但“PyTorch后来居上”已成为业界的普遍共识。
+学术界的压倒性优势与开发者的普遍偏爱 目前，PyTorch在学术研究领域的主导地位尤为突出。根据PyTorch官方在2024年底发布的回顾报告，超过70%的AI研究论文实现采用了PyTorch。这一数据得到了各大顶级AI会议论文代码实现的印证，PyTorch的出现频率远高于TensorFlow。这种趋势的背后，是PyTorch以其简洁、灵活和“Pythonic”的编程风格赢得了广大学者和开发者的心。
+工业界的版图变迁：从TensorFlow独大到两强并立 传统上，TensorFlow凭借其强大的生态系统，如用于模型部署的TensorFlow Serving、用于移动和嵌入式设备的TensorFlow Lite（TFLite）以及端到端机器学习平台TFX，在工业界，特别是大规模生产部署方面，占据了绝对优势。许多大型科技公司，包括Google自身，其内部大量的AI应用和系统都深度绑定了TensorFlow。
+然而，随着PyTorch的日渐成熟和其生态的不断完善，这一格局正在被打破。PyTorch在2.0版本后，通过引入torch.compile等功能，显著提升了训练性能，缩小了与TensorFlow在速度上的差距。同时，TorchServe等部署工具的推出，也补齐了其在生产环境中的短板。
+更重要的是，随着大量在校期间习惯使用PyTorch的学生和研究人员进入工业界，企业的新项目越来越倾向于采用PyTorch。许多公司，特别是那些追求快速迭代和创新的AI初创企业，已将PyTorch作为首选框架。虽然让拥有庞大TensorFlow技术栈的公司进行“伤筋动骨”的迁移尚不现实，但在新项目的选择上，天平已明显倾斜。
+Hugging Face生态的“风向标”意义 作为全球最大的AI模型和数据集社区，Hugging Face上模型的框架分布是衡量框架流行度的重要“风向标”。尽管没有精确的官方统计数据持续发布，但社区的普遍观察和模型上传趋势显示，绝大多数最新的、SOTA（State-of-the-Art）的自然语言处理（NLP）模型，尤其是大语言模型（LLMs），都优先提供PyTorch版本。这得益于Hugging Face的Transformers库与PyTorch的无缝集成。开发者可以轻松地使用PyTorch对Hugging Face上的模型进行微调和再训练，这极大地促进了PyTorch在NLP领域的统治地位。
+那什么又是 Pythonic 呢？
+cline 可以从Gemini cli中调用2.5 pro的接口的，后续又去掉了，哈哈。
+https://github.com/musistudio/claude-code-router 想用claude code但是没有合适的购买途径，就可以用这个项目。
+特性 普通隧道代理 (Tunneling Proxy) 解密/拦截代理 (Intercepting Proxy) 能否看到明文 ❌ 不能 ✅ 可以 工作模式 HTTP CONNECT 隧道模式 中间人攻击 (MITM) 模式 与服务器的连接 客户端与服务器端到端加密 代理分别与客户端和服务器建立加密连接 是否需要安装根证书 否 是 (关键步骤) 主要用途 访问控制、IP 伪装、网络路由 网络调试、安全审计、数据修改 典型例子 多数商业 VPN 或普通网络代理 Mitmproxy, Burp Suite, Charles 生活 bilibili首页刷到了某豪车租赁的账号。
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-06-29 18:00:00 +0800 +0800'>六月 29, 2025</span>&nbsp;·&nbsp;1 分钟&nbsp;·&nbsp;Theme PaperMod</footer>
+  <a class="entry-link" aria-label="post link to Gemini-Cli" href="https://vsxen.github.io/posts/2025-06-29/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Text-to-SQL
       <span class="entry-hint" title="Draft">
         <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" fill="currentColor">
           <path
@@ -167,73 +217,8 @@
   <div class="entry-content">
     <p></p>
   </div>
-  <footer class="entry-footer"><span title='2025-07-06 16:53:13 +0800 +0800'>七月 6, 2025</span>&nbsp;·&nbsp;0 分钟&nbsp;·&nbsp;Theme PaperMod</footer>
-  <a class="entry-link" aria-label="post link to 2025 05 25" href="https://vsxen.github.io/posts/2025-05-25/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">2025 05 18
-      <span class="entry-hint" title="Draft">
-        <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" fill="currentColor">
-          <path
-            d="M160-410v-60h300v60H160Zm0-165v-60h470v60H160Zm0-165v-60h470v60H160Zm360 580v-123l221-220q9-9 20-13t22-4q12 0 23 4.5t20 13.5l37 37q9 9 13 20t4 22q0 11-4.5 22.5T862.09-380L643-160H520Zm300-263-37-37 37 37ZM580-220h38l121-122-18-19-19-18-122 121v38Zm141-141-19-18 37 37-18-19Z" />
-        </svg>
-      </span>
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>偶然发现github的console 有120&#43;报错，怀疑是ublock的问题，怀疑是浏览器的问题，最后才发现是语雀浏览器插件导致的。
-Google launches Material 3 ，似乎已经没有之前那么惊艳了。
-看到open-telemetry准备支持arrow了，https://github.com/open-telemetry/otel-arrow 。 influxdb v3也正是这个发布了，告别了golang用rust重写，新的版本 。
-grafana 的dashbard 要是支持AI就好了，视觉VL这种。https://github.com/grafana/grafana-llm-app。
-Deepseek 发了一个硬件架构相关的论文， Scaling Challenges and Reflections on Hardware for AI Architectures https://www.arxiv.org/pdf/2505.09343 。
-看了下几个ebpf项目的进展，好像已经被AI掩盖过去了。
-etcd 发布了3.6，也是好久没有更新了，还把etcdctl的部分操作拆除到etcdutl了，
-Kubernetes v1.33 Fixes a 10-Year-Old Image Pull Loophole，有点夸张，就是多租户用到了同一个镜像，调度到同一个节点，kubelet就不会去验证镜像有没有拉取的权限。
-在微软任职 18 年的资深 TypeScript 工程师被裁员，https://www.oschina.net/news/350003/ms-lays-off-typescript-veteran-in-latest-job-cuts
-大模型(LLM)驱动的APP自动化时代，使用xpath定位页面元素恐成为历史 ，思路不错，我之前是想找一个从页面中提取文字，然后总结的工具，用视觉模型（OCR）也可以，但是我还是喜欢文本。
-生活 准备安装充电桩了，先看下怎么不被坑==
-</p>
-  </div>
-  <footer class="entry-footer"><span title='2025-07-06 16:53:04 +0800 +0800'>七月 6, 2025</span>&nbsp;·&nbsp;1 分钟&nbsp;·&nbsp;Theme PaperMod</footer>
-  <a class="entry-link" aria-label="post link to 2025 05 18" href="https://vsxen.github.io/posts/2025-05-18/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">2025 06 01
-      <span class="entry-hint" title="Draft">
-        <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" fill="currentColor">
-          <path
-            d="M160-410v-60h300v60H160Zm0-165v-60h470v60H160Zm0-165v-60h470v60H160Zm360 580v-123l221-220q9-9 20-13t22-4q12 0 23 4.5t20 13.5l37 37q9 9 13 20t4 22q0 11-4.5 22.5T862.09-380L643-160H520Zm300-263-37-37 37 37ZM580-220h38l121-122-18-19-19-18-122 121v38Zm141-141-19-18 37 37-18-19Z" />
-        </svg>
-      </span>
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p></p>
-  </div>
-  <footer class="entry-footer"><span title='2025-07-06 16:35:57 +0800 +0800'>七月 6, 2025</span>&nbsp;·&nbsp;0 分钟&nbsp;·&nbsp;Theme PaperMod</footer>
-  <a class="entry-link" aria-label="post link to 2025 06 01" href="https://vsxen.github.io/posts/2025-06-01/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">2025 06 08
-      <span class="entry-hint" title="Draft">
-        <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" fill="currentColor">
-          <path
-            d="M160-410v-60h300v60H160Zm0-165v-60h470v60H160Zm0-165v-60h470v60H160Zm360 580v-123l221-220q9-9 20-13t22-4q12 0 23 4.5t20 13.5l37 37q9 9 13 20t4 22q0 11-4.5 22.5T862.09-380L643-160H520Zm300-263-37-37 37 37ZM580-220h38l121-122-18-19-19-18-122 121v38Zm141-141-19-18 37 37-18-19Z" />
-        </svg>
-      </span>
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p></p>
-  </div>
-  <footer class="entry-footer"><span title='2025-07-06 16:34:43 +0800 +0800'>七月 6, 2025</span>&nbsp;·&nbsp;0 分钟&nbsp;·&nbsp;Theme PaperMod</footer>
-  <a class="entry-link" aria-label="post link to 2025 06 08" href="https://vsxen.github.io/posts/2025-06-08/"></a>
+  <footer class="entry-footer"><span title='2025-06-22 15:54:51 +0800 +0800'>六月 22, 2025</span>&nbsp;·&nbsp;0 分钟&nbsp;·&nbsp;Theme PaperMod</footer>
+  <a class="entry-link" aria-label="post link to Text-to-SQL" href="https://vsxen.github.io/posts/2025-06-22/"></a>
 </article>
 
 <article class="post-entry"> 
@@ -250,8 +235,26 @@ Kubernetes v1.33 Fixes a 10-Year-Old Image Pull Loophole，有点夸张，就是
   <div class="entry-content">
     <p></p>
   </div>
-  <footer class="entry-footer"><span title='2025-07-06 16:34:33 +0800 +0800'>七月 6, 2025</span>&nbsp;·&nbsp;0 分钟&nbsp;·&nbsp;Theme PaperMod</footer>
+  <footer class="entry-footer"><span title='2025-06-15 16:34:33 +0800 +0800'>六月 15, 2025</span>&nbsp;·&nbsp;0 分钟&nbsp;·&nbsp;Theme PaperMod</footer>
   <a class="entry-link" aria-label="post link to 2025 06 15" href="https://vsxen.github.io/posts/2025-06-15/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">2025 06 08
+      <span class="entry-hint" title="Draft">
+        <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" fill="currentColor">
+          <path
+            d="M160-410v-60h300v60H160Zm0-165v-60h470v60H160Zm0-165v-60h470v60H160Zm360 580v-123l221-220q9-9 20-13t22-4q12 0 23 4.5t20 13.5l37 37q9 9 13 20t4 22q0 11-4.5 22.5T862.09-380L643-160H520Zm300-263-37-37 37 37ZM580-220h38l121-122-18-19-19-18-122 121v38Zm141-141-19-18 37 37-18-19Z" />
+        </svg>
+      </span>
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p></p>
+  </div>
+  <footer class="entry-footer"><span title='2025-06-08 16:34:43 +0800 +0800'>六月 8, 2025</span>&nbsp;·&nbsp;0 分钟&nbsp;·&nbsp;Theme PaperMod</footer>
+  <a class="entry-link" aria-label="post link to 2025 06 08" href="https://vsxen.github.io/posts/2025-06-08/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">
