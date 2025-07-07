@@ -12,8 +12,17 @@
     <generator>Hugo -- 0.147.9</generator>
     <language>zh</language>
     <copyright>PaperMod Contributors</copyright>
-    <lastBuildDate>Sat, 05 Jul 2025 15:45:23 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 07 Jul 2025 21:54:52 +0800</lastBuildDate>
     <atom:link href="https://vsxen.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>2025 07 13</title>
+      <link>https://vsxen.github.io/posts/2025-07-13/</link>
+      <pubDate>Mon, 07 Jul 2025 21:54:52 +0800</pubDate>
+      <guid>https://vsxen.github.io/posts/2025-07-13/</guid>
+      <description>&lt;p&gt;那么HBM内存究竟是什么，与现在主流的LPDDR5有何不同呢？事实上，HBM（High Bandwidth Memory，高带宽内存）是一种基于3D堆栈技术，通过TSV（硅通孔）和微凸块（ubump）工艺实现的多层DRAM芯片垂直堆叠。而DDR（Double Data Rate）则采用的是并行总线架构，常见于DIMM（双列直插式内存模块）形式。&lt;/p&gt;
+&lt;p&gt;HBM的带宽究竟有多高呢？以最新的HBM3E为例，其传输速率达到了9.6GB/s，可提供1.2TB/s带宽。作为对比，LPDDR5X的带宽为8533Mbps（1066.6MB/s），也就是说HBM3E的带宽是LPDDR5X的1180倍。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://36kr.com/p/3365872192243719&#34;&gt;这里&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
     <item>
       <title>Gemini Deep Research</title>
       <link>https://vsxen.github.io/posts/2025-07-05/</link>
@@ -81,6 +90,7 @@
 &lt;p&gt;同样的提示词在aistduio上面用Gemini 2.5 pro效果就差了一些：&lt;/p&gt;
 &lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;../../images/aistduio-build.png&#34;&gt;&lt;/p&gt;
 &lt;p&gt;&lt;a href=&#34;https://github.com/vllm-project/production-stack&#34;&gt;https://github.com/vllm-project/production-stack&lt;/a&gt; vllm官方的最佳实践&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://letsencrypt.org/2025/07/01/issuing-our-first-ip-address-certificate/&#34;&gt;letsencrypt 准备颁发IP证书了&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;Gemini Cli 发布，可以免费用2.5 pro，超过以后会降到2.5 flash，还是比较良心的&lt;/p&gt;
 &lt;p&gt;TensorFlow 现在是不是比不上pytorch了？&lt;/p&gt;
 &lt;p&gt;曾几何时，TensorFlow是深度学习框架领域无可争议的王者。然而，近年来，战局已悄然改变。来自学术界和产业界的多方证据表明，由Meta AI（原Facebook AI Research）主导开发的PyTorch，在用户青睐度、社区活跃度和学术研究应用等多个关键指标上，已经超越了Google支持的TensorFlow。虽然TensorFlow在特定的工业生产环境中仍占有一席之地，但“PyTorch后来居上”已成为业界的普遍共识。&lt;/p&gt;
@@ -140,20 +150,24 @@
 &lt;p&gt;bilibili首页刷到了某豪车租赁的账号。&lt;/p&gt;</description>
     </item>
     <item>
-      <title>Text-to-SQL</title>
+      <title>如何离线下载音乐？</title>
       <link>https://vsxen.github.io/posts/2025-06-22/</link>
       <pubDate>Sun, 22 Jun 2025 15:54:51 +0800</pubDate>
       <guid>https://vsxen.github.io/posts/2025-06-22/</guid>
-      <description>&lt;p&gt;DB-GPT 是真的一般呀&lt;/p&gt;
+      <description>&lt;p&gt;DB-GPT 是真的一般呀，UI一般，经常还有报错。&lt;/p&gt;
 &lt;p&gt;&lt;a href=&#34;https://coroot.com/blog/engineering/using-ai-for-troubleshooting-openai-vs-deepseek/&#34;&gt;Using AI for Troubleshooting: OpenAI vs DeepSeek &lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;Kaniko 终于正式归档了，构建工具用哪一个呢？&lt;/p&gt;
+&lt;p&gt;Gemini Code Assist VSCode插件发布了，速度好慢。&lt;/p&gt;
 &lt;p&gt;GPUmanager 分析，已经不维护了，后续推荐https://github.com/Project-HAMi。&lt;/p&gt;
+&lt;p&gt;openrouter 还有一个free的模型。&lt;/p&gt;
+&lt;p&gt;都说ragflow的rag功能比dify要好，测试了一下。&lt;/p&gt;
 &lt;h2 id=&#34;生活&#34;&gt;生活&lt;/h2&gt;
 &lt;p&gt;腾讯云智面试&lt;/p&gt;
-&lt;p&gt;离线下载音乐？&lt;/p&gt;</description>
+&lt;p&gt;离线下载音乐，想听歌越来越难了&lt;/p&gt;
+&lt;p&gt;存款利率迈入“1”时代，&lt;/p&gt;</description>
     </item>
     <item>
-      <title>Text-to-SQL</title>
+      <title>Claude Code 内部工作原理窥探</title>
       <link>https://vsxen.github.io/posts/2025-06-15/</link>
       <pubDate>Sun, 15 Jun 2025 16:34:33 +0800</pubDate>
       <guid>https://vsxen.github.io/posts/2025-06-15/</guid>
@@ -164,14 +178,23 @@
 &lt;p&gt;&lt;a href=&#34;https://3d.hunyuan.tencent.com/&#34;&gt;浑元3D&lt;/a&gt;&lt;/p&gt;</description>
     </item>
     <item>
-      <title>2025 06 08</title>
+      <title>ChatDB和Text-to-SQL项目对比</title>
       <link>https://vsxen.github.io/posts/2025-06-08/</link>
       <pubDate>Sun, 08 Jun 2025 16:34:43 +0800</pubDate>
       <guid>https://vsxen.github.io/posts/2025-06-08/</guid>
-      <description>&lt;p&gt;codex/codex-rs  codex 用rust重写了，之前是用的nodejs&lt;/p&gt;
-&lt;p&gt;使用clickhouse作为后端存储的 open telemetry相关方案&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;https://www.cncf.io/blog/2025/05/08/the-kubernetes-surgeons-handbook-precision-recovery-from-etcd-snapshots/&#34;&gt;从etcd的数据文件导出yaml&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;https://github.com/google-gemini/gemini-fullstack-langgraph-quickstart&#34;&gt;https://github.com/google-gemini/gemini-fullstack-langgraph-quickstart&lt;/a&gt;&lt;/p&gt;</description>
+      <description>&lt;p&gt;codex 用rust重写了，之前是用的nodejs&lt;/p&gt;
+&lt;p&gt;使用clickhouse作为后端存储的 open telemetry相关方案，有空得对比一下，https://github.com/hyperdxio/hyperdx 。&lt;/p&gt;
+&lt;p&gt;[从etcd的数据文件导出原始数据](&lt;a href=&#34;https://www.cncf.io/blog/2025/05/08/the-kubernetes-surgeons-handbook-precision-recovery-from-etcd-snap&#34;&gt;https://www.cncf.io/blog/2025/05/08/the-kubernetes-surgeons-handbook-precision-recovery-from-etcd-snap&lt;/a&gt;
+shots/)，比如原始yaml。&lt;/p&gt;
+&lt;p&gt;看了下Cloudflare AI Gateway相关功能。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/bincooo/chatgpt-adapter/discussions/106&#34;&gt;从GUI中逆向出相关接口并转换为OPENAI格式&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Dataherald已经不维护了，vanna只是框架，需要二次开发。&lt;/p&gt;
+&lt;p&gt;使用 Gemini自建Deep research &lt;a href=&#34;https://github.com/google-gemini/gemini-fullstack-langgraph-quickstart&#34;&gt;https://github.com/google-gemini/gemini-fullstack-langgraph-quickstart&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;特斯拉表示，Dojo 是当前全球唯二现存的最大处理器之一。这种晶圆级芯片采用整片 300mm 晶圆制成，单芯片尺寸已达物理极限。&lt;/p&gt;
+&lt;p&gt;由于 Dojo 大芯片的超高复杂性，即使在制造过程中也难以 100% 检测缺陷晶粒，而静默数据错误的检测更困难。&lt;/p&gt;
+&lt;p&gt;虽然 SDC 在所有硬件上都难以避免，但 Dojo 处理器有着 8,850 个核心、18000A 电流及 15000W 的超高功耗，这会严重放大其影响，因此所有核心必须按设计运行，否则单个数据错误便可毁掉整个耗时数周才能完成 AI 训练成果。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://x.com/Tesla_AI/status/1930686196201714027&#34;&gt;https://x.com/Tesla_AI/status/1930686196201714027&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.servethehome.com/tesla-dojo-exa-scale-lossy-ai-network-using-the-tesla-transport-protocol-over-ethernet-ttpoe/&#34;&gt;https://www.servethehome.com/tesla-dojo-exa-scale-lossy-ai-network-using-the-tesla-transport-protocol-over-ethernet-ttpoe/&lt;/a&gt;&lt;/p&gt;</description>
     </item>
     <item>
       <title>Claude Code</title>
