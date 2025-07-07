@@ -25,9 +25,9 @@
     </item>
     <item>
       <title>Gemini Deep Research</title>
-      <link>https://vsxen.github.io/posts/2025-07-05/</link>
+      <link>https://vsxen.github.io/posts/2025-07-06/</link>
       <pubDate>Sat, 05 Jul 2025 15:45:23 +0800</pubDate>
-      <guid>https://vsxen.github.io/posts/2025-07-05/</guid>
+      <guid>https://vsxen.github.io/posts/2025-07-06/</guid>
       <description>&lt;p&gt;体验过chatgpt，豆包，Qwen，和Gemini的深度研究之后，个人感觉Gemini是最好的。
 首先会生成研究方向，搜索关键字，然后可能是通过tool call的方式抓取相关内容，生成的结果可以用来创建到Web Page（可交互），Infographic，Quiz和音频。&lt;/p&gt;
 &lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;../../images/deep-research.png&#34;&gt;&lt;/p&gt;
@@ -76,10 +76,10 @@
 &lt;li&gt;简化开发与调试工作&lt;/li&gt;
 &lt;li&gt;符合逻辑的 RESTful API 设计&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;腾讯云的云开发&lt;/p&gt;</description>
+&lt;p&gt;腾讯云的云开发，这配置有点高，128线程CPU，还是非NUMA结构：&lt;/p&gt;</description>
     </item>
     <item>
-      <title>Gemini-Cli</title>
+      <title>Artifact vs Canvas</title>
       <link>https://vsxen.github.io/posts/2025-06-29/</link>
       <pubDate>Sun, 29 Jun 2025 18:00:00 +0800</pubDate>
       <guid>https://vsxen.github.io/posts/2025-06-29/</guid>
@@ -105,6 +105,35 @@
 &lt;p&gt;那什么又是 Pythonic 呢？&lt;/p&gt;
 &lt;p&gt;cline 可以从Gemini cli中调用2.5 pro的接口的，后续又去掉了，哈哈。&lt;/p&gt;
 &lt;p&gt;&lt;a href=&#34;https://github.com/musistudio/claude-code-router&#34;&gt;https://github.com/musistudio/claude-code-router&lt;/a&gt; 想用claude code但是没有合适的购买途径，就可以用这个项目。&lt;/p&gt;
+&lt;h2 id=&#34;生活&#34;&gt;生活&lt;/h2&gt;
+&lt;p&gt;bilibili首页刷到了某豪车租赁的账号。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.bilibili.com/video/BV1R67GzsEQf/&#34;&gt;为啥AMD突然就把英特尔干趴了？&lt;/a&gt;Intel的股价快到历史新低了。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>如何离线下载音乐？</title>
+      <link>https://vsxen.github.io/posts/2025-06-22/</link>
+      <pubDate>Sun, 22 Jun 2025 15:54:51 +0800</pubDate>
+      <guid>https://vsxen.github.io/posts/2025-06-22/</guid>
+      <description>&lt;p&gt;DB-GPT 是真的一般呀，UI一般，经常还有报错。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://coroot.com/blog/engineering/using-ai-for-troubleshooting-openai-vs-deepseek/&#34;&gt;Using AI for Troubleshooting: OpenAI vs DeepSeek &lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Kaniko 终于正式归档了，构建工具用哪一个呢？&lt;/p&gt;
+&lt;p&gt;Gemini Code Assist VSCode插件发布了，速度好慢。&lt;/p&gt;
+&lt;p&gt;GPUmanager 分析，已经不维护了，后续推荐https://github.com/Project-HAMi。&lt;/p&gt;
+&lt;p&gt;openrouter 还有一个free的模型。&lt;/p&gt;
+&lt;p&gt;都说ragflow的rag功能比dify要好，测试了一下。&lt;/p&gt;
+&lt;h2 id=&#34;生活&#34;&gt;生活&lt;/h2&gt;
+&lt;p&gt;腾讯云智面试&lt;/p&gt;
+&lt;p&gt;离线下载音乐，想听歌越来越难了&lt;/p&gt;
+&lt;p&gt;存款利率迈入“1”时代，&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Apple Container</title>
+      <link>https://vsxen.github.io/posts/2025-06-15/</link>
+      <pubDate>Sun, 15 Jun 2025 16:34:33 +0800</pubDate>
+      <guid>https://vsxen.github.io/posts/2025-06-15/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;https://xxchan.me/ai/2025/05/06/claude-code.html&#34;&gt;Claude Code 内部工作原理窥探&lt;/a&gt;
+写的很不错，里面还有一篇关于LLM思考的文章。&lt;/p&gt;
+&lt;p&gt;引申出了另一个问题，Proxy和这种代理的对比：&lt;/p&gt;
 &lt;table&gt;
   &lt;thead&gt;
       &lt;tr&gt;
@@ -146,35 +175,11 @@
       &lt;/tr&gt;
   &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;h2 id=&#34;生活&#34;&gt;生活&lt;/h2&gt;
-&lt;p&gt;bilibili首页刷到了某豪车租赁的账号。&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>如何离线下载音乐？</title>
-      <link>https://vsxen.github.io/posts/2025-06-22/</link>
-      <pubDate>Sun, 22 Jun 2025 15:54:51 +0800</pubDate>
-      <guid>https://vsxen.github.io/posts/2025-06-22/</guid>
-      <description>&lt;p&gt;DB-GPT 是真的一般呀，UI一般，经常还有报错。&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;https://coroot.com/blog/engineering/using-ai-for-troubleshooting-openai-vs-deepseek/&#34;&gt;Using AI for Troubleshooting: OpenAI vs DeepSeek &lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Kaniko 终于正式归档了，构建工具用哪一个呢？&lt;/p&gt;
-&lt;p&gt;Gemini Code Assist VSCode插件发布了，速度好慢。&lt;/p&gt;
-&lt;p&gt;GPUmanager 分析，已经不维护了，后续推荐https://github.com/Project-HAMi。&lt;/p&gt;
-&lt;p&gt;openrouter 还有一个free的模型。&lt;/p&gt;
-&lt;p&gt;都说ragflow的rag功能比dify要好，测试了一下。&lt;/p&gt;
-&lt;h2 id=&#34;生活&#34;&gt;生活&lt;/h2&gt;
-&lt;p&gt;腾讯云智面试&lt;/p&gt;
-&lt;p&gt;离线下载音乐，想听歌越来越难了&lt;/p&gt;
-&lt;p&gt;存款利率迈入“1”时代，&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>Claude Code 内部工作原理窥探</title>
-      <link>https://vsxen.github.io/posts/2025-06-15/</link>
-      <pubDate>Sun, 15 Jun 2025 16:34:33 +0800</pubDate>
-      <guid>https://vsxen.github.io/posts/2025-06-15/</guid>
-      <description>&lt;p&gt;&lt;a href=&#34;https://xxchan.me/ai/2025/05/06/claude-code.html&#34;&gt;Claude Code 内部工作原理窥探&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;https://github.com/apple/container&#34;&gt;Apple Container&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;https://github.com/ChefKissInc/QEMUAppleSilicon&#34;&gt;text&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;这周是WWDC，发布了Apple Container，去年发布了 Hyper Framework，嗯macOS 开始成为最好的开发系统&lt;a href=&#34;https://github.com/apple/container&#34;&gt;Apple Container&lt;/a&gt;，看了下issue。还有MTU的问题。&lt;/p&gt;
+&lt;p&gt;iOS 26 &amp;amp; &lt;a href=&#34;https://blog.google/products/android/android-16/&#34;&gt;Android 16&lt;/a&gt;
+想整合多个vllm实例，搜索以后发现这个项目&lt;a href=&#34;https://github.com/BerriAI/litellm&#34;&gt;litellm&lt;/a&gt;。&lt;/p&gt;
 &lt;p&gt;试用了Trae&lt;/p&gt;
+&lt;p&gt;kube-proxy 的 nft 后端还是&lt;a href=&#34;https://github.com/kubernetes-sigs/knftables&#34;&gt;自己&lt;/a&gt;封装的？&lt;/p&gt;
 &lt;p&gt;&lt;a href=&#34;https://3d.hunyuan.tencent.com/&#34;&gt;浑元3D&lt;/a&gt;&lt;/p&gt;</description>
     </item>
     <item>
