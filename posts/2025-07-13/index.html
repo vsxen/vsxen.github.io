@@ -9,7 +9,11 @@
 <meta name="keywords" content="">
 <meta name="description" content="那么HBM内存究竟是什么，与现在主流的LPDDR5有何不同呢？事实上，HBM（High Bandwidth Memory，高带宽内存）是一种基于3D堆栈技术，通过TSV（硅通孔）和微凸块（ubump）工艺实现的多层DRAM芯片垂直堆叠。而DDR（Double Data Rate）则采用的是并行总线架构，常见于DIMM（双列直插式内存模块）形式。
 HBM的带宽究竟有多高呢？以最新的HBM3E为例，其传输速率达到了9.6GB/s，可提供1.2TB/s带宽。作为对比，LPDDR5X的带宽为8533Mbps（1066.6MB/s），也就是说HBM3E的带宽是LPDDR5X的1180倍。
-这里">
+这里
+目前只有kubelet支持动态修改log level。
+用于LLm的沙盒环境，没想到背后是依赖libkrun，containers组件下面的
+和集团那边沟通他们声称设计的推理集群最多只能支持32物理机节点，啊这有点不科学，天天都在听说什么万卡集群，这差的有点多吧。
+生产环境中的 LLM 推理， 这系列文章写的不错。">
 <meta name="author" content="Theme PaperMod">
 <link rel="canonical" href="https://vsxen.github.io/posts/2025-07-13/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.93f625d739f1d6a5c6f20c146bc6a8d26b233492b34b2220c54b12fd46a04ded.css" integrity="sha256-k/Yl1znx1qXG8gwUa8ao0msjNJKzSyIgxUsS/UagTe0=" rel="preload stylesheet" as="style">
@@ -62,7 +66,11 @@ HBM的带宽究竟有多高呢？以最新的HBM3E为例，其传输速率达到
   <meta property="og:title" content="2025 07 13">
   <meta property="og:description" content="那么HBM内存究竟是什么，与现在主流的LPDDR5有何不同呢？事实上，HBM（High Bandwidth Memory，高带宽内存）是一种基于3D堆栈技术，通过TSV（硅通孔）和微凸块（ubump）工艺实现的多层DRAM芯片垂直堆叠。而DDR（Double Data Rate）则采用的是并行总线架构，常见于DIMM（双列直插式内存模块）形式。
 HBM的带宽究竟有多高呢？以最新的HBM3E为例，其传输速率达到了9.6GB/s，可提供1.2TB/s带宽。作为对比，LPDDR5X的带宽为8533Mbps（1066.6MB/s），也就是说HBM3E的带宽是LPDDR5X的1180倍。
-这里">
+这里
+目前只有kubelet支持动态修改log level。
+用于LLm的沙盒环境，没想到背后是依赖libkrun，containers组件下面的
+和集团那边沟通他们声称设计的推理集群最多只能支持32物理机节点，啊这有点不科学，天天都在听说什么万卡集群，这差的有点多吧。
+生产环境中的 LLM 推理， 这系列文章写的不错。">
   <meta property="og:locale" content="zh">
   <meta property="og:type" content="article">
     <meta property="article:section" content="posts">
@@ -74,7 +82,11 @@ HBM的带宽究竟有多高呢？以最新的HBM3E为例，其传输速率达到
 <meta name="twitter:title" content="2025 07 13">
 <meta name="twitter:description" content="那么HBM内存究竟是什么，与现在主流的LPDDR5有何不同呢？事实上，HBM（High Bandwidth Memory，高带宽内存）是一种基于3D堆栈技术，通过TSV（硅通孔）和微凸块（ubump）工艺实现的多层DRAM芯片垂直堆叠。而DDR（Double Data Rate）则采用的是并行总线架构，常见于DIMM（双列直插式内存模块）形式。
 HBM的带宽究竟有多高呢？以最新的HBM3E为例，其传输速率达到了9.6GB/s，可提供1.2TB/s带宽。作为对比，LPDDR5X的带宽为8533Mbps（1066.6MB/s），也就是说HBM3E的带宽是LPDDR5X的1180倍。
-这里">
+这里
+目前只有kubelet支持动态修改log level。
+用于LLm的沙盒环境，没想到背后是依赖libkrun，containers组件下面的
+和集团那边沟通他们声称设计的推理集群最多只能支持32物理机节点，啊这有点不科学，天天都在听说什么万卡集群，这差的有点多吧。
+生产环境中的 LLM 推理， 这系列文章写的不错。">
 
 
 <script type="application/ld+json">
@@ -103,12 +115,12 @@ HBM的带宽究竟有多高呢？以最新的HBM3E为例，其传输速率达到
   "@type": "BlogPosting",
   "headline": "2025 07 13",
   "name": "2025 07 13",
-  "description": "那么HBM内存究竟是什么，与现在主流的LPDDR5有何不同呢？事实上，HBM（High Bandwidth Memory，高带宽内存）是一种基于3D堆栈技术，通过TSV（硅通孔）和微凸块（ubump）工艺实现的多层DRAM芯片垂直堆叠。而DDR（Double Data Rate）则采用的是并行总线架构，常见于DIMM（双列直插式内存模块）形式。\nHBM的带宽究竟有多高呢？以最新的HBM3E为例，其传输速率达到了9.6GB/s，可提供1.2TB/s带宽。作为对比，LPDDR5X的带宽为8533Mbps（1066.6MB/s），也就是说HBM3E的带宽是LPDDR5X的1180倍。\n这里\n",
+  "description": "那么HBM内存究竟是什么，与现在主流的LPDDR5有何不同呢？事实上，HBM（High Bandwidth Memory，高带宽内存）是一种基于3D堆栈技术，通过TSV（硅通孔）和微凸块（ubump）工艺实现的多层DRAM芯片垂直堆叠。而DDR（Double Data Rate）则采用的是并行总线架构，常见于DIMM（双列直插式内存模块）形式。\nHBM的带宽究竟有多高呢？以最新的HBM3E为例，其传输速率达到了9.6GB/s，可提供1.2TB/s带宽。作为对比，LPDDR5X的带宽为8533Mbps（1066.6MB/s），也就是说HBM3E的带宽是LPDDR5X的1180倍。\n这里\n目前只有kubelet支持动态修改log level。\n用于LLm的沙盒环境，没想到背后是依赖libkrun，containers组件下面的\n和集团那边沟通他们声称设计的推理集群最多只能支持32物理机节点，啊这有点不科学，天天都在听说什么万卡集群，这差的有点多吧。\n生产环境中的 LLM 推理， 这系列文章写的不错。\n",
   "keywords": [
     
   ],
-  "articleBody": "那么HBM内存究竟是什么，与现在主流的LPDDR5有何不同呢？事实上，HBM（High Bandwidth Memory，高带宽内存）是一种基于3D堆栈技术，通过TSV（硅通孔）和微凸块（ubump）工艺实现的多层DRAM芯片垂直堆叠。而DDR（Double Data Rate）则采用的是并行总线架构，常见于DIMM（双列直插式内存模块）形式。\nHBM的带宽究竟有多高呢？以最新的HBM3E为例，其传输速率达到了9.6GB/s，可提供1.2TB/s带宽。作为对比，LPDDR5X的带宽为8533Mbps（1066.6MB/s），也就是说HBM3E的带宽是LPDDR5X的1180倍。\n这里\n",
-  "wordCount" : "7",
+  "articleBody": "那么HBM内存究竟是什么，与现在主流的LPDDR5有何不同呢？事实上，HBM（High Bandwidth Memory，高带宽内存）是一种基于3D堆栈技术，通过TSV（硅通孔）和微凸块（ubump）工艺实现的多层DRAM芯片垂直堆叠。而DDR（Double Data Rate）则采用的是并行总线架构，常见于DIMM（双列直插式内存模块）形式。\nHBM的带宽究竟有多高呢？以最新的HBM3E为例，其传输速率达到了9.6GB/s，可提供1.2TB/s带宽。作为对比，LPDDR5X的带宽为8533Mbps（1066.6MB/s），也就是说HBM3E的带宽是LPDDR5X的1180倍。\n这里\n目前只有kubelet支持动态修改log level。\n用于LLm的沙盒环境，没想到背后是依赖libkrun，containers组件下面的\n和集团那边沟通他们声称设计的推理集群最多只能支持32物理机节点，啊这有点不科学，天天都在听说什么万卡集群，这差的有点多吧。\n生产环境中的 LLM 推理， 这系列文章写的不错。\n",
+  "wordCount" : "15",
   "inLanguage": "zh",
   "image": "https://vsxen.github.io/images/papermod-cover.png","datePublished": "2025-07-07T21:54:52+08:00",
   "dateModified": "2025-07-07T21:54:52+08:00",
@@ -207,6 +219,10 @@ HBM的带宽究竟有多高呢？以最新的HBM3E为例，其传输速率达到
   <div class="post-content"><p>那么HBM内存究竟是什么，与现在主流的LPDDR5有何不同呢？事实上，HBM（High Bandwidth Memory，高带宽内存）是一种基于3D堆栈技术，通过TSV（硅通孔）和微凸块（ubump）工艺实现的多层DRAM芯片垂直堆叠。而DDR（Double Data Rate）则采用的是并行总线架构，常见于DIMM（双列直插式内存模块）形式。</p>
 <p>HBM的带宽究竟有多高呢？以最新的HBM3E为例，其传输速率达到了9.6GB/s，可提供1.2TB/s带宽。作为对比，LPDDR5X的带宽为8533Mbps（1066.6MB/s），也就是说HBM3E的带宽是LPDDR5X的1180倍。</p>
 <p><a href="https://36kr.com/p/3365872192243719">这里</a></p>
+<p>目前只有kubelet支持动态修改log level。</p>
+<p><a href="https://github.com/microsandbox/microsandbox/">用于LLm的沙盒环境</a>，没想到背后是依赖libkrun，<a href="http://github.com/containers">containers</a>组件下面的</p>
+<p>和集团那边沟通他们声称设计的推理集群最多只能支持32物理机节点，啊这有点不科学，天天都在听说什么万卡集群，这差的有点多吧。</p>
+<p><a href="https://bentoml.com/llm/inference-optimization/data-tensor-pipeline-expert-hybrid-parallelism">生产环境中的 LLM 推理</a>， 这系列文章写的不错。</p>
 
 
   </div>
