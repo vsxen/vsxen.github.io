@@ -21,8 +21,14 @@
       <guid>https://vsxen.github.io/posts/2025-07-20/</guid>
       <description>&lt;p&gt;Kimi K2 是一款具备更强代码能力、更擅长通用 Agent 任务的 MoE 架构基础模型，总参数 1T，激活参数 32B。&lt;/p&gt;
 &lt;p&gt;在 SWE Bench Verified、Tau2、AceBench 等基准性能测试中，Kimi K2 均取得开源模型中的 SOTA 成绩，展现出在代码、Agent、数学推理任务上的领先能力。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.zhihu.com/question/1927140506573435010&#34;&gt;知乎提问&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;在openrouter看到了groq，瞄了一下他们居然有自己的GPU。&lt;/p&gt;
+&lt;p&gt;不过最近，GPU 的地位也在经受挑战：一家名为 Groq 的初创公司开发出了一种新的 AI 处理器 ——LPU（Language Processing Unit），其推理速度相较于英伟达 GPU 提高了 10 倍，成本却降低到十分之一。贾扬清在推特上算了一笔账，因为Groq小的可怜的内存容量（230MB），在运行Llama-2 70b模型时，需要305张Groq卡才足够，而用H100则只需要8张卡。从目前的价格来看，这意味着在同等吞吐量下，Groq的硬件成本是H100的40倍，能耗成本是10倍。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/ml-explore/mlx/pull/1983&#34;&gt;Apple CPU的推理框架要支持CUDA了&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;a href=&#34;https://aws.amazon.com/cn/blogs/containers/under-the-hood-amazon-eks-ultra-scale-clusters/&#34;&gt;EKS 100k node&lt;/a&gt;，之前k8s官方说最大5k节点，openai说他们有10k节点，这篇文的写的不错，都是之前遇到的问题。&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;https://ahmet.im/blog/kubernetes-list-performance/&#34;&gt;和上文对应，介绍如何保障APIserver的稳定&lt;/a&gt;&lt;/p&gt;</description>
+&lt;p&gt;&lt;a href=&#34;https://ahmet.im/blog/kubernetes-list-performance/&#34;&gt;和上文对应，介绍如何保障APIserver的稳定&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;opencode 好像火起来了，golang加ts写的。&lt;/p&gt;
+&lt;p&gt;NFD 还可以探测操作系统的相关配置。&lt;/p&gt;</description>
     </item>
     <item>
       <title>故地重游与观海</title>
@@ -33,10 +39,12 @@
 &lt;p&gt;HBM的带宽究竟有多高呢？以最新的HBM3E为例，其传输速率达到了9.6GB/s，可提供1.2TB/s带宽。作为对比，LPDDR5X的带宽为8533Mbps（1066.6MB/s），也就是说HBM3E的带宽是LPDDR5X的1180倍。&lt;/p&gt;
 &lt;p&gt;&lt;a href=&#34;https://36kr.com/p/3365872192243719&#34;&gt;这里&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;目前只有kubelet支持动态修改log level。&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;https://github.com/microsandbox/microsandbox/&#34;&gt;用于LLM的沙盒环境&lt;/a&gt;，没想到背后是依赖libkrun，&lt;a href=&#34;http://github.com/containers&#34;&gt;containers&lt;/a&gt;组件下面的&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/microsandbox/microsandbox/&#34;&gt;用于LLM的沙盒环境&lt;/a&gt;，没想到背后是依赖libkrun，&lt;a href=&#34;http://github.com/containers&#34;&gt;containers&lt;/a&gt;组件下面的，后来看下了&lt;a href=&#34;https://developers.redhat.com/articles/2025/07/02/supercharging-ai-isolation-microvms-ramalama-libkrun#current_limitations_and_future_directions__gpu_enablement&#34;&gt;RedHat&lt;/a&gt;也有相关介绍。&lt;/p&gt;
 &lt;p&gt;和集团那边沟通他们声称设计的推理集群最多只能支持32物理机节点，啊这有点不科学，天天都在听说什么万卡集群，这差的有点多吧。&lt;/p&gt;
+&lt;p&gt;液冷服务器&lt;/p&gt;
 &lt;p&gt;&lt;a href=&#34;https://bentoml.com/llm/inference-optimization/data-tensor-pipeline-expert-hybrid-parallelism&#34;&gt;生产环境中的 LLM 推理&lt;/a&gt;， 这系列文章写的不错。&lt;/p&gt;
 &lt;p&gt;试用了下perplexity，感觉一般，没有很惊讶。&lt;/p&gt;
+&lt;p&gt;GORK 4 发布了。&lt;/p&gt;
 &lt;h2 id=&#34;生活&#34;&gt;生活&lt;/h2&gt;
 &lt;p&gt;已经提了离职，周五晚上到下周一去了趟青岛。&lt;/p&gt;</description>
     </item>

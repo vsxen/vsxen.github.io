@@ -11,10 +11,12 @@
 HBM的带宽究竟有多高呢？以最新的HBM3E为例，其传输速率达到了9.6GB/s，可提供1.2TB/s带宽。作为对比，LPDDR5X的带宽为8533Mbps（1066.6MB/s），也就是说HBM3E的带宽是LPDDR5X的1180倍。
 这里
 目前只有kubelet支持动态修改log level。
-用于LLM的沙盒环境，没想到背后是依赖libkrun，containers组件下面的
+用于LLM的沙盒环境，没想到背后是依赖libkrun，containers组件下面的，后来看下了RedHat也有相关介绍。
 和集团那边沟通他们声称设计的推理集群最多只能支持32物理机节点，啊这有点不科学，天天都在听说什么万卡集群，这差的有点多吧。
+液冷服务器
 生产环境中的 LLM 推理， 这系列文章写的不错。
 试用了下perplexity，感觉一般，没有很惊讶。
+GORK 4 发布了。
 生活
 已经提了离职，周五晚上到下周一去了趟青岛。">
 <meta name="author" content="Theme PaperMod">
@@ -71,10 +73,12 @@ HBM的带宽究竟有多高呢？以最新的HBM3E为例，其传输速率达到
 HBM的带宽究竟有多高呢？以最新的HBM3E为例，其传输速率达到了9.6GB/s，可提供1.2TB/s带宽。作为对比，LPDDR5X的带宽为8533Mbps（1066.6MB/s），也就是说HBM3E的带宽是LPDDR5X的1180倍。
 这里
 目前只有kubelet支持动态修改log level。
-用于LLM的沙盒环境，没想到背后是依赖libkrun，containers组件下面的
+用于LLM的沙盒环境，没想到背后是依赖libkrun，containers组件下面的，后来看下了RedHat也有相关介绍。
 和集团那边沟通他们声称设计的推理集群最多只能支持32物理机节点，啊这有点不科学，天天都在听说什么万卡集群，这差的有点多吧。
+液冷服务器
 生产环境中的 LLM 推理， 这系列文章写的不错。
 试用了下perplexity，感觉一般，没有很惊讶。
+GORK 4 发布了。
 生活 已经提了离职，周五晚上到下周一去了趟青岛。">
   <meta property="og:locale" content="zh">
   <meta property="og:type" content="article">
@@ -89,10 +93,12 @@ HBM的带宽究竟有多高呢？以最新的HBM3E为例，其传输速率达到
 HBM的带宽究竟有多高呢？以最新的HBM3E为例，其传输速率达到了9.6GB/s，可提供1.2TB/s带宽。作为对比，LPDDR5X的带宽为8533Mbps（1066.6MB/s），也就是说HBM3E的带宽是LPDDR5X的1180倍。
 这里
 目前只有kubelet支持动态修改log level。
-用于LLM的沙盒环境，没想到背后是依赖libkrun，containers组件下面的
+用于LLM的沙盒环境，没想到背后是依赖libkrun，containers组件下面的，后来看下了RedHat也有相关介绍。
 和集团那边沟通他们声称设计的推理集群最多只能支持32物理机节点，啊这有点不科学，天天都在听说什么万卡集群，这差的有点多吧。
+液冷服务器
 生产环境中的 LLM 推理， 这系列文章写的不错。
 试用了下perplexity，感觉一般，没有很惊讶。
+GORK 4 发布了。
 生活
 已经提了离职，周五晚上到下周一去了趟青岛。">
 
@@ -123,12 +129,12 @@ HBM的带宽究竟有多高呢？以最新的HBM3E为例，其传输速率达到
   "@type": "BlogPosting",
   "headline": "故地重游与观海",
   "name": "故地重游与观海",
-  "description": "那么HBM内存究竟是什么，与现在主流的LPDDR5有何不同呢？事实上，HBM（High Bandwidth Memory，高带宽内存）是一种基于3D堆栈技术，通过TSV（硅通孔）和微凸块（ubump）工艺实现的多层DRAM芯片垂直堆叠。而DDR（Double Data Rate）则采用的是并行总线架构，常见于DIMM（双列直插式内存模块）形式。\nHBM的带宽究竟有多高呢？以最新的HBM3E为例，其传输速率达到了9.6GB/s，可提供1.2TB/s带宽。作为对比，LPDDR5X的带宽为8533Mbps（1066.6MB/s），也就是说HBM3E的带宽是LPDDR5X的1180倍。\n这里\n目前只有kubelet支持动态修改log level。\n用于LLM的沙盒环境，没想到背后是依赖libkrun，containers组件下面的\n和集团那边沟通他们声称设计的推理集群最多只能支持32物理机节点，啊这有点不科学，天天都在听说什么万卡集群，这差的有点多吧。\n生产环境中的 LLM 推理， 这系列文章写的不错。\n试用了下perplexity，感觉一般，没有很惊讶。\n生活 已经提了离职，周五晚上到下周一去了趟青岛。\n",
+  "description": "那么HBM内存究竟是什么，与现在主流的LPDDR5有何不同呢？事实上，HBM（High Bandwidth Memory，高带宽内存）是一种基于3D堆栈技术，通过TSV（硅通孔）和微凸块（ubump）工艺实现的多层DRAM芯片垂直堆叠。而DDR（Double Data Rate）则采用的是并行总线架构，常见于DIMM（双列直插式内存模块）形式。\nHBM的带宽究竟有多高呢？以最新的HBM3E为例，其传输速率达到了9.6GB/s，可提供1.2TB/s带宽。作为对比，LPDDR5X的带宽为8533Mbps（1066.6MB/s），也就是说HBM3E的带宽是LPDDR5X的1180倍。\n这里\n目前只有kubelet支持动态修改log level。\n用于LLM的沙盒环境，没想到背后是依赖libkrun，containers组件下面的，后来看下了RedHat也有相关介绍。\n和集团那边沟通他们声称设计的推理集群最多只能支持32物理机节点，啊这有点不科学，天天都在听说什么万卡集群，这差的有点多吧。\n液冷服务器\n生产环境中的 LLM 推理， 这系列文章写的不错。\n试用了下perplexity，感觉一般，没有很惊讶。\nGORK 4 发布了。\n生活 已经提了离职，周五晚上到下周一去了趟青岛。\n",
   "keywords": [
     
   ],
-  "articleBody": "那么HBM内存究竟是什么，与现在主流的LPDDR5有何不同呢？事实上，HBM（High Bandwidth Memory，高带宽内存）是一种基于3D堆栈技术，通过TSV（硅通孔）和微凸块（ubump）工艺实现的多层DRAM芯片垂直堆叠。而DDR（Double Data Rate）则采用的是并行总线架构，常见于DIMM（双列直插式内存模块）形式。\nHBM的带宽究竟有多高呢？以最新的HBM3E为例，其传输速率达到了9.6GB/s，可提供1.2TB/s带宽。作为对比，LPDDR5X的带宽为8533Mbps（1066.6MB/s），也就是说HBM3E的带宽是LPDDR5X的1180倍。\n这里\n目前只有kubelet支持动态修改log level。\n用于LLM的沙盒环境，没想到背后是依赖libkrun，containers组件下面的\n和集团那边沟通他们声称设计的推理集群最多只能支持32物理机节点，啊这有点不科学，天天都在听说什么万卡集群，这差的有点多吧。\n生产环境中的 LLM 推理， 这系列文章写的不错。\n试用了下perplexity，感觉一般，没有很惊讶。\n生活 已经提了离职，周五晚上到下周一去了趟青岛。\n",
-  "wordCount" : "18",
+  "articleBody": "那么HBM内存究竟是什么，与现在主流的LPDDR5有何不同呢？事实上，HBM（High Bandwidth Memory，高带宽内存）是一种基于3D堆栈技术，通过TSV（硅通孔）和微凸块（ubump）工艺实现的多层DRAM芯片垂直堆叠。而DDR（Double Data Rate）则采用的是并行总线架构，常见于DIMM（双列直插式内存模块）形式。\nHBM的带宽究竟有多高呢？以最新的HBM3E为例，其传输速率达到了9.6GB/s，可提供1.2TB/s带宽。作为对比，LPDDR5X的带宽为8533Mbps（1066.6MB/s），也就是说HBM3E的带宽是LPDDR5X的1180倍。\n这里\n目前只有kubelet支持动态修改log level。\n用于LLM的沙盒环境，没想到背后是依赖libkrun，containers组件下面的，后来看下了RedHat也有相关介绍。\n和集团那边沟通他们声称设计的推理集群最多只能支持32物理机节点，啊这有点不科学，天天都在听说什么万卡集群，这差的有点多吧。\n液冷服务器\n生产环境中的 LLM 推理， 这系列文章写的不错。\n试用了下perplexity，感觉一般，没有很惊讶。\nGORK 4 发布了。\n生活 已经提了离职，周五晚上到下周一去了趟青岛。\n",
+  "wordCount" : "22",
   "inLanguage": "zh",
   "image": "https://vsxen.github.io/images/papermod-cover.png","datePublished": "2025-07-07T21:54:52+08:00",
   "dateModified": "2025-07-07T21:54:52+08:00",
@@ -241,10 +247,12 @@ HBM的带宽究竟有多高呢？以最新的HBM3E为例，其传输速率达到
 <p>HBM的带宽究竟有多高呢？以最新的HBM3E为例，其传输速率达到了9.6GB/s，可提供1.2TB/s带宽。作为对比，LPDDR5X的带宽为8533Mbps（1066.6MB/s），也就是说HBM3E的带宽是LPDDR5X的1180倍。</p>
 <p><a href="https://36kr.com/p/3365872192243719">这里</a></p>
 <p>目前只有kubelet支持动态修改log level。</p>
-<p><a href="https://github.com/microsandbox/microsandbox/">用于LLM的沙盒环境</a>，没想到背后是依赖libkrun，<a href="http://github.com/containers">containers</a>组件下面的</p>
+<p><a href="https://github.com/microsandbox/microsandbox/">用于LLM的沙盒环境</a>，没想到背后是依赖libkrun，<a href="http://github.com/containers">containers</a>组件下面的，后来看下了<a href="https://developers.redhat.com/articles/2025/07/02/supercharging-ai-isolation-microvms-ramalama-libkrun#current_limitations_and_future_directions__gpu_enablement">RedHat</a>也有相关介绍。</p>
 <p>和集团那边沟通他们声称设计的推理集群最多只能支持32物理机节点，啊这有点不科学，天天都在听说什么万卡集群，这差的有点多吧。</p>
+<p>液冷服务器</p>
 <p><a href="https://bentoml.com/llm/inference-optimization/data-tensor-pipeline-expert-hybrid-parallelism">生产环境中的 LLM 推理</a>， 这系列文章写的不错。</p>
 <p>试用了下perplexity，感觉一般，没有很惊讶。</p>
+<p>GORK 4 发布了。</p>
 <h2 id="生活">生活<a hidden class="anchor" aria-hidden="true" href="#生活">#</a></h2>
 <p>已经提了离职，周五晚上到下周一去了趟青岛。</p>
 

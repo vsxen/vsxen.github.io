@@ -9,8 +9,14 @@
 <meta name="keywords" content="">
 <meta name="description" content="Kimi K2 是一款具备更强代码能力、更擅长通用 Agent 任务的 MoE 架构基础模型，总参数 1T，激活参数 32B。
 在 SWE Bench Verified、Tau2、AceBench 等基准性能测试中，Kimi K2 均取得开源模型中的 SOTA 成绩，展现出在代码、Agent、数学推理任务上的领先能力。
+知乎提问
+在openrouter看到了groq，瞄了一下他们居然有自己的GPU。
+不过最近，GPU 的地位也在经受挑战：一家名为 Groq 的初创公司开发出了一种新的 AI 处理器 ——LPU（Language Processing Unit），其推理速度相较于英伟达 GPU 提高了 10 倍，成本却降低到十分之一。贾扬清在推特上算了一笔账，因为Groq小的可怜的内存容量（230MB），在运行Llama-2 70b模型时，需要305张Groq卡才足够，而用H100则只需要8张卡。从目前的价格来看，这意味着在同等吞吐量下，Groq的硬件成本是H100的40倍，能耗成本是10倍。
+Apple CPU的推理框架要支持CUDA了
 EKS 100k node，之前k8s官方说最大5k节点，openai说他们有10k节点，这篇文的写的不错，都是之前遇到的问题。
-和上文对应，介绍如何保障APIserver的稳定">
+和上文对应，介绍如何保障APIserver的稳定
+opencode 好像火起来了，golang加ts写的。
+NFD 还可以探测操作系统的相关配置。">
 <meta name="author" content="Theme PaperMod">
 <link rel="canonical" href="https://vsxen.github.io/posts/2025-07-20/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.93f625d739f1d6a5c6f20c146bc6a8d26b233492b34b2220c54b12fd46a04ded.css" integrity="sha256-k/Yl1znx1qXG8gwUa8ao0msjNJKzSyIgxUsS/UagTe0=" rel="preload stylesheet" as="style">
@@ -63,8 +69,14 @@ EKS 100k node，之前k8s官方说最大5k节点，openai说他们有10k节点�
   <meta property="og:title" content="kimi k2 发布">
   <meta property="og:description" content="Kimi K2 是一款具备更强代码能力、更擅长通用 Agent 任务的 MoE 架构基础模型，总参数 1T，激活参数 32B。
 在 SWE Bench Verified、Tau2、AceBench 等基准性能测试中，Kimi K2 均取得开源模型中的 SOTA 成绩，展现出在代码、Agent、数学推理任务上的领先能力。
+知乎提问
+在openrouter看到了groq，瞄了一下他们居然有自己的GPU。
+不过最近，GPU 的地位也在经受挑战：一家名为 Groq 的初创公司开发出了一种新的 AI 处理器 ——LPU（Language Processing Unit），其推理速度相较于英伟达 GPU 提高了 10 倍，成本却降低到十分之一。贾扬清在推特上算了一笔账，因为Groq小的可怜的内存容量（230MB），在运行Llama-2 70b模型时，需要305张Groq卡才足够，而用H100则只需要8张卡。从目前的价格来看，这意味着在同等吞吐量下，Groq的硬件成本是H100的40倍，能耗成本是10倍。
+Apple CPU的推理框架要支持CUDA了
 EKS 100k node，之前k8s官方说最大5k节点，openai说他们有10k节点，这篇文的写的不错，都是之前遇到的问题。
-和上文对应，介绍如何保障APIserver的稳定">
+和上文对应，介绍如何保障APIserver的稳定
+opencode 好像火起来了，golang加ts写的。
+NFD 还可以探测操作系统的相关配置。">
   <meta property="og:locale" content="zh">
   <meta property="og:type" content="article">
     <meta property="article:section" content="posts">
@@ -76,8 +88,14 @@ EKS 100k node，之前k8s官方说最大5k节点，openai说他们有10k节点�
 <meta name="twitter:title" content="kimi k2 发布">
 <meta name="twitter:description" content="Kimi K2 是一款具备更强代码能力、更擅长通用 Agent 任务的 MoE 架构基础模型，总参数 1T，激活参数 32B。
 在 SWE Bench Verified、Tau2、AceBench 等基准性能测试中，Kimi K2 均取得开源模型中的 SOTA 成绩，展现出在代码、Agent、数学推理任务上的领先能力。
+知乎提问
+在openrouter看到了groq，瞄了一下他们居然有自己的GPU。
+不过最近，GPU 的地位也在经受挑战：一家名为 Groq 的初创公司开发出了一种新的 AI 处理器 ——LPU（Language Processing Unit），其推理速度相较于英伟达 GPU 提高了 10 倍，成本却降低到十分之一。贾扬清在推特上算了一笔账，因为Groq小的可怜的内存容量（230MB），在运行Llama-2 70b模型时，需要305张Groq卡才足够，而用H100则只需要8张卡。从目前的价格来看，这意味着在同等吞吐量下，Groq的硬件成本是H100的40倍，能耗成本是10倍。
+Apple CPU的推理框架要支持CUDA了
 EKS 100k node，之前k8s官方说最大5k节点，openai说他们有10k节点，这篇文的写的不错，都是之前遇到的问题。
-和上文对应，介绍如何保障APIserver的稳定">
+和上文对应，介绍如何保障APIserver的稳定
+opencode 好像火起来了，golang加ts写的。
+NFD 还可以探测操作系统的相关配置。">
 
 
 <script type="application/ld+json">
@@ -106,12 +124,12 @@ EKS 100k node，之前k8s官方说最大5k节点，openai说他们有10k节点�
   "@type": "BlogPosting",
   "headline": "kimi k2 发布",
   "name": "kimi k2 发布",
-  "description": "Kimi K2 是一款具备更强代码能力、更擅长通用 Agent 任务的 MoE 架构基础模型，总参数 1T，激活参数 32B。\n在 SWE Bench Verified、Tau2、AceBench 等基准性能测试中，Kimi K2 均取得开源模型中的 SOTA 成绩，展现出在代码、Agent、数学推理任务上的领先能力。\nEKS 100k node，之前k8s官方说最大5k节点，openai说他们有10k节点，这篇文的写的不错，都是之前遇到的问题。\n和上文对应，介绍如何保障APIserver的稳定\n",
+  "description": "Kimi K2 是一款具备更强代码能力、更擅长通用 Agent 任务的 MoE 架构基础模型，总参数 1T，激活参数 32B。\n在 SWE Bench Verified、Tau2、AceBench 等基准性能测试中，Kimi K2 均取得开源模型中的 SOTA 成绩，展现出在代码、Agent、数学推理任务上的领先能力。\n知乎提问\n在openrouter看到了groq，瞄了一下他们居然有自己的GPU。\n不过最近，GPU 的地位也在经受挑战：一家名为 Groq 的初创公司开发出了一种新的 AI 处理器 ——LPU（Language Processing Unit），其推理速度相较于英伟达 GPU 提高了 10 倍，成本却降低到十分之一。贾扬清在推特上算了一笔账，因为Groq小的可怜的内存容量（230MB），在运行Llama-2 70b模型时，需要305张Groq卡才足够，而用H100则只需要8张卡。从目前的价格来看，这意味着在同等吞吐量下，Groq的硬件成本是H100的40倍，能耗成本是10倍。\nApple CPU的推理框架要支持CUDA了\nEKS 100k node，之前k8s官方说最大5k节点，openai说他们有10k节点，这篇文的写的不错，都是之前遇到的问题。\n和上文对应，介绍如何保障APIserver的稳定\nopencode 好像火起来了，golang加ts写的。\nNFD 还可以探测操作系统的相关配置。\n",
   "keywords": [
     
   ],
-  "articleBody": "Kimi K2 是一款具备更强代码能力、更擅长通用 Agent 任务的 MoE 架构基础模型，总参数 1T，激活参数 32B。\n在 SWE Bench Verified、Tau2、AceBench 等基准性能测试中，Kimi K2 均取得开源模型中的 SOTA 成绩，展现出在代码、Agent、数学推理任务上的领先能力。\nEKS 100k node，之前k8s官方说最大5k节点，openai说他们有10k节点，这篇文的写的不错，都是之前遇到的问题。\n和上文对应，介绍如何保障APIserver的稳定\n",
-  "wordCount" : "22",
+  "articleBody": "Kimi K2 是一款具备更强代码能力、更擅长通用 Agent 任务的 MoE 架构基础模型，总参数 1T，激活参数 32B。\n在 SWE Bench Verified、Tau2、AceBench 等基准性能测试中，Kimi K2 均取得开源模型中的 SOTA 成绩，展现出在代码、Agent、数学推理任务上的领先能力。\n知乎提问\n在openrouter看到了groq，瞄了一下他们居然有自己的GPU。\n不过最近，GPU 的地位也在经受挑战：一家名为 Groq 的初创公司开发出了一种新的 AI 处理器 ——LPU（Language Processing Unit），其推理速度相较于英伟达 GPU 提高了 10 倍，成本却降低到十分之一。贾扬清在推特上算了一笔账，因为Groq小的可怜的内存容量（230MB），在运行Llama-2 70b模型时，需要305张Groq卡才足够，而用H100则只需要8张卡。从目前的价格来看，这意味着在同等吞吐量下，Groq的硬件成本是H100的40倍，能耗成本是10倍。\nApple CPU的推理框架要支持CUDA了\nEKS 100k node，之前k8s官方说最大5k节点，openai说他们有10k节点，这篇文的写的不错，都是之前遇到的问题。\n和上文对应，介绍如何保障APIserver的稳定\nopencode 好像火起来了，golang加ts写的。\nNFD 还可以探测操作系统的相关配置。\n",
+  "wordCount" : "44",
   "inLanguage": "zh",
   "image": "https://vsxen.github.io/images/papermod-cover.png","datePublished": "2025-07-16T15:08:22+08:00",
   "dateModified": "2025-07-16T15:08:22+08:00",
@@ -209,8 +227,14 @@ EKS 100k node，之前k8s官方说最大5k节点，openai说他们有10k节点�
 
   <div class="post-content"><p>Kimi K2 是一款具备更强代码能力、更擅长通用 Agent 任务的 MoE 架构基础模型，总参数 1T，激活参数 32B。</p>
 <p>在 SWE Bench Verified、Tau2、AceBench 等基准性能测试中，Kimi K2 均取得开源模型中的 SOTA 成绩，展现出在代码、Agent、数学推理任务上的领先能力。</p>
+<p><a href="https://www.zhihu.com/question/1927140506573435010">知乎提问</a></p>
+<p>在openrouter看到了groq，瞄了一下他们居然有自己的GPU。</p>
+<p>不过最近，GPU 的地位也在经受挑战：一家名为 Groq 的初创公司开发出了一种新的 AI 处理器 ——LPU（Language Processing Unit），其推理速度相较于英伟达 GPU 提高了 10 倍，成本却降低到十分之一。贾扬清在推特上算了一笔账，因为Groq小的可怜的内存容量（230MB），在运行Llama-2 70b模型时，需要305张Groq卡才足够，而用H100则只需要8张卡。从目前的价格来看，这意味着在同等吞吐量下，Groq的硬件成本是H100的40倍，能耗成本是10倍。</p>
+<p><a href="https://github.com/ml-explore/mlx/pull/1983">Apple CPU的推理框架要支持CUDA了</a></p>
 <p><a href="https://aws.amazon.com/cn/blogs/containers/under-the-hood-amazon-eks-ultra-scale-clusters/">EKS 100k node</a>，之前k8s官方说最大5k节点，openai说他们有10k节点，这篇文的写的不错，都是之前遇到的问题。</p>
 <p><a href="https://ahmet.im/blog/kubernetes-list-performance/">和上文对应，介绍如何保障APIserver的稳定</a></p>
+<p>opencode 好像火起来了，golang加ts写的。</p>
+<p>NFD 还可以探测操作系统的相关配置。</p>
 
 
   </div>
