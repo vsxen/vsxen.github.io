@@ -12,8 +12,15 @@
     <generator>Hugo -- 0.148.1</generator>
     <language>zh</language>
     <copyright>PaperMod Contributors</copyright>
-    <lastBuildDate>Wed, 16 Jul 2025 15:08:22 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 22 Jul 2025 20:46:15 +0800</lastBuildDate>
     <atom:link href="https://vsxen.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>CUDA 将支持RISC-V</title>
+      <link>https://vsxen.github.io/posts/2025-07-27/</link>
+      <pubDate>Tue, 22 Jul 2025 20:46:15 +0800</pubDate>
+      <guid>https://vsxen.github.io/posts/2025-07-27/</guid>
+      <description>&lt;p&gt;近日举办的2025 RISC-V中国峰会上，NVIDIA硬件工程副总裁Frans Sijstermans宣布，CUDA软件平台将支持RISC-V指令集架构处理器，为开源架构RISC-V开启进入数据中心与AI市场的大门。&lt;/p&gt;</description>
+    </item>
     <item>
       <title>kimi k2 发布</title>
       <link>https://vsxen.github.io/posts/2025-07-20/</link>
@@ -28,7 +35,8 @@
 &lt;p&gt;&lt;a href=&#34;https://aws.amazon.com/cn/blogs/containers/under-the-hood-amazon-eks-ultra-scale-clusters/&#34;&gt;EKS 100k node&lt;/a&gt;，之前k8s官方说最大5k节点，openai说他们有10k节点，这篇文的写的不错，都是之前遇到的问题。&lt;/p&gt;
 &lt;p&gt;&lt;a href=&#34;https://ahmet.im/blog/kubernetes-list-performance/&#34;&gt;和上文对应，介绍如何保障APIserver的稳定&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;opencode 好像火起来了，golang加ts写的。&lt;/p&gt;
-&lt;p&gt;NFD 还可以探测操作系统的相关配置。&lt;/p&gt;</description>
+&lt;p&gt;NFD 还可以探测操作系统的相关配置。&lt;/p&gt;
+&lt;p&gt;谷歌DeepMind最近从OpenAI的潜在收购目标中挖走了Windsurf公司的核心团队，进一步增强了谷歌的AI技术实力，背后离不开戴密斯·哈萨比斯的操盘。&lt;/p&gt;</description>
     </item>
     <item>
       <title>故地重游与观海</title>
@@ -46,7 +54,8 @@
 &lt;p&gt;试用了下perplexity，感觉一般，没有很惊讶。&lt;/p&gt;
 &lt;p&gt;GORK 4 发布了。&lt;/p&gt;
 &lt;h2 id=&#34;生活&#34;&gt;生活&lt;/h2&gt;
-&lt;p&gt;已经提了离职，周五晚上到下周一去了趟青岛。&lt;/p&gt;</description>
+&lt;p&gt;已经提了离职，周五晚上到下周一去了趟青岛。&lt;/p&gt;
+&lt;p&gt;电力如何调度的？这几天新闻说用电量一直达到历史新高。&lt;/p&gt;</description>
     </item>
     <item>
       <title>Gemini Deep Research</title>
