@@ -9,17 +9,74 @@
       <url>https://vsxen.github.io/images/papermod-cover.png</url>
       <link>https://vsxen.github.io/images/papermod-cover.png</link>
     </image>
-    <generator>Hugo -- 0.148.1</generator>
+    <generator>Hugo -- 0.148.2</generator>
     <language>zh</language>
     <copyright>PaperMod Contributors</copyright>
-    <lastBuildDate>Tue, 22 Jul 2025 20:46:15 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 29 Jul 2025 10:27:29 +0800</lastBuildDate>
     <atom:link href="https://vsxen.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>2025 08 03</title>
+      <link>https://vsxen.github.io/posts/2025-08-03/</link>
+      <pubDate>Tue, 29 Jul 2025 10:27:29 +0800</pubDate>
+      <guid>https://vsxen.github.io/posts/2025-08-03/</guid>
+      <description>&lt;p&gt;新公司的网络居然可以直连谷歌，香港的出口IP，Zenlayer的线路哈哈，而且还能直接用Gemini神奇。&lt;/p&gt;
+&lt;p&gt;发现git默认生成的密钥对改成了ed25519，问了下AI如下：&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;ssh-keygen&lt;/code&gt; 是一个非常实用的命令行工具，用于生成 &lt;strong&gt;SSH (Secure Shell)&lt;/strong&gt; 协议使用的密钥对。这个密钥对通常由一个&lt;strong&gt;私钥&lt;/strong&gt;和一个&lt;strong&gt;公钥&lt;/strong&gt;组成。它们是 SSH 安全通信的基石，允许用户在不传输密码的情况下安全地认证到远程服务器。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;密钥对的核心概念&#34;&gt;密钥对的核心概念&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;公钥 (Public Key)：&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;这是您可以&lt;strong&gt;安全地共享&lt;/strong&gt;给任何人的部分。&lt;/li&gt;
+&lt;li&gt;您需要将它放在您想要连接的远程服务器上（通常在 &lt;code&gt;~/.ssh/authorized_keys&lt;/code&gt; 文件中）。&lt;/li&gt;
+&lt;li&gt;公钥用于&lt;strong&gt;加密&lt;/strong&gt;数据，并且可以&lt;strong&gt;验证&lt;/strong&gt;私钥签名的数据。&lt;/li&gt;
+&lt;li&gt;它不能用来解密数据或进行身份认证，只能用于验证私钥持有者的身份。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;私钥 (Private Key)：&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;这是您需要&lt;strong&gt;严格保密&lt;/strong&gt;的部分。绝不能与任何人共享。&lt;/li&gt;
+&lt;li&gt;它通常存储在您的本地计算机上（例如 &lt;code&gt;~/.ssh/id_rsa&lt;/code&gt;）。&lt;/li&gt;
+&lt;li&gt;私钥用于&lt;strong&gt;解密&lt;/strong&gt;由对应公钥加密的数据，并用于向远程服务器&lt;strong&gt;签名&lt;/strong&gt;认证请求。&lt;/li&gt;
+&lt;li&gt;如果私钥泄露，您的 SSH 连接安全就会受到威胁。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;ssh-keygen-的基本用法&#34;&gt;&lt;code&gt;ssh-keygen&lt;/code&gt; 的基本用法&lt;/h3&gt;
+&lt;p&gt;最简单的生成命令是：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;ssh-keygen
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;执行这个命令后，&lt;code&gt;ssh-keygen&lt;/code&gt; 会引导您完成以下几个步骤：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;文件保存路径：&lt;/strong&gt; 它会提示您选择密钥对的保存位置。默认情况下，私钥会保存在 &lt;code&gt;~/.ssh/id_rsa&lt;/code&gt;（对于 RSA 算法）或 &lt;code&gt;~/.ssh/id_ed25519&lt;/code&gt;（对于 Ed25519 算法），公钥则会是相同路径加上 &lt;code&gt;.pub&lt;/code&gt; 后缀（例如 &lt;code&gt;~/.ssh/id_rsa.pub&lt;/code&gt;）。&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Enter file in which to save the key (/home/user/.ssh/id_rsa):
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;如果您不输入任何内容直接回车，就会使用默认路径。如果您想生成多个密钥对用于不同目的，可以输入不同的文件名。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;密码短语 (Passphrase)：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Enter passphrase (empty for no passphrase):
+Enter same passphrase again:
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;这是非常重要的一步。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;作用：&lt;/strong&gt; 为您的&lt;strong&gt;私钥&lt;/strong&gt;加密。即使私钥文件被盗，没有密码短语也无法使用。这提供了额外的安全层。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;建议：&lt;/strong&gt; &lt;strong&gt;强烈建议&lt;/strong&gt;设置一个强密码短语。虽然每次使用私钥时都需要输入密码短语会增加一点点不便，但它能极大地提升安全性。您可以使用 &lt;code&gt;ssh-agent&lt;/code&gt; 来缓存密码短语，避免每次都输入。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;留空：&lt;/strong&gt; 如果您留空（不设置密码短语），私钥将不加密，这意味着任何获得该私钥文件的人都可以直接使用它。在自动化脚本等特定场景下可能会留空，但请务必了解其安全风险。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;密钥指纹和随机艺术图：&lt;/strong&gt;
+生成完成后，&lt;code&gt;ssh-keygen&lt;/code&gt; 会显示密钥的&lt;strong&gt;指纹 (fingerprint)&lt;/strong&gt; 和一个随机生成的&lt;strong&gt;艺术图 (randomart image)&lt;/strong&gt;。这些信息用于视觉验证密钥的唯一性。&lt;/p&gt;</description>
+    </item>
     <item>
       <title>CUDA 将支持RISC-V</title>
       <link>https://vsxen.github.io/posts/2025-07-27/</link>
       <pubDate>Tue, 22 Jul 2025 20:46:15 +0800</pubDate>
       <guid>https://vsxen.github.io/posts/2025-07-27/</guid>
-      <description>&lt;p&gt;近日举办的2025 RISC-V中国峰会上，NVIDIA硬件工程副总裁Frans Sijstermans宣布，CUDA软件平台将支持RISC-V指令集架构处理器，为开源架构RISC-V开启进入数据中心与AI市场的大门。&lt;/p&gt;</description>
+      <description>&lt;p&gt;近日举办的2025 RISC-V中国峰会上，NVIDIA硬件工程副总裁Frans Sijstermans宣布，CUDA软件平台将支持RISC-V指令集架构处理器，为开源架构RISC-V开启进入数据中心与AI市场的大门。&lt;/p&gt;
+&lt;p&gt;遗憾的是，Go 的 C 语言 FFI 实在太差了。cgo 的糟糕程度怎么说都不为过。&lt;/p&gt;
+&lt;p&gt;使用Gemini cli 尝试做一个自动抓取公司技术博客的应用。&lt;/p&gt;
+&lt;p&gt;Qwen-codeer 发布了，效果还可以，比Qwen好一些，但是有点贵&lt;/p&gt;</description>
     </item>
     <item>
       <title>kimi k2 发布</title>
