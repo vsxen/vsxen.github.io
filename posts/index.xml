@@ -19,7 +19,8 @@
       <link>https://vsxen.github.io/posts/2025-08-03/</link>
       <pubDate>Tue, 29 Jul 2025 10:27:29 +0800</pubDate>
       <guid>https://vsxen.github.io/posts/2025-08-03/</guid>
-      <description>&lt;p&gt;新公司的网络居然可以直连谷歌，香港的出口IP，Zenlayer的线路哈哈，而且还能直接用Gemini神奇。&lt;/p&gt;
+      <description>&lt;p&gt;这一周好忙&lt;/p&gt;
+&lt;p&gt;新公司的网络居然可以直连谷歌，香港的出口IP，Zenlayer的线路哈哈，而且还能直接用Gemini神奇。&lt;/p&gt;
 &lt;p&gt;发现git默认生成的密钥对改成了ed25519，问了下AI如下：&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;ssh-keygen&lt;/code&gt; 是一个非常实用的命令行工具，用于生成 &lt;strong&gt;SSH (Secure Shell)&lt;/strong&gt; 协议使用的密钥对。这个密钥对通常由一个&lt;strong&gt;私钥&lt;/strong&gt;和一个&lt;strong&gt;公钥&lt;/strong&gt;组成。它们是 SSH 安全通信的基石，允许用户在不传输密码的情况下安全地认证到远程服务器。&lt;/p&gt;
 &lt;hr&gt;
