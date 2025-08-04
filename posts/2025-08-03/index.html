@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
-<title>2025 08 03 | Code Life</title>
+<title>k3s and wsl | Code Life</title>
 <meta name="keywords" content="">
 <meta name="description" content="这一周好忙
 新公司的网络居然可以直连谷歌，香港的出口IP，Zenlayer的线路哈哈，而且还能直接用Gemini神奇。
@@ -105,7 +105,7 @@ Enter same passphrase again:
     </style>
 </noscript><meta property="og:url" content="https://vsxen.github.io/posts/2025-08-03/">
   <meta property="og:site_name" content="Code Life">
-  <meta property="og:title" content="2025 08 03">
+  <meta property="og:title" content="k3s and wsl">
   <meta property="og:description" content="这一周好忙
 新公司的网络居然可以直连谷歌，香港的出口IP，Zenlayer的线路哈哈，而且还能直接用Gemini神奇。
 发现git默认生成的密钥对改成了ed25519，问了下AI如下：
@@ -125,7 +125,7 @@ Enter passphrase (empty for no passphrase): Enter same passphrase again: 这是�
       <meta property="og:image" content="https://vsxen.github.io/images/papermod-cover.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://vsxen.github.io/images/papermod-cover.png">
-<meta name="twitter:title" content="2025 08 03">
+<meta name="twitter:title" content="k3s and wsl">
 <meta name="twitter:description" content="这一周好忙
 新公司的网络居然可以直连谷歌，香港的出口IP，Zenlayer的线路哈哈，而且还能直接用Gemini神奇。
 发现git默认生成的密钥对改成了ed25519，问了下AI如下：
@@ -191,7 +191,7 @@ Enter same passphrase again:
     {
       "@type": "ListItem",
       "position":  2 ,
-      "name": "2025 08 03",
+      "name": "k3s and wsl",
       "item": "https://vsxen.github.io/posts/2025-08-03/"
     }
   ]
@@ -201,14 +201,14 @@ Enter same passphrase again:
 {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
-  "headline": "2025 08 03",
-  "name": "2025 08 03",
+  "headline": "k3s and wsl",
+  "name": "k3s and wsl",
   "description": "这一周好忙\n新公司的网络居然可以直连谷歌，香港的出口IP，Zenlayer的线路哈哈，而且还能直接用Gemini神奇。\n发现git默认生成的密钥对改成了ed25519，问了下AI如下：\nssh-keygen 是一个非常实用的命令行工具，用于生成 SSH (Secure Shell) 协议使用的密钥对。这个密钥对通常由一个私钥和一个公钥组成。它们是 SSH 安全通信的基石，允许用户在不传输密码的情况下安全地认证到远程服务器。\n密钥对的核心概念 公钥 (Public Key)： 这是您可以安全地共享给任何人的部分。 您需要将它放在您想要连接的远程服务器上（通常在 ~/.ssh/authorized_keys 文件中）。 公钥用于加密数据，并且可以验证私钥签名的数据。 它不能用来解密数据或进行身份认证，只能用于验证私钥持有者的身份。 私钥 (Private Key)： 这是您需要严格保密的部分。绝不能与任何人共享。 它通常存储在您的本地计算机上（例如 ~/.ssh/id_rsa）。 私钥用于解密由对应公钥加密的数据，并用于向远程服务器签名认证请求。 如果私钥泄露，您的 SSH 连接安全就会受到威胁。 ssh-keygen 的基本用法 最简单的生成命令是：\nssh-keygen 执行这个命令后，ssh-keygen 会引导您完成以下几个步骤：\n文件保存路径： 它会提示您选择密钥对的保存位置。默认情况下，私钥会保存在 ~/.ssh/id_rsa（对于 RSA 算法）或 ~/.ssh/id_ed25519（对于 Ed25519 算法），公钥则会是相同路径加上 .pub 后缀（例如 ~/.ssh/id_rsa.pub）。\nEnter file in which to save the key (/home/user/.ssh/id_rsa): 如果您不输入任何内容直接回车，就会使用默认路径。如果您想生成多个密钥对用于不同目的，可以输入不同的文件名。\n密码短语 (Passphrase)：\nEnter passphrase (empty for no passphrase): Enter same passphrase again: 这是非常重要的一步。\n作用： 为您的私钥加密。即使私钥文件被盗，没有密码短语也无法使用。这提供了额外的安全层。 建议： 强烈建议设置一个强密码短语。虽然每次使用私钥时都需要输入密码短语会增加一点点不便，但它能极大地提升安全性。您可以使用 ssh-agent 来缓存密码短语，避免每次都输入。 留空： 如果您留空（不设置密码短语），私钥将不加密，这意味着任何获得该私钥文件的人都可以直接使用它。在自动化脚本等特定场景下可能会留空，但请务必了解其安全风险。 密钥指纹和随机艺术图： 生成完成后，ssh-keygen 会显示密钥的指纹 (fingerprint) 和一个随机生成的艺术图 (randomart image)。这些信息用于视觉验证密钥的唯一性。\n",
   "keywords": [
     
   ],
-  "articleBody": "这一周好忙\n新公司的网络居然可以直连谷歌，香港的出口IP，Zenlayer的线路哈哈，而且还能直接用Gemini神奇。\n发现git默认生成的密钥对改成了ed25519，问了下AI如下：\nssh-keygen 是一个非常实用的命令行工具，用于生成 SSH (Secure Shell) 协议使用的密钥对。这个密钥对通常由一个私钥和一个公钥组成。它们是 SSH 安全通信的基石，允许用户在不传输密码的情况下安全地认证到远程服务器。\n密钥对的核心概念 公钥 (Public Key)： 这是您可以安全地共享给任何人的部分。 您需要将它放在您想要连接的远程服务器上（通常在 ~/.ssh/authorized_keys 文件中）。 公钥用于加密数据，并且可以验证私钥签名的数据。 它不能用来解密数据或进行身份认证，只能用于验证私钥持有者的身份。 私钥 (Private Key)： 这是您需要严格保密的部分。绝不能与任何人共享。 它通常存储在您的本地计算机上（例如 ~/.ssh/id_rsa）。 私钥用于解密由对应公钥加密的数据，并用于向远程服务器签名认证请求。 如果私钥泄露，您的 SSH 连接安全就会受到威胁。 ssh-keygen 的基本用法 最简单的生成命令是：\nssh-keygen 执行这个命令后，ssh-keygen 会引导您完成以下几个步骤：\n文件保存路径： 它会提示您选择密钥对的保存位置。默认情况下，私钥会保存在 ~/.ssh/id_rsa（对于 RSA 算法）或 ~/.ssh/id_ed25519（对于 Ed25519 算法），公钥则会是相同路径加上 .pub 后缀（例如 ~/.ssh/id_rsa.pub）。\nEnter file in which to save the key (/home/user/.ssh/id_rsa): 如果您不输入任何内容直接回车，就会使用默认路径。如果您想生成多个密钥对用于不同目的，可以输入不同的文件名。\n密码短语 (Passphrase)：\nEnter passphrase (empty for no passphrase): Enter same passphrase again: 这是非常重要的一步。\n作用： 为您的私钥加密。即使私钥文件被盗，没有密码短语也无法使用。这提供了额外的安全层。 建议： 强烈建议设置一个强密码短语。虽然每次使用私钥时都需要输入密码短语会增加一点点不便，但它能极大地提升安全性。您可以使用 ssh-agent 来缓存密码短语，避免每次都输入。 留空： 如果您留空（不设置密码短语），私钥将不加密，这意味着任何获得该私钥文件的人都可以直接使用它。在自动化脚本等特定场景下可能会留空，但请务必了解其安全风险。 密钥指纹和随机艺术图： 生成完成后，ssh-keygen 会显示密钥的指纹 (fingerprint) 和一个随机生成的艺术图 (randomart image)。这些信息用于视觉验证密钥的唯一性。\nYour identification has been saved in /home/user/.ssh/id_rsa Your public key has been saved in /home/user/.ssh/id_rsa.pub The key fingerprint is: SHA256:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx user@hostname The key's randomart image is: +---[RSA 3072]----+ | . . | | . + | | o + | | E o + | | . o + o . | | . + = + o | | . + O . | | . = . | | + | +----[SHA256]-----+ ssh-keygen 的常用选项 ssh-keygen 提供了许多选项来定制密钥生成过程：\n-t ：指定密钥类型。 rsa (默认)：最常用的类型，通常足够安全。 dsa：较旧，不推荐使用。 ecdsa：椭圆曲线数字签名算法，通常提供与 RSA 相同安全级别但密钥更短。 ed25519：目前推荐的算法，基于 Edwards 曲线，速度快且安全性高，抗量子攻击特性更好。 示例： ssh-keygen -t ed25519 -b ：指定密钥的位数 (bits)。 适用于 RSA、DSA、ECDSA。对于 Ed25519，位数是固定的，不需要指定。 RSA 建议至少 2048 位，更安全的选择是 3072 或 4096 位。 示例： ssh-keygen -t rsa -b 4096 -f ：指定密钥文件保存的路径和名称。 示例： ssh-keygen -f ~/.ssh/my_webserver_key -P ：指定旧的密码短语。 (用于更改密码短语时) -N ：指定新的密码短语。 (用于更改密码短语时) -C ：为公钥添加注释。 这个注释不会影响密钥的功能，但有助于您识别密钥的用途。 默认注释是 user@hostname。 示例： ssh-keygen -t rsa -b 4096 -C \"My key for production server\" -q：静默模式。 减少输出信息。 -p：改变现有私钥的密码短语。 示例： ssh-keygen -p -f ~/.ssh/id_rsa -y：从私钥中提取公钥。 如果您不小心删除了 .pub 文件，可以用这个命令重新生成。 示例： ssh-keygen -y -f ~/.ssh/id_rsa \u003e ~/.ssh/id_rsa.pub 生成的密钥文件内容 私钥文件 (id_rsa 或 id_ed25519)：\n-----BEGIN OPENSSH PRIVATE KEY----- b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAAZXNjZHNhLXNoYTItbmlzdHAyNTYAAA... -----END OPENSSH PRIVATE KEY----- 这是一个 PEM 编码的文件，包含您的私钥信息。绝对不能泄露。\n公钥文件 (id_rsa.pub 或 id_ed25519.pub)：\nssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDFf... user@hostname 或者对于 Ed25519：\nssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICL... user@hostname 公钥文件通常只有一行。它包含三个部分：\n密钥类型： ssh-rsa 或 ssh-ed25519。 公钥本身： 一长串 Base64 编码的字符串。 注释： 默认是 user@hostname，或您用 -C 指定的注释。 密钥对的使用流程 生成密钥对： 在您的本地计算机上使用 ssh-keygen 生成私钥和公钥。 上传公钥： 将生成的公钥 (.pub 文件) 的内容复制到您想要连接的远程服务器的 ~/.ssh/authorized_keys 文件中。如果 ~/.ssh 目录或 authorized_keys 文件不存在，您需要手动创建它们，并确保它们有正确的权限（chmod 700 ~/.ssh 和 chmod 600 ~/.ssh/authorized_keys）。 安全连接： 从本地计算机使用 ssh user@remote_host 命令连接。SSH 客户端会自动查找并使用您的私钥进行身份认证。如果私钥有密码短语，SSH 客户端会提示您输入。 通过理解 ssh-keygen 及其生成的密钥对，您可以更安全、高效地管理您的 SSH 连接。\n试了下 k3s 还是有点意思的，我以前以为只嵌入了控制面，才发现是全部都嵌入了，一个可执行文件就搞定了。\n试用了一下WSL2，最大的败笔就是不能同时启动多个发行版，多个发行版默认还是共享网络的，对于分布式开发就很不舒服。\n尽管 Kubernetes API Server 使用 HTTPS 协议提供 RESTful API，但它确实使用了 Protocol Buffers (Protobuf) 来进行数据序列化。\n同时 gRPC-Web 这可以说是将 Protobuf over HTTP 概念推广得最成功的项目之一。\n排查一个服务连不上etcd的问题，最后发现是没有配置证书：\n2025-07-30 01:47:11.007657 I | embed: rejected connection from \"10.40.242.88:47286\" (error \"tls: failed to verify client's certificate: x509: certificate signed by unknown authority (possibly because of \\\"crypto/rsa: verification error\\\" while trying to verify candidate authority certificate \\\"demo\\\")\", ServerName \"default-etcd-client.demo.svc\") helm 居然还会去检查资源有没有冲突：\nError: INSTALLATION FAILED: Unable to continue with install: StorageClass \"local-path\" in namespace \"\" exists and cannot be imported into the current release: invalid ownership metadata; label validation error: missing key \"app.kubernetes.io/managed-by\": must be set to \"Helm\"; annotation validation error: missing key \"meta.helm.sh/release-name\": must be set to \"default\"; annotation validation error: missing key \"meta.helm.sh/release-namespace\": must be set to \"demo\" ",
-  "wordCount" : "447",
+  "articleBody": "这一周好忙\n新公司的网络居然可以直连谷歌，香港的出口IP，Zenlayer的线路哈哈，而且还能直接用Gemini神奇。\n发现git默认生成的密钥对改成了ed25519，问了下AI如下：\nssh-keygen 是一个非常实用的命令行工具，用于生成 SSH (Secure Shell) 协议使用的密钥对。这个密钥对通常由一个私钥和一个公钥组成。它们是 SSH 安全通信的基石，允许用户在不传输密码的情况下安全地认证到远程服务器。\n密钥对的核心概念 公钥 (Public Key)： 这是您可以安全地共享给任何人的部分。 您需要将它放在您想要连接的远程服务器上（通常在 ~/.ssh/authorized_keys 文件中）。 公钥用于加密数据，并且可以验证私钥签名的数据。 它不能用来解密数据或进行身份认证，只能用于验证私钥持有者的身份。 私钥 (Private Key)： 这是您需要严格保密的部分。绝不能与任何人共享。 它通常存储在您的本地计算机上（例如 ~/.ssh/id_rsa）。 私钥用于解密由对应公钥加密的数据，并用于向远程服务器签名认证请求。 如果私钥泄露，您的 SSH 连接安全就会受到威胁。 ssh-keygen 的基本用法 最简单的生成命令是：\nssh-keygen 执行这个命令后，ssh-keygen 会引导您完成以下几个步骤：\n文件保存路径： 它会提示您选择密钥对的保存位置。默认情况下，私钥会保存在 ~/.ssh/id_rsa（对于 RSA 算法）或 ~/.ssh/id_ed25519（对于 Ed25519 算法），公钥则会是相同路径加上 .pub 后缀（例如 ~/.ssh/id_rsa.pub）。\nEnter file in which to save the key (/home/user/.ssh/id_rsa): 如果您不输入任何内容直接回车，就会使用默认路径。如果您想生成多个密钥对用于不同目的，可以输入不同的文件名。\n密码短语 (Passphrase)：\nEnter passphrase (empty for no passphrase): Enter same passphrase again: 这是非常重要的一步。\n作用： 为您的私钥加密。即使私钥文件被盗，没有密码短语也无法使用。这提供了额外的安全层。 建议： 强烈建议设置一个强密码短语。虽然每次使用私钥时都需要输入密码短语会增加一点点不便，但它能极大地提升安全性。您可以使用 ssh-agent 来缓存密码短语，避免每次都输入。 留空： 如果您留空（不设置密码短语），私钥将不加密，这意味着任何获得该私钥文件的人都可以直接使用它。在自动化脚本等特定场景下可能会留空，但请务必了解其安全风险。 密钥指纹和随机艺术图： 生成完成后，ssh-keygen 会显示密钥的指纹 (fingerprint) 和一个随机生成的艺术图 (randomart image)。这些信息用于视觉验证密钥的唯一性。\nYour identification has been saved in /home/user/.ssh/id_rsa Your public key has been saved in /home/user/.ssh/id_rsa.pub The key fingerprint is: SHA256:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx user@hostname The key's randomart image is: +---[RSA 3072]----+ | . . | | . + | | o + | | E o + | | . o + o . | | . + = + o | | . + O . | | . = . | | + | +----[SHA256]-----+ ssh-keygen 的常用选项 ssh-keygen 提供了许多选项来定制密钥生成过程：\n-t ：指定密钥类型。 rsa (默认)：最常用的类型，通常足够安全。 dsa：较旧，不推荐使用。 ecdsa：椭圆曲线数字签名算法，通常提供与 RSA 相同安全级别但密钥更短。 ed25519：目前推荐的算法，基于 Edwards 曲线，速度快且安全性高，抗量子攻击特性更好。 示例： ssh-keygen -t ed25519 -b ：指定密钥的位数 (bits)。 适用于 RSA、DSA、ECDSA。对于 Ed25519，位数是固定的，不需要指定。 RSA 建议至少 2048 位，更安全的选择是 3072 或 4096 位。 示例： ssh-keygen -t rsa -b 4096 -f ：指定密钥文件保存的路径和名称。 示例： ssh-keygen -f ~/.ssh/my_webserver_key -P ：指定旧的密码短语。 (用于更改密码短语时) -N ：指定新的密码短语。 (用于更改密码短语时) -C ：为公钥添加注释。 这个注释不会影响密钥的功能，但有助于您识别密钥的用途。 默认注释是 user@hostname。 示例： ssh-keygen -t rsa -b 4096 -C \"My key for production server\" -q：静默模式。 减少输出信息。 -p：改变现有私钥的密码短语。 示例： ssh-keygen -p -f ~/.ssh/id_rsa -y：从私钥中提取公钥。 如果您不小心删除了 .pub 文件，可以用这个命令重新生成。 示例： ssh-keygen -y -f ~/.ssh/id_rsa \u003e ~/.ssh/id_rsa.pub 生成的密钥文件内容 私钥文件 (id_rsa 或 id_ed25519)：\n-----BEGIN OPENSSH PRIVATE KEY----- b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAAZXNjZHNhLXNoYTItbmlzdHAyNTYAAA... -----END OPENSSH PRIVATE KEY----- 这是一个 PEM 编码的文件，包含您的私钥信息。绝对不能泄露。\n公钥文件 (id_rsa.pub 或 id_ed25519.pub)：\nssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDFf... user@hostname 或者对于 Ed25519：\nssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICL... user@hostname 公钥文件通常只有一行。它包含三个部分：\n密钥类型： ssh-rsa 或 ssh-ed25519。 公钥本身： 一长串 Base64 编码的字符串。 注释： 默认是 user@hostname，或您用 -C 指定的注释。 密钥对的使用流程 生成密钥对： 在您的本地计算机上使用 ssh-keygen 生成私钥和公钥。 上传公钥： 将生成的公钥 (.pub 文件) 的内容复制到您想要连接的远程服务器的 ~/.ssh/authorized_keys 文件中。如果 ~/.ssh 目录或 authorized_keys 文件不存在，您需要手动创建它们，并确保它们有正确的权限（chmod 700 ~/.ssh 和 chmod 600 ~/.ssh/authorized_keys）。 安全连接： 从本地计算机使用 ssh user@remote_host 命令连接。SSH 客户端会自动查找并使用您的私钥进行身份认证。如果私钥有密码短语，SSH 客户端会提示您输入。 通过理解 ssh-keygen 及其生成的密钥对，您可以更安全、高效地管理您的 SSH 连接。\n排查了一天的网络不通的问题，最后重启一下好了，额有些东西搞不出来就先睡一觉吧。\n试了下 k3s 还是有点意思的，我以前以为只嵌入了控制面，才发现是全部都嵌入了，一个可执行文件就搞定了。\n试用了一下WSL2，最大的败笔就是不能同时启动多个发行版，多个发行版默认还是共享网络的，对于分布式开发就很不舒服。\n从 XML 到 JSON 再到 CBOR 尽管 Kubernetes API Server 使用 HTTPS 协议提供 RESTful API，但它确实使用了 Protocol Buffers (Protobuf) 来进行数据序列化。 同时 gRPC-Web 这可以说是将 Protobuf over HTTP 概念推广得最成功的项目之一。\n排查一个服务连不上etcd的问题，最后发现是没有配置证书：\n2025-07-30 01:47:11.007657 I | embed: rejected connection from \"10.40.242.88:47286\" (error \"tls: failed to verify client's certificate: x509: certificate signed by unknown authority (possibly because of \\\"crypto/rsa: verification error\\\" while trying to verify candidate authority certificate \\\"demo\\\")\", ServerName \"default-etcd-client.demo.svc\") helm 居然还会去检查资源有没有冲突：\nError: INSTALLATION FAILED: Unable to continue with install: StorageClass \"local-path\" in namespace \"\" exists and cannot be imported into the current release: invalid ownership metadata; label validation error: missing key \"app.kubernetes.io/managed-by\": must be set to \"Helm\"; annotation validation error: missing key \"meta.helm.sh/release-name\": must be set to \"default\"; annotation validation error: missing key \"meta.helm.sh/release-namespace\": must be set to \"demo\" ",
+  "wordCount" : "454",
   "inLanguage": "zh",
   "image": "https://vsxen.github.io/images/papermod-cover.png","datePublished": "2025-07-29T10:27:29+08:00",
   "dateModified": "2025-07-29T10:27:29+08:00",
@@ -291,7 +291,7 @@ Enter same passphrase again:
   <header class="post-header">
     <div class="breadcrumbs"><a href="https://vsxen.github.io/">主页</a>&nbsp;»&nbsp;<a href="https://vsxen.github.io/posts/">Posts</a></div>
     <h1 class="post-title entry-hint-parent">
-      2025 08 03
+      k3s and wsl
       <span class="entry-hint" title="Draft">
         <svg xmlns="http://www.w3.org/2000/svg" height="35" viewBox="0 -960 960 960" fill="currentColor">
           <path
@@ -470,10 +470,12 @@ b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAAZXNjZHNhLXNoYTItbmlzdHAyNTYAAA...
 <li><strong>安全连接：</strong> 从本地计算机使用 <code>ssh user@remote_host</code> 命令连接。SSH 客户端会自动查找并使用您的私钥进行身份认证。如果私钥有密码短语，SSH 客户端会提示您输入。</li>
 </ol>
 <p>通过理解 <code>ssh-keygen</code> 及其生成的密钥对，您可以更安全、高效地管理您的 SSH 连接。</p>
+<p>排查了一天的网络不通的问题，最后重启一下好了，额有些东西搞不出来就先睡一觉吧。</p>
 <p>试了下 k3s 还是有点意思的，我以前以为只嵌入了控制面，才发现是全部都嵌入了，一个可执行文件就搞定了。</p>
 <p>试用了一下WSL2，最大的败笔就是不能同时启动多个发行版，多个发行版默认还是共享网络的，对于分布式开发就很不舒服。</p>
-<p>尽管 Kubernetes API Server 使用 HTTPS 协议提供 RESTful API，但它确实使用了 Protocol Buffers (Protobuf) 来进行数据序列化。</p>
-<p>同时 gRPC-Web 这可以说是将 Protobuf over HTTP 概念推广得最成功的项目之一。</p>
+<p><a href="https://cborbook.com/introduction/from_xml_to_json_to_cbor.html">从 XML 到 JSON 再到 CBOR</a>
+尽管 Kubernetes API Server 使用 HTTPS 协议提供 RESTful API，但它确实使用了 Protocol Buffers (Protobuf) 来进行数据序列化。
+同时 gRPC-Web 这可以说是将 Protobuf over HTTP 概念推广得最成功的项目之一。</p>
 <p>排查一个服务连不上etcd的问题，最后发现是没有配置证书：</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">2025-07-30 01:47:11.007657 I <span class="p">|</span> embed: rejected connection from <span class="s2">&#34;10.40.242.88:47286&#34;</span> <span class="o">(</span>error <span class="s2">&#34;tls: failed to verify client&#39;s certificate: x509: certificate signed by unknown authority (possibly because of \&#34;crypto/rsa: verification error\&#34; while trying to verify candidate authority certificate \&#34;demo\&#34;)&#34;</span>, ServerName <span class="s2">&#34;default-etcd-client.demo.svc&#34;</span><span class="o">)</span>
 </span></span></code></pre></div><p>helm 居然还会去检查资源有没有冲突：</p>
@@ -496,8 +498,8 @@ b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAAZXNjZHNhLXNoYTItbmlzdHAyNTYAAA...
 
 <ul class="share-buttons">
     <li>
-        <a target="_blank" rel="noopener noreferrer" aria-label="share 2025 08 03 on x"
-            href="https://x.com/intent/tweet/?text=2025%2008%2003&amp;url=https%3a%2f%2fvsxen.github.io%2fposts%2f2025-08-03%2f&amp;hashtags=">
+        <a target="_blank" rel="noopener noreferrer" aria-label="share k3s and wsl on x"
+            href="https://x.com/intent/tweet/?text=k3s%20and%20wsl&amp;url=https%3a%2f%2fvsxen.github.io%2fposts%2f2025-08-03%2f&amp;hashtags=">
             <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
                 <path
                     d="M512 62.554 L 512 449.446 C 512 483.97 483.97 512 449.446 512 L 62.554 512 C 28.03 512 0 483.97 0 449.446 L 0 62.554 C 0 28.03 28.029 0 62.554 0 L 449.446 0 C 483.971 0 512 28.03 512 62.554 Z M 269.951 190.75 L 182.567 75.216 L 56 75.216 L 207.216 272.95 L 63.9 436.783 L 125.266 436.783 L 235.9 310.383 L 332.567 436.783 L 456 436.783 L 298.367 228.367 L 432.367 75.216 L 371.033 75.216 Z M 127.633 110 L 164.101 110 L 383.481 400.065 L 349.5 400.065 Z" />
@@ -505,8 +507,8 @@ b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAAZXNjZHNhLXNoYTItbmlzdHAyNTYAAA...
         </a>
     </li>
     <li>
-        <a target="_blank" rel="noopener noreferrer" aria-label="share 2025 08 03 on linkedin"
-            href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fvsxen.github.io%2fposts%2f2025-08-03%2f&amp;title=2025%2008%2003&amp;summary=2025%2008%2003&amp;source=https%3a%2f%2fvsxen.github.io%2fposts%2f2025-08-03%2f">
+        <a target="_blank" rel="noopener noreferrer" aria-label="share k3s and wsl on linkedin"
+            href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fvsxen.github.io%2fposts%2f2025-08-03%2f&amp;title=k3s%20and%20wsl&amp;summary=k3s%20and%20wsl&amp;source=https%3a%2f%2fvsxen.github.io%2fposts%2f2025-08-03%2f">
             <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
                 <path
                     d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
@@ -514,8 +516,8 @@ b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAAZXNjZHNhLXNoYTItbmlzdHAyNTYAAA...
         </a>
     </li>
     <li>
-        <a target="_blank" rel="noopener noreferrer" aria-label="share 2025 08 03 on reddit"
-            href="https://reddit.com/submit?url=https%3a%2f%2fvsxen.github.io%2fposts%2f2025-08-03%2f&title=2025%2008%2003">
+        <a target="_blank" rel="noopener noreferrer" aria-label="share k3s and wsl on reddit"
+            href="https://reddit.com/submit?url=https%3a%2f%2fvsxen.github.io%2fposts%2f2025-08-03%2f&title=k3s%20and%20wsl">
             <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
                 <path
                     d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-3.446,265.638c0,-22.964 -18.616,-41.58 -41.58,-41.58c-11.211,0 -21.361,4.457 -28.841,11.666c-28.424,-20.508 -67.586,-33.757 -111.204,-35.278l18.941,-89.121l61.884,13.157c0.756,15.734 13.642,28.29 29.56,28.29c16.407,0 29.706,-13.299 29.706,-29.701c0,-16.403 -13.299,-29.702 -29.706,-29.702c-11.666,0 -21.657,6.792 -26.515,16.578l-69.105,-14.69c-1.922,-0.418 -3.939,-0.042 -5.585,1.036c-1.658,1.073 -2.811,2.761 -3.224,4.686l-21.152,99.438c-44.258,1.228 -84.046,14.494 -112.837,35.232c-7.468,-7.164 -17.589,-11.591 -28.757,-11.591c-22.965,0 -41.585,18.616 -41.585,41.58c0,16.896 10.095,31.41 24.568,37.918c-0.639,4.135 -0.99,8.328 -0.99,12.576c0,63.977 74.469,115.836 166.33,115.836c91.861,0 166.334,-51.859 166.334,-115.836c0,-4.218 -0.347,-8.387 -0.977,-12.493c14.564,-6.47 24.735,-21.034 24.735,-38.001Zm-119.474,108.193c-20.27,20.241 -59.115,21.816 -70.534,21.816c-11.428,0 -50.277,-1.575 -70.522,-21.82c-3.007,-3.008 -3.007,-7.882 0,-10.889c3.003,-2.999 7.882,-3.003 10.885,0c12.777,12.781 40.11,17.317 59.637,17.317c19.522,0 46.86,-4.536 59.657,-17.321c3.016,-2.999 7.886,-2.995 10.885,0.008c3.008,3.011 3.003,7.882 -0.008,10.889Zm-5.23,-48.781c-16.373,0 -29.701,-13.324 -29.701,-29.698c0,-16.381 13.328,-29.714 29.701,-29.714c16.378,0 29.706,13.333 29.706,29.714c0,16.374 -13.328,29.698 -29.706,29.698Zm-160.386,-29.702c0,-16.381 13.328,-29.71 29.714,-29.71c16.369,0 29.689,13.329 29.689,29.71c0,16.373 -13.32,29.693 -29.689,29.693c-16.386,0 -29.714,-13.32 -29.714,-29.693Z" />
@@ -523,7 +525,7 @@ b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAAZXNjZHNhLXNoYTItbmlzdHAyNTYAAA...
         </a>
     </li>
     <li>
-        <a target="_blank" rel="noopener noreferrer" aria-label="share 2025 08 03 on facebook"
+        <a target="_blank" rel="noopener noreferrer" aria-label="share k3s and wsl on facebook"
             href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fvsxen.github.io%2fposts%2f2025-08-03%2f">
             <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
                 <path
@@ -532,8 +534,8 @@ b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAAZXNjZHNhLXNoYTItbmlzdHAyNTYAAA...
         </a>
     </li>
     <li>
-        <a target="_blank" rel="noopener noreferrer" aria-label="share 2025 08 03 on whatsapp"
-            href="https://api.whatsapp.com/send?text=2025%2008%2003%20-%20https%3a%2f%2fvsxen.github.io%2fposts%2f2025-08-03%2f">
+        <a target="_blank" rel="noopener noreferrer" aria-label="share k3s and wsl on whatsapp"
+            href="https://api.whatsapp.com/send?text=k3s%20and%20wsl%20-%20https%3a%2f%2fvsxen.github.io%2fposts%2f2025-08-03%2f">
             <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
                 <path
                     d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-58.673,127.703c-33.842,-33.881 -78.847,-52.548 -126.798,-52.568c-98.799,0 -179.21,80.405 -179.249,179.234c-0.013,31.593 8.241,62.428 23.927,89.612l-25.429,92.884l95.021,-24.925c26.181,14.28 55.659,21.807 85.658,21.816l0.074,0c98.789,0 179.206,-80.413 179.247,-179.243c0.018,-47.895 -18.61,-92.93 -52.451,-126.81Zm-126.797,275.782l-0.06,0c-26.734,-0.01 -52.954,-7.193 -75.828,-20.767l-5.441,-3.229l-56.386,14.792l15.05,-54.977l-3.542,-5.637c-14.913,-23.72 -22.791,-51.136 -22.779,-79.287c0.033,-82.142 66.867,-148.971 149.046,-148.971c39.793,0.014 77.199,15.531 105.329,43.692c28.128,28.16 43.609,65.592 43.594,105.4c-0.034,82.149 -66.866,148.983 -148.983,148.984Zm81.721,-111.581c-4.479,-2.242 -26.499,-13.075 -30.604,-14.571c-4.105,-1.495 -7.091,-2.241 -10.077,2.241c-2.986,4.483 -11.569,14.572 -14.182,17.562c-2.612,2.988 -5.225,3.364 -9.703,1.12c-4.479,-2.241 -18.91,-6.97 -36.017,-22.23c-13.314,-11.876 -22.304,-26.542 -24.916,-31.026c-2.612,-4.484 -0.279,-6.908 1.963,-9.14c2.016,-2.007 4.48,-5.232 6.719,-7.847c2.24,-2.615 2.986,-4.484 4.479,-7.472c1.493,-2.99 0.747,-5.604 -0.374,-7.846c-1.119,-2.241 -10.077,-24.288 -13.809,-33.256c-3.635,-8.733 -7.327,-7.55 -10.077,-7.688c-2.609,-0.13 -5.598,-0.158 -8.583,-0.158c-2.986,0 -7.839,1.121 -11.944,5.604c-4.105,4.484 -15.675,15.32 -15.675,37.364c0,22.046 16.048,43.342 18.287,46.332c2.24,2.99 31.582,48.227 76.511,67.627c10.685,4.615 19.028,7.371 25.533,9.434c10.728,3.41 20.492,2.929 28.209,1.775c8.605,-1.285 26.499,-10.833 30.231,-21.295c3.732,-10.464 3.732,-19.431 2.612,-21.298c-1.119,-1.869 -4.105,-2.99 -8.583,-5.232Z" />
@@ -541,8 +543,8 @@ b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAAZXNjZHNhLXNoYTItbmlzdHAyNTYAAA...
         </a>
     </li>
     <li>
-        <a target="_blank" rel="noopener noreferrer" aria-label="share 2025 08 03 on telegram"
-            href="https://telegram.me/share/url?text=2025%2008%2003&amp;url=https%3a%2f%2fvsxen.github.io%2fposts%2f2025-08-03%2f">
+        <a target="_blank" rel="noopener noreferrer" aria-label="share k3s and wsl on telegram"
+            href="https://telegram.me/share/url?text=k3s%20and%20wsl&amp;url=https%3a%2f%2fvsxen.github.io%2fposts%2f2025-08-03%2f">
             <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28" height="30px" width="30px" fill="currentColor">
                 <path
                     d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
@@ -550,8 +552,8 @@ b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAAZXNjZHNhLXNoYTItbmlzdHAyNTYAAA...
         </a>
     </li>
     <li>
-        <a target="_blank" rel="noopener noreferrer" aria-label="share 2025 08 03 on ycombinator"
-            href="https://news.ycombinator.com/submitlink?t=2025%2008%2003&u=https%3a%2f%2fvsxen.github.io%2fposts%2f2025-08-03%2f">
+        <a target="_blank" rel="noopener noreferrer" aria-label="share k3s and wsl on ycombinator"
+            href="https://news.ycombinator.com/submitlink?t=k3s%20and%20wsl&u=https%3a%2f%2fvsxen.github.io%2fposts%2f2025-08-03%2f">
             <svg version="1.1" xml:space="preserve" width="30px" height="30px" viewBox="0 0 512 512" fill="currentColor"
                 xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape">
                 <path
