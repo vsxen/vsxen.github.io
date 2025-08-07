@@ -19,7 +19,15 @@
       <link>https://vsxen.github.io/posts/2025-08-10/</link>
       <pubDate>Wed, 06 Aug 2025 00:05:12 +0800</pubDate>
       <guid>https://vsxen.github.io/posts/2025-08-10/</guid>
-      <description></description>
+      <description>&lt;p&gt;解决容器起不来的问题，k3s内置的containerd有时候会出现幽灵镜像的问题，就是镜像存在但是pod还是起不来，重启了一下进程就好了。&lt;/p&gt;
+&lt;p&gt;看下dify有什么新功能吗？好像还是没太大变化。 Qwen-image 的模型发布了，可以在图片中插入文字了，还不错。&lt;/p&gt;
+&lt;p&gt;cloudpods 还自己搞了一个infomer，挺简单的一个。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.infoq.cn/article/NDsemsR45vqxLlwgNo73&#34;&gt;国投瑞银 Kubernetes 双集群高可用架构设计实践&lt;/a&gt; ，用了双机房双集群，没有用联邦，用了istio的多主方案。&lt;/p&gt;
+&lt;p&gt;喵了眼 aliyun 的cloudDNS服务，看了下aicon相关的ppt分享。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://clickhouse.com/blog/how-tesla-built-quadrillion-scale-observability-platform-on-clickhouse&#34;&gt;特斯拉如何在 ClickHouse 上构建了一个万亿规模的观测平台&lt;/a&gt; 做了一个PromQL到SQL的转换层。&lt;/p&gt;
+&lt;p&gt;差不多把cloudpods的文档全部读了一遍。&lt;/p&gt;
+&lt;h2 id=&#34;生活&#34;&gt;生活&lt;/h2&gt;
+&lt;p&gt;武汉大学的男生真是可怜，但是好像又不能为他做点事情。&lt;/p&gt;</description>
     </item>
     <item>
       <title>k3s and wsl</title>
