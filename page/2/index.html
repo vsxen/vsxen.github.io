@@ -142,6 +142,30 @@
 
 <article class="post-entry"> 
   <header class="entry-header">
+    <h2 class="entry-hint-parent">Gemini Deep Research
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>体验过chatgpt，豆包，Qwen，和Gemini的深度研究之后，个人感觉Gemini是最好的。 首先会生成研究方向，搜索关键字，然后可能是通过tool call的方式抓取相关内容，生成的结果可以用来创建到Web Page（可交互），Infographic，Quiz和音频。
+当 kube-apiserver 处理 LIST 请求时，它会一次性将数据序列化为 JSON 或 Protobuf 格式，然后交由底层的 Go/http 处理。根据标准的 encoding/json 库实现，kube-apiserver 需要分配一大块内存来存放完整的序列化结果。更严重的是，这块内存要等到数据的最后一个字节被传输完毕后才会释放，容易导致高峰时的内存占用激增。
+解决这个问题的关键在于引入 流式处理 来序列化数据。KEP-5116 根据 LIST 响应的结构特点，可以依次序列化 TypeMeta、ListMeta，然后逐项序列化 Items，避免一次性分配和持有大块内存，从而降低内存占用。
+Streaming JSON/Protobuf in Kubernetes
+k8s 中 prometheus的 token 是如何访问经过认证的kube-controller-manager的/metrics的？
+答案是：证书验证（TLS）和Token授权（RBAC）是两个独立但连续的步骤。kube-controller-manager自己处理TLS握手，但会将授权决策委托给kube-apiserver。
+认证 (Authentication) - 使用 TokenReview：
+kube-controller-manager接收到Token后，它会创建一个TokenReview对象。这个对象包含了它从Prometheus收到的原始Token。 它向kube-apiserver的/apis/authentication.k8s.io/v1/tokenreviews端点发起一个请求，内容就是这个TokenReview对象。 kube-apiserver收到请求后，会验证这个Token的签名和有效性。如果Token有效，kube-apiserver会在TokenReview对象的状态（status）字段中填充该Token对应的用户信息（用户名、UID、所属组等），并返回给kube-controller-manager。 现在，kube-controller-manager知道了这个请求的发起者是谁（例如，system:serviceaccount:monitoring:prometheus-k8s）。 授权 (Authorization) - 使用 SubjectAccessReview：
+在知道了请求者的身份后，kube-controller-manager需要确认这个身份是否有权限执行请求的操作（即对/metrics路径进行GET操作）。 它会创建一个SubjectAccessReview对象。这个对象里包含了上一步获取到的用户信息以及本次请求试图执行的操作（verb: &#34;get&#34;, nonResourceURL: &#34;/metrics&#34;）。 它向kube-apiserver的/apis/authorization.k8s.io/v1/subjectaccessreviews端点发起请求。 kube-apiserver收到请求后，会查询集群中所有的RBAC规则（Role, ClusterRole, RoleBinding, ClusterRoleBinding），判断这个用户是否有权限执行该操作。 kube-apiserver将检查结果（允许或拒绝）填充到SubjectAccessReview对象的状态字段中，并返回给kube-controller-manager。 最终决策：
+kube-controller-manager收到SubjectAccessReview的响应后，如果结果是“允许”，它就会向Prometheus返回/metrics的数据。 如果结果是“拒绝”，它会向Prometheus返回403 Forbidden错误。 这保证了整个集群的认证授权策略是统一和集中的，避免了每个组件各自为政带来的安全风险和管理复杂性。
+k8s 为什么要设计service/proxy的子资源?
+AI生成了4个理由，我觉得唯一有点说服力的也就第三条。
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-07-05 15:45:23 +0800 +0800'>七月 5, 2025</span>&nbsp;·&nbsp;2 分钟&nbsp;·&nbsp;Theme PaperMod</footer>
+  <a class="entry-link" aria-label="post link to Gemini Deep Research" href="https://vsxen.github.io/posts/2025-07-06/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
     <h2 class="entry-hint-parent">Artifact vs Canvas
     </h2>
   </header>
@@ -249,32 +273,6 @@ https://www.servethehome.com/tesla-dojo-exa-scale-lossy-ai-network-using-the-tes
   </div>
   <footer class="entry-footer"><span title='2025-06-08 16:34:43 +0800 +0800'>六月 8, 2025</span>&nbsp;·&nbsp;1 分钟&nbsp;·&nbsp;Theme PaperMod</footer>
   <a class="entry-link" aria-label="post link to ChatDB和Text-to-SQL项目对比" href="https://vsxen.github.io/posts/2025-06-08/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">Claude Code
-      <span class="entry-hint" title="Draft">
-        <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" fill="currentColor">
-          <path
-            d="M160-410v-60h300v60H160Zm0-165v-60h470v60H160Zm0-165v-60h470v60H160Zm360 580v-123l221-220q9-9 20-13t22-4q12 0 23 4.5t20 13.5l37 37q9 9 13 20t4 22q0 11-4.5 22.5T862.09-380L643-160H520Zm300-263-37-37 37 37ZM580-220h38l121-122-18-19-19-18-122 121v38Zm141-141-19-18 37 37-18-19Z" />
-        </svg>
-      </span>
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>想找一个AI Terminal，必须支持自定义API_BASE_URL，warp这个不行。
-Data Formulator MS的开源项目，利用AI做数据可视化。
-claude code发布了，和我之前思路类似，但是这个功能更丰富。
-查了下Gemini的API，主要是支持混合输出，当然也有兼容OPENAI的接口。
-通过硬件计数器，将性能提升3倍之旅
-DeepSeek 发布了R1的小版本更新0528
-https://blog.railway.com/p/data-center-build-part-two 裸金属上架
-https://github.com/google-gemini/gemini-fullstack-langgraph-quickstart
-</p>
-  </div>
-  <footer class="entry-footer"><span title='2025-06-01 16:35:57 +0800 +0800'>六月 1, 2025</span>&nbsp;·&nbsp;1 分钟&nbsp;·&nbsp;Theme PaperMod</footer>
-  <a class="entry-link" aria-label="post link to Claude Code" href="https://vsxen.github.io/posts/2025-06-01/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">

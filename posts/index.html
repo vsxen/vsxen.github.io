@@ -155,6 +155,24 @@
 
 <article class="post-entry"> 
   <header class="entry-header">
+    <h2 class="entry-hint-parent">2025 08 10
+      <span class="entry-hint" title="Draft">
+        <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" fill="currentColor">
+          <path
+            d="M160-410v-60h300v60H160Zm0-165v-60h470v60H160Zm0-165v-60h470v60H160Zm360 580v-123l221-220q9-9 20-13t22-4q12 0 23 4.5t20 13.5l37 37q9 9 13 20t4 22q0 11-4.5 22.5T862.09-380L643-160H520Zm300-263-37-37 37 37ZM580-220h38l121-122-18-19-19-18-122 121v38Zm141-141-19-18 37 37-18-19Z" />
+        </svg>
+      </span>
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p></p>
+  </div>
+  <footer class="entry-footer"><span title='2025-08-06 00:05:12 +0800 +0800'>八月 6, 2025</span>&nbsp;·&nbsp;0 分钟&nbsp;·&nbsp;Theme PaperMod</footer>
+  <a class="entry-link" aria-label="post link to 2025 08 10" href="https://vsxen.github.io/posts/2025-08-10/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
     <h2 class="entry-hint-parent">k3s and wsl
       <span class="entry-hint" title="Draft">
         <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" fill="currentColor">
@@ -198,6 +216,9 @@ Enter passphrase (empty for no passphrase): Enter same passphrase again: 这是�
 遗憾的是，Go 的 C 语言 FFI 实在太差了。cgo 的糟糕程度怎么说都不为过。
 使用Gemini cli 尝试做一个自动抓取公司技术博客的应用。
 Qwen-codeer 发布了，效果还可以，比Qwen好一些，但是有点贵
+调试百万分之一的故障：将 Pinterest 的搜索基础设施迁移到 Kubernetes，
+指标 container_referenced_bytes 在 cAdvisor 中默认启用，用于跟踪进程在每个测量周期中引用的总内存字节数。该指标通过 PTE 访问位机制实现了 Brendan Gregg 的工作集大小（WSS）估计，该机制使用页表中的访问位来计算进程读取或写入的总内存量。每次 cAdvisor 运行时，它会扫描整个页表来计算此统计数据，通过统计所有条目中的所有访问位，然后清除每个已访问的位。PinCompute 每 30 秒运行一次 cAdvisor，这意味着这种侵入性的访问位检查和清除每分钟发生两次，每分钟一次。
+Manas 搜索索引每个叶节点可能高达数百 GB，而二级排序索引可能超过 1TB。当 Manas 叶节点启动时，它们会将整个索引映射到内存中。这意味着内存使用可能非常显著（例如，对于内存使用量为 100GB 的主机，页表可以容纳 2500 万个条目）。每 30 秒遍历并清除 2500 万个页表条目可能会确实导致与内存密集型叶处理产生竞争。
 </p>
   </div>
   <footer class="entry-footer"><span title='2025-07-22 20:46:15 +0800 +0800'>七月 22, 2025</span>&nbsp;·&nbsp;1 分钟&nbsp;·&nbsp;Theme PaperMod</footer>
@@ -261,30 +282,6 @@ GORK 4 发布了。
   </div>
   <footer class="entry-footer"><span title='2025-07-07 21:54:52 +0800 +0800'>七月 7, 2025</span>&nbsp;·&nbsp;1 分钟&nbsp;·&nbsp;Theme PaperMod</footer>
   <a class="entry-link" aria-label="post link to 故地重游与观海" href="https://vsxen.github.io/posts/2025-07-13/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">Gemini Deep Research
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>体验过chatgpt，豆包，Qwen，和Gemini的深度研究之后，个人感觉Gemini是最好的。 首先会生成研究方向，搜索关键字，然后可能是通过tool call的方式抓取相关内容，生成的结果可以用来创建到Web Page（可交互），Infographic，Quiz和音频。
-当 kube-apiserver 处理 LIST 请求时，它会一次性将数据序列化为 JSON 或 Protobuf 格式，然后交由底层的 Go/http 处理。根据标准的 encoding/json 库实现，kube-apiserver 需要分配一大块内存来存放完整的序列化结果。更严重的是，这块内存要等到数据的最后一个字节被传输完毕后才会释放，容易导致高峰时的内存占用激增。
-解决这个问题的关键在于引入 流式处理 来序列化数据。KEP-5116 根据 LIST 响应的结构特点，可以依次序列化 TypeMeta、ListMeta，然后逐项序列化 Items，避免一次性分配和持有大块内存，从而降低内存占用。
-Streaming JSON/Protobuf in Kubernetes
-k8s 中 prometheus的 token 是如何访问经过认证的kube-controller-manager的/metrics的？
-答案是：证书验证（TLS）和Token授权（RBAC）是两个独立但连续的步骤。kube-controller-manager自己处理TLS握手，但会将授权决策委托给kube-apiserver。
-认证 (Authentication) - 使用 TokenReview：
-kube-controller-manager接收到Token后，它会创建一个TokenReview对象。这个对象包含了它从Prometheus收到的原始Token。 它向kube-apiserver的/apis/authentication.k8s.io/v1/tokenreviews端点发起一个请求，内容就是这个TokenReview对象。 kube-apiserver收到请求后，会验证这个Token的签名和有效性。如果Token有效，kube-apiserver会在TokenReview对象的状态（status）字段中填充该Token对应的用户信息（用户名、UID、所属组等），并返回给kube-controller-manager。 现在，kube-controller-manager知道了这个请求的发起者是谁（例如，system:serviceaccount:monitoring:prometheus-k8s）。 授权 (Authorization) - 使用 SubjectAccessReview：
-在知道了请求者的身份后，kube-controller-manager需要确认这个身份是否有权限执行请求的操作（即对/metrics路径进行GET操作）。 它会创建一个SubjectAccessReview对象。这个对象里包含了上一步获取到的用户信息以及本次请求试图执行的操作（verb: &#34;get&#34;, nonResourceURL: &#34;/metrics&#34;）。 它向kube-apiserver的/apis/authorization.k8s.io/v1/subjectaccessreviews端点发起请求。 kube-apiserver收到请求后，会查询集群中所有的RBAC规则（Role, ClusterRole, RoleBinding, ClusterRoleBinding），判断这个用户是否有权限执行该操作。 kube-apiserver将检查结果（允许或拒绝）填充到SubjectAccessReview对象的状态字段中，并返回给kube-controller-manager。 最终决策：
-kube-controller-manager收到SubjectAccessReview的响应后，如果结果是“允许”，它就会向Prometheus返回/metrics的数据。 如果结果是“拒绝”，它会向Prometheus返回403 Forbidden错误。 这保证了整个集群的认证授权策略是统一和集中的，避免了每个组件各自为政带来的安全风险和管理复杂性。
-k8s 为什么要设计service/proxy的子资源?
-AI生成了4个理由，我觉得唯一有点说服力的也就第三条。
-...</p>
-  </div>
-  <footer class="entry-footer"><span title='2025-07-05 15:45:23 +0800 +0800'>七月 5, 2025</span>&nbsp;·&nbsp;2 分钟&nbsp;·&nbsp;Theme PaperMod</footer>
-  <a class="entry-link" aria-label="post link to Gemini Deep Research" href="https://vsxen.github.io/posts/2025-07-06/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">
