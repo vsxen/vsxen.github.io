@@ -63,9 +63,12 @@
 &lt;p&gt;要被OVS和OVN的关系搞晕了，还有什么openFlow控制器。&lt;/p&gt;
 &lt;p&gt;GPT5 发布了，感觉好像没什么变化的，应该是我的错觉，但是画图挺好用的。&lt;/p&gt;
 &lt;p&gt;看了下现有测试的k8s集群，etcd没有使用vip，APIServer使用keepalived和haproxy实现的高可用&lt;/p&gt;
-&lt;h2 id=&#34;生活&#34;&gt;生活&lt;/h2&gt;
-&lt;p&gt;武汉大学的男生真是可怜，但是好像又不能为他做点事情。&lt;/p&gt;
-&lt;p&gt;才发现《喜剧之王单口季2》开播了，在YouTube上面看来几集，还可以。&lt;/p&gt;</description>
+&lt;p&gt;k3s的localpath pv还是用job的pod创建的。&lt;/p&gt;
+&lt;p&gt;OVN 命令作用一览
+OVN（Open Virtual Network）是 Open vSwitch（OVS）的一个扩展，它为虚拟网络提供了一套更高层次的抽象，让云管理系统（CMS）能更方便地配置和管理网络。您提到的这些命令和守护进程（daemon）都属于 OVN 架构中的关键组件。&lt;/p&gt;
+&lt;p&gt;核心守护进程
+这些是 OVN 架构中的核心服务，通常以守护进程的形式运行。&lt;/p&gt;
+&lt;p&gt;ovn-northd：这是一个中央守护进程，在整个 OVN 部署中只运行一个实例。它的主要职责是将**北向数据库（Northbound DB）中定义的逻辑网络配置（如逻辑交换机、逻辑路由器等）转换成南向数据库（Southbound DB）**中的逻辑流（logical flows）。简而言之，它负责将人类可读的抽象配置翻译成底层的网络规则。&lt;/p&gt;</description>
     </item>
     <item>
       <title>k3s and wsl</title>
