@@ -10,6 +10,9 @@
 <meta name="description" content="解决容器起不来的问题，k3s内置的containerd有时候会出现幽灵镜像的问题，就是镜像存在但是pod还是起不来，重启了一下进程就好了。
 看下dify有什么新功能吗？好像还是没太大变化。 Qwen-image 的模型发布了，可以在图片中插入文字了，还不错。
 cloudpods 还自己搞了一个infomer，挺简单的一个。
+Kubernetes 的 API Server 监听的 6443 端口 使用的是 普通的 HTTPS 协议，而不是 gRPC。
+它通过 HTTPS 提供一个 RESTful API，用于处理集群内部和外部发来的请求，进行资源的创建、更新、删除和查询等操作。
+虽然 gRPC 也是一种高性能的通信协议，但在 Kubernetes 的核心 API Server 中，HTTPS/RESTful API 是标准且默认的通信方式。
 国投瑞银 Kubernetes 双集群高可用架构设计实践 ，用了双机房双集群，没有用联邦，用了istio的多主方案。
 喵了眼 aliyun 的cloudDNS服务，看了下aicon相关的ppt分享。
 特斯拉如何在 ClickHouse 上构建了一个万亿规模的观测平台 做了一个PromQL到SQL的转换层。
@@ -73,6 +76,9 @@ GPT5 发布了，感觉好像没什么变化的，应该是我的错觉，但是
   <meta property="og:description" content="解决容器起不来的问题，k3s内置的containerd有时候会出现幽灵镜像的问题，就是镜像存在但是pod还是起不来，重启了一下进程就好了。
 看下dify有什么新功能吗？好像还是没太大变化。 Qwen-image 的模型发布了，可以在图片中插入文字了，还不错。
 cloudpods 还自己搞了一个infomer，挺简单的一个。
+Kubernetes 的 API Server 监听的 6443 端口 使用的是 普通的 HTTPS 协议，而不是 gRPC。
+它通过 HTTPS 提供一个 RESTful API，用于处理集群内部和外部发来的请求，进行资源的创建、更新、删除和查询等操作。
+虽然 gRPC 也是一种高性能的通信协议，但在 Kubernetes 的核心 API Server 中，HTTPS/RESTful API 是标准且默认的通信方式。
 国投瑞银 Kubernetes 双集群高可用架构设计实践 ，用了双机房双集群，没有用联邦，用了istio的多主方案。
 喵了眼 aliyun 的cloudDNS服务，看了下aicon相关的ppt分享。
 特斯拉如何在 ClickHouse 上构建了一个万亿规模的观测平台 做了一个PromQL到SQL的转换层。
@@ -94,6 +100,9 @@ GPT5 发布了，感觉好像没什么变化的，应该是我的错觉，但是
 <meta name="twitter:description" content="解决容器起不来的问题，k3s内置的containerd有时候会出现幽灵镜像的问题，就是镜像存在但是pod还是起不来，重启了一下进程就好了。
 看下dify有什么新功能吗？好像还是没太大变化。 Qwen-image 的模型发布了，可以在图片中插入文字了，还不错。
 cloudpods 还自己搞了一个infomer，挺简单的一个。
+Kubernetes 的 API Server 监听的 6443 端口 使用的是 普通的 HTTPS 协议，而不是 gRPC。
+它通过 HTTPS 提供一个 RESTful API，用于处理集群内部和外部发来的请求，进行资源的创建、更新、删除和查询等操作。
+虽然 gRPC 也是一种高性能的通信协议，但在 Kubernetes 的核心 API Server 中，HTTPS/RESTful API 是标准且默认的通信方式。
 国投瑞银 Kubernetes 双集群高可用架构设计实践 ，用了双机房双集群，没有用联邦，用了istio的多主方案。
 喵了眼 aliyun 的cloudDNS服务，看了下aicon相关的ppt分享。
 特斯拉如何在 ClickHouse 上构建了一个万亿规模的观测平台 做了一个PromQL到SQL的转换层。
@@ -132,12 +141,12 @@ GPT5 发布了，感觉好像没什么变化的，应该是我的错觉，但是
   "@type": "BlogPosting",
   "headline": "学习一个东西最快的东西还是文档",
   "name": "学习一个东西最快的东西还是文档",
-  "description": "解决容器起不来的问题，k3s内置的containerd有时候会出现幽灵镜像的问题，就是镜像存在但是pod还是起不来，重启了一下进程就好了。\n看下dify有什么新功能吗？好像还是没太大变化。 Qwen-image 的模型发布了，可以在图片中插入文字了，还不错。\ncloudpods 还自己搞了一个infomer，挺简单的一个。\n国投瑞银 Kubernetes 双集群高可用架构设计实践 ，用了双机房双集群，没有用联邦，用了istio的多主方案。\n喵了眼 aliyun 的cloudDNS服务，看了下aicon相关的ppt分享。\n特斯拉如何在 ClickHouse 上构建了一个万亿规模的观测平台 做了一个PromQL到SQL的转换层。\n差不多把cloudpods的文档全部读了一遍。\n要被OVS和OVN的关系搞晕了，还有什么openFlow控制器。\nGPT5 发布了，感觉好像没什么变化的，应该是我的错觉，但是画图挺好用的。\n看了下现有测试的k8s集群，etcd没有使用vip，APIServer使用keepalived和haproxy实现的高可用\n生活 武汉大学的男生真是可怜，但是好像又不能为他做点事情。\n才发现《喜剧之王单口季2》开播了，在YouTube上面看来几集，还可以。\n",
+  "description": "解决容器起不来的问题，k3s内置的containerd有时候会出现幽灵镜像的问题，就是镜像存在但是pod还是起不来，重启了一下进程就好了。\n看下dify有什么新功能吗？好像还是没太大变化。 Qwen-image 的模型发布了，可以在图片中插入文字了，还不错。\ncloudpods 还自己搞了一个infomer，挺简单的一个。\nKubernetes 的 API Server 监听的 6443 端口 使用的是 普通的 HTTPS 协议，而不是 gRPC。\n它通过 HTTPS 提供一个 RESTful API，用于处理集群内部和外部发来的请求，进行资源的创建、更新、删除和查询等操作。\n虽然 gRPC 也是一种高性能的通信协议，但在 Kubernetes 的核心 API Server 中，HTTPS/RESTful API 是标准且默认的通信方式。\n国投瑞银 Kubernetes 双集群高可用架构设计实践 ，用了双机房双集群，没有用联邦，用了istio的多主方案。\n喵了眼 aliyun 的cloudDNS服务，看了下aicon相关的ppt分享。\n特斯拉如何在 ClickHouse 上构建了一个万亿规模的观测平台 做了一个PromQL到SQL的转换层。\n差不多把cloudpods的文档全部读了一遍。\n要被OVS和OVN的关系搞晕了，还有什么openFlow控制器。\nGPT5 发布了，感觉好像没什么变化的，应该是我的错觉，但是画图挺好用的。\n看了下现有测试的k8s集群，etcd没有使用vip，APIServer使用keepalived和haproxy实现的高可用\n生活 武汉大学的男生真是可怜，但是好像又不能为他做点事情。\n才发现《喜剧之王单口季2》开播了，在YouTube上面看来几集，还可以。\n",
   "keywords": [
     
   ],
-  "articleBody": "解决容器起不来的问题，k3s内置的containerd有时候会出现幽灵镜像的问题，就是镜像存在但是pod还是起不来，重启了一下进程就好了。\n看下dify有什么新功能吗？好像还是没太大变化。 Qwen-image 的模型发布了，可以在图片中插入文字了，还不错。\ncloudpods 还自己搞了一个infomer，挺简单的一个。\n国投瑞银 Kubernetes 双集群高可用架构设计实践 ，用了双机房双集群，没有用联邦，用了istio的多主方案。\n喵了眼 aliyun 的cloudDNS服务，看了下aicon相关的ppt分享。\n特斯拉如何在 ClickHouse 上构建了一个万亿规模的观测平台 做了一个PromQL到SQL的转换层。\n差不多把cloudpods的文档全部读了一遍。\n要被OVS和OVN的关系搞晕了，还有什么openFlow控制器。\nGPT5 发布了，感觉好像没什么变化的，应该是我的错觉，但是画图挺好用的。\n看了下现有测试的k8s集群，etcd没有使用vip，APIServer使用keepalived和haproxy实现的高可用\n生活 武汉大学的男生真是可怜，但是好像又不能为他做点事情。\n才发现《喜剧之王单口季2》开播了，在YouTube上面看来几集，还可以。\n",
-  "wordCount" : "25",
+  "articleBody": "解决容器起不来的问题，k3s内置的containerd有时候会出现幽灵镜像的问题，就是镜像存在但是pod还是起不来，重启了一下进程就好了。\n看下dify有什么新功能吗？好像还是没太大变化。 Qwen-image 的模型发布了，可以在图片中插入文字了，还不错。\ncloudpods 还自己搞了一个infomer，挺简单的一个。\nKubernetes 的 API Server 监听的 6443 端口 使用的是 普通的 HTTPS 协议，而不是 gRPC。\n它通过 HTTPS 提供一个 RESTful API，用于处理集群内部和外部发来的请求，进行资源的创建、更新、删除和查询等操作。\n虽然 gRPC 也是一种高性能的通信协议，但在 Kubernetes 的核心 API Server 中，HTTPS/RESTful API 是标准且默认的通信方式。\n国投瑞银 Kubernetes 双集群高可用架构设计实践 ，用了双机房双集群，没有用联邦，用了istio的多主方案。\n喵了眼 aliyun 的cloudDNS服务，看了下aicon相关的ppt分享。\n特斯拉如何在 ClickHouse 上构建了一个万亿规模的观测平台 做了一个PromQL到SQL的转换层。\n差不多把cloudpods的文档全部读了一遍。\n要被OVS和OVN的关系搞晕了，还有什么openFlow控制器。\nGPT5 发布了，感觉好像没什么变化的，应该是我的错觉，但是画图挺好用的。\n看了下现有测试的k8s集群，etcd没有使用vip，APIServer使用keepalived和haproxy实现的高可用\n生活 武汉大学的男生真是可怜，但是好像又不能为他做点事情。\n才发现《喜剧之王单口季2》开播了，在YouTube上面看来几集，还可以。\n",
+  "wordCount" : "52",
   "inLanguage": "zh",
   "image": "https://vsxen.github.io/images/papermod-cover.png","datePublished": "2025-08-06T00:05:12+08:00",
   "dateModified": "2025-08-06T00:05:12+08:00",
@@ -249,6 +258,9 @@ GPT5 发布了，感觉好像没什么变化的，应该是我的错觉，但是
   <div class="post-content"><p>解决容器起不来的问题，k3s内置的containerd有时候会出现幽灵镜像的问题，就是镜像存在但是pod还是起不来，重启了一下进程就好了。</p>
 <p>看下dify有什么新功能吗？好像还是没太大变化。 Qwen-image 的模型发布了，可以在图片中插入文字了，还不错。</p>
 <p>cloudpods 还自己搞了一个infomer，挺简单的一个。</p>
+<p>Kubernetes 的 API Server 监听的 6443 端口 使用的是 普通的 HTTPS 协议，而不是 gRPC。</p>
+<p>它通过 HTTPS 提供一个 RESTful API，用于处理集群内部和外部发来的请求，进行资源的创建、更新、删除和查询等操作。</p>
+<p>虽然 gRPC 也是一种高性能的通信协议，但在 Kubernetes 的核心 API Server 中，HTTPS/RESTful API 是标准且默认的通信方式。</p>
 <p><a href="https://www.infoq.cn/article/NDsemsR45vqxLlwgNo73">国投瑞银 Kubernetes 双集群高可用架构设计实践</a> ，用了双机房双集群，没有用联邦，用了istio的多主方案。</p>
 <p>喵了眼 aliyun 的cloudDNS服务，看了下aicon相关的ppt分享。</p>
 <p><a href="https://clickhouse.com/blog/how-tesla-built-quadrillion-scale-observability-platform-on-clickhouse">特斯拉如何在 ClickHouse 上构建了一个万亿规模的观测平台</a> 做了一个PromQL到SQL的转换层。</p>

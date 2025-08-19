@@ -166,7 +166,9 @@
   </header>
   <div class="entry-content">
     <p>clickhouse的集群还需要在配置文件里面声明全部节点，不过有试验性的发现机制。
-看招聘软件都在招可观测行工程师，clickhouse官网有一个hyperdx的项目，这种项目以后的稳定性就让人担心的。
+看招聘软件都在招可观测行工程师，clickhouse官网有一个hyperdx的项目，测试了一下，搜索条件还支持lucene，感觉这种项目以后的稳定性就让人担心的。
+计算机是怎么实现强制类型转换的？
+忽然发现泛域名证书在k8s上面好像不要针对每个ingress都创建TLS secret？证书握手阶段发哪个都可以。
 </p>
   </div>
   <footer class="entry-footer"><span title='2025-08-17 22:24:09 +0800 +0800'>八月 17, 2025</span>&nbsp;·&nbsp;1 分钟&nbsp;·&nbsp;Theme PaperMod</footer>
@@ -193,12 +195,8 @@
 有些问题方面GPT比Gemini好一点。
 https://engineering.fyi/ 和我在七月底的一个想法一样，但是我还停留在初始化阶段。
 北半球三大流星雨来袭，西安太子山。
-安装harbor，安装pg，安装clickhouse，感觉这些东西就装的时候能记住，装完了就全部忘记了。
-看到了这个项目，ruby写的还没有试过，https://github.com/ubicloud/ubicloud
-MicroVM
-阿里云的ack 新增了 ai profiling 的功能，需要python 编译的时候加上USDT，UI居然也支持 perfetto
-生活 拍星星还是有点难的，肉眼看不到，需要后期，忽然想到照片编辑也是一个很神奇的东西。
-</p>
+# 启用单播模式 unicast_src_ip 192.168.1.10 # 本地服务器的IP地址 unicast_peer { 192.168.1.11 # 备用服务器的IP地址 192.168.1.12 # 如果有更多备用机，依次添加 } 原来还有这东西 /etc/hosts.allow 文件是 Linux 系统中一个用于 控制网络服务访问权限 的重要配置文件。它与另一个文件 /etc/hosts.deny 协同工作，共同构成了 TCP Wrappers 访问控制机制。
+...</p>
   </div>
   <footer class="entry-footer"><span title='2025-08-11 08:43:39 +0800 +0800'>八月 11, 2025</span>&nbsp;·&nbsp;1 分钟&nbsp;·&nbsp;Theme PaperMod</footer>
   <a class="entry-link" aria-label="post link to 忘性太大了" href="https://vsxen.github.io/posts/2025-08-17/"></a>
@@ -219,6 +217,9 @@ MicroVM
     <p>解决容器起不来的问题，k3s内置的containerd有时候会出现幽灵镜像的问题，就是镜像存在但是pod还是起不来，重启了一下进程就好了。
 看下dify有什么新功能吗？好像还是没太大变化。 Qwen-image 的模型发布了，可以在图片中插入文字了，还不错。
 cloudpods 还自己搞了一个infomer，挺简单的一个。
+Kubernetes 的 API Server 监听的 6443 端口 使用的是 普通的 HTTPS 协议，而不是 gRPC。
+它通过 HTTPS 提供一个 RESTful API，用于处理集群内部和外部发来的请求，进行资源的创建、更新、删除和查询等操作。
+虽然 gRPC 也是一种高性能的通信协议，但在 Kubernetes 的核心 API Server 中，HTTPS/RESTful API 是标准且默认的通信方式。
 国投瑞银 Kubernetes 双集群高可用架构设计实践 ，用了双机房双集群，没有用联邦，用了istio的多主方案。
 喵了眼 aliyun 的cloudDNS服务，看了下aicon相关的ppt分享。
 特斯拉如何在 ClickHouse 上构建了一个万亿规模的观测平台 做了一个PromQL到SQL的转换层。
