@@ -19,7 +19,8 @@
       <link>https://vsxen.github.io/posts/2025-08-24/</link>
       <pubDate>Sun, 17 Aug 2025 22:24:09 +0800</pubDate>
       <guid>https://vsxen.github.io/posts/2025-08-24/</guid>
-      <description></description>
+      <description>&lt;p&gt;clickhouse的集群还需要在配置文件里面声明全部节点，不过有试验性的发现机制。&lt;/p&gt;
+&lt;p&gt;看招聘软件都在招可观测行工程师，clickhouse官网有一个hyperdx的项目，这种项目以后的稳定性就让人担心的。&lt;/p&gt;</description>
     </item>
     <item>
       <title>忘性太大了</title>
@@ -37,7 +38,9 @@
 &lt;p&gt;安装harbor，安装pg，安装clickhouse，感觉这些东西就装的时候能记住，装完了就全部忘记了。&lt;/p&gt;
 &lt;p&gt;看到了这个项目，ruby写的还没有试过，https://github.com/ubicloud/ubicloud&lt;/p&gt;
 &lt;p&gt;&lt;a href=&#34;https://github.com/liquidmetal-dev/flintlock&#34;&gt;MicroVM&lt;/a&gt;&lt;/p&gt;
-&lt;h2 id=&#34;生活&#34;&gt;生活&lt;/h2&gt;</description>
+&lt;p&gt;阿里云的ack 新增了 ai profiling 的功能，需要python 编译的时候加上USDT，UI居然也支持 &lt;a href=&#34;https://ui.perfetto.dev/&#34;&gt;perfetto&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&#34;生活&#34;&gt;生活&lt;/h2&gt;
+&lt;p&gt;拍星星还是有点难的，肉眼看不到，需要后期，忽然想到照片编辑也是一个很神奇的东西。&lt;/p&gt;</description>
     </item>
     <item>
       <title>学习一个东西最快的东西还是文档</title>
