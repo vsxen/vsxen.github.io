@@ -9,27 +9,46 @@
       <url>https://vsxen.github.io/images/papermod-cover.png</url>
       <link>https://vsxen.github.io/images/papermod-cover.png</link>
     </image>
-    <generator>Hugo -- 0.148.2</generator>
+    <generator>Hugo -- 0.149.0</generator>
     <language>zh</language>
     <copyright>PaperMod Contributors</copyright>
     <lastBuildDate>Sun, 24 Aug 2025 22:53:05 +0800</lastBuildDate>
     <atom:link href="https://vsxen.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>2025 08 31</title>
+      <title>零信任</title>
       <link>https://vsxen.github.io/posts/2025-08-31/</link>
       <pubDate>Sun, 24 Aug 2025 22:53:05 +0800</pubDate>
       <guid>https://vsxen.github.io/posts/2025-08-31/</guid>
-      <description></description>
+      <description>&lt;p&gt;&lt;a href=&#34;https://blog.min.io/why-object-storage-is-superior-to-san-nas/&#34;&gt;https://blog.min.io/why-object-storage-is-superior-to-san-nas/&lt;/a&gt;&lt;/p&gt;</description>
     </item>
     <item>
-      <title>2025 08 24</title>
+      <title>victoriametrics 全家桶</title>
       <link>https://vsxen.github.io/posts/2025-08-24/</link>
       <pubDate>Sun, 17 Aug 2025 22:24:09 +0800</pubDate>
       <guid>https://vsxen.github.io/posts/2025-08-24/</guid>
-      <description>&lt;p&gt;clickhouse的集群还需要在配置文件里面声明全部节点，不过有试验性的发现机制。&lt;/p&gt;
-&lt;p&gt;看招聘软件都在招可观测行工程师，clickhouse官网有一个hyperdx的项目，测试了一下，搜索条件还支持lucene，感觉这种项目以后的稳定性就让人担心的。&lt;/p&gt;
-&lt;p&gt;计算机是怎么实现强制类型转换的？&lt;/p&gt;
-&lt;p&gt;忽然发现泛域名证书在k8s上面好像不要针对每个ingress都创建TLS secret？证书握手阶段发哪个都可以。&lt;/p&gt;</description>
+      <description>&lt;p&gt;cursor 加入到企业里面了，虽然现在可能比以前降智，还是可以用一下的。&lt;/p&gt;
+&lt;p&gt;测试了下cursor，Qwen VSCode，Gemini CLI，同一个问题，前两个答出来了，Gemini死活不行。&lt;/p&gt;
+&lt;p&gt;使用Kimi K2测试了CC，可惜rps太低了一直被限制。&lt;/p&gt;
+&lt;p&gt;clickhouse的集群还需要在配置文件里面声明全部节点，不过有试验性的发现机制。&lt;/p&gt;
+&lt;p&gt;那clickhouse的operator时怎么做的呢？&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://lyk-love.cn/2025/05/28/gnu-readline/&#34;&gt;你所不知道的 GNU Readline&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;光标移动：&lt;/p&gt;
+&lt;p&gt;Ctrl + a	移动光标至行首
+Ctrl + e	移动光标至行尾
+Ctrl + b	向后移动一个字符（同左箭头）
+Ctrl + f	向前移动一个字符（同右箭头）
+Alt + b	向后移动一个单词
+Alt + f	向前移动一个单词
+Ctrl + d	删除光标下的字符
+Backspace 或 Ctrl + h	删除光标前的字符
+Ctrl + k	剪切从光标到行尾的内容
+Ctrl + u	剪切从光标到行首的内容
+Ctrl + w	剪切光标前的一个单词
+Ctrl + y	粘贴最近剪切的内容
+Ctrl + t	交换光标前两个字符的位置
+Ctrl + l	清空屏幕
+Ctrl + _	撤销上一次的编辑操作
+Bash 历史：&lt;/p&gt;</description>
     </item>
     <item>
       <title>忘性太大了</title>
