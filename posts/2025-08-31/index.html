@@ -7,8 +7,16 @@
 <meta name="robots" content="index, follow">
 <title>零信任 | Code Life</title>
 <meta name="keywords" content="">
-<meta name="description" content="https://blog.min.io/why-object-storage-is-superior-to-san-nas/
-https://lmsys.org/blog/2025-05-05-large-scale-ep/">
+<meta name="description" content="对象存储和快存储的对比
+https://blog.min.io/why-object-storage-is-superior-to-san-nas/
+16张A800实现的 deepseek 推理方案
+https://lmsys.org/blog/2025-05-05-large-scale-ep/
+Linux Networking Stack tutorial: Receiving Data
+下面还有一篇是发送的
+看网上关于 SMB NFS 和 iSCSI 的性能对比，SMB更适合大文件，忽然想起来了juicefs，基于fuse的文件系统，posix兼容
+借了一台QNAP的测试机，用的是ZFS，搜到前两年和群晖（btrfs）吵架的文章，忽然想到前段时间的bcachefs。
+整理 minio 的监控指标，画一个监控面板。
+fosdem 2025 上面看下有什么存储的分享，东西是越来越看不完了。">
 <meta name="author" content="Theme PaperMod">
 <link rel="canonical" href="https://vsxen.github.io/posts/2025-08-31/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.f49d66caae9ea0fd43f21f29e71a8d3e284517ed770f2aa86fa012953ad3c9ef.css" integrity="sha256-9J1myq6eoP1D8h8p5xqNPihFF&#43;13Dyqob6ASlTrTye8=" rel="preload stylesheet" as="style">
@@ -59,8 +67,13 @@ https://lmsys.org/blog/2025-05-05-large-scale-ep/">
 </noscript><meta property="og:url" content="https://vsxen.github.io/posts/2025-08-31/">
   <meta property="og:site_name" content="Code Life">
   <meta property="og:title" content="零信任">
-  <meta property="og:description" content="https://blog.min.io/why-object-storage-is-superior-to-san-nas/
-https://lmsys.org/blog/2025-05-05-large-scale-ep/">
+  <meta property="og:description" content="对象存储和快存储的对比 https://blog.min.io/why-object-storage-is-superior-to-san-nas/
+16张A800实现的 deepseek 推理方案 https://lmsys.org/blog/2025-05-05-large-scale-ep/
+Linux Networking Stack tutorial: Receiving Data 下面还有一篇是发送的
+看网上关于 SMB NFS 和 iSCSI 的性能对比，SMB更适合大文件，忽然想起来了juicefs，基于fuse的文件系统，posix兼容
+借了一台QNAP的测试机，用的是ZFS，搜到前两年和群晖（btrfs）吵架的文章，忽然想到前段时间的bcachefs。
+整理 minio 的监控指标，画一个监控面板。
+fosdem 2025 上面看下有什么存储的分享，东西是越来越看不完了。">
   <meta property="og:locale" content="zh">
   <meta property="og:type" content="article">
     <meta property="article:section" content="posts">
@@ -70,8 +83,16 @@ https://lmsys.org/blog/2025-05-05-large-scale-ep/">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://vsxen.github.io/images/papermod-cover.png">
 <meta name="twitter:title" content="零信任">
-<meta name="twitter:description" content="https://blog.min.io/why-object-storage-is-superior-to-san-nas/
-https://lmsys.org/blog/2025-05-05-large-scale-ep/">
+<meta name="twitter:description" content="对象存储和快存储的对比
+https://blog.min.io/why-object-storage-is-superior-to-san-nas/
+16张A800实现的 deepseek 推理方案
+https://lmsys.org/blog/2025-05-05-large-scale-ep/
+Linux Networking Stack tutorial: Receiving Data
+下面还有一篇是发送的
+看网上关于 SMB NFS 和 iSCSI 的性能对比，SMB更适合大文件，忽然想起来了juicefs，基于fuse的文件系统，posix兼容
+借了一台QNAP的测试机，用的是ZFS，搜到前两年和群晖（btrfs）吵架的文章，忽然想到前段时间的bcachefs。
+整理 minio 的监控指标，画一个监控面板。
+fosdem 2025 上面看下有什么存储的分享，东西是越来越看不完了。">
 
 
 <script type="application/ld+json">
@@ -100,12 +121,12 @@ https://lmsys.org/blog/2025-05-05-large-scale-ep/">
   "@type": "BlogPosting",
   "headline": "零信任",
   "name": "零信任",
-  "description": "https://blog.min.io/why-object-storage-is-superior-to-san-nas/\nhttps://lmsys.org/blog/2025-05-05-large-scale-ep/\n",
+  "description": "对象存储和快存储的对比 https://blog.min.io/why-object-storage-is-superior-to-san-nas/\n16张A800实现的 deepseek 推理方案 https://lmsys.org/blog/2025-05-05-large-scale-ep/\nLinux Networking Stack tutorial: Receiving Data 下面还有一篇是发送的\n看网上关于 SMB NFS 和 iSCSI 的性能对比，SMB更适合大文件，忽然想起来了juicefs，基于fuse的文件系统，posix兼容\n借了一台QNAP的测试机，用的是ZFS，搜到前两年和群晖（btrfs）吵架的文章，忽然想到前段时间的bcachefs。\n整理 minio 的监控指标，画一个监控面板。\nfosdem 2025 上面看下有什么存储的分享，东西是越来越看不完了。\n",
   "keywords": [
     
   ],
-  "articleBody": "https://blog.min.io/why-object-storage-is-superior-to-san-nas/\nhttps://lmsys.org/blog/2025-05-05-large-scale-ep/\n",
-  "wordCount" : "2",
+  "articleBody": "对象存储和快存储的对比 https://blog.min.io/why-object-storage-is-superior-to-san-nas/\n16张A800实现的 deepseek 推理方案 https://lmsys.org/blog/2025-05-05-large-scale-ep/\nLinux Networking Stack tutorial: Receiving Data 下面还有一篇是发送的\n看网上关于 SMB NFS 和 iSCSI 的性能对比，SMB更适合大文件，忽然想起来了juicefs，基于fuse的文件系统，posix兼容\n借了一台QNAP的测试机，用的是ZFS，搜到前两年和群晖（btrfs）吵架的文章，忽然想到前段时间的bcachefs。\n整理 minio 的监控指标，画一个监控面板。\nfosdem 2025 上面看下有什么存储的分享，东西是越来越看不完了。\n",
+  "wordCount" : "26",
   "inLanguage": "zh",
   "image": "https://vsxen.github.io/images/papermod-cover.png","datePublished": "2025-08-24T22:53:05+08:00",
   "dateModified": "2025-08-24T22:53:05+08:00",
@@ -201,8 +222,16 @@ https://lmsys.org/blog/2025-05-05-large-scale-ep/">
 </div>
   </header> 
 
-  <div class="post-content"><p><a href="https://blog.min.io/why-object-storage-is-superior-to-san-nas/">https://blog.min.io/why-object-storage-is-superior-to-san-nas/</a></p>
-<p><a href="https://lmsys.org/blog/2025-05-05-large-scale-ep/">https://lmsys.org/blog/2025-05-05-large-scale-ep/</a></p>
+  <div class="post-content"><p>对象存储和快存储的对比
+<a href="https://blog.min.io/why-object-storage-is-superior-to-san-nas/">https://blog.min.io/why-object-storage-is-superior-to-san-nas/</a></p>
+<p>16张A800实现的 deepseek 推理方案
+<a href="https://lmsys.org/blog/2025-05-05-large-scale-ep/">https://lmsys.org/blog/2025-05-05-large-scale-ep/</a></p>
+<p><a href="https://maxnilz.com/docs/004-network/006-linux-rx/">Linux Networking Stack tutorial: Receiving Data</a>
+下面还有一篇是发送的</p>
+<p>看网上关于 SMB NFS 和 iSCSI 的性能对比，SMB更适合大文件，忽然想起来了juicefs，基于fuse的文件系统，posix兼容</p>
+<p>借了一台QNAP的测试机，用的是ZFS，搜到前两年和群晖（btrfs）吵架的文章，忽然想到前段时间的bcachefs。</p>
+<p>整理 minio 的监控指标，画一个监控面板。</p>
+<p>fosdem 2025 上面看下有什么存储的分享，东西是越来越看不完了。</p>
 
 
   </div>
@@ -214,7 +243,7 @@ https://lmsys.org/blog/2025-05-05-large-scale-ep/">
   <a class="prev" href="https://vsxen.github.io/posts/2025-09-07/">
     <span class="title">« 上一页</span>
     <br>
-    <span>2025 09 07</span>
+    <span>iSCSI 块存储</span>
   </a>
   <a class="next" href="https://vsxen.github.io/posts/2025-08-24/">
     <span class="title">下一页 »</span>

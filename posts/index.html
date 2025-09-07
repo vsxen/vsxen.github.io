@@ -155,7 +155,7 @@
 
 <article class="post-entry"> 
   <header class="entry-header">
-    <h2 class="entry-hint-parent">2025 09 07
+    <h2 class="entry-hint-parent">iSCSI 块存储
       <span class="entry-hint" title="Draft">
         <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" fill="currentColor">
           <path
@@ -165,10 +165,14 @@
     </h2>
   </header>
   <div class="entry-content">
-    <p></p>
+    <p>从上周六九去了珠海一趟，主要是解决构建过程的文件共享，之前说好的是用iSCSI协议挂载到Windows节点上，可惜也是不支持多读多写。
+查了下目前的块存储都是不支持多读多写的，nvme 可以实现多读单写。上周用Gemini深度研究的nvme终于有时间看了
+还有人提出了WSFC (Windows Server Failover Clustering) 的方案，我之前想的是OCFS，可惜不支持Windows，起始话说回来，总要有一个协调的组件来处理写冲突的。
+还有一个比较奇怪的问题，
+</p>
   </div>
-  <footer class="entry-footer"><span title='2025-09-07 20:22:49 +0800 +0800'>九月 7, 2025</span>&nbsp;·&nbsp;0 分钟&nbsp;·&nbsp;Theme PaperMod</footer>
-  <a class="entry-link" aria-label="post link to 2025 09 07" href="https://vsxen.github.io/posts/2025-09-07/"></a>
+  <footer class="entry-footer"><span title='2025-09-07 20:22:49 +0800 +0800'>九月 7, 2025</span>&nbsp;·&nbsp;1 分钟&nbsp;·&nbsp;Theme PaperMod</footer>
+  <a class="entry-link" aria-label="post link to iSCSI 块存储" href="https://vsxen.github.io/posts/2025-09-07/"></a>
 </article>
 
 <article class="post-entry"> 
@@ -183,8 +187,13 @@
     </h2>
   </header>
   <div class="entry-content">
-    <p>https://blog.min.io/why-object-storage-is-superior-to-san-nas/
-https://lmsys.org/blog/2025-05-05-large-scale-ep/
+    <p>对象存储和快存储的对比 https://blog.min.io/why-object-storage-is-superior-to-san-nas/
+16张A800实现的 deepseek 推理方案 https://lmsys.org/blog/2025-05-05-large-scale-ep/
+Linux Networking Stack tutorial: Receiving Data 下面还有一篇是发送的
+看网上关于 SMB NFS 和 iSCSI 的性能对比，SMB更适合大文件，忽然想起来了juicefs，基于fuse的文件系统，posix兼容
+借了一台QNAP的测试机，用的是ZFS，搜到前两年和群晖（btrfs）吵架的文章，忽然想到前段时间的bcachefs。
+整理 minio 的监控指标，画一个监控面板。
+fosdem 2025 上面看下有什么存储的分享，东西是越来越看不完了。
 </p>
   </div>
   <footer class="entry-footer"><span title='2025-08-24 22:53:05 +0800 +0800'>八月 24, 2025</span>&nbsp;·&nbsp;1 分钟&nbsp;·&nbsp;Theme PaperMod</footer>
