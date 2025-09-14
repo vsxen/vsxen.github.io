@@ -155,6 +155,41 @@
 
 <article class="post-entry"> 
   <header class="entry-header">
+    <h2 class="entry-hint-parent">学习一个东西最快的东西还是文档
+      <span class="entry-hint" title="Draft">
+        <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" fill="currentColor">
+          <path
+            d="M160-410v-60h300v60H160Zm0-165v-60h470v60H160Zm0-165v-60h470v60H160Zm360 580v-123l221-220q9-9 20-13t22-4q12 0 23 4.5t20 13.5l37 37q9 9 13 20t4 22q0 11-4.5 22.5T862.09-380L643-160H520Zm300-263-37-37 37 37ZM580-220h38l121-122-18-19-19-18-122 121v38Zm141-141-19-18 37 37-18-19Z" />
+        </svg>
+      </span>
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>解决容器起不来的问题，k3s内置的containerd有时候会出现幽灵镜像的问题，就是镜像存在但是pod还是起不来，重启了一下进程就好了。
+看下dify有什么新功能吗？好像还是没太大变化。 Qwen-image 的模型发布了，可以在图片中插入文字了，还不错。
+cloudpods 还自己搞了一个infomer，挺简单的一个。
+Kubernetes 的 API Server 监听的 6443 端口 使用的是 普通的 HTTPS 协议，而不是 gRPC。
+它通过 HTTPS 提供一个 RESTful API，用于处理集群内部和外部发来的请求，进行资源的创建、更新、删除和查询等操作。
+虽然 gRPC 也是一种高性能的通信协议，但在 Kubernetes 的核心 API Server 中，HTTPS/RESTful API 是标准且默认的通信方式。
+国投瑞银 Kubernetes 双集群高可用架构设计实践 ，用了双机房双集群，没有用联邦，用了istio的多主方案。
+喵了眼 aliyun 的cloudDNS服务，看了下aicon相关的ppt分享。
+特斯拉如何在 ClickHouse 上构建了一个万亿规模的观测平台 做了一个PromQL到SQL的转换层。
+差不多把cloudpods的文档全部读了一遍。
+要被OVS和OVN的关系搞晕了，还有什么openFlow控制器。
+GPT5 发布了，感觉好像没什么变化的，应该是我的错觉，但是画图挺好用的。
+看了下现有测试的k8s集群，etcd没有使用vip，APIServer使用keepalived和haproxy实现的高可用
+k3s的localpath pv还是用job的pod创建的。
+OVN 命令作用一览 OVN（Open Virtual Network）是 Open vSwitch（OVS）的一个扩展，它为虚拟网络提供了一套更高层次的抽象，让云管理系统（CMS）能更方便地配置和管理网络。您提到的这些命令和守护进程（daemon）都属于 OVN 架构中的关键组件。
+核心守护进程 这些是 OVN 架构中的核心服务，通常以守护进程的形式运行。
+ovn-northd：这是一个中央守护进程，在整个 OVN 部署中只运行一个实例。它的主要职责是将**北向数据库（Northbound DB）中定义的逻辑网络配置（如逻辑交换机、逻辑路由器等）转换成南向数据库（Southbound DB）**中的逻辑流（logical flows）。简而言之，它负责将人类可读的抽象配置翻译成底层的网络规则。
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-08-06 00:05:12 +0800 +0800'>八月 6, 2025</span>&nbsp;·&nbsp;1 分钟&nbsp;·&nbsp;Theme PaperMod</footer>
+  <a class="entry-link" aria-label="post link to 学习一个东西最快的东西还是文档" href="https://vsxen.github.io/posts/2025-08-10/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
     <h2 class="entry-hint-parent">k3s and wsl
       <span class="entry-hint" title="Draft">
         <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" fill="currentColor">
@@ -264,30 +299,6 @@ GORK 4 发布了。
   </div>
   <footer class="entry-footer"><span title='2025-07-07 21:54:52 +0800 +0800'>七月 7, 2025</span>&nbsp;·&nbsp;1 分钟&nbsp;·&nbsp;Theme PaperMod</footer>
   <a class="entry-link" aria-label="post link to 故地重游与观海" href="https://vsxen.github.io/posts/2025-07-13/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">Gemini Deep Research
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>体验过chatgpt，豆包，Qwen，和Gemini的深度研究之后，个人感觉Gemini是最好的。 首先会生成研究方向，搜索关键字，然后可能是通过tool call的方式抓取相关内容，生成的结果可以用来创建到Web Page（可交互），Infographic，Quiz和音频。
-当 kube-apiserver 处理 LIST 请求时，它会一次性将数据序列化为 JSON 或 Protobuf 格式，然后交由底层的 Go/http 处理。根据标准的 encoding/json 库实现，kube-apiserver 需要分配一大块内存来存放完整的序列化结果。更严重的是，这块内存要等到数据的最后一个字节被传输完毕后才会释放，容易导致高峰时的内存占用激增。
-解决这个问题的关键在于引入 流式处理 来序列化数据。KEP-5116 根据 LIST 响应的结构特点，可以依次序列化 TypeMeta、ListMeta，然后逐项序列化 Items，避免一次性分配和持有大块内存，从而降低内存占用。
-Streaming JSON/Protobuf in Kubernetes
-k8s 中 prometheus的 token 是如何访问经过认证的kube-controller-manager的/metrics的？
-答案是：证书验证（TLS）和Token授权（RBAC）是两个独立但连续的步骤。kube-controller-manager自己处理TLS握手，但会将授权决策委托给kube-apiserver。
-认证 (Authentication) - 使用 TokenReview：
-kube-controller-manager接收到Token后，它会创建一个TokenReview对象。这个对象包含了它从Prometheus收到的原始Token。 它向kube-apiserver的/apis/authentication.k8s.io/v1/tokenreviews端点发起一个请求，内容就是这个TokenReview对象。 kube-apiserver收到请求后，会验证这个Token的签名和有效性。如果Token有效，kube-apiserver会在TokenReview对象的状态（status）字段中填充该Token对应的用户信息（用户名、UID、所属组等），并返回给kube-controller-manager。 现在，kube-controller-manager知道了这个请求的发起者是谁（例如，system:serviceaccount:monitoring:prometheus-k8s）。 授权 (Authorization) - 使用 SubjectAccessReview：
-在知道了请求者的身份后，kube-controller-manager需要确认这个身份是否有权限执行请求的操作（即对/metrics路径进行GET操作）。 它会创建一个SubjectAccessReview对象。这个对象里包含了上一步获取到的用户信息以及本次请求试图执行的操作（verb: &#34;get&#34;, nonResourceURL: &#34;/metrics&#34;）。 它向kube-apiserver的/apis/authorization.k8s.io/v1/subjectaccessreviews端点发起请求。 kube-apiserver收到请求后，会查询集群中所有的RBAC规则（Role, ClusterRole, RoleBinding, ClusterRoleBinding），判断这个用户是否有权限执行该操作。 kube-apiserver将检查结果（允许或拒绝）填充到SubjectAccessReview对象的状态字段中，并返回给kube-controller-manager。 最终决策：
-kube-controller-manager收到SubjectAccessReview的响应后，如果结果是“允许”，它就会向Prometheus返回/metrics的数据。 如果结果是“拒绝”，它会向Prometheus返回403 Forbidden错误。 这保证了整个集群的认证授权策略是统一和集中的，避免了每个组件各自为政带来的安全风险和管理复杂性。
-k8s 为什么要设计service/proxy的子资源?
-AI生成了4个理由，我觉得唯一有点说服力的也就第三条。
-...</p>
-  </div>
-  <footer class="entry-footer"><span title='2025-07-05 15:45:23 +0800 +0800'>七月 5, 2025</span>&nbsp;·&nbsp;2 分钟&nbsp;·&nbsp;Theme PaperMod</footer>
-  <a class="entry-link" aria-label="post link to Gemini Deep Research" href="https://vsxen.github.io/posts/2025-07-06/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">

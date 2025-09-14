@@ -155,6 +155,28 @@
 
 <article class="post-entry"> 
   <header class="entry-header">
+    <h2 class="entry-hint-parent">pve 创建VM 
+      <span class="entry-hint" title="Draft">
+        <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" fill="currentColor">
+          <path
+            d="M160-410v-60h300v60H160Zm0-165v-60h470v60H160Zm0-165v-60h470v60H160Zm360 580v-123l221-220q9-9 20-13t22-4q12 0 23 4.5t20 13.5l37 37q9 9 13 20t4 22q0 11-4.5 22.5T862.09-380L643-160H520Zm300-263-37-37 37 37ZM580-220h38l121-122-18-19-19-18-122 121v38Zm141-141-19-18 37 37-18-19Z" />
+        </svg>
+      </span>
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>pve 下面安装Windows vm全流程测试了一下，主要是磁盘的选择，virtio blk还是SCSI，如果是ISO安装的话要挂载virtio的驱动，不然识别不到磁盘。
+安装了单节点的ceph，rbd创建一直报错，最后还是问AI改了副本的数量才正常，测试一下热插拔，还有相关性能测试，编译了一下qemu。
+Debian 13 也安装了下，用的是qcow2安装的，要用UEFI来启动，否则会报错not a bootable disk。还测试了一下CPU和内存的热插拔。
+CPU 插槽数量和CPU核心数决定了最大的CPU数量，最终可以根据vCPU数量来动态调整，还有内存，
+</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-09-14 12:28:37 +0800 +0800'>九月 14, 2025</span>&nbsp;·&nbsp;1 分钟&nbsp;·&nbsp;Theme PaperMod</footer>
+  <a class="entry-link" aria-label="post link to pve 创建VM " href="https://vsxen.github.io/posts/2025-09-14/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
     <h2 class="entry-hint-parent">iSCSI 块存储
       <span class="entry-hint" title="Draft">
         <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" fill="currentColor">
@@ -168,7 +190,7 @@
     <p>从上周六九去了珠海一趟，主要是解决构建过程的文件共享，之前说好的是用iSCSI协议挂载到Windows节点上，可惜也是不支持多读多写。
 查了下目前的块存储都是不支持多读多写的，nvme 可以实现多读单写。上周用Gemini深度研究的nvme终于有时间看了
 还有人提出了WSFC (Windows Server Failover Clustering) 的方案，我之前想的是OCFS，可惜不支持Windows，起始话说回来，总要有一个协调的组件来处理写冲突的。
-还有一个比较奇怪的问题，
+还有一个比较奇怪的问题，Windows Server 2016添加这个角色的一直报错。
 </p>
   </div>
   <footer class="entry-footer"><span title='2025-09-07 20:22:49 +0800 +0800'>九月 7, 2025</span>&nbsp;·&nbsp;1 分钟&nbsp;·&nbsp;Theme PaperMod</footer>
@@ -251,41 +273,6 @@ https://engineering.fyi/ 和我在七月底的一个想法一样，但是我还�
   </div>
   <footer class="entry-footer"><span title='2025-08-11 08:43:39 +0800 +0800'>八月 11, 2025</span>&nbsp;·&nbsp;1 分钟&nbsp;·&nbsp;Theme PaperMod</footer>
   <a class="entry-link" aria-label="post link to 忘性太大了" href="https://vsxen.github.io/posts/2025-08-17/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">学习一个东西最快的东西还是文档
-      <span class="entry-hint" title="Draft">
-        <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" fill="currentColor">
-          <path
-            d="M160-410v-60h300v60H160Zm0-165v-60h470v60H160Zm0-165v-60h470v60H160Zm360 580v-123l221-220q9-9 20-13t22-4q12 0 23 4.5t20 13.5l37 37q9 9 13 20t4 22q0 11-4.5 22.5T862.09-380L643-160H520Zm300-263-37-37 37 37ZM580-220h38l121-122-18-19-19-18-122 121v38Zm141-141-19-18 37 37-18-19Z" />
-        </svg>
-      </span>
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>解决容器起不来的问题，k3s内置的containerd有时候会出现幽灵镜像的问题，就是镜像存在但是pod还是起不来，重启了一下进程就好了。
-看下dify有什么新功能吗？好像还是没太大变化。 Qwen-image 的模型发布了，可以在图片中插入文字了，还不错。
-cloudpods 还自己搞了一个infomer，挺简单的一个。
-Kubernetes 的 API Server 监听的 6443 端口 使用的是 普通的 HTTPS 协议，而不是 gRPC。
-它通过 HTTPS 提供一个 RESTful API，用于处理集群内部和外部发来的请求，进行资源的创建、更新、删除和查询等操作。
-虽然 gRPC 也是一种高性能的通信协议，但在 Kubernetes 的核心 API Server 中，HTTPS/RESTful API 是标准且默认的通信方式。
-国投瑞银 Kubernetes 双集群高可用架构设计实践 ，用了双机房双集群，没有用联邦，用了istio的多主方案。
-喵了眼 aliyun 的cloudDNS服务，看了下aicon相关的ppt分享。
-特斯拉如何在 ClickHouse 上构建了一个万亿规模的观测平台 做了一个PromQL到SQL的转换层。
-差不多把cloudpods的文档全部读了一遍。
-要被OVS和OVN的关系搞晕了，还有什么openFlow控制器。
-GPT5 发布了，感觉好像没什么变化的，应该是我的错觉，但是画图挺好用的。
-看了下现有测试的k8s集群，etcd没有使用vip，APIServer使用keepalived和haproxy实现的高可用
-k3s的localpath pv还是用job的pod创建的。
-OVN 命令作用一览 OVN（Open Virtual Network）是 Open vSwitch（OVS）的一个扩展，它为虚拟网络提供了一套更高层次的抽象，让云管理系统（CMS）能更方便地配置和管理网络。您提到的这些命令和守护进程（daemon）都属于 OVN 架构中的关键组件。
-核心守护进程 这些是 OVN 架构中的核心服务，通常以守护进程的形式运行。
-ovn-northd：这是一个中央守护进程，在整个 OVN 部署中只运行一个实例。它的主要职责是将**北向数据库（Northbound DB）中定义的逻辑网络配置（如逻辑交换机、逻辑路由器等）转换成南向数据库（Southbound DB）**中的逻辑流（logical flows）。简而言之，它负责将人类可读的抽象配置翻译成底层的网络规则。
-...</p>
-  </div>
-  <footer class="entry-footer"><span title='2025-08-06 00:05:12 +0800 +0800'>八月 6, 2025</span>&nbsp;·&nbsp;1 分钟&nbsp;·&nbsp;Theme PaperMod</footer>
-  <a class="entry-link" aria-label="post link to 学习一个东西最快的东西还是文档" href="https://vsxen.github.io/posts/2025-08-10/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">
