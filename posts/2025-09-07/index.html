@@ -10,7 +10,8 @@
 <meta name="description" content="从上周六九去了珠海一趟，主要是解决构建过程的文件共享，之前说好的是用iSCSI协议挂载到Windows节点上，可惜也是不支持多读多写。
 查了下目前的块存储都是不支持多读多写的，nvme 可以实现多读单写。上周用Gemini深度研究的nvme终于有时间看了
 还有人提出了WSFC (Windows Server Failover Clustering) 的方案，我之前想的是OCFS，可惜不支持Windows，起始话说回来，总要有一个协调的组件来处理写冲突的。
-还有一个比较奇怪的问题，Windows Server 2016添加这个角色的一直报错。">
+还有一个比较奇怪的问题，Windows Server 2016添加这个角色的一直报错。
+帮忙给flannel集群设置一些网络策略。">
 <meta name="author" content="Theme PaperMod">
 <link rel="canonical" href="https://vsxen.github.io/posts/2025-09-07/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.f49d66caae9ea0fd43f21f29e71a8d3e284517ed770f2aa86fa012953ad3c9ef.css" integrity="sha256-9J1myq6eoP1D8h8p5xqNPihFF&#43;13Dyqob6ASlTrTye8=" rel="preload stylesheet" as="style">
@@ -64,7 +65,8 @@
   <meta property="og:description" content="从上周六九去了珠海一趟，主要是解决构建过程的文件共享，之前说好的是用iSCSI协议挂载到Windows节点上，可惜也是不支持多读多写。
 查了下目前的块存储都是不支持多读多写的，nvme 可以实现多读单写。上周用Gemini深度研究的nvme终于有时间看了
 还有人提出了WSFC (Windows Server Failover Clustering) 的方案，我之前想的是OCFS，可惜不支持Windows，起始话说回来，总要有一个协调的组件来处理写冲突的。
-还有一个比较奇怪的问题，Windows Server 2016添加这个角色的一直报错。">
+还有一个比较奇怪的问题，Windows Server 2016添加这个角色的一直报错。
+帮忙给flannel集群设置一些网络策略。">
   <meta property="og:locale" content="zh">
   <meta property="og:type" content="article">
     <meta property="article:section" content="posts">
@@ -77,7 +79,8 @@
 <meta name="twitter:description" content="从上周六九去了珠海一趟，主要是解决构建过程的文件共享，之前说好的是用iSCSI协议挂载到Windows节点上，可惜也是不支持多读多写。
 查了下目前的块存储都是不支持多读多写的，nvme 可以实现多读单写。上周用Gemini深度研究的nvme终于有时间看了
 还有人提出了WSFC (Windows Server Failover Clustering) 的方案，我之前想的是OCFS，可惜不支持Windows，起始话说回来，总要有一个协调的组件来处理写冲突的。
-还有一个比较奇怪的问题，Windows Server 2016添加这个角色的一直报错。">
+还有一个比较奇怪的问题，Windows Server 2016添加这个角色的一直报错。
+帮忙给flannel集群设置一些网络策略。">
 
 
 <script type="application/ld+json">
@@ -106,12 +109,12 @@
   "@type": "BlogPosting",
   "headline": "iSCSI 块存储",
   "name": "iSCSI 块存储",
-  "description": "从上周六九去了珠海一趟，主要是解决构建过程的文件共享，之前说好的是用iSCSI协议挂载到Windows节点上，可惜也是不支持多读多写。\n查了下目前的块存储都是不支持多读多写的，nvme 可以实现多读单写。上周用Gemini深度研究的nvme终于有时间看了\n还有人提出了WSFC (Windows Server Failover Clustering) 的方案，我之前想的是OCFS，可惜不支持Windows，起始话说回来，总要有一个协调的组件来处理写冲突的。\n还有一个比较奇怪的问题，Windows Server 2016添加这个角色的一直报错。\n",
+  "description": "从上周六九去了珠海一趟，主要是解决构建过程的文件共享，之前说好的是用iSCSI协议挂载到Windows节点上，可惜也是不支持多读多写。\n查了下目前的块存储都是不支持多读多写的，nvme 可以实现多读单写。上周用Gemini深度研究的nvme终于有时间看了\n还有人提出了WSFC (Windows Server Failover Clustering) 的方案，我之前想的是OCFS，可惜不支持Windows，起始话说回来，总要有一个协调的组件来处理写冲突的。\n还有一个比较奇怪的问题，Windows Server 2016添加这个角色的一直报错。\n帮忙给flannel集群设置一些网络策略。\n",
   "keywords": [
     
   ],
-  "articleBody": "从上周六九去了珠海一趟，主要是解决构建过程的文件共享，之前说好的是用iSCSI协议挂载到Windows节点上，可惜也是不支持多读多写。\n查了下目前的块存储都是不支持多读多写的，nvme 可以实现多读单写。上周用Gemini深度研究的nvme终于有时间看了\n还有人提出了WSFC (Windows Server Failover Clustering) 的方案，我之前想的是OCFS，可惜不支持Windows，起始话说回来，总要有一个协调的组件来处理写冲突的。\n还有一个比较奇怪的问题，Windows Server 2016添加这个角色的一直报错。\n",
-  "wordCount" : "12",
+  "articleBody": "从上周六九去了珠海一趟，主要是解决构建过程的文件共享，之前说好的是用iSCSI协议挂载到Windows节点上，可惜也是不支持多读多写。\n查了下目前的块存储都是不支持多读多写的，nvme 可以实现多读单写。上周用Gemini深度研究的nvme终于有时间看了\n还有人提出了WSFC (Windows Server Failover Clustering) 的方案，我之前想的是OCFS，可惜不支持Windows，起始话说回来，总要有一个协调的组件来处理写冲突的。\n还有一个比较奇怪的问题，Windows Server 2016添加这个角色的一直报错。\n帮忙给flannel集群设置一些网络策略。\n",
+  "wordCount" : "13",
   "inLanguage": "zh",
   "image": "https://vsxen.github.io/images/papermod-cover.png","datePublished": "2025-09-07T20:22:49+08:00",
   "dateModified": "2025-09-07T20:22:49+08:00",
@@ -211,6 +214,7 @@
 <p>查了下目前的块存储都是不支持多读多写的，nvme 可以实现多读单写。上周用Gemini深度研究的nvme终于有时间看了</p>
 <p>还有人提出了WSFC (Windows Server Failover Clustering) 的方案，我之前想的是OCFS，可惜不支持Windows，起始话说回来，总要有一个协调的组件来处理写冲突的。</p>
 <p>还有一个比较奇怪的问题，Windows Server 2016添加这个角色的一直报错。</p>
+<p>帮忙给flannel集群设置一些网络策略。</p>
 
 
   </div>
@@ -222,7 +226,7 @@
   <a class="prev" href="https://vsxen.github.io/posts/2025-09-14/">
     <span class="title">« 上一页</span>
     <br>
-    <span>pve 创建VM </span>
+    <span>pve 创建VM</span>
   </a>
   <a class="next" href="https://vsxen.github.io/posts/2025-08-31/">
     <span class="title">下一页 »</span>

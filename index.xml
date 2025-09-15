@@ -15,7 +15,7 @@
     <lastBuildDate>Sun, 14 Sep 2025 12:28:37 +0800</lastBuildDate>
     <atom:link href="https://vsxen.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>pve 创建VM </title>
+      <title>pve 创建VM</title>
       <link>https://vsxen.github.io/posts/2025-09-14/</link>
       <pubDate>Sun, 14 Sep 2025 12:28:37 +0800</pubDate>
       <guid>https://vsxen.github.io/posts/2025-09-14/</guid>
@@ -32,7 +32,8 @@
       <description>&lt;p&gt;从上周六九去了珠海一趟，主要是解决构建过程的文件共享，之前说好的是用iSCSI协议挂载到Windows节点上，可惜也是不支持多读多写。&lt;/p&gt;
 &lt;p&gt;查了下目前的块存储都是不支持多读多写的，nvme 可以实现多读单写。上周用Gemini深度研究的nvme终于有时间看了&lt;/p&gt;
 &lt;p&gt;还有人提出了WSFC (Windows Server Failover Clustering) 的方案，我之前想的是OCFS，可惜不支持Windows，起始话说回来，总要有一个协调的组件来处理写冲突的。&lt;/p&gt;
-&lt;p&gt;还有一个比较奇怪的问题，Windows Server 2016添加这个角色的一直报错。&lt;/p&gt;</description>
+&lt;p&gt;还有一个比较奇怪的问题，Windows Server 2016添加这个角色的一直报错。&lt;/p&gt;
+&lt;p&gt;帮忙给flannel集群设置一些网络策略。&lt;/p&gt;</description>
     </item>
     <item>
       <title>零信任</title>
