@@ -12,8 +12,15 @@
     <generator>Hugo -- 0.150.0</generator>
     <language>zh</language>
     <copyright>PaperMod Contributors</copyright>
-    <lastBuildDate>Sun, 14 Sep 2025 12:28:37 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 18 Sep 2025 22:59:39 +0800</lastBuildDate>
     <atom:link href="https://vsxen.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>2025 09 21</title>
+      <link>https://vsxen.github.io/posts/2025-09-21/</link>
+      <pubDate>Thu, 18 Sep 2025 22:59:39 +0800</pubDate>
+      <guid>https://vsxen.github.io/posts/2025-09-21/</guid>
+      <description></description>
+    </item>
     <item>
       <title>pve 创建VM</title>
       <link>https://vsxen.github.io/posts/2025-09-14/</link>
