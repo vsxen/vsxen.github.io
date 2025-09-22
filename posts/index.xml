@@ -15,11 +15,13 @@
     <lastBuildDate>Thu, 18 Sep 2025 22:59:39 +0800</lastBuildDate>
     <atom:link href="https://vsxen.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>2025 09 21</title>
+      <title>预制菜</title>
       <link>https://vsxen.github.io/posts/2025-09-21/</link>
       <pubDate>Thu, 18 Sep 2025 22:59:39 +0800</pubDate>
       <guid>https://vsxen.github.io/posts/2025-09-21/</guid>
-      <description></description>
+      <description>&lt;p&gt;这周一直在调平台的网络，有些项目文档少，内部逻辑复杂，各种判断穿插在一起，报错名不对意，很没有头绪。
+这里的流程真实纯人工，算了我也不想管了，想找一个简单的CD平台，这样每次发布的时候就不需要我了。&lt;/p&gt;
+&lt;h2 id=&#34;生活&#34;&gt;生活&lt;/h2&gt;</description>
     </item>
     <item>
       <title>pve 创建VM</title>
@@ -29,7 +31,12 @@
       <description>&lt;p&gt;pve 下面安装Windows vm全流程测试了一下，主要是磁盘的选择，virtio blk还是SCSI，如果是ISO安装的话要挂载virtio的驱动，不然识别不到磁盘。&lt;/p&gt;
 &lt;p&gt;安装了单节点的ceph，rbd创建一直报错，最后还是问AI改了副本的数量才正常，测试一下热插拔，还有相关性能测试，编译了一下qemu。&lt;/p&gt;
 &lt;p&gt;Debian 13 也安装了下，用的是qcow2安装的，要用UEFI来启动，否则会报错not a bootable disk。还测试了一下CPU和内存的热插拔。&lt;/p&gt;
-&lt;p&gt;CPU 插槽数量和CPU核心数决定了最大的CPU数量，最终可以根据vCPU数量来动态调整，还有内存，&lt;/p&gt;</description>
+&lt;p&gt;CPU 插槽数量和CPU核心数决定了最大的CPU数量，最终可以根据vCPU数量来动态调整，还有内存，&lt;/p&gt;
+&lt;h2 id=&#34;生活&#34;&gt;生活&lt;/h2&gt;
+&lt;p&gt;转正目标出出啊来了，哈哈。
+想搞个轻量云，付款方式不支持充值，可能是国际的消费习惯和国内不一样吧。
+老罗和西贝的吵架
+iPhone 17 发布&lt;/p&gt;</description>
     </item>
     <item>
       <title>iSCSI 块存储</title>
