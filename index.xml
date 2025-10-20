@@ -9,11 +9,39 @@
       <url>https://vsxen.github.io/images/papermod-cover.png</url>
       <link>https://vsxen.github.io/images/papermod-cover.png</link>
     </image>
-    <generator>Hugo -- 0.150.0</generator>
+    <generator>Hugo -- 0.151.2</generator>
     <language>zh</language>
     <copyright>PaperMod Contributors</copyright>
-    <lastBuildDate>Thu, 18 Sep 2025 22:59:39 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 17 Oct 2025 21:18:33 +0800</lastBuildDate>
     <atom:link href="https://vsxen.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>2025 10 19</title>
+      <link>https://vsxen.github.io/posts/2025-10-19/</link>
+      <pubDate>Fri, 17 Oct 2025 21:18:33 +0800</pubDate>
+      <guid>https://vsxen.github.io/posts/2025-10-19/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>2025 10 12</title>
+      <link>https://vsxen.github.io/posts/2025-10-12/</link>
+      <pubDate>Fri, 17 Oct 2025 21:18:19 +0800</pubDate>
+      <guid>https://vsxen.github.io/posts/2025-10-12/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>2025 10 05</title>
+      <link>https://vsxen.github.io/posts/2025-10-05/</link>
+      <pubDate>Fri, 17 Oct 2025 21:18:13 +0800</pubDate>
+      <guid>https://vsxen.github.io/posts/2025-10-05/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>台风桦加沙</title>
+      <link>https://vsxen.github.io/posts/2025-09-28/</link>
+      <pubDate>Wed, 24 Sep 2025 21:30:15 +0800</pubDate>
+      <guid>https://vsxen.github.io/posts/2025-09-28/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;https://bigdata.2minutestreaming.com/p/how-aws-s3-scales-with-tens-of-millions-of-hard-drives&#34;&gt;AWS S3 如何在慢速 HDD 的基础上提供每秒 1 PB 的服务&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
     <item>
       <title>预制菜</title>
       <link>https://vsxen.github.io/posts/2025-09-21/</link>
