@@ -9,31 +9,58 @@
       <url>https://vsxen.github.io/images/papermod-cover.png</url>
       <link>https://vsxen.github.io/images/papermod-cover.png</link>
     </image>
-    <generator>Hugo -- 0.151.2</generator>
+    <generator>Hugo -- 0.152.2</generator>
     <language>zh</language>
     <copyright>PaperMod Contributors</copyright>
-    <lastBuildDate>Fri, 17 Oct 2025 21:18:33 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 20 Oct 2025 23:03:31 +0800</lastBuildDate>
     <atom:link href="https://vsxen.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>2025 10 19</title>
+      <title>2025 10 26</title>
+      <link>https://vsxen.github.io/posts/2025-10-26/</link>
+      <pubDate>Mon, 20 Oct 2025 23:03:31 +0800</pubDate>
+      <guid>https://vsxen.github.io/posts/2025-10-26/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>k8s 一百万节点</title>
       <link>https://vsxen.github.io/posts/2025-10-19/</link>
       <pubDate>Fri, 17 Oct 2025 21:18:33 +0800</pubDate>
       <guid>https://vsxen.github.io/posts/2025-10-19/</guid>
-      <description></description>
+      <description>&lt;p&gt;&lt;a href=&#34;https://bchess.github.io/k8s-1m/&#34;&gt;https://bchess.github.io/k8s-1m/&lt;/a&gt;&lt;/p&gt;</description>
     </item>
     <item>
-      <title>2025 10 12</title>
+      <title>Apple M5</title>
       <link>https://vsxen.github.io/posts/2025-10-12/</link>
       <pubDate>Fri, 17 Oct 2025 21:18:19 +0800</pubDate>
       <guid>https://vsxen.github.io/posts/2025-10-12/</guid>
-      <description></description>
+      <description>&lt;p&gt;MPTCP for Linux (mptcp.dev)
+适用于 Linux 的 MPTCP （mptcp.dev）&lt;/p&gt;
+&lt;p&gt;Testing two 18 TB white label SATA hard drives from datablocks.dev (ounapuu.ee)
+测试来自 datablocks.dev （ounapuu.ee） 的两台 18 TB 白标 SATA 硬盘&lt;/p&gt;
+&lt;p&gt;Wireguard FPGA (github.com/chili-chips-ba)&lt;/p&gt;
+&lt;p&gt;搭载 M5 芯片的 iPad Pro （apple.com）&lt;/p&gt;
+&lt;p&gt;Next steps for BPF support in the GNU toolchain (lwn.net)
+GNU 工具链中 BPF 支持的后续步骤 （lwn.net）&lt;/p&gt;</description>
     </item>
     <item>
-      <title>2025 10 05</title>
+      <title>Python 3.14</title>
       <link>https://vsxen.github.io/posts/2025-10-05/</link>
-      <pubDate>Fri, 17 Oct 2025 21:18:13 +0800</pubDate>
+      <pubDate>Sun, 05 Oct 2025 21:18:13 +0800</pubDate>
       <guid>https://vsxen.github.io/posts/2025-10-05/</guid>
-      <description></description>
+      <description>&lt;p&gt;大火烧毁了韩国政府的云存储系统，没有可用的备份 （joins.com）&lt;/p&gt;
+&lt;p&gt;高通将收购 Arduino （qualcomm.com）&lt;/p&gt;
+&lt;p&gt;Gemini 2.5 Computer Use model&lt;/p&gt;
+&lt;p&gt;我们在 Go 的 ARM64 编译器（cloudflare.com） 中发现了一个错误&lt;/p&gt;
+&lt;p&gt;Why we need SIMD (parallelprogrammer.substack.com)&lt;/p&gt;
+&lt;p&gt;Now open for building: Introducing Gemini CLI extensions (blog.google)
+现已开放构建：Gemini CLI 扩展简介 （blog.google）&lt;/p&gt;
+&lt;p&gt;Memory access is O(N^[1/3]) (vitalik.eth.limo)
+内存访问是 O（N^[1/3]） （vitalik.eth.limo）&lt;/p&gt;
+&lt;p&gt;Python 3.14 is here. How fast is it? (miguelgrinberg.com)&lt;/p&gt;
+&lt;p&gt;My first contribution to Linux (vkoskiv.com)
+我对 Linux 的第一个贡献 （vkoskiv.com）&lt;/p&gt;
+&lt;p&gt;Windows Subsystem for FreeBSD (github.com/balajes)
+适用于 FreeBSD 的 Windows 子系统 （github.com/balajes）&lt;/p&gt;</description>
     </item>
     <item>
       <title>台风桦加沙</title>
