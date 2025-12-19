@@ -12,21 +12,41 @@
     <generator>Hugo -- 0.152.2</generator>
     <language>zh</language>
     <copyright>PaperMod Contributors</copyright>
-    <lastBuildDate>Mon, 20 Oct 2025 23:03:31 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 02 Nov 2025 19:28:30 +0800</lastBuildDate>
     <atom:link href="https://vsxen.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>2025 10 26</title>
+      <title>内存价格失控</title>
+      <link>https://vsxen.github.io/posts/2025-11-02/</link>
+      <pubDate>Sun, 02 Nov 2025 19:28:30 +0800</pubDate>
+      <guid>https://vsxen.github.io/posts/2025-11-02/</guid>
+      <description>&lt;p&gt;一个KVM OVER IP的产品 &lt;a href=&#34;https://jetkvm.com/&#34;&gt;https://jetkvm.com/&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.ithome.com/0/892/811.htm&#34;&gt;华强北蓝牙版eSIM&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;进机房搬机器，才知道光线焊接机这么贵。&lt;/p&gt;
+&lt;p&gt;英伟达成为首家市值突破 5 万亿美元的上市公司。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://oneuptime.com/blog/post/2025-10-29-aws-to-bare-metal-two-years-later/view&#34;&gt;使用自托管机房代替AWS 两年后发生了什么&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>轻量级虚拟化</title>
       <link>https://vsxen.github.io/posts/2025-10-26/</link>
       <pubDate>Mon, 20 Oct 2025 23:03:31 +0800</pubDate>
       <guid>https://vsxen.github.io/posts/2025-10-26/</guid>
-      <description></description>
+      <description>&lt;p&gt;&lt;a href=&#34;https://blog.skk.moe/post/proxmox-ve-customize-debian-cloud-image/&#34;&gt;PVE 自定义镜像&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/varnish/tinykvm&#34;&gt;tinykvm&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/Katakate/k7&#34;&gt;轻量级虚拟化&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.tomshardware.com/tech-industry/semiconductors/alibaba-says-new-pooling-system-cut-nvidia-gpu-use-by-82-percent&#34;&gt;阿里据说把GPU使用率提高了82%&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/carverauto/serviceradar&#34;&gt;opensource network management and observability platform&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html&#34;&gt;spec 驱动AI开发&lt;/a&gt;&lt;/p&gt;</description>
     </item>
     <item>
       <title>k8s 一百万节点</title>
       <link>https://vsxen.github.io/posts/2025-10-19/</link>
       <pubDate>Fri, 17 Oct 2025 21:18:33 +0800</pubDate>
       <guid>https://vsxen.github.io/posts/2025-10-19/</guid>
-      <description>&lt;p&gt;&lt;a href=&#34;https://bchess.github.io/k8s-1m/&#34;&gt;https://bchess.github.io/k8s-1m/&lt;/a&gt;&lt;/p&gt;</description>
+      <description>&lt;p&gt;&lt;a href=&#34;https://bchess.github.io/k8s-1m/&#34;&gt;https://bchess.github.io/k8s-1m/&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://prom2grafana.mrkaran.dev/&#34;&gt;根据Prometheus指标自动生成Grafna面板&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.anthropic.com/news/skills&#34;&gt;claude skill&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://blog.exolabs.net/nvidia-dgx-spark/&#34;&gt;DGX Spark 开售&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.unifiedbus.com/&#34;&gt;华为的高性能互联方案&lt;/a&gt;&lt;/p&gt;</description>
     </item>
     <item>
       <title>Apple M5</title>
@@ -40,7 +60,8 @@
 &lt;p&gt;Wireguard FPGA (github.com/chili-chips-ba)&lt;/p&gt;
 &lt;p&gt;搭载 M5 芯片的 iPad Pro （apple.com）&lt;/p&gt;
 &lt;p&gt;Next steps for BPF support in the GNU toolchain (lwn.net)
-GNU 工具链中 BPF 支持的后续步骤 （lwn.net）&lt;/p&gt;</description>
+GNU 工具链中 BPF 支持的后续步骤 （lwn.net）&lt;/p&gt;
+&lt;p&gt;苹果全新 M5 芯片发布：AI 性能较 M4 提升超四倍，内存带宽及整体图形性能提升近 30%。&lt;/p&gt;</description>
     </item>
     <item>
       <title>Python 3.14</title>
