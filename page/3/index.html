@@ -2,7 +2,7 @@
 <html lang="zh" dir="auto">
 
 <head>
-	<meta name="generator" content="Hugo 0.152.2"><meta charset="utf-8">
+	<meta name="generator" content="Hugo 0.153.2"><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
@@ -142,6 +142,31 @@
 
 <article class="post-entry"> 
   <header class="entry-header">
+    <h2 class="entry-hint-parent">零信任
+      <span class="entry-hint" title="Draft">
+        <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" fill="currentColor">
+          <path
+            d="M160-410v-60h300v60H160Zm0-165v-60h470v60H160Zm0-165v-60h470v60H160Zm360 580v-123l221-220q9-9 20-13t22-4q12 0 23 4.5t20 13.5l37 37q9 9 13 20t4 22q0 11-4.5 22.5T862.09-380L643-160H520Zm300-263-37-37 37 37ZM580-220h38l121-122-18-19-19-18-122 121v38Zm141-141-19-18 37 37-18-19Z" />
+        </svg>
+      </span>
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>对象存储和快存储的对比 https://blog.min.io/why-object-storage-is-superior-to-san-nas/
+16张A800实现的 deepseek 推理方案 https://lmsys.org/blog/2025-05-05-large-scale-ep/
+Linux Networking Stack tutorial: Receiving Data 下面还有一篇是发送的
+看网上关于 SMB NFS 和 iSCSI 的性能对比，SMB更适合大文件，忽然想起来了juicefs，基于fuse的文件系统，posix兼容
+借了一台QNAP的测试机，用的是ZFS，搜到前两年和群晖（btrfs）吵架的文章，忽然想到前段时间的bcachefs。
+整理 minio 的监控指标，画一个监控面板。
+fosdem 2025 上面看下有什么存储的分享，东西是越来越看不完了。
+</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-08-24 22:53:05 +0800 +0800'>八月 24, 2025</span>&nbsp;·&nbsp;1 分钟&nbsp;·&nbsp;Theme PaperMod</footer>
+  <a class="entry-link" aria-label="post link to 零信任" href="https://vsxen.github.io/posts/2025-08-31/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
     <h2 class="entry-hint-parent">victoriametrics 全家桶
       <span class="entry-hint" title="Draft">
         <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" fill="currentColor">
@@ -255,31 +280,6 @@ Enter passphrase (empty for no passphrase): Enter same passphrase again: 这是�
   </div>
   <footer class="entry-footer"><span title='2025-07-29 10:27:29 +0800 +0800'>七月 29, 2025</span>&nbsp;·&nbsp;3 分钟&nbsp;·&nbsp;Theme PaperMod</footer>
   <a class="entry-link" aria-label="post link to k3s and wsl" href="https://vsxen.github.io/posts/2025-08-03/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">CUDA 将支持RISC-V
-      <span class="entry-hint" title="Draft">
-        <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" fill="currentColor">
-          <path
-            d="M160-410v-60h300v60H160Zm0-165v-60h470v60H160Zm0-165v-60h470v60H160Zm360 580v-123l221-220q9-9 20-13t22-4q12 0 23 4.5t20 13.5l37 37q9 9 13 20t4 22q0 11-4.5 22.5T862.09-380L643-160H520Zm300-263-37-37 37 37ZM580-220h38l121-122-18-19-19-18-122 121v38Zm141-141-19-18 37 37-18-19Z" />
-        </svg>
-      </span>
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>近日举办的2025 RISC-V中国峰会上，NVIDIA硬件工程副总裁Frans Sijstermans宣布，CUDA软件平台将支持RISC-V指令集架构处理器，为开源架构RISC-V开启进入数据中心与AI市场的大门。
-遗憾的是，Go 的 C 语言 FFI 实在太差了。cgo 的糟糕程度怎么说都不为过。
-使用Gemini cli 尝试做一个自动抓取公司技术博客的应用。
-Qwen-codeer 发布了，效果还可以，比Qwen好一些，但是有点贵
-调试百万分之一的故障：将 Pinterest 的搜索基础设施迁移到 Kubernetes，
-指标 container_referenced_bytes 在 cAdvisor 中默认启用，用于跟踪进程在每个测量周期中引用的总内存字节数。该指标通过 PTE 访问位机制实现了 Brendan Gregg 的工作集大小（WSS）估计，该机制使用页表中的访问位来计算进程读取或写入的总内存量。每次 cAdvisor 运行时，它会扫描整个页表来计算此统计数据，通过统计所有条目中的所有访问位，然后清除每个已访问的位。PinCompute 每 30 秒运行一次 cAdvisor，这意味着这种侵入性的访问位检查和清除每分钟发生两次，每分钟一次。
-Manas 搜索索引每个叶节点可能高达数百 GB，而二级排序索引可能超过 1TB。当 Manas 叶节点启动时，它们会将整个索引映射到内存中。这意味着内存使用可能非常显著（例如，对于内存使用量为 100GB 的主机，页表可以容纳 2500 万个条目）。每 30 秒遍历并清除 2500 万个页表条目可能会确实导致与内存密集型叶处理产生竞争。
-</p>
-  </div>
-  <footer class="entry-footer"><span title='2025-07-22 20:46:15 +0800 +0800'>七月 22, 2025</span>&nbsp;·&nbsp;1 分钟&nbsp;·&nbsp;Theme PaperMod</footer>
-  <a class="entry-link" aria-label="post link to CUDA 将支持RISC-V" href="https://vsxen.github.io/posts/2025-07-27/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">
