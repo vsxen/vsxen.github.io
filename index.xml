@@ -9,17 +9,31 @@
       <url>https://vsxen.github.io/images/papermod-cover.png</url>
       <link>https://vsxen.github.io/images/papermod-cover.png</link>
     </image>
-    <generator>Hugo -- 0.153.2</generator>
+    <generator>Hugo -- 0.157.0</generator>
     <language>zh</language>
     <copyright>PaperMod Contributors</copyright>
-    <lastBuildDate>Mon, 22 Dec 2025 15:08:30 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 01 Mar 2026 20:26:26 +0800</lastBuildDate>
     <atom:link href="https://vsxen.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>2026 03 01</title>
+      <link>https://vsxen.github.io/posts/2026-03-01/</link>
+      <pubDate>Sun, 01 Mar 2026 20:26:26 +0800</pubDate>
+      <guid>https://vsxen.github.io/posts/2026-03-01/</guid>
+      <description>&lt;h2 id=&#34;技术&#34;&gt;技术&lt;/h2&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.shayon.dev/post/2026/52/lets-discuss-sandbox-isolation/&#34;&gt;AI之后新兴的sanbox对比&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&#34;生活&#34;&gt;生活&lt;/h2&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.bilibili.com/video/BV1Xff2BvE1q/&#34;&gt;这个剪辑不错，全部使用的AI&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;极客湾的横评视频居然被全网下架了&lt;/p&gt;
+&lt;p&gt;影翎Antigravity A1 这个360度无人机有点意思，前面的摄像头是避障用的，上下两颗特殊的摄像头用来生产全景图像&lt;/p&gt;
+&lt;p&gt;这个机器人火了一个春节，结果股市甚至还有点低迷&lt;/p&gt;</description>
+    </item>
     <item>
       <title>2025年终总结</title>
       <link>https://vsxen.github.io/posts/2025/</link>
       <pubDate>Mon, 22 Dec 2025 15:08:30 +0800</pubDate>
       <guid>https://vsxen.github.io/posts/2025/</guid>
-      <description>&lt;p&gt;2025 应该是我变化最大的一年，之前都是按部就班的上下班完成任务，年中的时候离职，年底的时候被裁员，也算是进入了自由模式。&lt;/p&gt;
+      <description>&lt;p&gt;·&lt;/p&gt;
+&lt;p&gt;2025 应该是我变化最大的一年，之前都是按部就班的上下班完成任务，年中的时候离职，年底的时候被裁员，也算是进入了自由模式。&lt;/p&gt;
 &lt;p&gt;工作：
 2025年应该是大模型百花齐放的年份，2025年1月20日Deepseek R1发布，到2025年12月Gemini 3 发布，模型的能力越来越强。&lt;/p&gt;
 &lt;p&gt;出行：
@@ -31,6 +45,44 @@
 &lt;p&gt;影音：
 《长安的荔枝》
 《浪浪山》&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>这就解放了？</title>
+      <link>https://vsxen.github.io/posts/2025-12-07/</link>
+      <pubDate>Sun, 07 Dec 2025 21:44:26 +0800</pubDate>
+      <guid>https://vsxen.github.io/posts/2025-12-07/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;https://github.com/observIQ/otel-distro-builder&#34;&gt;自定义otel的组件&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;http://www.tinycorelinux.net/&#34;&gt;12Mb的Linux 发行版&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://v.douyin.com/OKqU0gj62F8/&#34;&gt;爱壹帆的历史介绍&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://pierrezemb.fr/posts/diving-into-kubernetes-watch-cache/&#34;&gt;Kubernetes watch cache&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;合肥94看车已经两个月没有更新了&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Gemini 3 &amp; CloudFlare Down</title>
+      <link>https://vsxen.github.io/posts/2025-11-23/</link>
+      <pubDate>Sun, 23 Nov 2025 21:40:31 +0800</pubDate>
+      <guid>https://vsxen.github.io/posts/2025-11-23/</guid>
+      <description>&lt;p&gt;Gemini 3 发布了。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://raymii.org/s/tutorials/Finally_run_Docker_containers_natively_in_Proxmox_9.1.html&#34;&gt;pve 9 可以直接运行container了&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>终端模拟器</title>
+      <link>https://vsxen.github.io/posts/2025-11-16/</link>
+      <pubDate>Sun, 16 Nov 2025 21:28:36 +0800</pubDate>
+      <guid>https://vsxen.github.io/posts/2025-11-16/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;https://github.com/google/adk-go&#34;&gt;adk&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://jyn.dev/the-terminal-of-the-future&#34;&gt;未来的终端&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>App Store 网页版上线</title>
+      <link>https://vsxen.github.io/posts/2025-11-09/</link>
+      <pubDate>Sun, 09 Nov 2025 20:28:50 +0800</pubDate>
+      <guid>https://vsxen.github.io/posts/2025-11-09/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;https://www.0xkato.xyz/linux-process-memory/&#34;&gt;Linux 进程的内存分析&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;大疆NEO 2 上市&lt;/p&gt;
+&lt;p&gt;AI 交易大赛，只有中国的AI赚钱&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/ggml-org/llama.cpp/discussions/16938&#34;&gt;ollma 背后的llama自己做了个web UI&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.polarsignals.com/blog/posts/2025/10/22/gpu-profiling&#34;&gt;GPU的profile&lt;/a&gt;&lt;/p&gt;</description>
     </item>
     <item>
       <title>内存价格失控</title>
