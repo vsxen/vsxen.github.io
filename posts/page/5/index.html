@@ -155,6 +155,97 @@
 
 <article class="post-entry"> 
   <header class="entry-header">
+    <h2 class="entry-hint-parent">忘性太大了
+      <span class="entry-hint" title="Draft">
+        <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" fill="currentColor">
+          <path
+            d="M160-410v-60h300v60H160Zm0-165v-60h470v60H160Zm0-165v-60h470v60H160Zm360 580v-123l221-220q9-9 20-13t22-4q12 0 23 4.5t20 13.5l37 37q9 9 13 20t4 22q0 11-4.5 22.5T862.09-380L643-160H520Zm300-263-37-37 37 37ZM580-220h38l121-122-18-19-19-18-122 121v38Zm141-141-19-18 37 37-18-19Z" />
+        </svg>
+      </span>
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>继续研究OVS和OVN，又装了OVN，有一点眉目了。
+你用 OVN 的时候，ovs-vsctl show 里一般是看不到 Controller 字段的，因为：
+在传统 OVS &#43; OpenFlow 模式下，ovs-vswitchd 需要连接一个 OpenFlow 控制器（controller 字段会显示 IP/端口）。
+而在 OVN 模式 下，OVS 并不是直接对接 OpenFlow 控制器，而是通过 OVN 控制平面（ovn-controller 进程） 跟 OVN Southbound DB 交互，然后由 OVN 负责生成 OpenFlow 流表并下发到 OVS。
+所以 OVS 自己的数据库里不需要 controller 配置项，它会显示为“没有 Controller 字段”。
+有些问题方面GPT比Gemini好一点。
+https://engineering.fyi/ 和我在七月底的一个想法一样，但是我还停留在初始化阶段。
+北半球三大流星雨来袭，西安太子山。
+# 启用单播模式 unicast_src_ip 192.168.1.10 # 本地服务器的IP地址 unicast_peer { 192.168.1.11 # 备用服务器的IP地址 192.168.1.12 # 如果有更多备用机，依次添加 } 原来还有这东西 /etc/hosts.allow 文件是 Linux 系统中一个用于 控制网络服务访问权限 的重要配置文件。它与另一个文件 /etc/hosts.deny 协同工作，共同构成了 TCP Wrappers 访问控制机制。
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-08-11 08:43:39 +0800 +0800'>八月 11, 2025</span>&nbsp;·&nbsp;1 分钟&nbsp;·&nbsp;Theme PaperMod</footer>
+  <a class="entry-link" aria-label="post link to 忘性太大了" href="https://vsxen.github.io/posts/2025-08-17/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">学习一个东西最快的东西还是文档
+      <span class="entry-hint" title="Draft">
+        <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" fill="currentColor">
+          <path
+            d="M160-410v-60h300v60H160Zm0-165v-60h470v60H160Zm0-165v-60h470v60H160Zm360 580v-123l221-220q9-9 20-13t22-4q12 0 23 4.5t20 13.5l37 37q9 9 13 20t4 22q0 11-4.5 22.5T862.09-380L643-160H520Zm300-263-37-37 37 37ZM580-220h38l121-122-18-19-19-18-122 121v38Zm141-141-19-18 37 37-18-19Z" />
+        </svg>
+      </span>
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>解决容器起不来的问题，k3s内置的containerd有时候会出现幽灵镜像的问题，就是镜像存在但是pod还是起不来，重启了一下进程就好了。
+看下dify有什么新功能吗？好像还是没太大变化。 Qwen-image 的模型发布了，可以在图片中插入文字了，还不错。
+cloudpods 还自己搞了一个infomer，挺简单的一个。
+Kubernetes 的 API Server 监听的 6443 端口 使用的是 普通的 HTTPS 协议，而不是 gRPC。
+它通过 HTTPS 提供一个 RESTful API，用于处理集群内部和外部发来的请求，进行资源的创建、更新、删除和查询等操作。
+虽然 gRPC 也是一种高性能的通信协议，但在 Kubernetes 的核心 API Server 中，HTTPS/RESTful API 是标准且默认的通信方式。
+国投瑞银 Kubernetes 双集群高可用架构设计实践 ，用了双机房双集群，没有用联邦，用了istio的多主方案。
+喵了眼 aliyun 的cloudDNS服务，看了下aicon相关的ppt分享。
+特斯拉如何在 ClickHouse 上构建了一个万亿规模的观测平台 做了一个PromQL到SQL的转换层。
+差不多把cloudpods的文档全部读了一遍。
+要被OVS和OVN的关系搞晕了，还有什么openFlow控制器。
+GPT5 发布了，感觉好像没什么变化的，应该是我的错觉，但是画图挺好用的。
+看了下现有测试的k8s集群，etcd没有使用vip，APIServer使用keepalived和haproxy实现的高可用
+k3s的localpath pv还是用job的pod创建的。
+OVN 命令作用一览 OVN（Open Virtual Network）是 Open vSwitch（OVS）的一个扩展，它为虚拟网络提供了一套更高层次的抽象，让云管理系统（CMS）能更方便地配置和管理网络。您提到的这些命令和守护进程（daemon）都属于 OVN 架构中的关键组件。
+核心守护进程 这些是 OVN 架构中的核心服务，通常以守护进程的形式运行。
+ovn-northd：这是一个中央守护进程，在整个 OVN 部署中只运行一个实例。它的主要职责是将**北向数据库（Northbound DB）中定义的逻辑网络配置（如逻辑交换机、逻辑路由器等）转换成南向数据库（Southbound DB）**中的逻辑流（logical flows）。简而言之，它负责将人类可读的抽象配置翻译成底层的网络规则。
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-08-06 00:05:12 +0800 +0800'>八月 6, 2025</span>&nbsp;·&nbsp;1 分钟&nbsp;·&nbsp;Theme PaperMod</footer>
+  <a class="entry-link" aria-label="post link to 学习一个东西最快的东西还是文档" href="https://vsxen.github.io/posts/2025-08-10/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">k3s and wsl
+      <span class="entry-hint" title="Draft">
+        <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" fill="currentColor">
+          <path
+            d="M160-410v-60h300v60H160Zm0-165v-60h470v60H160Zm0-165v-60h470v60H160Zm360 580v-123l221-220q9-9 20-13t22-4q12 0 23 4.5t20 13.5l37 37q9 9 13 20t4 22q0 11-4.5 22.5T862.09-380L643-160H520Zm300-263-37-37 37 37ZM580-220h38l121-122-18-19-19-18-122 121v38Zm141-141-19-18 37 37-18-19Z" />
+        </svg>
+      </span>
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>这一周好忙
+新公司的网络居然可以直连谷歌，香港的出口IP，Zenlayer的线路哈哈，而且还能直接用Gemini神奇。
+发现git默认生成的密钥对改成了ed25519，问了下AI如下：
+ssh-keygen 是一个非常实用的命令行工具，用于生成 SSH (Secure Shell) 协议使用的密钥对。这个密钥对通常由一个私钥和一个公钥组成。它们是 SSH 安全通信的基石，允许用户在不传输密码的情况下安全地认证到远程服务器。
+密钥对的核心概念 公钥 (Public Key)： 这是您可以安全地共享给任何人的部分。 您需要将它放在您想要连接的远程服务器上（通常在 ~/.ssh/authorized_keys 文件中）。 公钥用于加密数据，并且可以验证私钥签名的数据。 它不能用来解密数据或进行身份认证，只能用于验证私钥持有者的身份。 私钥 (Private Key)： 这是您需要严格保密的部分。绝不能与任何人共享。 它通常存储在您的本地计算机上（例如 ~/.ssh/id_rsa）。 私钥用于解密由对应公钥加密的数据，并用于向远程服务器签名认证请求。 如果私钥泄露，您的 SSH 连接安全就会受到威胁。 ssh-keygen 的基本用法 最简单的生成命令是：
+ssh-keygen 执行这个命令后，ssh-keygen 会引导您完成以下几个步骤：
+文件保存路径： 它会提示您选择密钥对的保存位置。默认情况下，私钥会保存在 ~/.ssh/id_rsa（对于 RSA 算法）或 ~/.ssh/id_ed25519（对于 Ed25519 算法），公钥则会是相同路径加上 .pub 后缀（例如 ~/.ssh/id_rsa.pub）。
+Enter file in which to save the key (/home/user/.ssh/id_rsa): 如果您不输入任何内容直接回车，就会使用默认路径。如果您想生成多个密钥对用于不同目的，可以输入不同的文件名。
+密码短语 (Passphrase)：
+Enter passphrase (empty for no passphrase): Enter same passphrase again: 这是非常重要的一步。
+作用： 为您的私钥加密。即使私钥文件被盗，没有密码短语也无法使用。这提供了额外的安全层。 建议： 强烈建议设置一个强密码短语。虽然每次使用私钥时都需要输入密码短语会增加一点点不便，但它能极大地提升安全性。您可以使用 ssh-agent 来缓存密码短语，避免每次都输入。 留空： 如果您留空（不设置密码短语），私钥将不加密，这意味着任何获得该私钥文件的人都可以直接使用它。在自动化脚本等特定场景下可能会留空，但请务必了解其安全风险。 密钥指纹和随机艺术图： 生成完成后，ssh-keygen 会显示密钥的指纹 (fingerprint) 和一个随机生成的艺术图 (randomart image)。这些信息用于视觉验证密钥的唯一性。
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-07-29 10:27:29 +0800 +0800'>七月 29, 2025</span>&nbsp;·&nbsp;3 分钟&nbsp;·&nbsp;Theme PaperMod</footer>
+  <a class="entry-link" aria-label="post link to k3s and wsl" href="https://vsxen.github.io/posts/2025-08-03/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
     <h2 class="entry-hint-parent">CUDA 将支持RISC-V
       <span class="entry-hint" title="Draft">
         <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" fill="currentColor">
@@ -205,89 +296,6 @@ NFD 还可以探测操作系统的相关配置。
   </div>
   <footer class="entry-footer"><span title='2025-07-16 15:08:22 +0800 +0800'>七月 16, 2025</span>&nbsp;·&nbsp;1 分钟&nbsp;·&nbsp;Theme PaperMod</footer>
   <a class="entry-link" aria-label="post link to kimi k2 发布" href="https://vsxen.github.io/posts/2025-07-20/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">故地重游与观海
-      <span class="entry-hint" title="Draft">
-        <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" fill="currentColor">
-          <path
-            d="M160-410v-60h300v60H160Zm0-165v-60h470v60H160Zm0-165v-60h470v60H160Zm360 580v-123l221-220q9-9 20-13t22-4q12 0 23 4.5t20 13.5l37 37q9 9 13 20t4 22q0 11-4.5 22.5T862.09-380L643-160H520Zm300-263-37-37 37 37ZM580-220h38l121-122-18-19-19-18-122 121v38Zm141-141-19-18 37 37-18-19Z" />
-        </svg>
-      </span>
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>那么HBM内存究竟是什么，与现在主流的LPDDR5有何不同呢？事实上，HBM（High Bandwidth Memory，高带宽内存）是一种基于3D堆栈技术，通过TSV（硅通孔）和微凸块（ubump）工艺实现的多层DRAM芯片垂直堆叠。而DDR（Double Data Rate）则采用的是并行总线架构，常见于DIMM（双列直插式内存模块）形式。
-HBM的带宽究竟有多高呢？以最新的HBM3E为例，其传输速率达到了9.6GB/s，可提供1.2TB/s带宽。作为对比，LPDDR5X的带宽为8533Mbps（1066.6MB/s），也就是说HBM3E的带宽是LPDDR5X的1180倍。
-这里
-目前只有kubelet支持动态修改log level。
-用于LLM的沙盒环境，没想到背后是依赖libkrun，containers组件下面的，后来看下了RedHat也有相关介绍。
-和集团那边沟通他们声称设计的推理集群最多只能支持32物理机节点，啊这有点不科学，天天都在听说什么万卡集群，这差的有点多吧。
-液冷服务器
-生产环境中的 LLM 推理， 这系列文章写的不错。
-试用了下perplexity，感觉一般，没有很惊讶。
-GORK 4 发布了。
-生活 已经提了离职，周五晚上到下周一去了趟青岛。
-电力如何调度的？这几天新闻说用电量一直达到历史新高。
-</p>
-  </div>
-  <footer class="entry-footer"><span title='2025-07-07 21:54:52 +0800 +0800'>七月 7, 2025</span>&nbsp;·&nbsp;1 分钟&nbsp;·&nbsp;Theme PaperMod</footer>
-  <a class="entry-link" aria-label="post link to 故地重游与观海" href="https://vsxen.github.io/posts/2025-07-13/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">Gemini Deep Research
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>体验过chatgpt，豆包，Qwen，和Gemini的深度研究之后，个人感觉Gemini是最好的。 首先会生成研究方向，搜索关键字，然后可能是通过tool call的方式抓取相关内容，生成的结果可以用来创建到Web Page（可交互），Infographic，Quiz和音频。
-当 kube-apiserver 处理 LIST 请求时，它会一次性将数据序列化为 JSON 或 Protobuf 格式，然后交由底层的 Go/http 处理。根据标准的 encoding/json 库实现，kube-apiserver 需要分配一大块内存来存放完整的序列化结果。更严重的是，这块内存要等到数据的最后一个字节被传输完毕后才会释放，容易导致高峰时的内存占用激增。
-解决这个问题的关键在于引入 流式处理 来序列化数据。KEP-5116 根据 LIST 响应的结构特点，可以依次序列化 TypeMeta、ListMeta，然后逐项序列化 Items，避免一次性分配和持有大块内存，从而降低内存占用。
-Streaming JSON/Protobuf in Kubernetes
-k8s 中 prometheus的 token 是如何访问经过认证的kube-controller-manager的/metrics的？
-答案是：证书验证（TLS）和Token授权（RBAC）是两个独立但连续的步骤。kube-controller-manager自己处理TLS握手，但会将授权决策委托给kube-apiserver。
-认证 (Authentication) - 使用 TokenReview：
-kube-controller-manager接收到Token后，它会创建一个TokenReview对象。这个对象包含了它从Prometheus收到的原始Token。 它向kube-apiserver的/apis/authentication.k8s.io/v1/tokenreviews端点发起一个请求，内容就是这个TokenReview对象。 kube-apiserver收到请求后，会验证这个Token的签名和有效性。如果Token有效，kube-apiserver会在TokenReview对象的状态（status）字段中填充该Token对应的用户信息（用户名、UID、所属组等），并返回给kube-controller-manager。 现在，kube-controller-manager知道了这个请求的发起者是谁（例如，system:serviceaccount:monitoring:prometheus-k8s）。 授权 (Authorization) - 使用 SubjectAccessReview：
-在知道了请求者的身份后，kube-controller-manager需要确认这个身份是否有权限执行请求的操作（即对/metrics路径进行GET操作）。 它会创建一个SubjectAccessReview对象。这个对象里包含了上一步获取到的用户信息以及本次请求试图执行的操作（verb: &#34;get&#34;, nonResourceURL: &#34;/metrics&#34;）。 它向kube-apiserver的/apis/authorization.k8s.io/v1/subjectaccessreviews端点发起请求。 kube-apiserver收到请求后，会查询集群中所有的RBAC规则（Role, ClusterRole, RoleBinding, ClusterRoleBinding），判断这个用户是否有权限执行该操作。 kube-apiserver将检查结果（允许或拒绝）填充到SubjectAccessReview对象的状态字段中，并返回给kube-controller-manager。 最终决策：
-kube-controller-manager收到SubjectAccessReview的响应后，如果结果是“允许”，它就会向Prometheus返回/metrics的数据。 如果结果是“拒绝”，它会向Prometheus返回403 Forbidden错误。 这保证了整个集群的认证授权策略是统一和集中的，避免了每个组件各自为政带来的安全风险和管理复杂性。
-k8s 为什么要设计service/proxy的子资源?
-AI生成了4个理由，我觉得唯一有点说服力的也就第三条。
-...</p>
-  </div>
-  <footer class="entry-footer"><span title='2025-07-05 15:45:23 +0800 +0800'>七月 5, 2025</span>&nbsp;·&nbsp;2 分钟&nbsp;·&nbsp;Theme PaperMod</footer>
-  <a class="entry-link" aria-label="post link to Gemini Deep Research" href="https://vsxen.github.io/posts/2025-07-06/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">Artifact vs Canvas
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>简单用了下claude artifact，效果如下： 我是普通账号，上下文长度有点短，生成之后就不能做修改了，步骤分解第一次是自己生成，截图这次是手动补充的。 后端接口接口不能直接发布，只能作为纯文本预览。
-同样的提示词在aistduio上面用Gemini 2.5 pro效果就差了一些：
-https://github.com/vllm-project/production-stack vllm官方的最佳实践
-letsencrypt 准备颁发IP证书了
-Gemini Cli 发布，可以免费用2.5 pro，超过以后会降到2.5 flash，还是比较良心的
-TensorFlow 现在是不是比不上pytorch了？
-曾几何时，TensorFlow是深度学习框架领域无可争议的王者。然而，近年来，战局已悄然改变。来自学术界和产业界的多方证据表明，由Meta AI（原Facebook AI Research）主导开发的PyTorch，在用户青睐度、社区活跃度和学术研究应用等多个关键指标上，已经超越了Google支持的TensorFlow。虽然TensorFlow在特定的工业生产环境中仍占有一席之地，但“PyTorch后来居上”已成为业界的普遍共识。
-学术界的压倒性优势与开发者的普遍偏爱 目前，PyTorch在学术研究领域的主导地位尤为突出。根据PyTorch官方在2024年底发布的回顾报告，超过70%的AI研究论文实现采用了PyTorch。这一数据得到了各大顶级AI会议论文代码实现的印证，PyTorch的出现频率远高于TensorFlow。这种趋势的背后，是PyTorch以其简洁、灵活和“Pythonic”的编程风格赢得了广大学者和开发者的心。
-工业界的版图变迁：从TensorFlow独大到两强并立 传统上，TensorFlow凭借其强大的生态系统，如用于模型部署的TensorFlow Serving、用于移动和嵌入式设备的TensorFlow Lite（TFLite）以及端到端机器学习平台TFX，在工业界，特别是大规模生产部署方面，占据了绝对优势。许多大型科技公司，包括Google自身，其内部大量的AI应用和系统都深度绑定了TensorFlow。
-然而，随着PyTorch的日渐成熟和其生态的不断完善，这一格局正在被打破。PyTorch在2.0版本后，通过引入torch.compile等功能，显著提升了训练性能，缩小了与TensorFlow在速度上的差距。同时，TorchServe等部署工具的推出，也补齐了其在生产环境中的短板。
-更重要的是，随着大量在校期间习惯使用PyTorch的学生和研究人员进入工业界，企业的新项目越来越倾向于采用PyTorch。许多公司，特别是那些追求快速迭代和创新的AI初创企业，已将PyTorch作为首选框架。虽然让拥有庞大TensorFlow技术栈的公司进行“伤筋动骨”的迁移尚不现实，但在新项目的选择上，天平已明显倾斜。
-Hugging Face生态的“风向标”意义 作为全球最大的AI模型和数据集社区，Hugging Face上模型的框架分布是衡量框架流行度的重要“风向标”。尽管没有精确的官方统计数据持续发布，但社区的普遍观察和模型上传趋势显示，绝大多数最新的、SOTA（State-of-the-Art）的自然语言处理（NLP）模型，尤其是大语言模型（LLMs），都优先提供PyTorch版本。这得益于Hugging Face的Transformers库与PyTorch的无缝集成。开发者可以轻松地使用PyTorch对Hugging Face上的模型进行微调和再训练，这极大地促进了PyTorch在NLP领域的统治地位。
-那什么又是 Pythonic 呢？
-cline 可以从Gemini cli中调用2.5 pro的接口的，后续又去掉了，哈哈。
-https://github.com/musistudio/claude-code-router 想用claude code但是没有合适的购买途径，就可以用这个项目。
-生活 bilibili首页刷到了某豪车租赁的账号。
-为啥AMD突然就把英特尔干趴了？Intel的股价快到历史新低了。
-</p>
-  </div>
-  <footer class="entry-footer"><span title='2025-06-29 18:00:00 +0800 +0800'>六月 29, 2025</span>&nbsp;·&nbsp;1 分钟&nbsp;·&nbsp;Theme PaperMod</footer>
-  <a class="entry-link" aria-label="post link to Artifact vs Canvas" href="https://vsxen.github.io/posts/2025-06-29/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">

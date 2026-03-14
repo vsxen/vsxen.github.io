@@ -12,10 +12,41 @@
     <generator>Hugo -- 0.157.0</generator>
     <language>zh</language>
     <copyright>PaperMod Contributors</copyright>
-    <lastBuildDate>Sun, 01 Mar 2026 20:26:26 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 13 Mar 2026 14:59:01 +0800</lastBuildDate>
     <atom:link href="https://vsxen.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>2026 03 01</title>
+      <title>2026 03 15</title>
+      <link>https://vsxen.github.io/posts/2026-03-15/</link>
+      <pubDate>Fri, 13 Mar 2026 14:59:01 +0800</pubDate>
+      <guid>https://vsxen.github.io/posts/2026-03-15/</guid>
+      <description>&lt;h2 id=&#34;技术&#34;&gt;技术&lt;/h2&gt;
+&lt;p&gt;&lt;a href=&#34;https://tamarack.cloud/blog/reverse-engineering-unifi-inform-protocol&#34;&gt;逆向unifi协议&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://marcin.juszkiewicz.com.pl/2026/03/10/risc-v-is-sloooow/&#34;&gt;risc-v好慢&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;kernel即将发布7.0版本了。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/wolfssl/wolfip&#34;&gt;没有动态内存分配的TCP/IPTCP/IP&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://jvs.wuying.aliyun.com/&#34;&gt;阿里云公测的养龙虾&lt;/a&gt;，最重要的是支持web，这周的龙虾炒的很火热，腾讯门前帮忙安装。&lt;/p&gt;
+&lt;h2 id=&#34;生活&#34;&gt;生活&lt;/h2&gt;
+&lt;p&gt;听说武汉字节跳动技术全部一锅端了。&lt;/p&gt;
+&lt;p&gt;紫金矿业的没想到这么有技术，要处理环境污染，植物恢复这些，还收购了其他国家的一些采矿公司。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>AI音乐</title>
+      <link>https://vsxen.github.io/posts/2026-03-08/</link>
+      <pubDate>Sun, 08 Mar 2026 17:20:14 +0800</pubDate>
+      <guid>https://vsxen.github.io/posts/2026-03-08/</guid>
+      <description>&lt;h2 id=&#34;技术&#34;&gt;技术&lt;/h2&gt;
+&lt;p&gt;才发现Gemini可以创造音乐了&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://bootlin.com/doc/legacy/udev/udev.pdf&#34;&gt;使用udev或者netlink进行热插拔&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Nano Banana 2 发布了&lt;/p&gt;
+&lt;h2 id=&#34;生活&#34;&gt;生活&lt;/h2&gt;
+&lt;p&gt;比亚迪闪充9分钟充满有点厉害&lt;/p&gt;
+&lt;p&gt;胜宏科技，堪称去年A股的超级大牛股。从2025年初的41元，到现在的277元，一年时间股价涨了576%。 胜宏科技主要做两类高端产品：高多层PCB（MLPCB）和高密度互连板（HDI）。&lt;/p&gt;
+&lt;p&gt;Macbook neo和 M5的Macbook发布了&lt;/p&gt;
+&lt;p&gt;美伊大战影响了石油还有全球的股市&lt;/p&gt;
+&lt;p&gt;阿里千问大模型核心掌舵者林俊旸宣布离职，高层出面挽留&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>全景无人机</title>
       <link>https://vsxen.github.io/posts/2026-03-01/</link>
       <pubDate>Sun, 01 Mar 2026 20:26:26 +0800</pubDate>
       <guid>https://vsxen.github.io/posts/2026-03-01/</guid>
@@ -26,6 +57,19 @@
 &lt;p&gt;极客湾的横评视频居然被全网下架了&lt;/p&gt;
 &lt;p&gt;影翎Antigravity A1 这个360度无人机有点意思，前面的摄像头是避障用的，上下两颗特殊的摄像头用来生产全景图像&lt;/p&gt;
 &lt;p&gt;这个机器人火了一个春节，结果股市甚至还有点低迷&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>把模型刻到芯片里</title>
+      <link>https://vsxen.github.io/posts/2026-02-22/</link>
+      <pubDate>Sun, 22 Feb 2026 21:45:36 +0800</pubDate>
+      <guid>https://vsxen.github.io/posts/2026-02-22/</guid>
+      <description>&lt;h2 id=&#34;技术&#34;&gt;技术&lt;/h2&gt;
+&lt;p&gt;开启了Gemini in Chrome，可以在侧边栏打开Gemini了&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://tuananh.net/2026/02/25/buildkit-docker-hidden-gem/&#34;&gt;构建的艺术&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/flamestro/deff&#34;&gt;对比工具&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;2023年成立的多伦多初创公司Taalas，由芯片行业资深人士Ljubisa Bajic等人创立，其凭借一款HC1芯片搅动了AI硬件市场的格局。这家公司跳出了传统AI硬件的设计思路，将AI大模型的权重直接蚀刻到芯片的金属互连层中，实现了极致的存算合一，让芯片的推理速度达到17000 tokens/秒，远超英伟达H200的约230 tokens/秒、B200的约2000 tokens/秒。这一创新做法，也让行业开始重新思考：把大模型直接刻进芯片，究竟是打破AI硬件瓶颈的新方向，还是受限于技术迭代的小众尝试？&lt;/p&gt;
+&lt;h2 id=&#34;生活&#34;&gt;生活&lt;/h2&gt;
+&lt;p&gt;程序员转型 HR，这个之前我也想过&lt;/p&gt;</description>
     </item>
     <item>
       <title>2025年终总结</title>
